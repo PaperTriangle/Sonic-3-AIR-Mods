@@ -1,0 +1,45 @@
+global u8 cutsceneadjust
+
+//# address-hook(0x068a46) end(0x068a68)
+function void fn068a46()
+{
+	setupObjectAttributesFull(0x068ffe)
+	boss.remaining_hits = 6
+	level.boss_encounter = 1
+
+	requestLoadingPatterns(0x5a)		// Boss sprites
+	loadPaletteLine1(0x06917c)
+
+#if STANDALONE
+	// Move to the right, so that there is no dead corner where character is behind him
+	objA0.position.x.u16 += getScreenExtend()
+#endif
+}
+
+//# address-hook(0x068b92) end(0x068bb8)
+function void fn068b92()
+{
+	objA0.base_state = 0x0e
+	objA0.value39 = 0x04
+	objA0.countdown_callback = 0x068bdc
+	objA0.flags38 ^= 0x08		// Flip horizontal movement direction
+	objA0.velocity.x = (objA0.flags38 & 0x08) ? -0x100 - getScreenExtend() * 2 - getScreenExtend() * 2 / 14 : 0x100 + getScreenExtend() * 2 + getScreenExtend() * 2 / 14
+	fn0685e2()
+}
+
+//# address-hook(0x068508) end(0x068526)
+function void fn068508()
+{
+	setupObjectAttributesFull(0x068ffe)
+
+	u8[A0 + 0x29] = 0x60
+	screenmover_target.right = move_area.right
+	level.boss_encounter = 1
+
+	requestLoadingPatterns(0x5a)		// Boss sprites
+	
+#if STANDALONE
+	// Move to the right for widescreen
+	objA0.position.x.u16 += getScreenExtend()*cutsceneadjust
+#endif
+}

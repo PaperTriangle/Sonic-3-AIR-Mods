@@ -1,0 +1,10 @@
+{
+	"Metadata":
+	{
+		"Name": "Eggman Go Left",
+		"UniqueID": "eggman-go-left",
+		"Author": "PaperTriangle",
+		"Description": "Makes Eggman flee to the left in CNZ to better match with Original Zone Order mods.",
+		"ModVersion": "1.0"
+	}
+}

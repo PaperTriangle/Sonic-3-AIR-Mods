@@ -1,0 +1,337 @@
+global u8 eggmanflip
+global u8 fbzintro
+global u8 fbzknucklesintro
+
+// Eggman flip in CNZ
+
+//# address-hook(0x067f1e) end(0x067f38)
+function void fn067f1e()
+{
+	if (global.zone != 0x03 || eggmanflip == 0)
+	{
+		base.fn067f1e()
+		return
+	}
+
+	objA0.render_flags &= ~render_flag.FLIP_X
+	objA0.velocity.x = -0x0300
+	objA0.velocity.y = 0
+	objA0.countdown_value = 0x0100
+
+	spawnChildObjects(0x0681b4)
+}
+
+
+//Common Methods
+
+function void yieldExecution()
+{
+
+	if (global.zone_act == 0x0400)
+	{
+		if (isMainCharacter(CHARACTER_KNUCKLES))
+		{
+			if (fbzknucklesintro == 1)
+				System.loadExternalRawData("fbz1jumpstart", 0x1e3cf8)
+			else if (fbzknucklesintro == 2)
+				System.loadExternalRawData("fbz1walkstart", 0x1e3cf8)
+		}
+		else
+		{
+			if (fbzintro == 1)
+				System.loadExternalRawData("fbz1jumpstart", 0x01e3c38)
+			else if (fbzintro == 2)
+				System.loadExternalRawData("fbz1walkstart", 0x01e3c38)
+		}
+		
+	}
+
+	base.yieldExecution()
+}
+
+//# address-hook(0x0067ee) end(0x0069b6)
+function void fn0067ee()
+{	
+	if (global.zone_act != 0x0400 || (fbzintro == 0 && !isMainCharacter(CHARACTER_KNUCKLES)) || (fbzknucklesintro == 0 && isMainCharacter(CHARACTER_KNUCKLES)))
+	{
+		base.fn0067ee()
+		return
+	}
+	
+	u32[0xffffb094] = addressof(ResetDynamicObjectList)
+	InitializeGameCharacters()
+	RestoreShield()
+	if (checkpoint.number != 0 || global.stage_type != 0)
+		return
+
+	A1 = 0xffffb000
+	A2 = 0xffffb04a
+	
+	if ((fbzintro == 2 && !isMainCharacter(CHARACTER_KNUCKLES)) || (fbzknucklesintro == 2 && isMainCharacter(CHARACTER_KNUCKLES)))
+	{
+		u32[0xffffb172] = 0x044a0c
+	}
+	else
+	{	
+		u32[0xffffb172] = 0x039a40
+		
+		objA1.state = char.state.ROLLING
+		objA1.flags2a |= char.flag.IN_AIR
+		objA1.velocity.y = -0x750
+		//objA1.velocity.x = 0x100
+
+		if (u32[A2] != 0)
+		{
+			u8[A2 + 0x20] = char.state.ROLLING
+			u8[A2 + 0x2a] |= char.flag.IN_AIR
+			u16[A2 + 0x1a] = -0x850
+			//u16[A2 + 0x18] = 0x100
+		}
+	}
+}
+
+//# address-hook(0x013a10) end(0x013b24)
+function void Character.TailsAI.Init()
+{
+	if (global.zone_act != 0x0400 || ((fbzintro == 0 && !isMainCharacter(CHARACTER_KNUCKLES)) || (fbzknucklesintro == 0 && isMainCharacter(CHARACTER_KNUCKLES))) )
+	{
+		base.Character.TailsAI.Init()
+		return
+	}
+	
+	if (checkpoint.number.backup.tails == 0)	// This is some checkpoint number backup for Tails
+	{
+		tails.respawn_counter = 0
+		tails.ai_routine = 0x06
+		char.control_flags = 0
+		return
+	}
+
+	char.state = char.state.RUNNING
+	char.velocity.x = 0
+	char.velocity.y = 0
+	char.groundspeed = 0
+	char.flags = 0
+	char.control_flags = 0
+	tails.respawn_counter = 0
+	tails.ai_routine = 0x06
+}
+
+// FBZ Jump
+
+//# address-hook(0x039a40) end(0x039a7e)
+function void fn039a40()
+{
+	objA0.update_address = 0x039a80
+	player1.control_override = 1
+	player2.control_override = 1
+	control.player1 = 0
+	control.pad1 = 0
+	control.tails = 0
+	control.pad2 = 0
+	if (global.zone_act == 0x0400)
+	{
+		objA0.animation.timer = 0x10
+		
+		A1 = 0xffffb000
+		objA1.state = char.state.ROLLING
+		u8[A1 + 0x2e] = control_flag.DISABLE_UPDATE
+		//objA1.position.y.u16 = objA1.position.y.u16 + 0xc0
+
+		A1 = 0xffffb04a
+		if (u32[A1] != 0)
+		{
+			objA1.state = char.state.ROLLING
+			u8[A1 + 0x2e] = control_flag.DISABLE_UPDATE
+			objA1.position.y.u16 = objA1.position.y.u16 + 0x15
+		}
+	}
+	else
+	{
+		objA0.animation.timer = 0x1e
+		
+		A1 = 0xffffb000
+		u8[A1 + 0x2e] = (control_flag.DISABLE_ANIMATION | control_flag.DISABLE_UPDATE)
+
+		A1 = 0xffffb04a
+		if (u32[A1] != 0)
+		{
+			u8[A1 + 0x2e] = (control_flag.DISABLE_ANIMATION | control_flag.DISABLE_UPDATE)
+		}
+	}
+
+
+}
+
+
+//# address-hook(0x039a80) end(0x039ad0)
+function void fn039a80()
+{
+	player1.control_override = 1
+	player2.control_override = 1
+	control.player1 = 0
+	control.tails = 0
+	--objA0.animation.timer
+	if (objA0.animation.timer != 0)
+	{
+		A1 = 0xffffb000
+		u8[A1 + 0x2e] = 0x00
+
+		A1 = 0xffffb04a
+		if (u32[A1] != 0)
+		{
+			u8[A1 + 0x2e] = 0x00
+		}
+		return
+	}
+
+	objA0.update_address = 0x039ad2
+
+
+	if (global.zone_act == 0x0400)
+	{
+		A1 = 0xffffb000
+		objA1.velocity.y = -0x750
+		objA1.velocity.x = 0x50
+		objA1.flags2a |= char.flag.IN_AIR
+		u8[A1 + 0x40] = 0
+		objA1.state = char.state.ROLLING
+		u8[A1 + 0x2e] = control_flag.DISABLE_UPDATE
+
+		A1 = 0xffffb04a
+		if (u32[A1] != 0)
+		{
+			objA1.velocity.y = -0x750
+			objA1.velocity.x = 0x50
+			objA1.flags2a |= char.flag.IN_AIR
+			u8[A1 + 0x40] = 0
+			objA1.state = char.state.ROLLING
+			u8[A1 + 0x2e] = control_flag.DISABLE_UPDATE
+		}
+	}
+	else
+	{
+		A1 = 0xffffb000
+		objA1.velocity.y = -0xb00
+		objA1.flags2a |= char.flag.IN_AIR
+		u8[A1 + 0x40] = 0
+		objA1.state = char.state.STRAIGHTJUMP
+		u8[A1 + 0x2e] = control_flag.DISABLE_UPDATE
+
+		A1 = 0xffffb04a
+		if (u32[A1] != 0)
+		{
+			objA1.velocity.y = -0xb00
+			objA1.flags2a |= char.flag.IN_AIR
+			u8[A1 + 0x40] = 0
+			objA1.state = char.state.STRAIGHTJUMP
+			u8[A1 + 0x2e] = control_flag.DISABLE_UPDATE
+		}
+	}
+}
+
+
+//# address-hook(0x039ad2) end(0x039b64)
+function void fn039ad2()
+{
+	player1.control_override = 1
+	player2.control_override = 1
+	control.player1 = 0
+	control.tails = 0
+
+	A2 = 0xffffb000
+
+	if (global.zone_act == 0x0400)
+	{
+		if (u16[A2 + 0x14] < 0x0780)
+		{
+			player1.control_override = 0
+			player2.control_override = 0
+			
+			A1 = 0xffffb000
+			u8[A1 + 0x2e] = 0
+			objA1.velocity.x = 0x50
+
+			A1 = 0xffffb04a
+			if (u32[A1] != 0)
+			{
+				u8[A1 + 0x2e] = 0
+				objA1.velocity.x = 0x50
+			}
+			
+			UnloadObject()
+		}
+		else
+		{
+			fn039b46()
+
+			A2 = 0xffffb04a
+			if (u32[A2] != 0)
+			{
+				fn039b46()
+			}
+		}
+	}
+	else
+	{
+		if (u16[A2 + 0x14] < 0x05c0)
+		{
+			u8[A2 + 0x2e] = 0
+			u32 dustAddress = 0xffffcc54
+		#if STANDALONE
+			// Fix snow particles not appearing for Tails alone, fix #contributed by iCloudius
+			dustAddress = isMainCharacter(CHARACTER_TAILS) ? 0xffffcc9e : 0xffffcc54
+		#endif
+			u16[dustAddress + 0x20] = 0x0400		// Start snow dust animation
+			u16[dustAddress + 0x14] = 0x05c0		// Set dust object position
+
+			A2 = 0xffffb04a
+			if (u32[A2] != 0)
+			{
+				u8[A2 + 0x2e] = 0
+				dustAddress = 0xffffcc9e
+			#if STANDALONE
+				dustAddress = isSecondCharacter(CHARACTER_TAILS) ? 0xffffcc9e : 0xffffcc54
+			#endif
+				u16[dustAddress + 0x20] = 0x0400		// Start snow dust animation
+				u16[dustAddress + 0x14] = 0x05c0		// Set dust object position
+			}
+
+			playSound(0x82)
+
+			player1.control_override = 0
+			player2.control_override = 0
+			UnloadObject()
+		}
+		else
+		{
+			fn039b46()
+
+			A2 = 0xffffb04a
+			if (u32[A2] != 0)
+			{
+				fn039b46()
+			}
+		}
+	}
+}
+
+// FBZ Walk
+
+//# address-hook(0x044a0c) end(0x044a20)
+function void fn044a0c()
+{
+	// This defines the position where to stop automatic moving right
+	if (global.zone_act == 0x0400)
+	{
+		u16[A0 + 0x30] = u16[0xffffb000 + 0x10] + getScreenWidth() / 6 + 0x10
+	}
+	else
+	{
+		u16[A0 + 0x30] = u16[0xffffb000 + 0x10] + getScreenWidth() / 2 + 0x10
+	}	
+	objA0.value32 = u16[0xffffb000 + 0x14]
+
+	objA0.update_address = 0x044a26
+	fn044a26()
+}

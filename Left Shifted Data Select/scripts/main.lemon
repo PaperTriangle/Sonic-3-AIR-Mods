@@ -1,0 +1,173 @@
+function void DataSelect.setup()
+{
+	base.DataSelect.setup()
+	
+	camera.foreground.x.u16 += getScreenExtend()
+	u16[0xffffe002] -= getScreenExtend()
+}
+
+//# address-hook(0x00d1b6) end(0x00d1f4)
+function void fn00d1b6()
+{
+	D0.u16 = 0xa8
+	D1 = 0
+	D2 = dataselect.slot_selected - 1
+	while (D2.s16 >= 0)
+	{
+		D4 = 0x0c
+		while (D4.s16 >= 0)
+		{
+			if (D0.u16 > 0x0118 + getScreenExtend() && D1.u16 <= 0x02b8 + getScreenExtend())
+			{
+				D1.u16 += 8
+			}
+			else
+			{
+				D0.u16 += 8
+			}
+			--D4.s16
+		}
+		--D2.s16
+	}
+
+	u16[A0 + 0x12] = D0.u16
+	camera.foreground.x.u16 = D1.u16
+	u16[0xffffe002] = -D1.s16
+
+	objA0.update_address = 0x00d1fa
+	fn00d1fa()
+}
+
+
+//# address-hook(0x00d1fa) end(0x00d30a)
+function void fn00d1fa()
+{
+#if STANDALONE
+	if (u16[0xffffeee4] == 0 && (control.pad1.pressed & DataSelect.CONTROLS_CANCEL || Input.buttonPressed(BUTTON_BACK)))
+#else
+	if (u16[0xffffeee4] == 0 && (control.pad1.pressed & DataSelect.CONTROLS_CANCEL))
+#endif
+	{
+		// Back to the intro / title screen
+		global.game_mode = 0x04
+
+	#if STANDALONE
+		playSound(0xad)
+		DataSelect.drawCustomPlanes()	// Required here, otherwise we can have one frame without custom plane setup if returning already during the fade-in
+
+		u32 backupA0 = A0
+		FadeOutScreenBlocking()
+		A0 = backupA0
+
+		// Do not fade out music in this case, Data Select music is meant to keep playing
+		Game.returnToMainMenu()
+		yieldExecution()
+	#endif
+	}
+	else if (u16[0xffffeee2] == 0)
+	{
+		bool skipPart = false
+		if (u16[A0 + 0x30] == 0)
+		{
+			D0 = 0
+			if (control.pad1.pressed & CONTROL_LEFT)
+			{
+				if (u16[0xffffeee4] == 0 || dataselect.slot_selected != 1)
+				{
+					if (dataselect.slot_selected != 0)
+					{
+						--dataselect.slot_selected
+						u8 sfx = (u16[0xffffeee4] != 0) ? 0x7b : 0xb7
+						playSound(sfx)
+						D0 = -8
+					}
+				}
+			}
+		#if STANDALONE
+			else	// Don't allow both left & right being pressed at the same time, as this leads to buggy behavior
+		#endif
+			if (control.pad1.pressed & CONTROL_RIGHT)
+			{
+				if (dataselect.slot_selected != 9)
+				{
+					++dataselect.slot_selected
+					u8 sfx = (u16[0xffffeee4] != 0) ? 0x7b : 0xb7
+					playSound(sfx)
+					D0 = 8
+				}
+			}
+
+			objA0.countdown_value = D0.u16
+			if (objA0.countdown_value != 0)
+			{
+				u16[A0 + 0x30] = 0x0d
+			}
+			else
+			{
+				skipPart = true
+			}
+		}
+
+		if (!skipPart)
+		{
+			D0.u16 = u16[A0 + 0x12]		// Position of cursor on screen
+			s16 moveStep = objA0.countdown_value
+
+			D0.s16 += moveStep
+			if (moveStep >= 0)
+			{
+				if (D0.s16 > s16(0x120 + getScreenExtend()))
+				{
+					camera.foreground.x.u16 += moveStep
+					if (s16(camera.foreground.x.u16) > s16(0x2c0 - getScreenExtend() * 2))
+					{
+						camera.foreground.x.u16 -= moveStep
+					}
+					else
+					{
+						D0.s16 -= moveStep
+					}
+				}
+			}
+			else
+			{
+				if (D0.s16 < s16(0x120 + getScreenExtend()))
+				{
+					camera.foreground.x.u16 += moveStep
+					if (s16(camera.foreground.x.u16) < 0x0000)
+					{
+						camera.foreground.x.u16 -= moveStep
+					}
+					else
+					{
+						D0.s16 -= moveStep
+					}
+				}
+			}
+
+			u16[A0 + 0x12] = D0.u16
+			--u16[A0 + 0x30]
+		}
+	}
+
+	D2 = 0
+	if (dataselect.slot_selected == 0)
+	{
+		D2.s16 = 8
+	}
+	else if (dataselect.slot_selected == 9)
+	{
+		D2.s16 = -8
+	}
+
+	D2.u16 += u16[A0 + 0x12]
+	objA0.position.x.u16 = D2.u16
+
+	// Determine size of the cursor (large or small)
+	objA0.animation.sprite = (D2.u16 >= 0xf0 && D2.u16 <= 0x148 + getScreenExtend() * 2) ? 1 : 2
+
+	if (level.framecounter.low & 0x04)
+	{
+		DrawObject()
+	}
+}

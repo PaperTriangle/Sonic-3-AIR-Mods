@@ -1,0 +1,39 @@
+{
+	"Metadata":
+	{
+		"Name": "Alternate LBZ2 Cutscene",
+		"UniqueID": "alt-lbz2-cutscene",
+		"Author": "PaperTriangle",
+		"Description": "A more Origins like cutscene for LBZ2.",
+		"ModVersion": "1.0"
+	},
+	"Settings":
+	{
+		"List":
+		[
+			{
+				"InternalName": "gameclear",
+				"DisplayName": "Fanfare",
+				"Variable": "altlbz2cs.gameclear",
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Stage Clear",
+					"1": "Game Clear"
+				}
+			},
+			{
+				"InternalName": "removewalls",
+				"DisplayName": "Platform Edge Protection",
+				"Variable": "altlbz2cs.removewalls",
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Invisible Walls",
+					"1": "Updraft",
+					"2": "No Protection"
+				}
+			}
+		]
+	}
+}

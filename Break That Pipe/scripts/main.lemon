@@ -1,0 +1,160 @@
+//# address-hook(0x027424) end(0x027590)
+function void fn027424()
+{
+	u16[A0 + 0x30] = u16[0xffffb000 + 0x18]
+	u16[A0 + 0x36] = u16[0xffffb04a + 0x18]
+
+	D1.u16 = 0x1b
+	D2.u16 = 0x20
+	D3.u16 = 0x21
+	D4.u16 = objA0.position.x.u16
+	fn01dc56()
+
+	D6 = (D6 << 16) + (D6 >> 16)
+	if (D6.u16 & 0x03)
+	{
+		bool canBreakWall = false
+
+		A1 = 0xffffb000
+		D1.u16 = u16[A0 + 0x30]
+		if (D6.u16 & 0x01)
+		{
+			if (u8[A1 + 0x38] == CHARACTER_KNUCKLES)
+			{
+				// Knuckles can break all walls
+				canBreakWall = true
+			}
+			else
+			{
+				if (super.active)
+				{
+					// Super form breaks walls even when going slow
+					canBreakWall = true
+				}
+				else if ((objA0.flags2a & object.flag.P1_PUSHING) || (u8[A1 + 0x2b] & char.bonus.SHIELD_FIRE))
+				{
+					// Normal Sonic and Tails need to quickly roll into a wall to break it (this includes the fire shield attack)
+					canBreakWall = (objA1.state == char.state.ROLLING && abs(D1.s16) >= 0x480)
+				}
+			}
+
+			if (canBreakWall)
+			{
+				objA0.flags2a &= ~object.flag.P1_PUSHING
+				LBZPipe.break()
+
+				if (objA0.flags2a & object.flag.P2_PUSHING)
+				{
+					// Check for second character
+					A1 = 0xffffb04a
+					if (u8[A1 + 0x38] == CHARACTER_KNUCKLES || objA1.state == char.state.ROLLING)
+					{
+						objA1.velocity.x = u16[A0 + 0x36]
+						objA1.groundspeed = objA1.velocity.x
+						objA0.flags2a &= ~object.flag.P2_PUSHING
+						objA1.flags2a &= ~char.flag.PUSHING
+					}
+				}
+			}
+		}
+
+		if (!canBreakWall)
+		{
+			// Give second character a try
+			A1 = 0xffffb04a
+			D1.u16 = u16[A0 + 0x36]
+
+			if (objA0.flags2a & object.flag.P2_PUSHING)
+			{
+				if (u8[A1 + 0x38] == CHARACTER_KNUCKLES)
+				{
+					// Knuckles can break all walls
+					canBreakWall = true
+				}
+				else
+				{
+					// Normal Sonic and Tails need to quickly roll into a wall to break it (this includes the fire shield attack)
+					canBreakWall = (objA1.state == char.state.ROLLING && abs(D1.s16) >= 0x480)
+				}
+			}
+
+			if (canBreakWall)
+			{
+				objA0.flags2a &= ~object.flag.P2_PUSHING
+				LBZPipe.break()
+				return
+			}
+		}
+	}
+	
+	DrawObject()	
+}
+
+function void LBZPipe.break()
+{
+	objA1.velocity.x = D1.u16
+
+	D0.u16 = objA0.position.x.u16
+	if (D0.u16 >= objA1.position.x.u16)
+	{
+		A4 = 0x027718
+		objA1.position.x.u16 -= 4
+	}
+	else
+	{
+		A4 = 0x0276d8
+		objA1.position.x.u16 += 4
+	}
+
+	objA1.groundspeed = objA1.velocity.x
+	u8[A1 + 0x2a] &= ~char.flag.PUSHING
+	D1.u8 = objA0.subtype2c
+	if (objA0.subtype2c != 0)
+	{
+		bool createWaterStream = true
+
+		if (objA0.subtype2c == 0x1f)
+		{
+			// Let the water rise (in Knuckles' area)
+			global.level_flag02 = 1
+			water.height.target = 0x0660
+			if (super.active)
+			{
+				water.height.changerate = 2
+			}
+		}
+		else
+		{
+			// Create the water flow logic (visual effect is separate)
+			if (allocDynamicObjectAfterA0())
+			{
+				objA1.update_address = 0x0295c2
+				objA1.position.x.u16 = objA0.position.x.u16
+				objA1.position.y.u16 = objA0.position.y.u16 + 2
+				u8[A1 + 0x24] = 0x07
+				u8[A1 + 0x2c] = D1.u8
+			}
+			else
+			{
+				createWaterStream = false
+			}
+		}
+
+		if (createWaterStream)
+		{
+			// Create water stream visual effect
+			if (allocDynamicObjectAfterA0())
+			{
+				objA1.update_address = 0x029896
+				objA1.position.x.u16 = objA0.position.x.u16
+				objA1.position.y.u16 = objA0.position.y.u16 - 0x20
+				objA1.velocity.y = 1
+				u8[A1 + 0x2c] = D1.u8
+			}
+		}
+	}
+
+	objA0.update_address = 0x027592
+	fn0275f2()
+	fn027592()
+}

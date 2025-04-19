@@ -1,0 +1,10 @@
+{
+	"Metadata":
+	{
+		"Name": "Where's Robo!?",
+		"Author": "PaperTriangle",
+		"UniqueID": "wheres-robo",
+		"Description": "Fixes the first eggrobo not appearing in SSZ.",
+		"ModVersion": "1.0"
+	}
+}

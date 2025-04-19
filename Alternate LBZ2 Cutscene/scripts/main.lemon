@@ -1,0 +1,258 @@
+global u8 altlbz2cs.gameclear
+global u8 altlbz2cs.removewalls
+
+//# address-hook(0x072b46) end(0x072b94)
+function void fn072b46()
+{
+	objA0.update_address = 0x072b96
+}
+
+//# address-hook(0x072b96) end(0x072bb6)
+function void fn072b96()
+{
+
+	objA0.update_address = 0x072bbc
+
+	addPatternLoadingCue(0x083d64)		// Boss explosion sprites
+}
+
+//# address-hook(0x072bbc) end(0x072c04)
+function void fn072bbc()
+{
+	
+	objA0.update_address = 0x072c0a
+	objA0.flags38 |= 0x20	// This makes the explosions stop
+	u16[0xfffffaa4] = A0.u16
+
+
+	if (allocDynamicObjectStd())
+	{
+		objA1.update_address = 0x0863c0
+	}
+
+	Kosinski.addToDMAQueue(0x37921c, 0x95c0)		// Death Egg falling in the distance
+	
+	
+	if (!Mods.isModActive("Origins Parity Galore") || !Mods.isModActive("Alternate LBZ2 Cutscene - Compatability Patch"))
+	{
+		spawnSimpleChildObjects(0x072d24, 2)
+	}
+}
+
+//# address-hook(0x072c0a) end(0x072c62)
+function void fn072c0a()
+{
+	A1 = 0xffffb000
+	
+	player1.control_override = 0xff
+	control.player1 = 0
+	
+	D0.s16 = camera.position.x.u16 + getScreenWidth() / 2 - objA1.position.x.u16
+	if (abs(D0.s16) < 4)
+	{
+		objA0.update_address = 0x072c68
+		u8[0xfffffa88] = 0
+		StopObjectA1()
+
+		objA1.render_flags &= ~render_flag.FLIP_X
+		u8[A1 + 0x2a] &= ~char.flag.FACING_LEFT
+
+		control.player1 = 0x0101		// CONTROL_UP, CONTROL_UP
+
+	}
+	else
+	{
+		D1 = (D0.s16 < 0) ? 2 : 3		// CONTROL_LEFT : CONTROL_RIGHT
+		control.player1.state |= (1 << D1.u8)
+	}
+}
+
+//# address-hook(0x072dea) end(0x072e4e)
+function void fn072dea()
+{
+
+	--objA0.countdown_value
+	if (objA0.countdown_value < 0)
+	{
+		++objA0.value39
+		if (objA0.value39 == 0x08)
+		{
+			u8[0xffffeec6] = 0xff
+		}
+
+		if (objA0.value39 >= 0x18)
+		{
+			objA0.update_address = 0x072e2e
+			objA0.countdown_value = 0x006f		//0x017f
+			
+			u8[0xffffb000 + 0x2e] = 0x81
+			u8[0xffffb000 + 0x20] = char.state.WIN_POSE
+			StartCharacterWinPose()
+			//playMusic(MUSIC_GAMECLEAR)
+			level.results_done = 0
+			
+			if (allocDynamicObjectStd())
+			{
+				// Level results
+				objA1.update_address = addressof(LevelResults.Update)
+			}
+			
+			if (allocDynamicObjectStd())
+			{
+				// Win pose for Tails
+				objA1.update_address = 0x072cfa
+			}
+			
+			Game.onZoneActCompleted(global.zone_act.apparent)
+			
+			fn072e2e()
+			return
+		}
+
+		objA0.countdown_value = u16[A0 + 0x3a]
+		++u16[A0 + 0x3a]
+		if (allocDynamicObjectStd())
+		{
+			objA1.update_address = 0x072e54
+		}
+	}
+}
+
+//# address-hook(0x072e2e)
+function void fn072e2e()
+{
+	if (!level.results_done)
+		return
+
+	if (!altlbz2cs.gameclear)
+	{
+		PlayMusicAfterLevelResults()
+	}
+
+	if (Mods.isModActive("LBZ Eggman Fleeing"))
+    {
+		ALBZ2CCompat.cutsceneSetup()
+	}
+	
+	--objA0.countdown_value
+	if (objA0.countdown_value >= 0)
+		return
+
+	u8[0xfffffa88] |= 0x01
+	objA0.value39 = 0
+	objA0.countdown_value = 0
+	
+	stopCharacterWinPose(0xffffb000)
+	stopCharacterWinPose(0xffffb04a)
+	//PlayMusicAfterLevelResults()
+
+	// "spawnChildObjects(0x07380c)" replaced by:
+	spawnChildObject(0x072e9e, 0x00, 0, 0)
+	spawnChildObject(0x072e9e, 0x02, -16, 40)
+	spawnChildObject(0x072e9e, 0x04, -112, 0)
+	spawnChildObject(0x072e9e, 0x06, -72, 40)
+	spawnChildObject(0x072e9e, 0x08, 24, 16)
+	spawnChildObject(0x072e9e, 0x0a, -36, -8)
+	spawnChildObject(0x072e9e, 0x0c, -80, 28)
+
+#if STANDALONE
+	if (Game.getSetting(SETTING_LBZ_BIGARMS))
+	{
+		// Go into another state before unloading, to lighten up the sky again
+		u16[A0 + 0x48] = 0
+		objA0.update_address = 0x072e30
+	}
+	else
+#endif
+	{
+		Object.TriggerUnloading()
+	}
+}
+
+function u64 Standalone.getModdedSoundKey(u64 soundKey, u8 sfxId, u8 soundRegType)
+{
+	if (altlbz2cs.gameclear && camera.position.y.u16 > 0x0500 && global.zone_act == 0x0601)
+	{
+		if (soundKey == MUSIC_LEVELCLEAR)
+		{
+			return soundKey = MUSIC_GAMECLEAR
+		}
+	}
+	
+    return base.Standalone.getModdedSoundKey(soundKey, sfxId, soundRegType)
+}
+
+//# address-hook(0x08d47c) end(0x08d4c6)
+function void fn08d47c()
+{
+	if (altlbz2cs.removewalls == 0)
+	{
+		base.fn08d47c()
+		return
+	}
+	
+	fn0847e6()
+	UpdateMovementStraightSimple()
+	fn08d506()
+
+	if (objA0.position.x.u16 >= 0x4440)
+	{
+		// Character jumps out of the mobile
+		objA0.update_address = 0x08d4cc
+		camera.screenshake.state = 0
+
+		A1 = 0xffffb000
+		objA1.velocity.x = -0x100
+		objA1.velocity.y = -0x600
+		objA1.state = char.state.ROLLING
+		objA1.flags2a |= char.flag.IN_AIR
+		u8[A1 + 0x2e] = 0
+		u8[A1 + 0x40] = 0
+
+	#if STANDALONE
+		Game.endSkippableCutscene()
+
+		if (altlbz2cs.removewalls == 1)
+		{
+			// Create updraft elements so the player cannot fall off the platform
+			for (u16 i = 0; i < 2; ++i)
+			{
+				if (allocDynamicObjectStd())
+				{
+					objA1.update_address = 0x03fb90
+					objA1.position.x.u16 = (i == 1) ? 0x4519 : 0x4347
+					objA1.position.y.u16 = 0x0755
+					objA1.subtype2c = 0x01
+				}
+			}
+		}
+	#endif
+	}
+
+	fn08d53e()
+	DrawObject()
+}
+
+//# address-hook(0x03fbc4) end(0x03fcd2)
+function void fn03fbc4()
+{
+	if (altlbz2cs.removewalls != 1)
+	{
+		base.fn03fbc4()
+		return
+	}
+	
+	if (global.zone == 0x06 && u8[A1 + 0x05] == base_state.HURT)
+	{
+		u8[A1 + 0x05] = base_state.NORMAL
+	}
+	
+	base.fn03fbc4()
+}
+
+// Compat Functions
+
+function void ALBZ2CCompat.cutsceneSetup()
+{
+
+}

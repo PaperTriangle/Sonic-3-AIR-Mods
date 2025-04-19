@@ -1,0 +1,27 @@
+{
+	"Metadata":
+	{
+		"Name": "Fire Breath on the Edge",
+		"UniqueID": "fire-breath-on-the-edge",
+		"Author": "PaperTriangle",
+		"Description": "Adjusts the positioning of the Fire Breath boss to be closer to the screen edge.",
+		"ModVersion": "1.0",
+	},
+	"Settings":
+	{
+		"List":
+		[
+			{
+				"InternalName": "cutsceneadjust",
+				"DisplayName": "Adjust for the Cutscene",
+				"Variable": "cutsceneadjust",
+				"DefaultValue": "1",
+				"Options":
+				{
+					"1": "Default A.I.R.",
+					"2": "Closer to the Edge"
+				}
+			}
+		]
+	}
+}

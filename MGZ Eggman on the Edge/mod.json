@@ -1,0 +1,10 @@
+{
+	"Metadata":
+	{
+		"Name": "MGZ Eggman on the Edge",
+		"UniqueID": "mgz-eggman-on-the-edge",
+		"Author": "PaperTriangle",
+		"Description": "Adjusts the positioning of the MGZ Eggman boss to be closer to the screen edge.",
+		"ModVersion": "1.0",
+	}
+}

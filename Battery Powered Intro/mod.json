@@ -1,0 +1,52 @@
+{
+	"Metadata":
+	{
+		"Name": "Battery Powered Intro",
+		"UniqueID": "battery-powered-intro",
+		"Author": "PaperTriangle",
+		"Description": "Finally, Flying Battery Zone has some level intros.",
+		"URL": "",
+		"ModVersion": "1.0"
+	},
+	"Settings":
+	{
+		"List":
+		[
+			{
+				"InternalName": "fbzintro",
+				"DisplayName": "Sonic & Tails Intro Style",
+				"Variable": "fbzintro",
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Jump",
+					"2": "Walk"
+				}
+			},
+			{
+				"InternalName": "fbzknucklesintro",
+				"DisplayName": "Knuckles Intro Style",
+				"Variable": "fbzknucklesintro",
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Jump",
+					"2": "Walk"
+				}
+			},
+			{
+				"InternalName": "eggmanflip",
+				"DisplayName": "Eggman's Escape in CNZ",
+				"Variable": "eggmanflip",
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Flee Right (Default)",
+					"1": "Flee Left"
+				}
+			}
+		]
+	}
+}

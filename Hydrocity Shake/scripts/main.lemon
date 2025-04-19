@@ -1,0 +1,14 @@
+//# address-hook(0x06b7bc) end(0x06b7ea)
+function void fn06b7bc()
+{
+	u8[0xffffb000 + 0x20] = char.state.BALANCING1
+	u8[0xffffb000 + 0x2e] = 0x81
+
+	if (u32[0xffffb04a] != 0)
+	{
+		u8[0xffffb04a + 0x20] = char.state.BALANCING1
+		u8[0xffffb04a + 0x2e] = 0x81
+	}
+
+	base.fn06b7bc()
+}
