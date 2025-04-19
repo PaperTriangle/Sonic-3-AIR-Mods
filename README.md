@@ -4,6 +4,9 @@ A collection of PaperTriangle's Sonic 3 A.I.R. Mods both in progress and release
 ## Battery Powered Intro
 Simple mod that adds in two intro styles for FBZ! I Would honestly not recommend using it as there are better options.
 
+## Eggman Go Left
+Simple mod to make Eggman flee left at the end of CNZ2. This is intended for people who use a mod to restore the OG zone order so it make more logical sense that Eggman flees in the direction of his Flying Battery.
+
 ## Fire Breath on the Edge
 It always kind of bugged me that Fire Breath has a space behind it in AIZ1.
 
