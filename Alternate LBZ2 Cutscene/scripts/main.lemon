@@ -29,7 +29,7 @@ function void fn072bbc()
 
 	Kosinski.addToDMAQueue(0x37921c, 0x95c0)		// Death Egg falling in the distance
 
-	if (!Mods.isModActive("Origins Parity Galore"))
+	if (!Mods.isModActive("Origins Parity Galore") || !Game.getSetting(SETTING_LBZ_BIGARMS))
 	{
 		spawnSimpleChildObjects(0x072d24, 2)
 	}
