@@ -5,5 +5,14 @@
 		"Author": "PaperTriangle",
 		"Description": "Removes the dust from Drop Dash + after it goes off screen.",
 		"ModVersion": "1.0"
+	},
+	"OtherMods":
+	{
+		"Drop Dash +":
+		{
+			"DisplayName": "Drop Dash +",
+			"IsRequired": "1",
+			"Priority": "Lower"
+		}
 	}
 }

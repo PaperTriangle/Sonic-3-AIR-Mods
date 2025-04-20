@@ -7,6 +7,15 @@
 		"Description": "A more Origins like cutscene for LBZ2.",
 		"ModVersion": "1.0"
 	},
+	"OtherMods":
+	{
+		"LBZ Eggman Fleeing":
+		{
+			"DisplayName": "LBZ Eggman Fleeing",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		}
+	},
 	"Settings":
 	{
 		"List":
@@ -35,5 +44,4 @@
 				}
 			}
 		]
-	}
 }
