@@ -4,10 +4,13 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 
 	if (gameMode == 0x0c || gameMode == 0x08) && (dropdashdust >= 2)
 	{
-		if (objA0.update_address == 0x018b3e && objA0.state == 0x00) && (maniadustframe > 0) && !(objA0.render_flags & render_flag.VISIBLE)
+		if (objA0.update_address == 0x018b3e && objA0.state == 0x00) && (maniadustframe > 0)
 		{
+			if (objA0.position.x.u16 < camera.position.x.u16 || objA0.position.x.u16 > camera.position.x.u16 + getScreenWidth() || objA0.position.y.u16 < camera.position.y.u16 || objA0.position.y.u16 > camera.position.y.u16 + getScreenHeight() )
+			{
 				maniadustframe = 0
 				maniadustanimtimer = 0
+			}
 		}
 	}
 	
