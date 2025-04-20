@@ -14,6 +14,12 @@
 			"DisplayName": "LBZ Eggman Fleeing",
 			"IsRequired": "0",
 			"Priority": "Lower"
+		},
+		"Origins Parity Galore":
+		{
+			"DisplayName": "Origins Parity Galore",
+			"IsRequired": "0",
+			"Priority": "Lower"
 		}
 	},
 	"Settings":
@@ -22,7 +28,7 @@
 		[
 			{
 				"InternalName": "gameclear",
-				"DisplayName": "Fanfare",
+				"DisplayName": "Level Clear Fanfare",
 				"Variable": "altlbz2cs.gameclear",
 				"DefaultValue": "0",
 				"Options":
@@ -44,4 +50,5 @@
 				}
 			}
 		]
+	}
 }

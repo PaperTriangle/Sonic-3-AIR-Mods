@@ -10,3 +10,20 @@ function u64 stringformat(u64 format, u64 arg1)
 	
 	return base.stringformat(format, arg1)
 }
+
+//# address-hook(0x074952) end(0x0749a8)
+function void fn074952()
+{
+	MoveWithGravity20()
+	A1 = 0xffffb000
+	objA1.position.x.u16 = objA0.position.x.u16
+	objA1.position.y.u16 = objA0.position.y.u16
+
+	char.state = char.state.FALLING_PANIC
+
+	if (u16[0xffffb000 + 0x14] < level.bossarea.top + 0x0200)
+		return
+
+	TriggerNextZone(0x0700)		// Mushroom Hill Zone
+	UnloadObject()
+}
