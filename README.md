@@ -1,6 +1,9 @@
 # Sonic-3-AIR-Mods
 A collection of PaperTriangle's Sonic 3 A.I.R. Mods both in progress and released.
 
+## PaperLib
+Not a mod as such, but just a place for me to store useful functions I create.
+
 ## Battery Powered Intro
 Simple mod that adds in two intro styles for FBZ! I Would honestly not recommend using it as there are better options.
 
@@ -14,12 +17,15 @@ This was adjusted in Origins, and looking through the AIR Scripts there was a co
 
 So I decided to try and implement this myself! I have added a setting for if you want the cut-scene positioning to change. (I liked it where it was tbh...)
 
-This should also work if you run the game at at other resolutions with a mod like the **Classic Mode Sample Mod** or **Screen Resolution+**. However, I did not test every resolution case.
+This should also work if you run the game at other resolutions with a mod like the **Classic Mode Sample Mod** or **Screen Resolution+**. However, I did not test every resolution case.
 
 ## Where's Robo
 Simple rawdata mod to replace the object layout of SSZ so the first Eggrobo badnik jetpacks in a little earlier to actually show up in the stage at the wider resolution of Sonic 3 AIR.
 
 Will not work with another mod that replaces SSZ layouts.
+
+## Knuckles Runs in Doomsday
+Simple mod to revert Knuckles to his running animation on Doomsday Zone instead of gliding. Why? To allow mods that add their own super knuckles running animation to shine.
 
 ## Sweep Up that Drop Dash + Dust
 Simple mod to load aboive **Drop Dash +** to remove the dush when it goes offscreen.
@@ -31,6 +37,9 @@ I like how the clouds in SSZ are transparent, and it bugs me that the snow that 
 Makes characters use their balance animation in the HCZ → MGZ stage transition, similar to Origins.
 
 Simple mod because I couldn't find anything else that did this...
+
+## Extra Knuckles Frames
+Adds in a couple of extra frames to Knuckles from Origins.
 
 ## MGZ Eggman on the Edge
 Simple mod that moves the MGZ Eggman boss closer to the screen edge because I was asked for it.

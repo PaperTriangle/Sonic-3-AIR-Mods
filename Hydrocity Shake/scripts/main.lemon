@@ -12,3 +12,19 @@ function void fn06b7bc()
 
 	base.fn06b7bc()
 }
+
+//# address-hook(0x06b882) end(0x06b8ac)
+function void fn06b882()
+{
+	A1 = 0xffff0000 + u16[A0 + 0x44]
+	objA0.position.y.u16 -= 6
+	D0.u16 = objA0.position.y.u16 - 0x60
+	if (D0.u16 < objA1.position.y.u16)
+	{
+		objA1.state = char.state.FALLING_PANIC
+		u8[A1 + 0x2e] = (control_flag.DISABLE_INTERACTION | control_flag.DISABLE_UPDATE)
+		objA0.update_address = 0x06b8c8
+		objA0.countdown_value = 0x5f
+	}
+	fn06b8b2()
+}

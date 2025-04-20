@@ -1,0 +1,12 @@
+function u64 stringformat(u64 format, u64 arg1)
+{
+	if (format == "character_knuckles_0x%02x")
+	{
+		if (arg1 == 0xc0 && char.state == char.state.KNUX_FLYCLIMB && level.framecounter.low % 16 < 8)
+			return "knuckles_glide_extra_frame"
+		else if (arg1 == 0x8c  && level.framecounter.low % 20 < 10)
+			return "knuckles_panic_extra_frame"
+	}
+	
+	return base.stringformat(format, arg1)
+}

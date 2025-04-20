@@ -1,0 +1,22 @@
+// Gets a frame of animation to use
+// animation_count is the length of your animation
+// frame_time is the number of frames needed to progress a stage
+
+function u8 PaperLib.getAnimationFrame(u8 animation_count, u8 frame_time)
+{
+	u8 fc = level.framecounter % (animation_count * frame_time)
+	u8 frame = 0
+	
+	for (u8 i = fc; i > 0; i--)
+	{
+		if (i < frame * animation_count)
+		{
+			return frame
+		}
+		
+		if (i % frame_time == 0)
+			frame++
+	}
+	
+	return frame
+}

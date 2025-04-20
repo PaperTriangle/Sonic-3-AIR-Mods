@@ -127,6 +127,8 @@ function void fn072e2e()
 	if (!altlbz2cs.gameclear)
 	{
 		PlayMusicAfterLevelResults()
+		stopCharacterWinPose(0xffffb000)
+		stopCharacterWinPose(0xffffb04a)
 	}
 
 	if (Mods.isModActive("LBZ Eggman Fleeing"))

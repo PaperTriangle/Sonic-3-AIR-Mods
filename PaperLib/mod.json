@@ -1,0 +1,10 @@
+{
+	"Metadata":
+	{
+		"Name": "PaperLib",
+		"UniqueID": "paperlib",
+		"Author": "PaperTriangle",
+		"Description": "A library of functions that might be useful.",
+		"ModVersion": "1.0"
+	}
+}
