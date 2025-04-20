@@ -28,7 +28,7 @@ Will not work with another mod that replaces SSZ layouts.
 Simple mod to revert Knuckles to his running animation on Doomsday Zone instead of gliding. Why? To allow mods that add their own super knuckles running animation to shine.
 
 ## Sweep Up that Drop Dash + Dust
-Simple mod to load aboive **Drop Dash +** to remove the dush when it goes offscreen.
+Simple mod to load above **Drop Dash +** to remove the dush when it goes offscreen.
 
 ## Better Snow
 I like how the clouds in SSZ are transparent, and it bugs me that the snow that falls during the ICZ bosses flickers.
@@ -63,11 +63,11 @@ So more blending steps can easily be added for a smoother transition. Originally
 
 In addition to this, the fade will take the palette from whatever is initially set! So, simple palette mods that change the sky like **Launch Base Zone blue sky** or **LBZ Relaxed Blue Sky + Better Death Egg** will also work with this mod. However more complicated mods that alter this transition likely will not be compatible.
 
-**Please Note:** If you use **Ambient Mod** for the rain in the Big Arm fight, please place it above this mod or the rain will not end correctly!
+**PLEASE NOTE:** If you use **Ambient Mod** for the rain in the Big Arm fight, please place it above this mod or the rain will not end correctly!
 
 ## Alternate LBZ2 Cutscene
 Converts the LBZ2 Ending scene after beating Big Arm to me a bit more like Origins. The platform catches fire and detaches, then the stage clear happens as the platform falls and finally the sky transitions as the Death Egg falls.
 
 I know this is not _exactly_ like Origins, but I do not mind and kind of like it more. That said, this mod also includes an option for the stage fanfare and to give the final arena the Origins-esc floating off the edge... Or you can disable the widescreen safety and fight Big Arm like a true blue hedgehog!
 
-PLEASE NOTE: There is a compatability patch as well, this adds compatability with **LBZ Eggman Fleeing** and **Origins Parity Galore**! You will need to load **LBZ Eggman Fleeing** first and the **compatability patch** last; the order of the other mods inbetween should not matter. 
+**PLEASE NOTE:** There is a compatibility patch as well, this adds compatibility with **LBZ Eggman Fleeing** and **Origins Parity Galore**! You will need to load **LBZ Eggman Fleeing** first and the **compatibility patch** last; the order of the other mods in-between should not matter. 
