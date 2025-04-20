@@ -1,4 +1,7 @@
 {
-	"knuckles_glide_extra_frame":  { "File": "knuckles_glide_extra_frame.bmp", "Rect": "1,1,48,24", "Center": "24,12" },
-	"knuckles_panic_extra_frame":  { "File": "knuckles_panic_extra_frame.bmp", "Rect": "1,1,41,36", "Center": "19,16" }
+	"knuckles_glide_extra_frame_0":  { "File": "knuckles_glide_extra_frame.bmp", "Rect": "1,1,48,24", "Center": "24,12" },
+	"knuckles_panic_extra_frame_0":  { "File": "knuckles_panic_extra_frame.bmp", "Rect": "1,1,41,36", "Center": "19,16" },
+	
+	"knuckles_glide_extra_frame_1":  { "File": "knuckles_glide_extra_frame_sb.bmp", "Rect": "1,1,48,24", "Center": "24,12" },
+	"knuckles_panic_extra_frame_1":  { "File": "knuckles_panic_extra_frame_sb.bmp", "Rect": "1,1,41,36", "Center": "19,16" }
 }

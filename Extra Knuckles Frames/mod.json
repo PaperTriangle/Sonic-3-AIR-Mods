@@ -5,6 +5,23 @@
 		"UniqueID": "extra-knuckles-frames",
 		"Author": "PaperTriangle",
 		"Description": "Adds in a couple extra frames for knuckles.",
-		"ModVersion": "1.1"
+		"ModVersion": "1.2"
+	},
+	"Settings":
+	{
+		"List":
+		[
+			{
+				"InternalName": "style",
+				"DisplayName": "Sprite Style",
+				"Variable": "ekf.style",
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Default",
+					"1": "\"Slightly Better\""
+				}
+			}
+		]
 	}
 }
