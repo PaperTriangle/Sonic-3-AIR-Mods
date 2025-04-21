@@ -4,12 +4,6 @@ global u8 altlbz2cs.removewalls
 //# address-hook(0x072b46) end(0x072b94)
 function void fn072b46()
 {
-	objA0.update_address = 0x072b96
-}
-
-//# address-hook(0x072b96) end(0x072bb6)
-function void fn072b96()
-{
 	objA0.update_address = 0x072bbc
 	addPatternLoadingCue(0x083d64)		// Boss explosion sprites
 }
@@ -119,9 +113,12 @@ function void fn072e2e()
 	if (!level.results_done)
 		return
 
-	if (!altlbz2cs.gameclear)
+	if (!altlbz2cs.gameclear || Mods.isModActive("Music Cues Customization"))
 	{
-		PlayMusicAfterLevelResults()
+		if (!Mods.isModActive("Music Cues Customization"))
+		{
+			PlayMusicAfterLevelResults()
+		}
 		control.player1 = 0
 		stopCharacterWinPose(0xffffb000)
 		stopCharacterWinPose(0xffffb04a)
@@ -137,13 +134,17 @@ function void fn072e2e()
 	if (objA0.countdown_value >= 0)
 		return
 
+	if (Mods.isModActive("Music Cues Customization"))
+	{
+		fn072b96() // Calling this function here seems fine for compat since I skip from 0x072b46 straight to 0x072bbc
+	}
+
 	u8[0xfffffa88] |= 0x01
 	objA0.value39 = 0
 	objA0.countdown_value = 0
 	
 	stopCharacterWinPose(0xffffb000)
 	stopCharacterWinPose(0xffffb04a)
-	//PlayMusicAfterLevelResults()
 
 	// "spawnChildObjects(0x07380c)" replaced by:
 	spawnChildObject(0x072e9e, 0x00, 0, 0)
@@ -170,11 +171,14 @@ function void fn072e2e()
 
 function u64 Standalone.getModdedSoundKey(u64 soundKey, u8 sfxId, u8 soundRegType)
 {
-	if (altlbz2cs.gameclear && camera.position.y.u16 > 0x0500 && global.zone_act == 0x0601)
+	if (!Mods.isModActive("Music Cues Customization"))
 	{
-		if (soundKey == MUSIC_LEVELCLEAR)
+		if (altlbz2cs.gameclear && camera.position.y.u16 > 0x0500 && global.zone_act == 0x0601)
 		{
-			return soundKey = MUSIC_GAMECLEAR
+			if (soundKey == MUSIC_LEVELCLEAR)
+			{
+				return soundKey = MUSIC_GAMECLEAR
+			}
 		}
 	}
 	
