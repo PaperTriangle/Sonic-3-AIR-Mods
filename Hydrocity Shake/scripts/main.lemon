@@ -1,7 +1,10 @@
 //# address-hook(0x06b7bc) end(0x06b7ea)
 function void fn06b7bc()
 {
-	u8[0xffffb000 + 0x20] = char.state.BALANCING1
+	if (!isMainCharacter(CHARACTER_KNUCKLES))
+	{
+		u8[0xffffb000 + 0x20] = char.state.BALANCING1
+	}
 	u8[0xffffb000 + 0x2e] = 0x81
 
 	if (u32[0xffffb04a] != 0)
@@ -26,5 +29,28 @@ function void fn06b882()
 		objA0.update_address = 0x06b8c8
 		objA0.countdown_value = 0x5f
 	}
+	else if (isMainCharacter(CHARACTER_KNUCKLES) && u8[0xffffb000 + 0x20] != char.state.FALLING_PANIC)
+	{
+		u8[0xffffb000 + 0x22] = 0xa8 + ((level.framecounter >> 3) % 3) // Set Knuckles' balancing sprites
+		UpdatePlayer1SpritePatterns()
+	}
 	fn06b8b2()
+}
+
+//# address-hook(0x06b7ec) end(0x06b7fe)
+function void fn06b7ec()
+{
+	if ((global.framecounter & 0x07) == 0)
+	{
+		playSound(0x6f)
+	}
+	
+	//0xa7, 0xa8, 0xa9
+	if (isMainCharacter(CHARACTER_KNUCKLES))
+	{
+		u8[0xffffb000 + 0x22] = 0xa8 + ((level.framecounter >> 3) % 3)  // Set Knuckles' balancing sprites
+		UpdatePlayer1SpritePatterns()
+	}
+	
+	Object.CountdownAndTrigger()
 }
