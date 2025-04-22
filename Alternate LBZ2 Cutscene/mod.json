@@ -5,13 +5,19 @@
 		"UniqueID": "alt-lbz2-cutscene",
 		"Author": "PaperTriangle",
 		"Description": "A more Origins like cutscene for LBZ2.",
-		"ModVersion": "1.2"
+		"ModVersion": "1.3"
 	},
 	"OtherMods":
 	{
 		"LBZ Eggman Fleeing":
 		{
 			"DisplayName": "LBZ Eggman Fleeing",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		},
+		"big-arm-fade":
+		{
+			"DisplayName": "Better Big Arm Fade",
 			"IsRequired": "0",
 			"Priority": "Lower"
 		},
@@ -27,6 +33,17 @@
 		"List":
 		[
 			{
+				"InternalName": "skyfade",
+				"DisplayName": "Sky Fade Point",
+				"Variable": "altlbz2cs.fadeadjust",
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "After Fanfare",
+					"1": "Before Fanfare"
+				}
+			},
+			{
 				"InternalName": "gameclear",
 				"DisplayName": "Level Clear Fanfare",
 				"Variable": "altlbz2cs.gameclear",
@@ -35,6 +52,17 @@
 				{
 					"0": "Stage Clear",
 					"1": "Game Clear"
+				}
+			},
+			{
+				"InternalName": "reovehud",
+				"DisplayName": "Remove HUD After Fanfare",
+				"Variable": "altlbz2cs.removehud",
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Off",
+					"1": "On"
 				}
 			},
 			{
