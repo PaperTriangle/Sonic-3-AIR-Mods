@@ -1,0 +1,401 @@
+define u8 global.xtrachar	= u8[0xffffe654]
+
+//--------------
+// ICZ Ice Block
+//--------------
+
+//# address-hook(0x08b3aa) end(0x08b430)
+function void fn08b3aa()
+{
+	if (global.characters > 1 || global.xtrachar != 0)
+	{
+		base.fn08b3aa()
+		return
+	}
+	// Note that this differs from the original code (usage of A2)
+	//  -> Needed for standalone to fix the known bugs here
+
+	// Any character on top rolling?
+	A2 = 0
+	if ((objA0.flags2a & object.flag.P1_ON_OBJECT) && (objA0.value3a == char.state.ROLLING || objA0.value3a == char.state.SONIC_DROPDASH))
+	{
+		A1 = 0xffffb000
+		if (objA0.flags2a & object.flag.P2_ON_OBJECT)
+		{
+			A2 = 0xffffb04a
+		}
+	}
+	else if ((objA0.flags2a & object.flag.P2_ON_OBJECT) && (objA0.value3a == char.state.ROLLING || objA0.value3a == char.state.SONIC_DROPDASH))
+	{
+		A1 = 0xffffb04a
+	#if STANDALONE
+		if (objA0.flags2a & object.flag.P1_ON_OBJECT)
+		{
+			A2 = 0xffffb000
+		}
+	#endif
+	}
+	else
+	{
+		return
+	}
+
+	u8[A1 + 0x05] = base_state.NORMAL
+	objA1.velocity.y = -0x300
+	objA1.hitbox_extends.x = char.hitbox.x.ROLLING
+	objA1.hitbox_extends.y = char.hitbox.y.ROLLING
+	objA1.state = objA0.value3a
+	objA1.flags2a |= (char.flag.IN_AIR | char.flag.ROLLING)
+	objA1.flags2a &= ~char.flag.ON_OBJECT
+
+	if (A2 != 0)
+	{
+		u8[A2 + 0x2a] |= char.flag.IN_AIR
+		u8[A2 + 0x2a] &= ~char.flag.ON_OBJECT
+	}
+
+	// Spawn broken ice block chunks
+	// "spawnChildObjects(0x08b480)" replaced by:
+	spawnChildObject(0x08b432, 0x00, 0, -8)
+	spawnChildObject(0x08b432, 0x02, 0, 8)
+	spawnChildObject(0x08b432, 0x04, -16, -8)
+	spawnChildObject(0x08b432, 0x06, 16, -8)
+	spawnChildObject(0x08b432, 0x08, -16, 8)
+	spawnChildObject(0x08b432, 0x0a, 16, 8)
+	spawnChildObject(0x08b432, 0x0c, 0, 0)
+	spawnChildObject(0x08b432, 0x0e, 0, 0)
+	spawnChildObject(0x08b432, 0x10, 0, 0)
+	spawnChildObject(0x08b432, 0x12, 0, 0)
+	spawnChildObject(0x08b432, 0x14, 0, 0)
+	spawnChildObject(0x08b432, 0x16, 0, 0)
+
+	playSound(0x6e)
+	Object.TriggerUnloading()
+}
+
+//----------
+// Rocks
+//----------
+
+//# address-hook(0x01faf2) end(0x01fb4a)
+function void Rocks.Update()
+{
+	if (global.characters > 1 || global.xtrachar != 0)
+	{
+		base.Rocks.Update()
+		return
+	}
+	u16[A0 + 0x38] = score.bonus_counter
+	u8[A0 + 0x32] = u8[0xffffb000 + 0x20]
+	u8[A0 + 0x33] = u8[0xffffb04a + 0x20]
+	objA0.value3a = u8[0xffffb000 + 0x2a]
+	objA0.value3b = u8[0xffffb04a + 0x2a]
+
+	D1 = objA0.box_size.x + 11
+	D2 = objA0.box_size.y
+	D3.u16 = D2.u16 + 1
+	D4.u16 = objA0.position.x.u16
+	fn01dc56()
+
+	if (objA0.subtype2c & 0x02)
+	{
+		fn0200a2()
+	}
+
+	if (objA0.subtype2c & 0x01)
+	{
+		D0.u8 = objA0.flags2a & (object.flag.P1_ON_OBJECT | object.flag.P2_ON_OBJECT)
+		if (D0.u8 != 0)
+		{
+			if (D0.u8 == (object.flag.P1_ON_OBJECT | object.flag.P2_ON_OBJECT))
+			{
+				if (u8[A0 + 0x32] == 2 || u8[A0 + 0x33] == 2 || u8[A0 + 0x32] == char.state.SONIC_DROPDASH)
+				{
+					A1 = 0xffffb000
+					D0.u8 = u8[A0 + 0x32]
+					fn01fba8_dd()
+
+					A1 = 0xffffb04a
+					D0.u8 = u8[A0 + 0x33]
+					fn01fba8()
+
+					fn01fbf8()
+					return
+				}
+			}
+			else
+			{
+				D1.u8 = D0.u8 & object.flag.P1_ON_OBJECT
+				if (D1.u8 == 0)
+				{
+					fn01fbe0()
+					return
+				}
+
+				if (u8[A0 + 0x32] == 2 || u8[A0 + 0x32] == char.state.SONIC_DROPDASH)
+				{
+					A1 = 0xffffb000
+					fn01fbae_dd()
+					fn01fbf8()
+					return
+				}
+			}
+		}
+	}
+
+	fn01fb4c()
+}
+
+function void fn01fbae_dd()
+{
+	u8[A1 + 0x05] = base_state.NORMAL
+	objA1.velocity.y = -0x300
+	objA1.hitbox_extends.x = char.hitbox.x.ROLLING
+	objA1.hitbox_extends.y = char.hitbox.y.ROLLING
+	objA1.state = u8[A0 + 0x32]
+	objA1.flags2a |= (char.flag.IN_AIR | char.flag.ROLLING)
+	objA1.flags2a &= ~char.flag.ON_OBJECT
+}
+
+function void fn01fba8_dd()
+{
+	if (D0.u8 == 0x02 || D0.u8 == char.state.SONIC_DROPDASH)
+	{
+		fn01fbae_dd()
+	}
+	else
+	{
+		u8[A1 + 0x05] = base_state.NORMAL
+		u8[A1 + 0x2a] |= char.flag.IN_AIR
+		u8[A1 + 0x2a] &= ~char.flag.ON_OBJECT
+	}
+}
+
+//-----------
+// Cork Floor
+//-----------
+
+//# address-hook(0x02a502) end(0x02a586)
+function void fn02a502()
+{
+	if (global.characters > 1 || global.xtrachar != 0)
+	{
+		base.fn02a502()
+		return
+	}
+	
+	u16[A0 + 0x38] = score.bonus_counter
+	u8[A0 + 0x34] = u8[0xffffb000 + 0x20]
+	u8[A0 + 0x36] = u8[0xffffb04a + 0x20]
+	D1 = objA0.box_size.x + 11
+	D2 = objA0.box_size.y
+	D3.u16 = D2.u16 + 1
+	D4.u16 = objA0.position.x.u16
+	fn01dc56()
+
+	D0.u16 = objA0.flags2a & (object.flag.P1_ON_OBJECT | object.flag.P2_ON_OBJECT)
+	if (D0.u16 == 0)
+	{
+		DrawOrUnloadObject()
+		return
+	}
+
+	if (D0.u8 == (object.flag.P1_ON_OBJECT | object.flag.P2_ON_OBJECT))
+	{
+		if (u8[A0 + 0x34] != 2 && u8[A0 + 0x36] != 2 && u8[A0 + 0x34] != char.state.SONIC_DROPDASH)
+		{
+			DrawOrUnloadObject()
+			return
+		}
+
+		A1 = 0xffffb000
+		D0.u8 = u8[A0 + 0x34]
+		fn02a588_dd()
+
+		A1 = 0xffffb04a
+		D0.u8 = u8[A0 + 0x36]
+		fn02a588()
+
+		fn02a5d8()
+	}
+	else
+	{
+		D1.u8 = D0.u8 & object.flag.P1_ON_OBJECT
+		if (D1.u8 == 0)
+		{
+			fn02a5c0()
+			return
+		}
+
+		if (u8[A0 + 0x34] != 2 && u8[A0 + 0x34] != char.state.SONIC_DROPDASH)
+		{
+			DrawOrUnloadObject()
+			return
+		}
+
+		A1 = 0xffffb000
+		fn02a58e_dd()
+		fn02a5d8()
+	}
+}
+
+function void fn02a588_dd()
+{
+	if (D0.u8 == 2 || D0.u8 == char.state.SONIC_DROPDASH)
+	{
+		fn02a58e_dd()
+	}
+	else
+	{
+		u8[A1 + 0x2a] |= char.flag.IN_AIR
+		u8[A1 + 0x2a] &= ~char.flag.ON_OBJECT
+		u8[A1 + 0x05] = base_state.NORMAL
+	}
+}
+
+//# address-hook(0x02a588) end(0x02a5be)
+function void fn02a58e_dd()
+{
+	objA1.flags2a |= (char.flag.IN_AIR | char.flag.ROLLING)
+	objA1.flags2a &= ~char.flag.ON_OBJECT
+	objA1.hitbox_extends.x = char.hitbox.x.ROLLING
+	objA1.hitbox_extends.y = char.hitbox.y.ROLLING
+	objA1.state = u8[A0 + 0x34]
+	objA1.velocity.y = -0x300
+	u8[A1 + 0x05] = base_state.NORMAL
+}
+
+//------------
+// CNZ Baloons
+//------------
+
+//# address-hook(0x0317ae) end(0x03181c)
+function void fn0317ae()
+{
+	if (global.characters > 1 || global.xtrachar != 0)
+	{
+		base.fn0317ae()
+		return
+	}
+	
+	objA1.velocity.y = -0x700
+	objA1.flags2a |= char.flag.IN_AIR
+	objA1.flags2a &= ~(char.flag.CONTROL_LOCK | char.flag.PUSHING)
+
+#if STANDALONE
+	// Check for active dropdash
+	if (u8[A1 + 0x38] != CHARACTER_SONIC || u8[A1 + 0x20] != char.state.SONIC_DROPDASH)
+#endif
+	{
+		u8[A1 + 0x2e] = 0
+		// Reset the "char.jumping" to make the character bounce off ignoring the velocity-y limit
+		u8[A1 + 0x40] = 0
+	}
+
+	objA0.state |= 0x01
+	if (s8[A0 + 0x2c] < 0)
+	{
+		objA1.velocity.y = -0x380
+		if (level.water_present != 0 && u8[A0 + 0x34] == 0)
+		{
+			A2 = 0x03185a
+			fn03181e()
+			fn03181e()
+			fn03181e()
+			fn03181e()
+			objA1.position.x.u16 = objA0.position.x.u16
+			objA1.position.y.u16 = objA0.position.y.u16
+		}
+	}
+
+	if (u8[A0 + 0x34] == 0)
+	{
+		playSound(0x77)
+		u8[A0 + 0x34] = 0x01
+	}
+}
+
+//----------
+// SOZ Rocks
+//----------
+
+//# address-hook(0x04172e) end(0x0417a4)
+function void fn04172e()
+{
+	if (global.characters > 1 || global.xtrachar != 0)
+	{
+		base.fn04172e()
+		return
+	}
+	
+	u8[A0 + 0x30] = u8[0xffffb000 + 0x20]
+	u8[A0 + 0x31] = u8[0xffffb04a + 0x20]
+	D1.u16 = 0x23
+	D2.u16 = 0x10
+	D3.u16 = 0x11
+	D4.u16 = objA0.position.x.u16
+	fn01dc56()
+
+	D0.u8 = objA0.flags2a & (object.flag.P1_ON_OBJECT | object.flag.P2_ON_OBJECT)
+	if (D0.u8 == 0)
+	{
+		DrawOrUnloadObject()
+	}
+	else if (D0.u8 == (object.flag.P1_ON_OBJECT | object.flag.P2_ON_OBJECT))
+	{
+		if (u8[A0 + 0x30] != 0x02 && u8[A0 + 0x31] != 0x02 && u8[A0 + 0x30] != char.state.SONIC_DROPDASH)
+		{
+			DrawOrUnloadObject()
+			return
+		}
+
+		A1 = 0xffffb000
+		D0.u8 = u8[A0 + 0x30]
+		fn0417a6_dd()
+
+		A1 = 0xffffb04a
+		D0.u8 = u8[A0 + 0x31]
+		fn0417a6()
+
+		fn0417f6()
+	}
+	else
+	{
+		D1.u8 = D0.u8 & 0x08
+		if (D1.u8 == 0)
+		{
+			fn0417de()
+			return
+		}
+
+		if (u8[A0 + 0x30] != 0x02 && u8[A0 + 0x30] != char.state.SONIC_DROPDASH)
+		{
+			DrawOrUnloadObject()
+			return
+		}
+
+		A1 = 0xffffb000
+		D0.u8 = 2
+		fn0417a6_dd()
+
+		fn0417f6()
+	}
+}
+
+
+function void fn0417a6_dd()
+{
+	
+	if (D0.u8 == 2 || u8[A0 + 0x30] == char.state.SONIC_DROPDASH)
+	{
+		u8[A1 + 0x2a] |= char.flag.ROLLING
+		objA1.hitbox_extends.x = char.hitbox.x.ROLLING
+		objA1.hitbox_extends.y = char.hitbox.y.ROLLING
+		objA1.state = u8[A0 + 0x30]
+		objA1.velocity.y = -0x300
+	}
+
+	u8[A1 + 0x2a] |= char.flag.IN_AIR
+	u8[A1 + 0x2a] &= ~char.flag.ON_OBJECT
+	u8[A1 + 0x05] = base_state.NORMAL
+}
