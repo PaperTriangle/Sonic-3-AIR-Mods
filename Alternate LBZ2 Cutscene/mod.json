@@ -36,6 +36,7 @@
 				"InternalName": "skyfade",
 				"DisplayName": "Sky Fade Point",
 				"Variable": "altlbz2cs.fadeadjust",
+				"Category": "General Settings",	
 				"DefaultValue": "0",
 				"Options":
 				{
@@ -47,6 +48,7 @@
 				"InternalName": "gameclear",
 				"DisplayName": "Level Clear Fanfare",
 				"Variable": "altlbz2cs.gameclear",
+				"Category": "General Settings",	
 				"DefaultValue": "0",
 				"Options":
 				{
@@ -55,9 +57,10 @@
 				}
 			},
 			{
-				"InternalName": "reovehud",
+				"InternalName": "removehud",
 				"DisplayName": "Remove HUD After Fanfare",
 				"Variable": "altlbz2cs.removehud",
+				"Category": "General Settings",	
 				"DefaultValue": "0",
 				"Options":
 				{
@@ -69,12 +72,25 @@
 				"InternalName": "removewalls",
 				"DisplayName": "Platform Edge Protection",
 				"Variable": "altlbz2cs.removewalls",
+				"Category": "General Settings",	
 				"DefaultValue": "0",
 				"Options":
 				{
 					"0": "Invisible Walls",
 					"1": "Updraft",
 					"2": "No Protection"
+				}
+			},
+			{
+				"InternalName": "dangerhud",
+				"DisplayName": "Override HUD Digit Rendering",
+				"Variable": "altlbz2cs.dangerhud",
+				"Category": "Advanced Settings",	
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Off",
+					"1": "On"
 				}
 			}
 		]
