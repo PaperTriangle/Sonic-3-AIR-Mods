@@ -89,8 +89,9 @@
 				"DefaultValue": "0",
 				"Options":
 				{
-					"0": "Off",
-					"1": "On"
+					"0": "Level Started (Preferred)",
+					"1": "Override HUD.drawSprite",
+					"2": "Override All HUD.draw*"
 				}
 			}
 		]

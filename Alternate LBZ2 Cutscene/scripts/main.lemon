@@ -2,8 +2,8 @@ global u8 altlbz2cs.gameclear
 global u8 altlbz2cs.removewalls
 global bool altlbz2cs.fadeadjust
 global bool altlbz2cs.removehud
-global bool altlbz2cs.dangerhud
-global u16 altlbz2cs.hudgobye = 0
+global u8 altlbz2cs.hudgobye = 0
+global u8 altlbz2cs.dangerhud
 
 //# address-hook(0x072b46) end(0x072b94)
 function void fn072b46()
@@ -186,8 +186,19 @@ function void fn072e2e()
 	
 	if (altlbz2cs.removehud)
 	{
-		if (altlbz2cs.hudgobye < 0x100)
-			altlbz2cs.hudgobye = altlbz2cs.hudgobye + 8
+		if (altlbz2cs.dangerhud == 0)
+		{
+			if (global.level_started > -0x70)
+				global.level_started = global.level_started - 0x10
+				
+			if (global.level_started <= -0x70)
+				altlbz2cs.hudgobye = 1
+		}
+		else
+		{
+			if (altlbz2cs.hudgobye < 0x100)
+				altlbz2cs.hudgobye = altlbz2cs.hudgobye + 8
+		}
 	}
 	
 	if (!altlbz2cs.gameclear || Mods.isModActive("Music Cues Customization"))
@@ -313,6 +324,11 @@ function void fn08d47c()
 
 	fn08d53e()
 	DrawObject()
+	if (Mods.isModActive("Origins Parity Galore"))
+    {
+		if (objA0.position.x.u16 >= 0x4440)
+			playSound(0x62)
+	}
 }
 
 // Fix for getting hurt and falling into updrafts
@@ -333,11 +349,11 @@ function void fn03fbc4()
 	base.fn03fbc4()
 }
 
-// HUD removal script
+// Alt HUD removal
 
 function void HUD.drawSprite(u64 key, u16 px, u16 py, u16 renderQueue)
 {
-	if (debug_mode.state || !altlbz2cs.removehud || altlbz2cs.hudgobye == 0)
+	if (altlbz2cs.dangerhud == 0 || debug_mode.state || !altlbz2cs.removehud || altlbz2cs.hudgobye == 0)
 	{
 		base.HUD.drawSprite(key, px, py, renderQueue)
 		return
@@ -351,7 +367,7 @@ function void HUD.drawSprite(u64 key, u16 px, u16 py, u16 renderQueue)
 
 function void HUD.drawDigit(u8 digit, u16 px, u16 py, u16 renderQueue)
 {	
-	if (!altlbz2cs.dangerhud || debug_mode.state || !altlbz2cs.removehud || altlbz2cs.hudgobye == 0)
+	if (altlbz2cs.dangerhud != 2 || debug_mode.state || !altlbz2cs.removehud || altlbz2cs.hudgobye == 0)
 	{
 		base.HUD.drawDigit(digit, px, py, renderQueue)
 		return
@@ -365,7 +381,7 @@ function void HUD.drawDigit(u8 digit, u16 px, u16 py, u16 renderQueue)
 
 function void HUD.drawNumber(string stringMask, u32 number, u16 px, u16 py, u16 renderQueue)
 {
-	if (!altlbz2cs.dangerhud || debug_mode.state || !altlbz2cs.removehud || altlbz2cs.hudgobye == 0)
+	if (altlbz2cs.dangerhud != 2 || debug_mode.state || !altlbz2cs.removehud || altlbz2cs.hudgobye == 0)
 	{
 		base.HUD.drawNumber(stringMask, number, px, py, renderQueue)
 		return
@@ -388,7 +404,7 @@ function void HUD.drawNumber(string stringMask, u32 number, u16 px, u16 py, u16 
 
 function void HUD.drawSmallDigit(u8 digit, u16 px, u16 py, u16 renderQueue)
 {
-	if (!altlbz2cs.dangerhud || debug_mode.state || !altlbz2cs.removehud || altlbz2cs.hudgobye == 0)
+	if (altlbz2cs.dangerhud != 2 || debug_mode.state || !altlbz2cs.removehud || altlbz2cs.hudgobye == 0)
 	{
 		base.HUD.drawSmallDigit(digit, px, py, renderQueue)
 		return
@@ -398,6 +414,16 @@ function void HUD.drawSmallDigit(u8 digit, u16 px, u16 py, u16 renderQueue)
 		Renderer.drawCustomSprite(stringformat("hud_smalldigit_%d", digit), px + altlbz2cs.hudgobye, py, 0, SPRITE_FLAG_PRIO, renderQueue)
 	else
 		Renderer.drawCustomSprite(stringformat("hud_smalldigit_%d", digit), px - altlbz2cs.hudgobye, py, 0, SPRITE_FLAG_PRIO, renderQueue)
+}
+
+// HUD removal flags
+
+function void yieldExecution()
+{
+	if (altlbz2cs.hudgobye && altlbz2cs.dangerhud == 0)
+		global.level_started = -0x7f
+	
+	base.yieldExecution()	
 }
 
 //# address-hook(0x085e3a) end(0x085e50)
