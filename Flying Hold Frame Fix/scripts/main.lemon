@@ -2,7 +2,7 @@ function u64 stringformat(u64 format, u64 arg1)
 {
 	if (char.state == char.state.SONIC_HANGON && arg1 >= 0x90 && arg1 <= 0x92)
 	{	
-		u8 ani = getAnimationFrame(4, 30)
+		u8 ani = ((level.framecounter >> 5) % 4)
 		
 		if (ani == 0)
 			arg1 = 0x90
@@ -13,23 +13,4 @@ function u64 stringformat(u64 format, u64 arg1)
 	}
 	
 	return base.stringformat(format, arg1)
-}
-
-function u8 getAnimationFrame(u8 animation_count, u8 frame_time)
-{
-	u8 fc = level.framecounter % (animation_count * frame_time)
-	u8 frame = 0
-	
-	for (u8 i = fc; i > 0; i--)
-	{
-		if (i < frame * animation_count)
-		{
-			return frame
-		}
-		
-		if (i % frame_time == 0)
-			frame++
-	}
-	
-	return frame
 }

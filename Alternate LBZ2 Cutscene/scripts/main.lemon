@@ -75,14 +75,14 @@ function void fn072dea()
 			u8[0xffffeec6] = 0xff
 		}
 
-		if (objA0.value39 >= 0x18 && !altlbz2cs.fadeadjust)
+		if (objA0.value39 == 0x18 && !altlbz2cs.fadeadjust)
 		{
 			objA0.update_address = 0x072e2e
 			objA0.countdown_value = 0x003f
 			
-			//u8[0xffffb000 + 0x2e] = 0x81
-			//u8[0xffffb000 + 0x20] = char.state.WIN_POSE
+			level.wait_for_results = 0xff
 			control.player1 = 0
+			A1 = 0xffffb000
 			StartCharacterWinPose()
 			level.results_done = 0
 			
@@ -154,8 +154,9 @@ function void fn072e30()
 		objA0.update_address = 0x072e2e
 		objA0.countdown_value = 0x003f
 		
-		u8[0xffffb000 + 0x2e] = 0x81
-		u8[0xffffb000 + 0x20] = char.state.WIN_POSE
+		level.wait_for_results = 0xff
+		control.player1 = 0
+		A1 = 0xffffb000
 		StartCharacterWinPose()
 		level.results_done = 0
 		
@@ -186,6 +187,7 @@ function void fn072e2e()
 	if (!level.results_done)
 		return
 	
+	Game.startSkippableCutscene()
 	
 	if (altlbz2cs.removehud)
 	{
@@ -432,6 +434,7 @@ function void yieldExecution()
 function void fn072cda()
 {
 	base.fn072cda()
+	global.level_started = 0
 	altlbz2cs.hudgobye = 0
 	altlbz2cs.hudgobyedanger = 0
 }

@@ -1,9 +1,6 @@
 # Sonic-3-AIR-Mods
 A collection of PaperTriangle's Sonic 3 A.I.R. Mods both in progress and released.
 
-## PaperLib
-Not a mod as such, but just a place for me to store useful functions I create.
-
 ## Battery Powered Intro
 Simple mod that adds in two intro styles for FBZ! I Would honestly not recommend using it as there are better options.
 
@@ -39,7 +36,7 @@ Makes characters use their balance animation in the HCZ → MGZ stage transition
 Simple mod because I couldn't find anything else that did this...
 
 ## Extra Knuckles Frames
-Adds in a couple of extra frames to Knuckles from Origins. Also removes custom LBZ2
+Adds in a couple of extra frames to Knuckles from Origins. Also removes custom LBZ2 falling animation for Knuckles.
 
 ## MGZ Eggman on the Edge
 Simple mod that moves the MGZ Eggman boss closer to the screen edge because I was asked for it.
@@ -70,7 +67,7 @@ Converts the LBZ2 Ending scene after beating Big Arm to me a bit more like Origi
 
 I know this is not _exactly_ like Origins, but I do not mind and kind of like it more. That said, this mod also includes an option for the stage fanfare and to give the final arena the Origins-esc floating off the edge... Or you can disable the widescreen safety and fight Big Arm like a true blue hedgehog!
 
-There is a compatibility with **LBZ Eggman Fleeing** and **Origins Parity Galore**! You will need to load this mod over the other two.
+There is a compatibility with **LBZ Eggman Fleeing**, **Origins Parity Galore** and **Better Big Arm Fade**! You will need to load this mod over them.
 
 ## Gotta Go Fast!
 A mod that adds in a Fast Dash to Sonic and Knuckles, providing configurations to make the way the Fast Run works configurable and consistent. Can also override some ESU characters for consistency.
