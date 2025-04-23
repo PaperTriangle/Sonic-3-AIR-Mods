@@ -1,0 +1,18 @@
+{
+	"Metadata":
+	{
+		"Name": "Sweep Up That Dust",
+		"Author": "PaperTriangle",
+		"Description": "Removes the dust from the Spindash while the character is in the air and starts it again once they hit the ground. Also fixes a display issue with dust from Drop Dash + after it goes off screen.",
+		"ModVersion": "1.0"
+	},
+	"OtherMods":
+	{
+		"Drop Dash +":
+		{
+			"DisplayName": "Drop Dash +",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		}
+	}
+}

@@ -26,7 +26,14 @@
 			"DisplayName": "Origins Parity Galore",
 			"IsRequired": "0",
 			"Priority": "Lower"
+		},
+		"agent-stone-sonic-3-hazelspooder":
+		{
+			"DisplayName": "Stone 3 A.I.R.",
+			"IsRequired": "0",
+			"Priority": "Higher"
 		}
+	},
 	},
 	"Settings":
 	{
@@ -89,9 +96,9 @@
 				"DefaultValue": "0",
 				"Options":
 				{
-					"0": "Level Started (Preferred)",
-					"1": "Override HUD.drawSprite",
-					"2": "Override All HUD.draw*"
+					"0": "Edit global.level_started",
+					"1": "Override HUD.drawSprite()",
+					"2": "Override All HUD.draw*()"
 				}
 			}
 		]

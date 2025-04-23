@@ -1,3 +1,29 @@
+//# translated(0x011bde) end(0x011cf0)
+//# translated(0x011d16) end(0x011da4)
+//# translated(0x0151fc) end(0x01530c)
+//# translated(0x015332) end(0x0153c0)
+function bool Character.UpdateSpindash()
+{
+
+	if (char.spindash > 0)
+		u8[A6 + 0x20] = (char.flags & char.flag.IN_AIR) ? 0x00 : 0x02
+	
+	base.Character.UpdateSpindash()
+	
+	return false
+}
+
+//# address-hook(0x018c20) end(0x018c82)
+function void fn018c20()
+{
+	if (u8[A2 + 0x2a] & char.flag.IN_AIR)
+	{
+		objA0.state = 0
+		return
+	}
+	base.fn018c20()
+}
+
 function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 {
 	u8 gameMode = global.game_mode & 0x7f

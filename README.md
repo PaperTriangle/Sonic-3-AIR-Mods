@@ -27,8 +27,8 @@ Will not work with another mod that replaces SSZ layouts.
 ## Knuckles Runs in Doomsday
 Simple mod to revert Knuckles to his running animation on Doomsday Zone instead of gliding. Why? To allow mods that add their own super knuckles running animation to shine.
 
-## Sweep Up that Drop Dash + Dust
-Simple mod to load above **Drop Dash +** to remove the dush when it goes offscreen.
+## Sweep Up That Dust
+Removes the dust from the Spindash while the character is in the air and starts it again once they hit the ground. Also fixes a display issue with dust from Drop Dash + after it goes off screen.
 
 ## Better Snow
 I like how the clouds in SSZ are transparent, and it bugs me that the snow that falls during the ICZ bosses flickers.
@@ -71,6 +71,9 @@ Converts the LBZ2 Ending scene after beating Big Arm to me a bit more like Origi
 I know this is not _exactly_ like Origins, but I do not mind and kind of like it more. That said, this mod also includes an option for the stage fanfare and to give the final arena the Origins-esc floating off the edge... Or you can disable the widescreen safety and fight Big Arm like a true blue hedgehog!
 
 There is a compatibility with **LBZ Eggman Fleeing** and **Origins Parity Galore**! You will need to load this mod over the other two.
+
+## Gotta Go Fast!
+A mod that adds in a Fast Dash to Sonic and Knuckles, providing configurations to make the way the Fast Run works configurable and consistent. Can also override some ESU characters for consistency.
 
 ## Flying Hold Frame Fix
 Makes the animation while holding on to tails less jumpy. Requires another mod to be replacing the character sprites, though. Should work with ESU if placed below it.

@@ -2,7 +2,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 {
 	if (objA0.update_address == 0x08b73a)
 	{
-		Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 144)
+		Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 176)
 		return true
 	}	
 	return base.Standalone.onDrawVdpSprite(px, py, size, index, renderQueue)
