@@ -73,4 +73,4 @@ There is a compatibility with **LBZ Eggman Fleeing**, **Origins Parity Galore** 
 A mod that adds in a Fast Dash to Sonic and Knuckles, providing configurations to make the way the Fast Run works configurable and consistent. Can also override some ESU characters for consistency.
 
 ## Flying Hold Frame Fix
-Makes the animation while holding on to tails less jumpy. Requires another mod to be replacing the character sprites, though. Should work with ESU if placed below it.
+Makes the animation while holding on to tails less jumpy. Should be placed below other sprite mods. Should work with ESU if placed below it.

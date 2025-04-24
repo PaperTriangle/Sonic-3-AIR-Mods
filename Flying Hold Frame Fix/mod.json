@@ -4,7 +4,7 @@
 		"Name": "Flying Hold Frame Fix",
 		"UniqueID": "flying-hold-frame-fix",
 		"Author": "PaperTriangle",
-		"Description": "Fixes animation frame jump when holding on to tails in flight. Requires another mod that overrides the sprites to work properly!",
+		"Description": "Fixes animation frame jump when holding on to tails in flight. Place below other sprite mods!",
 		"ModVersion": "1.0"
 	}
 }

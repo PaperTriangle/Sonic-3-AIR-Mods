@@ -1,0 +1,5 @@
+{
+	"character_sonic_0x90": { "File": "character_sonic.bmp", "Rect": "1,1,32,48", "Center": "16,24" },
+	"character_sonic_0x91": { "File": "character_sonic.bmp", "Rect": "34,1,40,48","Center": "16,26" },
+	"character_sonic_0x92": { "File": "character_sonic.bmp", "Rect": "75,1,40,40", "Center": "16,24" }
+}
