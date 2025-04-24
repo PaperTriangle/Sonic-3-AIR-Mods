@@ -25,7 +25,7 @@ function void fn08b3aa()
 			A2 = 0xffffb04a
 		}
 	}
-	else if ((objA0.flags2a & object.flag.P2_ON_OBJECT) && (objA0.value3a == char.state.ROLLING || objA0.value3a == char.state.SONIC_DROPDASH))
+	else if ((objA0.flags2a & object.flag.P2_ON_OBJECT) && (objA0.value3b == char.state.ROLLING))
 	{
 		A1 = 0xffffb04a
 	#if STANDALONE
@@ -44,7 +44,7 @@ function void fn08b3aa()
 	objA1.velocity.y = -0x300
 	objA1.hitbox_extends.x = char.hitbox.x.ROLLING
 	objA1.hitbox_extends.y = char.hitbox.y.ROLLING
-	objA1.state = objA0.value3a
+	objA1.state = (A1 == 0xffffb000) ? objA0.value3a : char.state.ROLLING
 	objA1.flags2a |= (char.flag.IN_AIR | char.flag.ROLLING)
 	objA1.flags2a &= ~char.flag.ON_OBJECT
 

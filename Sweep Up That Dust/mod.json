@@ -14,5 +14,22 @@
 			"IsRequired": "0",
 			"Priority": "Lower"
 		}
+	},
+	"Settings":
+	{
+		"List":
+		[
+			{
+				"InternalName": "sutd.newgraphic",
+				"DisplayName": "New Spindash Graphic",
+				"Variable": "sutd.newgraphic",
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Off",
+					"1": "On"
+				}
+			}
+		]
 	}
 }

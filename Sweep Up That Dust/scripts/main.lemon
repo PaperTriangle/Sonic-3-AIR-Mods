@@ -1,3 +1,5 @@
+global bool sutd.newgraphic
+
 //# translated(0x011bde) end(0x011cf0)
 //# translated(0x011d16) end(0x011da4)
 //# translated(0x0151fc) end(0x01530c)
@@ -8,9 +10,8 @@ function bool Character.UpdateSpindash()
 	if (char.spindash > 0)
 		u8[A6 + 0x20] = (char.flags & char.flag.IN_AIR) ? 0x00 : 0x02
 	
-	base.Character.UpdateSpindash()
 	
-	return false
+	return base.Character.UpdateSpindash()
 }
 
 //# address-hook(0x018c20) end(0x018c82)
@@ -19,26 +20,37 @@ function void fn018c20()
 	if (u8[A2 + 0x2a] & char.flag.IN_AIR)
 	{
 		objA0.state = 0
-		return
 	}
 	base.fn018c20()
 }
 
 function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 {
-	u8 gameMode = global.game_mode & 0x7f
-
-	if (gameMode == 0x0c || gameMode == 0x08) && (System.getGlobalVariableValueByName("dropdashdust") >= 2)
+	
+	if (sutd.newgraphic && (objA0.update_address == 0x018b3e && objA0.state == 0x02) || (objA0.update_address == 0x064c24))
 	{
-		if (objA0.update_address == 0x018b3e && objA0.state == 0x00) && (System.getGlobalVariableValueByName("maniadustframe") > 0)
+		//Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 90)
+		System.writeDisplayLine(stringformat("Anim: %d",objA0.animation.sprite))
+		Renderer.drawCustomSprite(stringformat("spindash_%d", objA0.animation.sprite - 10), px, py, 0x00, objA0.render_flags, renderQueue)
+		return true
+	}	
+	
+	if (Mods.isModActive("Drop Dash +"))
+	{
+		u8 gameMode = global.game_mode & 0x7f
+		if (gameMode == 0x0c || gameMode == 0x08) && (System.getGlobalVariableValueByName("dropdashdust") >= 2)
 		{
-			if (objA0.position.x.u16 < camera.position.x.u16 || objA0.position.x.u16 > camera.position.x.u16 + getScreenWidth() || objA0.position.y.u16 < camera.position.y.u16 || objA0.position.y.u16 > camera.position.y.u16 + getScreenHeight() )
+			if (objA0.update_address == 0x018b3e && objA0.state == 0x00) && (System.getGlobalVariableValueByName("maniadustframe") > 0)
 			{
-				System.setGlobalVariableValueByName("maniadustframe", 0)
-				System.setGlobalVariableValueByName("maniadustanimtimer", 0)
+				if (objA0.position.x.u16 < camera.position.x.u16 || objA0.position.x.u16 > camera.position.x.u16 + getScreenWidth() || objA0.position.y.u16 < camera.position.y.u16 || objA0.position.y.u16 > camera.position.y.u16 + getScreenHeight() )
+				{
+					System.setGlobalVariableValueByName("maniadustframe", 0)
+					System.setGlobalVariableValueByName("maniadustanimtimer", 0)
+				}
 			}
 		}
 	}
 	
 	return base.Standalone.onWriteToSpriteTable(px, py, renderQueue)
 }
+
