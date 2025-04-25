@@ -89,7 +89,7 @@
 			},
 			{
 				"InternalName": "dangerhud",
-				"DisplayName": "Override HUD Digit Rendering",
+				"DisplayName": "HUD Hiding Method",
 				"Variable": "altlbz2cs.dangerhud",
 				"Category": "Advanced Settings",	
 				"DefaultValue": "0",
