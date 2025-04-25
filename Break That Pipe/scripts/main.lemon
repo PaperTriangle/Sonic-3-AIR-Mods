@@ -108,6 +108,25 @@ function void LBZPipe.break()
 
 	objA1.groundspeed = objA1.velocity.x
 	u8[A1 + 0x2a] &= ~char.flag.PUSHING
+	
+	if (u8[A1 + 0x38] == CHARACTER_KNUCKLES && u8[A1 + 0x2f] == 0x01)
+	{
+		if (Mods.isModActive("Don't Stop My Glide"))
+		{
+			if (objA1.velocity.x < 0)
+				objA1.groundspeed = -1 * objA1.velocity.x
+		}
+		else
+		{
+			u8[A1 + 0x2f] = 0x02
+			objA1.state = char.state.KNUX_FALLING
+			if (objA1.velocity.x < 0)
+				u8[A1 + 0x2a] |= 0x01
+			else
+				u8[A1 + 0x2a] &= ~0x01
+		}
+	}
+	
 	D1.u8 = objA0.subtype2c
 	if (objA0.subtype2c != 0)
 	{

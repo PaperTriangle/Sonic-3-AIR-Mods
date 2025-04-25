@@ -1,0 +1,110 @@
+define u8 global.xtrachar	= u8[0xffffe654]
+
+//---------------
+// Knuckles Walls
+//---------------
+
+function void Rocks.BreakWall()
+{
+	fn01ff1e()
+	if (competition_mode.active == 0)
+	{
+		objA1.velocity.x = D1.u16
+		D0.u16 = objA0.position.x.u16
+		if (D0.u16 >= objA1.position.x.u16)
+		{
+			objA1.position.x.u16 -= 4
+			A4 = 0x020314
+		}
+		else
+		{
+			objA1.position.x.u16 += 4
+			A4 = 0x0202f4
+		}
+
+		objA1.groundspeed = objA1.velocity.x
+		u8[A1 + 0x2a] &= ~char.flag.PUSHING
+		if (u8[A1 + 0x38] == CHARACTER_KNUCKLES && u8[A1 + 0x2f] == 0x01)
+		{
+			if (objA1.velocity.x < 0)
+				objA1.groundspeed = -1 * objA1.velocity.x
+		}
+		
+
+
+		D0 = objA0.animation.sprite
+		if (global.zone == 0x09)		// Lava Reef Zone
+		{
+			D0 = (D0 - 4) * 2
+			objA0.update_address = 0x01fc66
+			fn0201de()
+		}
+		else
+		{
+			D0 *= 2
+			objA0.update_address = 0x01fc16
+			fn02013a()
+		}
+		fn01fc16()
+
+	#if STANDALONE
+		// Prevent this object from respawning
+		//  -> Otherwise the rocks next to the first AIZ 1 giant ring may respawn after the special stage
+		objA0.respawn_entry = 0
+	#endif
+	}
+	else
+	{
+		// Competition mode code
+		objA1.velocity.x = D1.u16
+		D0.u16 = objA0.position.x.u16
+		if (D0.u16 >= objA1.position.x.u16)
+		{
+			objA1.position.x.u16 -= 4
+			A4 = 0x020388
+		}
+		else
+		{
+			objA1.position.x.u16 += 4
+			A4 = 0x020370
+		}
+
+		objA1.groundspeed = objA1.velocity.x
+		u8[A1 + 0x2a] &= ~char.flag.PUSHING
+		fn01fcc8()
+		objA0.update_address = 0x01fcae
+		objA0.animation.sprite = 3
+		D0 = objA0.animation.sprite * 2
+		fn02013a()
+		fn01fcae()
+	}
+}
+
+function void fn0218ce()
+{
+	objA1.velocity.x = D1.u16
+	if (objA0.position.x.u16 >= objA1.position.x.u16)
+	{
+		objA1.position.x.u16 -= 4
+		A4 = u32[A0 + 0x38]
+	}
+	else
+	{
+		objA1.position.x.u16 += 4
+		A4 = objA0.countdown_callback
+	}
+
+	objA1.groundspeed = objA1.velocity.x
+	objA1.flags2a &= ~char.flag.PUSHING
+	if (u8[A1 + 0x38] == CHARACTER_KNUCKLES && u8[A1 + 0x2f] == 0x01)
+	{
+		if (objA1.velocity.x < 0)
+			objA1.groundspeed = -1 * objA1.velocity.x
+	}
+
+	objA0.update_address = 0x021692
+	++objA0.animation.sprite
+
+	Wall.Destroy()
+	fn021692()
+}

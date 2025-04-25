@@ -21,6 +21,12 @@ Simple mod to revert Knuckles to his running animation on Doomsday Zone instead 
 ## Sweep Up That Dust
 Removes the dust from the Spindash while the character is in the air and starts it again once they hit the ground. Also has an option for some more detailed spindash dust sprites. *(This mod also fixes a display issue with dust from **Drop Dash +** after it goes off screen...)*
 
+## Stop Dropping My Dash
+A small mod that allows Sonic to hold a Drop Dash while bouncing off of more objects
+
+## Don't Stop My Glide
+A Small mod that allows Knuckles to stay in a glide while breaking Rocks / Walls.
+
 ## Better Snow
 I like how the clouds in SSZ are transparent, and it bugs me that the snow that falls during the ICZ bosses flickers.
 
@@ -43,7 +49,7 @@ Simple and quick mod that left shifts the default AIR data select window for les
 I have not tested this much so there _might_ be some issues.
 
 ## Break That Pipe!
-Allow the LBZ pipes to break like standard rocks!
+Allow the LBZ pipes to break like standard rocks! Has compatibility with **Don't Stop My Glide**.
 
 Now the Fire Shield's dash, regular ol' Knuckles and Super Sonic can break them with ease!
 
