@@ -26,19 +26,17 @@ function void fn018c20()
 
 function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 {
+	u8 gameMode = global.game_mode & 0x7f
 	
-	if (sutd.newgraphic && (objA0.update_address == 0x018b3e && objA0.state == 0x02) || (objA0.update_address == 0x064c24))
+	if (sutd.newgraphic && (gameMode == 0x0c || gameMode == 0x08) && (objA0.update_address == 0x018b3e && objA0.state == 0x02) || (objA0.update_address == 0x064c24))
 	{
-		//Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 90)
-		System.writeDisplayLine(stringformat("Anim: %d",objA0.animation.sprite))
 		Renderer.drawCustomSprite(stringformat("spindash_%d", objA0.animation.sprite - 10), px, py, 0x00, objA0.render_flags, renderQueue)
 		return true
 	}	
 	
 	if (Mods.isModActive("Drop Dash +"))
 	{
-		u8 gameMode = global.game_mode & 0x7f
-		if (gameMode == 0x0c || gameMode == 0x08) && (System.getGlobalVariableValueByName("dropdashdust") >= 2)
+		if (gameMode == 0x0c || gameMode == 0x08)
 		{
 			if (objA0.update_address == 0x018b3e && objA0.state == 0x00) && (System.getGlobalVariableValueByName("maniadustframe") > 0)
 			{
