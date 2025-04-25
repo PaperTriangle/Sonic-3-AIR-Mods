@@ -357,6 +357,9 @@ function void fn03fbc4()
 
 function void HUD.drawSprite(u64 key, u16 px, u16 py, u16 renderQueue)
 {
+	if (altlbz2cs.dangerhud == 3 && altlbz2cs.hudgobyedanger != 0)
+		return
+	
 	if (altlbz2cs.dangerhud == 0 || debug_mode.state || !altlbz2cs.removehud || altlbz2cs.hudgobyedanger == 0)
 	{
 		base.HUD.drawSprite(key, px, py, renderQueue)
@@ -371,6 +374,9 @@ function void HUD.drawSprite(u64 key, u16 px, u16 py, u16 renderQueue)
 
 function void HUD.drawDigit(u8 digit, u16 px, u16 py, u16 renderQueue)
 {	
+	if (altlbz2cs.dangerhud == 3 && altlbz2cs.hudgobyedanger != 0)
+		return
+	
 	if (altlbz2cs.dangerhud != 2 || debug_mode.state || !altlbz2cs.removehud || altlbz2cs.hudgobyedanger == 0)
 	{
 		base.HUD.drawDigit(digit, px, py, renderQueue)
@@ -385,6 +391,9 @@ function void HUD.drawDigit(u8 digit, u16 px, u16 py, u16 renderQueue)
 
 function void HUD.drawNumber(string stringMask, u32 number, u16 px, u16 py, u16 renderQueue)
 {
+	if (altlbz2cs.dangerhud == 3 && altlbz2cs.hudgobyedanger != 0)
+		return
+	
 	if (altlbz2cs.dangerhud != 2 || debug_mode.state || !altlbz2cs.removehud || altlbz2cs.hudgobyedanger == 0)
 	{
 		base.HUD.drawNumber(stringMask, number, px, py, renderQueue)
@@ -408,6 +417,9 @@ function void HUD.drawNumber(string stringMask, u32 number, u16 px, u16 py, u16 
 
 function void HUD.drawSmallDigit(u8 digit, u16 px, u16 py, u16 renderQueue)
 {
+	if (altlbz2cs.dangerhud == 3 && altlbz2cs.hudgobyedanger != 0)
+		return
+		
 	if (altlbz2cs.dangerhud != 2 || debug_mode.state || !altlbz2cs.removehud || altlbz2cs.hudgobyedanger == 0)
 	{
 		base.HUD.drawSmallDigit(digit, px, py, renderQueue)

@@ -97,7 +97,8 @@
 				{
 					"0": "Edit global.level_started",
 					"1": "Override HUD.drawSprite()",
-					"2": "Override All HUD.draw*()"
+					"2": "Override All HUD.draw*()",
+					"3": "Just Hide It"
 				}
 			}
 		]

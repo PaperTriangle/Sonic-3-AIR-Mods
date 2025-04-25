@@ -8,13 +8,7 @@ Simple mod that adds in two intro styles for FBZ! I Would honestly not recommend
 Simple mod to make Eggman flee left at the end of CNZ2. This is intended for people who use a mod to restore the OG zone order so it make more logical sense that Eggman flees in the direction of his Flying Battery.
 
 ## Fire Breath on the Edge
-It always kind of bugged me that Fire Breath has a space behind it in AIZ1.
-
-This was adjusted in Origins, and looking through the AIR Scripts there was a commented out line from what looked like an attempt to fix this.
-
-So I decided to try and implement this myself! I have added a setting for if you want the cut-scene positioning to change. (I liked it where it was tbh...)
-
-This should also work if you run the game at other resolutions with a mod like the **Classic Mode Sample Mod** or **Screen Resolution+**. However, I did not test every resolution case.
+It always kind of bugged me that Fire Breath has a space behind it in AIZ1. This mod moves the boss closer to the edge to remove the safe space. Also includes a setting for if you want the cut-scene positioning to be closer to the edge, since I like it not being right on the edge during the cutscene.
 
 ## Where's Robo
 Simple rawdata mod to replace the object layout of SSZ so the first Eggrobo badnik jetpacks in a little earlier to actually show up in the stage at the wider resolution of Sonic 3 AIR.
@@ -73,7 +67,7 @@ There is a compatibility with **LBZ Eggman Fleeing**, **Origins Parity Galore** 
 Adds a new Sonic CD inspiired life icon and a Transform button. Should work with regular and mobile views with compatibility with **Haru's Forever-esque HUD**, **Extra Sloy Mighty, Ray & Amy** and **Extra Slot 3D in 2D Shadow**. The transform button has compatibility with **Characters Go Super Then Hyper** and possibly **Super Post-Trade**.
 
 ## Gotta Go Fast!
-A mod that adds in a Fast Dash to Sonic and Knuckles, providing configurations to make the way the Fast Run works configurable and consistent. Can also override some ESU characters for consistency.
+A mod that adds in a Fast Dash to Sonic and Knuckles, providing configurations to make the way the Fast Run works configurable and consistent. Can also override some ESU characters for consistency. *(Please note that I do not recall where the sprites came from and need to investigate / replace them.)*
 
 ## Flying Hold Frame Fix
 Makes the animation while holding on to tails less jumpy. Should be placed below other sprite mods. Should work with ESU if placed below it.
