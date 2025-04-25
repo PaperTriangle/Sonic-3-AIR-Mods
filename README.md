@@ -69,6 +69,9 @@ I know this is not _exactly_ like Origins, but I do not mind and kind of like it
 
 There is a compatibility with **LBZ Eggman Fleeing**, **Origins Parity Galore** and **Better Big Arm Fade**! You will need to load this mod over them.
 
+## Paper's HUD Additions
+Adds a new Sonic CD inspiired life icon and a Transform button. Should work with regular and mobile views with compatibility with **Haru's Forever-esque HUD**, **Extra Sloy Mighty, Ray & Amy** and **Extra Slot 3D in 2D Shadow**. The transform button has compatibility with **Characters Go Super Then Hyper** and possibly **Super Post-Trade**.
+
 ## Gotta Go Fast!
 A mod that adds in a Fast Dash to Sonic and Knuckles, providing configurations to make the way the Fast Run works configurable and consistent. Can also override some ESU characters for consistency.
 
