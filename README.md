@@ -25,7 +25,7 @@ Will not work with another mod that replaces SSZ layouts.
 Simple mod to revert Knuckles to his running animation on Doomsday Zone instead of gliding. Why? To allow mods that add their own super knuckles running animation to shine.
 
 ## Sweep Up That Dust
-Removes the dust from the Spindash while the character is in the air and starts it again once they hit the ground. Also fixes a display issue with dust from Drop Dash + after it goes off screen.
+Removes the dust from the Spindash while the character is in the air and starts it again once they hit the ground. Also has an option for some more detailed spindash dust sprites. *(This mod also fixes a display issue with dust from **Drop Dash +** after it goes off screen...)*
 
 ## Better Snow
 I like how the clouds in SSZ are transparent, and it bugs me that the snow that falls during the ICZ bosses flickers.
