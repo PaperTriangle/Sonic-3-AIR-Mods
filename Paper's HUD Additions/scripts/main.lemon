@@ -3,6 +3,7 @@ global bool phud.allowsuperesu
 global bool phud.name
 global bool phud.lives
 global bool phud.transform
+global u8 phud.transformstyle
 global s8 phud.offset
 
 define u8 global.xtrachar = u8[0xffffe654]
@@ -65,10 +66,12 @@ function void RenderHUD()
 					}
 				}
 
+				u64 transformstring = (phud.transformstyle != 0) ? ((phud.transformstyle == 1) ? stringformat("border_%s", compatName) : stringformat("ring_%s", compatName)) : "normal"
+
 				if (global.super_emeralds >= 7 && (super.active == 1  || super.active.tails == 1 || !Mods.isModActive("Characters Go Super Then Hyper")) && !(global.xtrachar == 0 && isMainCharacter(CHARACTER_TAILS) && !Game.getSetting(SETTING_HYPER_TAILS)))
-					HUD.drawSprite(stringformat("hyper_icon_%s", compatName), getScreenWidth() - (baseX + 0x10 + HUD.useMobileLivesDisplay() * 0x28) + phud.offset, 0x10 + HUD.useMobileLivesDisplay() * 0x14, 0xe000)
+					HUD.drawSprite(stringformat("hyper_icon_%s", transformstring), getScreenWidth() - (baseX + 0x10 + HUD.useMobileLivesDisplay() * 0x28) + phud.offset, 0x10 + HUD.useMobileLivesDisplay() * 0x14, 0xe000)
 				else
-					HUD.drawSprite(stringformat("super_icon_%s", compatName), getScreenWidth() - (baseX + 0x10 + HUD.useMobileLivesDisplay() * 0x28) + phud.offset, 0x10 + HUD.useMobileLivesDisplay() * 0x14, 0xe000)
+					HUD.drawSprite(stringformat("super_icon_%s", transformstring), getScreenWidth() - (baseX + 0x10 + HUD.useMobileLivesDisplay() * 0x28) + phud.offset, 0x10 + HUD.useMobileLivesDisplay() * 0x14, 0xe000)
 				
 				Renderer.drawCustomSprite("@input_icon_button_Y", getScreenWidth() - (baseX + 0x24) + phud.offset, 0x10 + HUD.useMobileLivesDisplay() * 0x14, 0, SPRITE_FLAG_PRIO, 0xe000, 0, fade)
 				

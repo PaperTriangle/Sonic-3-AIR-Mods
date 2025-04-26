@@ -27,14 +27,27 @@
 		[
 			{
 				"InternalName": "phud.transform",
-				"DisplayName": "Super Transform HUD",
+				"DisplayName": "Use Super Transform HUD",
 				"Variable": "phud.transform",
-				"Category": "Use Super Transform HUD",	
+				"Category": "Super Transform HUD",	
 				"DefaultValue": "1",
 				"Options":
 				{
 					"0": "No",
 					"1": "Yes"
+				}
+			},
+			{
+				"InternalName": "phud.transformstyle",
+				"DisplayName": "Transform Icon Style",
+				"Variable": "phud.transformstyle",
+				"Category": "Super Transform HUD",	
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "No Border",
+					"1": "Regular Border",
+					"2": "Ring Border"
 				}
 			},
 			{

@@ -25,7 +25,10 @@ Removes the dust from the Spindash while the character is in the air and starts 
 A small mod that allows Sonic to hold a Drop Dash while bouncing off of more objects
 
 ## Don't Stop My Glide
-A Small mod that allows Knuckles to stay in a glide while breaking Rocks / Walls.
+A small mod that allows Knuckles to stay in a glide while breaking Rocks / Walls.
+
+## Imma Let You Finish
+Forces the characters to stop fidgeting and let the act end.
 
 ## Better Snow
 I like how the clouds in SSZ are transparent, and it bugs me that the snow that falls during the ICZ bosses flickers.

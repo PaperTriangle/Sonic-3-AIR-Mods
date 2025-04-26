@@ -1,0 +1,116 @@
+//# address-hook(0x0868f8) end(0x086930)
+function void fn0868f8()
+{
+	if (objA0.countdown_value != 1)
+	{
+		base.fn0868f8()
+		return
+	}
+	
+	if (global.zone_act != 0x0201 || (global.zone_act == 0x0201 && camera.position.y.u16 < 0x0100))
+	{
+		player1.control_override = 0xff
+		control.player1 = 0
+		player2.control_override = 0xff
+		control.player2 = 0
+		tails.ai_routine = 0x06
+	}
+	
+	base.fn0868f8()
+}
+
+
+//# address-hook(0x083912) end(0x083936)
+function void fn083912()
+{
+
+	player1.control_override = 0xff
+	control.player1 = 0
+	player2.control_override = 0xff
+	control.player2 = 0
+	tails.ai_routine = 0x06
+	
+	base.fn083912()
+}
+
+//# address-hook(0x02dcca)
+function void LevelResults.AdvanceToNextAct()
+{
+#if STANDALONE
+	if (level.restart)
+	{
+		// Fix "frame-perfect reset" bug, but only for highest level of glitch fix setting
+		if (Game.getSetting(SETTING_FIX_GLITCHES) >= 2)
+		{
+			UnloadObject()
+			return
+		}
+	}
+#endif
+
+	if (objA0.countdown_value != 0)
+	{
+		--objA0.countdown_value
+		return
+	}
+
+	if (u16[A0 + 0x30] != 0)
+	{
+		++objA0.value32
+		return
+	}
+
+	level.wait_for_results = 0
+
+#if STANDALONE
+	Standalone.onLevelFinished()
+#endif
+
+	// Sky Sanctuary, Lava Reef Boss, Hidden Palace, or any Act 2?
+	if (global.zone == 0x0a || global.zone == 0x16 || global.act.apparent != 0)
+	{
+		level.results_done = 0xff
+		
+		if (global.zone != 0x00 && global.zone != 0x01 && global.zone != 0x04 && global.zone_act != 0x06 && global.zone != 0x08 && global.zone != 0x0a && global.zone != 0x0b && global.zone != 0x16)
+		{
+			player1.control_override = 0
+			player2.control_override = 0
+		}
+		
+		UnloadObject()
+		return
+	}
+
+	global.act.apparent = 1
+	checkpoint.number = 0
+	global.stage_type = 0
+
+	// Sandopolis, Death Egg use a small cutscene before showing the title card
+	if (global.zone == 0x08 || global.zone == 0x0b)
+	{
+		UnloadObject()
+		return
+	}
+	
+	player1.control_override = 0
+	player2.control_override = 0
+		
+	// Show title card for Act 2
+	objA0.update_address = addressof(TitleCard.Update)
+	objA0.base_state = 0
+	u8[A0 + 0x3e] = 0xff
+
+#if STANDALONE
+	Standalone.onLevelStart()
+
+	// Special handling for AIZ, when Knuckles uses Sonic's path
+	if (global.zone == 0x00 && isMainCharacter(CHARACTER_KNUCKLES) && camera.position.y.u16 < 0x400)
+	{
+		checkpoint.number = 4		// That number seems to be unused otherwise in whole AIZ
+		checkpoint.x = 0x1240
+		checkpoint.y = 0x0358
+		Checkpoint.SaveCurrentState()
+		checkpoint.move_area.bottom = 0x0590	// Overwrite move_area.bottom.* backup accordingly
+	}
+#endif
+}
