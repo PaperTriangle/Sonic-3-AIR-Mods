@@ -15,9 +15,6 @@ Simple rawdata mod to replace the object layout of SSZ so the first Eggrobo badn
 
 Will not work with another mod that replaces SSZ layouts.
 
-## Knuckles Runs in Doomsday
-Simple mod to revert Knuckles to his running animation on Doomsday Zone instead of gliding. Why? To allow mods that add their own super knuckles running animation to shine.
-
 ## Sweep Up That Dust
 Removes the dust from the Spindash while the character is in the air and starts it again once they hit the ground. Also has an option for some more detailed spindash dust sprites. *(This mod also fixes a display issue with dust from **Drop Dash +** after it goes off screen...)*
 

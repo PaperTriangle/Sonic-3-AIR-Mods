@@ -119,8 +119,6 @@ function void AIZ1a.checkPreBossArea()
 	// Using the upper or the lower path?
 	bool isOnUpperPath = (camera.position.y.u16 < 0x400 && char.position.y.u16 < 0x400)
 
-	System.writeDisplayLine(stringformat("Path: %d", isOnUpperPath))
-
 	if (isOnUpperPath)
 	{
 		D0.u16 = (camera.position.x.u16 >= 0x0ed0) ? 0x02b8 : 0x0590
