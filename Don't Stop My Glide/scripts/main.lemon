@@ -108,3 +108,70 @@ function void fn0218ce()
 	Wall.Destroy()
 	fn021692()
 }
+
+#if STANDALONE
+function void AIZ1a.checkPreBossArea()
+{
+	// Skip check for boss in Time Attack
+	if (Game.isTimeAttack())
+		return
+
+	// Using the upper or the lower path?
+	bool isOnUpperPath = (camera.position.y.u16 < 0x400 && char.position.y.u16 < 0x400)
+
+	System.writeDisplayLine(stringformat("Path: %d", isOnUpperPath))
+
+	if (isOnUpperPath)
+	{
+		D0.u16 = (camera.position.x.u16 >= 0x0ed0) ? 0x02b8 : 0x0590
+	}
+	else
+	{
+		D0.u16 = (camera.position.x.u16 >= 0x0e80) ? 0x0450 : 0x0590
+	}
+	move_area.bottom.current = D0.u16
+	move_area.bottom.target = D0.u16
+
+	if (isOnUpperPath)
+	{
+		if (camera.position.x.u16 >= 0x0f50)
+		{
+			move_area.left = 0x0f50
+			// Choose boss area depending on which route has been taken, not the character selection
+			//  -> Search for this same comment to find another place with similar code
+			move_area.right = ((camera.position.y.u16 >= 0x03a0) ? 0x10c0 : 0x10e0) + getScreenExtend()
+
+			if (debug_mode.state == 0)
+			{
+				if (allocDynamicObjectStd())
+				{
+					// Trigger boss
+					objA1.update_address = addressof(Boss.AIZ1.BaseUpdate)
+					objA1.position.x.u16 = 0x11f0
+					objA1.position.y.u16 = 0x0289
+				}
+			}
+			camera.update_routine = 0x06
+		}
+	}
+	else
+	{
+		if (camera.position.x.u16 >= 0x1040)
+		{
+			move_area.left = 0x1040
+			if (debug_mode.state == 0)
+			{
+				if (allocDynamicObjectStd())
+				{
+					// Trigger boss
+					objA1.update_address = addressof(Boss.AIZ1.BaseUpdate)
+					objA1.position.x.u16 = 0x11d0
+					objA1.position.y.u16 = 0x0420
+				}
+			}
+			water.height.target = 0x0f80
+			camera.update_routine = 0x16
+		}
+	}
+}
+#endif
