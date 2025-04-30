@@ -5,6 +5,8 @@ global bool altlbz2cs.removehud
 global u8 altlbz2cs.hudgobye = 0
 global u8 altlbz2cs.dangerhud
 global u16 altlbz2cs.hudgobyedanger = 0
+global bool altlbz2cs.highjump
+global bool altlbz2cs.stopmusic
 
 //# address-hook(0x072b46) end(0x072b94)
 function void fn072b46()
@@ -452,11 +454,11 @@ function void fn072cda()
 }
 
 //# address-hook(0x085e3a) end(0x085e50)
-function void Standalone.onLevelStart()
+function void TriggerNextZone()
 {
 	altlbz2cs.hudgobye = 0
 	altlbz2cs.hudgobyedanger = 0
-	base.Standalone.onLevelStart()
+	base.TriggerNextZone()
 }
 
 // Origins Parity Galore Compatability 
@@ -476,4 +478,116 @@ function void fn0746f4()
 			}
 		}
 	}
+}
+
+// Stop Music at Defeat
+
+//# address-hook(0x0746d8) end(0x0746ee)
+function void fn0746d8()
+{
+	if (altlbz2cs.stopmusic)
+		Standalone.playAudio(MUSIC_CTRL_FADEOUT)
+		
+	base.fn0746d8()
+}
+
+// Extra Cutscene Jump Height
+
+//# address-hook(0x0549c6) end(0x054a92)
+function void fn0549c6()
+{
+	if (!altlbz2cs.highjump)
+	{
+		base.fn0549c6()
+		return
+	}
+	
+	if (u8[0xffffb000 + 0x05] >= base_state.DIED)
+		return
+
+	if (player1.camera_lock)
+	{
+		D0.u16 = u16[0xffffb000 + 0x10] - camera.position.x.u16 - getScreenWidth() / 2
+		if (D0.s16 >= 0)
+		{
+			camera.position.x.u16 += D0.u16
+		}
+
+		// Camera reached boss fight area?
+		if (camera.position.x.u16 >= 0x4390 - getScreenExtend() || camera.position.y.u16 >= 0x0668)
+		{
+			player1.camera_lock = 0
+		}
+	}
+
+	if (u16[0xffffeee0] != 0)
+	{
+		--u16[0xffffeee0]
+	}
+	else
+	{
+		if (camera.position.x.u16 >= 0x4390 - getScreenExtend())
+		{
+			#if STANDALONE
+			{
+				// TODO: It would be nice to limit the character move area independently from the camera
+				move_area.left = 0x4390 - getScreenExtend()
+				move_area.right = 0x4390 + getScreenExtend()
+			}
+			#else
+			{
+				move_area.left = move_area.right
+			}
+			#endif
+		}
+
+		//if (camera.position.y.u16 >= 0x0668)
+		//{
+		//	level.vertical_wrap = move_area.bottom.current
+		//}
+
+		A1 = 0xffffeed4
+		D1 = u16[0xffffeea2]
+		u32[A1] += D1
+		D0.u16 = u16[A1] - u16[A1 + 0x08]
+		u16[A1 + 0x08] = u16[A1]
+
+		D1.u16 = 0x2200
+		if (player1.camera_lock == 0)
+		{
+			D1 = u32[0xffffee9c]
+		}
+		u32[A1 + 0x04] += D1
+
+		D1.u16 = u16[A1 + 0x04] - u16[A1 + 0x0a]
+		u16[A1 + 0x0a] = u16[A1 + 0x04]
+		if (player1.camera_lock != 0)
+		{
+			A5 = 0xffff0000 + level.display_routine
+			u16[A5 + 0x14] += D0.u16
+			camera.position.y.u16 += D0.u16
+		}
+
+		D2.u16 = water.height.target + D0.u16 + D1.u16
+		if (D2.u16 >= 0x0f00)
+		{
+			D2.u16 = 0x0f80
+		}
+		water.height.target = D2.u16
+		u16[0xffffeee6] = D0.u16
+		u16[0xffffeee6] += D1.u16
+	}
+}
+
+//# address-hook(0x0729de) end(0x072a4e)
+function void fn0729de()
+{
+	if (!altlbz2cs.highjump)
+	{
+		base.fn0729de()
+		return
+	}
+	
+	level.vertical_wrap = move_area.bottom.current
+	base.fn0729de()
 }

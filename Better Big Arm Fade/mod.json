@@ -5,7 +5,7 @@
 		"UniqueID": "big-arm-fade",
 		"Author": "PaperTriangle",
 		"Description": "Smoother sky fade for Big Arm fight that respects custom palettes.",
-		"ModVersion": "1.1"
+		"ModVersion": "1.2"
 	},
 	"Settings":
 	{
@@ -13,17 +13,13 @@
 		[
 			{
 				"InternalName": "fadesteps",
-				"DisplayName": "Fade Steps",
+				"DisplayName": "Fade Speed",
 				"Variable": "bigarmfade.steps",
-				"DefaultValue": "0x08",
+				"DefaultValue": "0x0a",
 				"Options":
 				{
-					"0x01": "1 (Every Frame)",
-					"0x02": "2",
-					"0x04": "4",
-					"0x08": "8 (Default)",
-					"0x0c": "12 (+1 Step)",
-					"0x10": "16 (Original)"
+					"0x01": "Smooth",
+					"0x10": "Stepped"
 				}
 			}
 		]

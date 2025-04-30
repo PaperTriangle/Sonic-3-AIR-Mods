@@ -5,7 +5,7 @@
 		"UniqueID": "alt-lbz2-cutscene",
 		"Author": "PaperTriangle",
 		"Description": "A more Origins like cutscene for LBZ2.",
-		"ModVersion": "1.3"
+		"ModVersion": "1.4"
 	},
 	"OtherMods":
 	{
@@ -48,6 +48,30 @@
 				{
 					"0": "After Fanfare",
 					"1": "Before Fanfare"
+				}
+			},
+			{
+				"InternalName": "altlbz2cs.highjump",
+				"DisplayName": "Jumping Out Of Egg Mobile",
+				"Variable": "altlbz2cs.highjump",
+				"Category": "General Settings",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Locked Screen",
+					"1": "Unlocked Screen"
+				}
+			},
+			{
+				"InternalName": "altlbz2cs.stopmusic",
+				"DisplayName": "Stop Music After Boss",
+				"Variable": "altlbz2cs.stopmusic",
+				"Category": "General Settings",	
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Don't Stop",
+					"1": "Stop It!"
 				}
 			},
 			{
