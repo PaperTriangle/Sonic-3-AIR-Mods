@@ -63,6 +63,18 @@
 				}
 			},
 			{
+				"InternalName": "phud.livesborder",
+				"DisplayName": "Lives Border",
+				"Variable": "phud.livesborder",
+				"Category": "Lives Settings",	
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Regular Border",
+					"1": "Ring Border"
+				}
+			},
+			{
 				"InternalName": "phud.allowsuper",
 				"DisplayName": "Allow Super Icons",
 				"Variable": "phud.allowsuper",

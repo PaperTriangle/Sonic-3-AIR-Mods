@@ -2,6 +2,7 @@ global bool phud.allowsuper
 global bool phud.allowsuperesu
 global bool phud.name
 global bool phud.lives
+global bool phud.livesborder
 global bool phud.transform
 global u8 phud.transformstyle
 global s8 phud.offset
@@ -193,7 +194,9 @@ function void RenderHUD()
 			HUD.drawSprite(stringformat("%s_lives_icon", characterSprite), px, py, renderQueue)
 			++renderQueue
 			
-			HUD.drawSprite(stringformat("%s_lives_icon_border_%s", characterSprite, compatName), px, py, renderQueue)
+			u64 livesborderstring = (phud.livesborder) ? stringformat("ring_%s", compatName) : stringformat("border_%s", compatName) 
+			
+			HUD.drawSprite(stringformat("%s_lives_icon_%s", characterSprite, livesborderstring), px, py, renderQueue)
 			++renderQueue
 			
 			if (phud.name)

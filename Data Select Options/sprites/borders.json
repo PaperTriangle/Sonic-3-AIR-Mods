@@ -1,0 +1,4 @@
+{
+	"large_border":  { "File": "large_border.png", "Center": "48,128" },
+	"small_border":  { "File": "small_border.png", "Center": "40,64" }
+}

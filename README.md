@@ -43,8 +43,8 @@ Simple mod that moves the MGZ Eggman boss closer to the screen edge because I wa
 
 Should work fine with other resolutions.
 
-## Left Shifted Data Select 
-Simple and quick mod that left shifts the default AIR data select window for less wasted screen space.
+## Data Select Options
+A mod that adds some options to the data select like adding semi-transparent shadows, removing the emerald glint and shifting everything to the left a bit for less wasted screen space.
 
 I have not tested this much so there _might_ be some issues.
 

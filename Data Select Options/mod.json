@@ -1,0 +1,60 @@
+{
+	"Metadata":
+	{
+		"Name": "Data Select Options",
+		"UniqueID": "data-select-options",
+		"Author": "PaperTriangle",
+		"Description": "Adds options to slightly customise the Data Select screen.",
+		"ModVersion": "1.2"
+	},
+	"Settings":
+	{
+		"Uncategorized":
+		[
+			{
+				"InternalName": "lsds.leftshift",
+				"DisplayName": "Left Shift Data Select",
+				"Variable": "lsds.leftshift",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "lsds.textdown",
+				"DisplayName": "Move Data Select Text Down",
+				"Variable": "lsds.textdown",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "lsds.noflicker",
+				"DisplayName": "Disable Emerald Flicker",
+				"Variable": "lsds.noflicker",	
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "lsds.alphashadow",
+				"DisplayName": "Use Borders With Shadows",
+				"Variable": "lsds.alphashadow",	
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			}
+		]
+	}
+}
