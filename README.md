@@ -88,4 +88,4 @@ Makes the animation while holding on to tails less jumpy. Should be placed below
 ## HCZ & ICZ Alternate Title Cards
 Simple mod to put a space in "HYDROCITY" and "ICECAP" title cards, making them "HYDRO CITY" and "ICE CAP", respectively.
 
-Requires Veenee's **Title Card Elements and Results Screen Sprites* mod to work. Also comes with a version in the style of Trimint123's **Zone Japanese Text** mod.
+Requires Veenee's **Title Card Elements and Results Screen Sprites** mod to work. Also comes with a version in the style of Trimint123's **Zone Japanese Text** mod.
