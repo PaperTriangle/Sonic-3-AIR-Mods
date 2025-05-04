@@ -1,0 +1,170 @@
+{
+	"Metadata":
+	{
+		"Name": "Time Consistent Adventure",
+		"UniqueID": "time-consistent-adventure",
+		"Author": "PaperTriangle",
+		"Description": "Makes some changes to level palettes and art to make the time of day more consistent through both the Sonic & Tails and the Knuckles adventures over Angel Island.",
+		"ModVersion": "1.0"
+	},
+	"OtherMods":
+	{
+		"useott-s-original-zone-order":
+		{
+			"DisplayName": "Useott's Original Zone Order",
+			"IsRequired": "1",
+			"Priority": "Lower"
+		}
+	},
+	"Settings":
+	{
+		"Uncategorized":
+		[
+			{
+				"InternalName": "tca.mgz",
+				"DisplayName": "MGZ Changes",
+				"Variable": "tca.mgz",
+				"Category": "Stage Settings",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "tca.fbz",
+				"DisplayName": "FBZ Changes",
+				"Variable": "tca.fbz",
+				"Category": "Stage Settings",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "tca.icz",
+				"DisplayName": "ICZ Changes",
+				"Variable": "tca.icz",
+				"Category": "Stage Settings",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "tca.lbz",
+				"DisplayName": "LBZ Changes",
+				"Variable": "tca.lbz",
+				"Category": "Stage Settings",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "tca.mvz",
+				"DisplayName": "MHZ2 Changes",
+				"Variable": "tca.mvz",
+				"Category": "Stage Settings",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "tca.soz",
+				"DisplayName": "SOZ1 Changes",
+				"Variable": "tca.soz",
+				"Category": "Stage Settings",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "tca.hpz",
+				"DisplayName": "HPZ Changes",
+				"Variable": "tca.hpz",
+				"Category": "Stage Settings",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "tca.ssz",
+				"DisplayName": "SSZ Changes",
+				"Variable": "tca.ssz",
+				"Category": "Stage Settings",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "tca.fadetype",
+				"DisplayName": "Fade Type",
+				"Variable": "tca.fadetype",
+				"Category": "Extra Settings",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Smooth",
+					"1": "Stepped"
+				}
+			},
+			{
+				"InternalName": "tca.leftescape",
+				"DisplayName": "CNZ Eggman Escape Direction",
+				"Variable": "tca.leftescape",
+				"Category": "Extra Settings",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Right",
+					"1": "Left"
+				}
+			},
+			{
+				"InternalName": "tca.fbz_explosions",
+				"DisplayName": "Explosions in FBZ",
+				"Variable": "tca.fbz_explosions",
+				"Category": "Extra Settings",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Off",
+					"1": "On"
+				}
+			},
+			{
+				"InternalName": "tca.ssz_knux_fade",
+				"DisplayName": "SSZ Knuckles Fade",
+				"Variable": "tca.ssz_knux_fade",
+				"Category": "Extra Settings",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Night > Day",
+					"1": "Night > Dawn > Day"
+				}
+			}
+		]
+	}
+	
+}

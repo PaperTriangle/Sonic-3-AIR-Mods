@@ -1,0 +1,75 @@
+//# address-hook(0x069ea0) end(0x069ecc)
+function void fn069ea0()
+{
+#if STANDALONE
+	// Skip boss in Time Attack
+	if (Game.isTimeAttack())
+	{
+		UnloadObject()
+		return
+	}
+#endif
+
+	A1 = 0x069ed2
+	if (InitBoss(0x069eaa))
+		return
+
+	objA0.update_address = 0x069eda
+	level.boss_encounter = 1
+	level.vertical_wrap = 0x0300
+	
+	// "spawnChildObjects(0x06ad6e)" replaced by:
+	spawnChildObject(0x06a51e, 0x00, 0, 0)		// Water agitator pole
+
+#if STANDALONE
+	// There is this one chunk visible with broken palette
+	u8[0xffff8634] = 0xb5
+#endif
+}
+
+
+//# address-hook(0x069eda) end(0x069f5e)
+function void fn069eda()
+{
+	if ((objA0.flags38 & 0x01) == 0)
+	{
+		D0.u16 = 0x0638
+		if (D0.u16 <= camera.position.y.u16)
+		{
+			objA0.flags38 |= 0x01
+			level.vertical_wrap = D0.u16
+			move_area.bottom.current = D0.u16
+			move_area.bottom.target = D0.u16
+		}
+	}
+	
+	if (camera.position.y.u16 >= 0x0450 && u8[0xffffeee8] != 0xff)
+	{
+		u8[0xffffeee8] = 0xff
+		requestLoadingPatterns(0x5b)		// Boss sprites
+	}
+
+	move_area.left = camera.position.x.u16
+	D0.u16 = 0x3680 - getScreenExtend()
+	if (camera.position.x.u16 >= D0.u16)
+	{
+		objA0.flags38 |= 0x02
+		move_area.left = D0.u16
+		move_area.right = 0x3680 + getScreenExtend()
+	}
+
+	if (objA0.flags38 != 0x03)
+		return
+	
+	screenmover_target.right = move_area.right
+	u16[A0 + 0x44] = objA0.position.y.u16
+	objA0.update_address = addressof(Object.CountdownAndTrigger)
+	objA0.countdown_value = 120
+	objA0.countdown_callback = 0x069f64
+	playMusic(MUSIC_CTRL_FADEOUT)
+
+	objA0.flags38 |= 0x08
+	loadPaletteLine1(0x06ae56)
+	
+	
+}

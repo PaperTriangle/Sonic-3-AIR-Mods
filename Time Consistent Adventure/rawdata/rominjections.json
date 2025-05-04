@@ -1,0 +1,104 @@
+{
+	"MGZ2_Palette":
+	{
+		"File": "MGZ2_Palette.bin"
+	},
+	"MGZ_Palette_Original":
+	{
+		"File": "MGZ_Palette_Original.bin"
+	},
+	"MGZ_Mountain_Fix_1":
+	{
+		"File": "MGZ_Mountain_Fix_1.bin"
+	},
+	"MGZ_Mountain_Fix_2":
+	{
+		"File": "MGZ_Mountain_Fix_2.bin"
+	},
+	"FBZ_Cloud_Fix": {
+		"File": "FBZ_Cloud_Fix.bin"
+	},
+	"FBZ1_Palette": {
+		"File": "FBZ1_Outdoors_Palette.bin"
+	},
+	"FBZ2_Palette_1": {
+		"File": "FBZ2_Outdoors_Palette_1.bin"
+	},
+	"FBZ2_Palette_2": {
+		"File": "FBZ2_Outdoors_Palette_2.bin"
+	},
+	"LBZ1_Palette": {
+		"File": "LBZ1_Palette.bin"
+	},
+	"LBZ2_Palette": {
+		"File": "LBZ2_Palette.bin"
+	},
+	"MVZ2_Palette_Sunset":
+	{
+		"File": "MVZ2_Palette_Sunset.bin"
+	},
+	"SOZ_Day_Fix":
+	{
+		"File": "SOZ_Day_Fix.bin"
+	},
+	"SOZ1_Palette_Day":
+	{
+		"File": "SOZ1_Palette_Day.bin"
+	},
+	"SOZ1_Palette_Arvo":
+	{
+		"File": "SOZ1_Palette_Arvo.bin"
+	},
+	"HPZ_Roof_Fix_1":
+	{
+		"File": "HPZ_Roof_Fix_1.bin"
+	},
+	"HPZ_Roof_Fix_2":
+	{
+		"File": "HPZ_Roof_Fix_2.bin"
+	},
+	"SSZ1_Palette_Original":
+	{
+		"File": "SSZ1_Palette_Original.bin"
+	},
+	"SSZ1_Palette_Morning":
+	{
+		"File": "SSZ1_Palette_Morning.bin"
+	},
+	"SSZK_Palette_Original":
+	{
+		"File": "SSZK_Palette_Original.bin"
+	},
+	"SSZK_Palette_Morning":
+	{
+		"File": "SSZK_Palette_Morning.bin"
+	},
+	"SSZK_Palette_Night":
+	{
+		"File": "SSZK_Palette_Night.bin"
+	},
+	"SOZ_Zone_Card_Knux":
+	{
+		"File": "SOZ_Zone_Card_Knux.bin"
+	},
+	"SOZ_Zone_Card_Sonic":
+	{
+		"File": "SOZ_Zone_Card_Sonic.bin"
+	},
+	"SSZ_Zone_Card_Knux":
+	{
+		"File": "SSZ_Zone_Card_Knux.bin"
+	},
+	"SSZ_Zone_Card_Sonic":
+	{
+		"File": "SSZ_Zone_Card_Sonic.bin"
+	},
+	"FBZ_Zone_Card":
+	{
+		"File": "FBZ_Zone_Card.bin"
+	},
+	"LBZ_Zone_Card":
+	{
+		"File": "LBZ_Zone_Card.bin"
+	}
+}

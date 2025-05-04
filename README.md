@@ -4,9 +4,6 @@ A collection of PaperTriangle's Sonic 3 A.I.R. Mods both in progress and release
 ## Battery Powered Intro
 Simple mod that adds in two intro styles for FBZ! I Would honestly not recommend using it as there are better options.
 
-## Eggman Go Left
-Simple mod to make Eggman flee left at the end of CNZ2. This is intended for people who use a mod to restore the OG zone order so it make more logical sense that Eggman flees in the direction of his Flying Battery.
-
 ## Fire Breath on the Edge
 It always kind of bugged me that Fire Breath has a space behind it in AIZ1. This mod moves the boss closer to the edge to remove the safe space. Also includes a setting for if you want the cut-scene positioning to be closer to the edge, since I like it not being right on the edge during the cutscene.
 
@@ -43,10 +40,13 @@ Simple mod that moves the MGZ Eggman boss closer to the screen edge because I wa
 
 Should work fine with other resolutions.
 
+## HCZ Wobbly Spheres Near Boss Fix
+Fixes the animation lock when near the act 1 boss on the wobble spheres in the HCZ tiles.
+
 ## Data Select Options
 A mod that adds some options to the data select like adding semi-transparent shadows, removing the emerald glint and shifting everything to the left a bit for less wasted screen space.
 
-I have not tested this much so there _might_ be some issues.
+Also has an option to remove the lives and continues detail, shifting the player icons down. This has some hacky Extra Slot support that might not work for all characters...
 
 ## Break That Pipe!
 Allow the LBZ pipes to break like standard rocks! Has compatibility with **Don't Stop My Glide**.
@@ -69,11 +69,23 @@ I know this is not _exactly_ like Origins, but I do not mind and kind of like it
 
 There is a compatibility with **LBZ Eggman Fleeing**, **Origins Parity Galore** and **Better Big Arm Fade**! You will need to load this mod over them.
 
+## Time Consistent Adventure
+This mod adjusts the palettes and some stage art for many zones to provide a more consistent passage of time with the Sonic & Tails and the Knuckles adventures.
+
+There are a few configurations options, however it is mostly intended that you would run this for all possible zones.
+
+**PLEASE NOTE:** This is intended to be played alongside a mod that restores the original zone order, and stops Knuckles from visiting FBZ. Probably will not work right with other palette mods or any mods that alter the FBZ, SOZ, HPZ or SSZ backgrounds / tiles.
+
 ## Paper's HUD Additions
-Adds a new Sonic CD inspiired life icon and a Transform button. Should work with regular and mobile views with compatibility with **Haru's Forever-esque HUD**, **Extra Sloy Mighty, Ray & Amy** and **Extra Slot 3D in 2D Shadow**. The transform button has compatibility with **Characters Go Super Then Hyper** and possibly **Super Post-Trade**.
+Adds a new Sonic CD inspired life icon and a Transform button. Should work with regular and mobile views with compatibility with **Haru's Forever-esque HUD**, **Extra Sloy Mighty, Ray & Amy** and **Extra Slot 3D in 2D Shadow**. The transform button has compatibility with **Characters Go Super Then Hyper** and possibly **Super Post-Trade**.
 
 ## Gotta Go Fast!
 A mod that adds in a Fast Dash to Sonic and Knuckles, providing configurations to make the way the Fast Run works configurable and consistent. Can also override some ESU characters for consistency. *(Please note that I do not recall where the sprites came from and need to investigate / replace them.)*
 
 ## Flying Hold Frame Fix
 Makes the animation while holding on to tails less jumpy. Should be placed below other sprite mods. Should work with ESU if placed below it.
+
+## HCZ & ICZ Alternate Title Cards
+Simple mod to put a space in "HYDROCITY" and "ICECAP" title cards, making them "HYDRO CITY" and "ICE CAP", respectively.
+
+Requires Veenee's **Title Card Elements and Results Screen Sprites* mod to work. Also comes with a version in the style of Trimint123's **Zone Japanese Text** mod.

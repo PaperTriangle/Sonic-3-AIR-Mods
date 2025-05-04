@@ -13,7 +13,7 @@
 		[
 			{
 				"InternalName": "lsds.leftshift",
-				"DisplayName": "Left Shift Data Select",
+				"DisplayName": "Left Align Data Select",
 				"Variable": "lsds.leftshift",	
 				"DefaultValue": "1",
 				"Options":
@@ -24,9 +24,20 @@
 			},
 			{
 				"InternalName": "lsds.textdown",
-				"DisplayName": "Move Data Select Text Down",
+				"DisplayName": "Lower the \"Data Select\" Text",
 				"Variable": "lsds.textdown",	
 				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "lsds.nodetail",
+				"DisplayName": "Disable Lives & Continues",
+				"Variable": "lsds.nodetail",	
+				"DefaultValue": "0",
 				"Options":
 				{
 					"0": "Disabled",

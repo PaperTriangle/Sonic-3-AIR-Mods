@@ -15,11 +15,11 @@
 				"InternalName": "fadesteps",
 				"DisplayName": "Fade Speed",
 				"Variable": "bigarmfade.steps",
-				"DefaultValue": "0x0a",
+				"DefaultValue": "0x0c",
 				"Options":
 				{
 					"0x01": "Smooth",
-					"0x10": "Stepped"
+					"0x0c": "Stepped"
 				}
 			}
 		]

@@ -1,0 +1,4 @@
+{
+	"TitleCard_ZoneTitle_0x01":  { "File": "hydro_city.png", "Rect": "0,0,152,40", "Center": "24,16" },
+	"TitleCard_ZoneTitle_0x05":  { "File": "ice_cap.png", "Rect": "0,0,96,40", "Center": "-32,16" }
+}

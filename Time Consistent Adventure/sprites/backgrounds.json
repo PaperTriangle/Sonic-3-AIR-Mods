@@ -1,0 +1,9 @@
+{
+	"ssz_knux_bg":  { "File": "knux_sky.bmp", "Rect": "0,0,128,128", "Center": "128,128" },
+	"fbz_stars_1":  { "File": "fbz_sky_1.bmp", "Rect": "0,0,128,144", "Center": "128,112" },
+	"fbz_icon": { "File": "fbz_icon.bmp", "Rect": "0,0,80,56"},
+	"lbz_icon": { "File": "lbz_icon.bmp", "Rect": "0,0,80,56"},
+	"lbz_icon_knux": { "File": "lbz_icon_knux.bmp", "Rect": "0,0,80,56"},
+	"soz_icon": { "File": "soz_icon.bmp", "Rect": "0,0,80,56"},
+	"ssz_icon_knux": { "File": "ssz_icon_knux.bmp", "Rect": "0,0,80,56"}
+}

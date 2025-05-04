@@ -2,6 +2,9 @@ global bool lsds.leftshift
 global bool lsds.textdown
 global bool lsds.noflicker
 global bool lsds.alphashadow
+global bool lsds.nodetail
+
+global u16 oldposy = 0
 
 function void DataSelect.setup()
 {
@@ -211,16 +214,8 @@ function void DataSelect.update()
 		waitForNextFrame()
 	@EntryPoint:
 
-	#if STANDALONE
 		DataSelect.drawCustomPlanes()
 
-		// Quick scroll-in effect
-		//if (u8[0xffffffff] > 0)
-		//{
-		//	--u8[0xffffffff]
-		//	camera.foreground.x.u16 += 30
-		//}
-	#endif
 
 		++level.framecounter
 		UpdateGameObjects()
@@ -253,7 +248,7 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 			
 			if (objA0.update_address == 0x00d42c)
 			{
-				Renderer.drawCustomSprite("large_border", px, py, 0x00, 0, renderQueue - 100)
+				Renderer.drawCustomSprite("large_border", px, (lsds.nodetail) ? py - 0x10 : py, 0x00, 0, renderQueue - 100)
 			}
 			else if (objA0.update_address == 0x00d30c)
 			{
@@ -264,8 +259,50 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 				Renderer.drawCustomSprite("small_border", 0x3c8 - camera.foreground.x.u16, py - 16, 0x00, 0, renderQueue - 100)
 			}
 		}
-	
+		
+		// Hackey way to handle extra slot compat...
+		if (lsds.nodetail && objA0.update_address == 0x00d42c && objA0.animation.sprite == 0x05 && objA0.animation.timer > 0x00)
+		{
+			
+			if (u8[A0 + 0x38] == 0xff && objA0.animation.sprite == 5 && objA0.animation.timer != 0 && u16[0xffffb04a + 0x30] == 0)
+			{	
+				u64 portrait = 0
+				u64 portraitesp = 0
+				if (u8[A0 + 0x23] == 0x18)
+					portrait = stringformat("dataSel_savePortrait_slot%d", objA0.animation.timer)
+				else if (u8[A0 + 0x23] == 0x19)
+					portrait = stringformat("dataSel_savePortrait_superslot%d", objA0.animation.timer)
+				else if (u8[A0 + 0x23] == 0x1b)
+				{
+					portrait = stringformat("dataSel_savePortrait_clear_slot%d", objA0.animation.timer)
+					portraitesp = stringformat("Clear_slot%d", objA0.animation.timer)
+				}
+
+				if (Renderer.hasCustomSprite(portrait))
+				{
+					Renderer.drawCustomSprite(portrait, px, py - 16, 0, SPRITE_FLAG_PRIO, renderQueue)
+					u8[A0 + 0x23] = 0
+				}
+				
+				if (Renderer.hasCustomSprite(portraitesp))
+				{
+					Renderer.drawCustomSprite(portraitesp, px, py - 16, 0, SPRITE_FLAG_PRIO, renderQueue)
+					u8[A0 + 0x23] = 0
+				}
+			}
+			
+			if (Renderer.hasCustomSprite(stringformat("dataSel_slot%d", objA0.animation.timer)))
+			{
+				renderQueue = 0x00
+				ExtraChar.DataSelect.drawCharacterSprite(px, py, 0x9fff)
+			}
+			
+			return false
+			
+		}
 	}
+
+	
 
 	
 	return base.Standalone.onWriteToSpriteTable(px, py, renderQueue)
@@ -310,20 +347,28 @@ function void fn00d9f4()
 	base.fn00d9f4()
 }
 
+//# address-hook(0x00c97a) end(0x00ca12)
+function void fn00c97a()
+{
+	if (lsds.nodetail)
+		return
+	
+	base.fn00c97a()
+}
 
 //# address-hook(0x00d42c) end(0x00d69a)
-//function void fn00d42c()
-//{
-//	if (!lsds.nodetail)
-//	{
-//		base.fn00d42c()
-//		return
-//	}
-//	
-//	objA0.position.y.u16 = (oldposy != 0) ? oldposy : objA0.position.y.u16
-//	
-//	base.fn00d42c()
-//	
-//	oldposy = objA0.position.y.u16
-//	objA0.position.y.u16 += 0x10
-//}
+function void fn00d42c()
+{
+	if (!lsds.nodetail)
+	{
+		base.fn00d42c()
+		return
+	}
+	
+	objA0.position.y.u16 = (oldposy != 0) ? oldposy : objA0.position.y.u16
+	
+	base.fn00d42c()
+	
+	oldposy = objA0.position.y.u16
+	objA0.position.y.u16 += 0x10
+}
