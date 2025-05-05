@@ -17,5 +17,10 @@
 	"super_knuckles_fast_run_0":	{ "File": "super_knuckles_fast_run.bmp",	"Rect": "1,1,38,29",	"Center": "22,11" },
 	"super_knuckles_fast_run_1":	{ "File": "super_knuckles_fast_run.bmp",	"Rect": "40,1,38,29",	"Center": "22,11" },
 	"super_knuckles_fast_run_2":	{ "File": "super_knuckles_fast_run.bmp",	"Rect": "1,1,38,29",	"Center": "22,11" },
-	"super_knuckles_fast_run_3":	{ "File": "super_knuckles_fast_run.bmp",	"Rect": "40,1,38,29",	"Center": "22,11" }
+	"super_knuckles_fast_run_3":	{ "File": "super_knuckles_fast_run.bmp",	"Rect": "40,1,38,29",	"Center": "22,11" },
+	
+	"shadow_fast_run_0":	{ "File": "shadow_fast_run.bmp",	"Rect": "1,1,54,40",	"Center": "27,16" },
+	"shadow_fast_run_1":	{ "File": "shadow_fast_run.bmp",	"Rect": "56,1,55,40",	"Center": "28,16" },
+	"shadow_fast_run_2":	{ "File": "shadow_fast_run.bmp",	"Rect": "112,1,51,40",	"Center": "24,16" },
+	"shadow_fast_run_3":	{ "File": "shadow_fast_run.bmp",	"Rect": "164,1,60,40",	"Center": "33,17" }
 }

@@ -80,7 +80,9 @@ There are a few configurations options, however it is mostly intended that you w
 Adds a new Sonic CD inspired life icon and a Transform button. Should work with regular and mobile views with compatibility with **Haru's Forever-esque HUD**, **Extra Sloy Mighty, Ray & Amy** and **Extra Slot 3D in 2D Shadow**. The transform button has compatibility with **Characters Go Super Then Hyper** and possibly **Super Post-Trade**.
 
 ## Gotta Go Fast!
-A mod that adds in a Fast Dash to Sonic and Knuckles, providing configurations to make the way the Fast Run works configurable and consistent. Can also override some ESU characters for consistency. *(Please note that I do not recall where the sprites came from and need to investigate / replace them.)*
+A mod that adds in a Fast Dash to Sonic and Knuckles, providing configurations to make the way the Fast Run works configurable and consistent. Can also override some ESU characters for consistency. However, the 3D2D Shadow option likely will not work with the original mod as it references a value from my bugfixed version.
+
+*(Please note that I do not recall where the sprites came from and need to investigate / replace them.)*
 
 ## Flying Hold Frame Fix
 Makes the animation while holding on to tails less jumpy. Should be placed below other sprite mods. Should work with ESU if placed below it.

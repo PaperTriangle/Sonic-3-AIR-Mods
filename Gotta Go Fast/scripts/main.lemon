@@ -5,11 +5,13 @@ global bool ggf.superknux
 global bool ggf.intro
 global bool ggf.knuxddz
 global bool ggf.speed
-global bool ggf.esu.mighty = 1
-global bool ggf.esu.supermighty = 1
-global bool ggf.esu.ray = 1
-global bool ggf.esu.amy = 1
-global bool ggf.esu.superamy = 1
+global bool ggf.esu.mighty
+global bool ggf.esu.supermighty
+global bool ggf.esu.ray
+global bool ggf.esu.amy
+global bool ggf.esu.superamy
+global bool ggf.esu.shadow
+global bool ggf.esu.supershadow
 
 define u8 global.xtrachar	= u8[0xffffe654]
 
@@ -96,10 +98,46 @@ function bool Standalone.drawCharacterSprite(u8 character, u8 variant, s16 px, s
 		animationSpriteEx = 0x21 + (animationSprite & 3)
 		key = stringformat("character_amy_0x%02x", animationSpriteEx)
 	}
+	else if (global.xtrachar == 5 && character == CHARACTER_SONIC && animationSpriteEx == animationSprite && !super.active && animationSprite >= 0x21 && animationSprite <= 0x30 && abs(char.groundspeed) >= regularspeed + 0x100 && ggf.esu.shadow)
+	{
+		if (System.getGlobalVariableValueByName("shadow.airBoost") && !System.getGlobalVariableValueByName("shadow.waterRun"))
+			return base.Standalone.drawCharacterSprite(character, variant, px, py, asSmallGhost)
+			
+		animationSpriteEx = CHAR_ANIMSPRITE_SONIC_PEELOUT + (level.framecounter & 0x03)
+
+		key = stringformat("shadow_fast_run_%d", animationSpriteEx - CHAR_ANIMSPRITE_SONIC_PEELOUT)
+	}
+	else if (global.xtrachar == 5 && character == CHARACTER_SONIC && animationSpriteEx == animationSprite && super.active && animationSprite >= 0x21 && animationSprite <= 0x30 && (abs(char.groundspeed) < superspeed + 0x100) && ggf.esu.supershadow)
+	{
+		if (System.getGlobalVariableValueByName("shadow.isBoosting") && char.flags & char.flag.IN_AIR)
+			return base.Standalone.drawCharacterSprite(character, variant, px, py, asSmallGhost)
+			
+		animationSpriteEx = 0x21 + (animationSprite - 0x21) % 4
+
+		if (System.getGlobalVariableValueByName("shadow.FrameCounter") == 0)
+		{
+			System.setGlobalVariableValueByName("shadow.RunFrameOld", animationSprite)
+			System.setGlobalVariableValueByName("shadow.FrameCounter", 3)
+		}
+		if (System.getGlobalVariableValueByName("shadow.RunFrameOld") != animationSprite)
+		{ //go up to 24 then restart to 2
+			if (System.getGlobalVariableValueByName("shadow.FrameCounter") < 38)
+			{
+				System.setGlobalVariableValueByName("shadow.FrameCounter", System.getGlobalVariableValueByName("shadow.FrameCounter") + 1)
+			}
+			else
+			{
+				System.setGlobalVariableValueByName("shadow.FrameCounter", 3)
+			}
+		}
+		key = (System.getGlobalVariableValueByName("ESShadow.shadowsprites") == 0) ? stringformat("shadow_run_%d", System.getGlobalVariableValueByName("shadow.FrameCounter")/3) : stringformat("shadow_run_old_%d", System.getGlobalVariableValueByName("shadow.FrameCounter")/3)
+		System.setGlobalVariableValueByName("shadow.RunFrameOld", animationSprite)
+	}
 	else
 	{
 		return base.Standalone.drawCharacterSprite(character, variant, px, py, asSmallGhost)
 	}
+	
 	
 //copy start
 	if (!Game.getSetting(SETTING_SMOOTH_ROTATION))
@@ -228,6 +266,74 @@ function bool Standalone.drawCharacterSprite(u8 character, u8 variant, s16 px, s
 				useAfterImages = ((u8[characterAddress + 0x2b] & char.bonus.SPEED_UP) != 0)
 			}
 		}
+	}
+
+	if (global.xtrachar == 5)
+	{
+		//boost wave - whevener a boost is initiated
+		if (System.getGlobalVariableValueByName("shadow.BoostWave") > 0)
+		{
+			if (System.getGlobalVariableValueByName("shadow.BoostWave") == 1) //set the coordinates and the starting old camera
+			{
+				System.setGlobalVariableValueByName("shadow.BoostPX", px)
+				System.setGlobalVariableValueByName("shadow.BoostPY", py)
+				System.setGlobalVariableValueByName("shadow.BoostOLDX", camera.position.x.u16)
+				System.setGlobalVariableValueByName("shadow.BoostOLDY", camera.position.y.u16)
+			}
+			//calculate where the effect moves on screen then set old camera coords
+			System.setGlobalVariableValueByName("shadow.BoostPX", System.getGlobalVariableValueByName("shadow.BoostPX") + (System.getGlobalVariableValueByName("shadow.BoostOLDX") - camera.position.x.u16))
+			System.setGlobalVariableValueByName("shadow.BoostPY", System.getGlobalVariableValueByName("shadow.BoostPY") + (System.getGlobalVariableValueByName("shadow.BoostOLDY") - camera.position.y.u16))
+			System.setGlobalVariableValueByName("shadow.BoostOLDX", camera.position.x.u16)
+			System.setGlobalVariableValueByName("shadow.BoostOLDY", camera.position.y.u16)
+			
+			u64 key3 = stringformat("shadow_boost_start_%d", System.getGlobalVariableValueByName("shadow.BoostWave")/2 )
+			//account for gravity --> 0x02		
+			Renderer.drawCustomSprite(key3, System.getGlobalVariableValueByName("shadow.BoostPX"), System.getGlobalVariableValueByName("shadow.BoostPY"), atex, flags, renderQueue+1, 0, 200)
+			//Increase the counter and "kill" the object if needed
+			System.setGlobalVariableValueByName("shadow.BoostWave", System.getGlobalVariableValueByName("shadow.BoostWave") + 1)
+			if (System.getGlobalVariableValueByName("shadow.BoostWave") >=10)
+				System.setGlobalVariableValueByName("shadow.BoostWave", 0)
+		}
+	//boost Flame -- just like the drop, but uses Shadow's angle too
+	//this one needs more work -> be angled on the carnival night bars
+	//be turned on horizontal circle running (aiz1 fbz...) done in airdash animation above
+	//also turn off the boost on non vertical spinning animations in hcz, cnz, ssz...
+		if (System.getGlobalVariableValueByName("shadow.isBoosting"))
+		{
+			if (char.state == char.state.RUNNING)
+			{
+				u64 key3 = stringformat("shadow_boost_%d", level.framecounter & 0x03)
+				if (global.zone == 0x03 && (animationSprite >= 0x49 && animationSprite <= 0x54)) //carnival night pole. fbz uses some frames when entering cylinders, so I have to check the stage
+				{
+					if (System.getGlobalVariableValueByName("shadow.rtlcnzbar"))
+						Renderer.drawCustomSprite(key3, px, py, atex, flags, renderQueue+1, 0xe0, 200)
+					else
+						Renderer.drawCustomSprite(key3, px, py, atex, flags, renderQueue+1, 0x20, 200)
+				}
+				else if (animationSprite >= 0x69 && animationSprite <= 0x77)||(animationSprite >= 0x49 && animationSprite <= 0x54)
+				{ //if boosting on horizontal circle animation must account for the x position difference for the direction
+					if (char.position.x.u16 >= System.getGlobalVariableValueByName("shadow.BoostXTRACK")) //no angle
+						Renderer.drawCustomSprite(key3, px, py, atex, 0x00, renderQueue+1, 0x00, 200)
+					else //flip X, no angle
+						Renderer.drawCustomSprite(key3, px, py, atex, 0x01, renderQueue+1, 0x00, 200)
+				}
+				else //normal
+					Renderer.drawCustomSprite(key3, px, py, atex, flags, renderQueue+1, angle, 200)
+				
+				System.setGlobalVariableValueByName("shadow.BoostXTRACK", char.position.x.u16)
+			}
+			else
+				System.setGlobalVariableValueByName("shadow.isBoosting", false)
+		}
+		
+		if (isPlayer1)
+		{
+			//Handle shadow's homing and boost as well
+			if (System.getGlobalVariableValueByName("shadow.isBoosting") || System.getGlobalVariableValueByName("shadow.Homing") == 2)
+				useAfterImages = true
+		}
+		
+	//SHADOW EFFECTS - END
 	}
 
 	if (useAfterImages)
