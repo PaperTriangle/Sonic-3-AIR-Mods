@@ -93,6 +93,10 @@
 	{
 		"File": "SSZ_Zone_Card_Sonic.bin"
 	},
+	"SSZ_Zone_Card_Sonic_Compat":
+	{
+		"File": "SSZ_Zone_Card_Sonic_Compat.bin"
+	},
 	"FBZ_Zone_Card":
 	{
 		"File": "FBZ_Zone_Card.bin"

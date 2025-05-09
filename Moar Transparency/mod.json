@@ -1,0 +1,280 @@
+{
+	"Metadata": 
+	{
+		"Name": "Moar Transparency",
+		"UniqueID": "moar-transparency",
+		"Author": "PaperTriangle",
+		"Description": "Adds varying levels of transparency to more objects! Credit to Useott and Raine for some code that was adapted from A.I.R. Freshener.",
+		"ModVersion": "1.0"
+	},
+	"Settings":
+	{
+		"List":
+		[
+			{
+				"InternalName": "mt.instashield",
+				"DisplayName": "Insta-Shield",
+				"Variable": "mt.instashield",
+				"Category": "Shields",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "mt.fireshield",
+				"DisplayName": "Fire Shield",
+				"Variable": "mt.fireshield",
+				"Category": "Shields",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "mt.bubbleshield",
+				"DisplayName": "Bubble Shield",
+				"Variable": "mt.bubbleshield",
+				"Category": "Shields",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "mt.lightningshield",
+				"DisplayName": "Lightning Shield",
+				"Variable": "mt.lightningshield",
+				"Category": "Shields",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "mt.bugernaught",
+				"DisplayName": "HCZ Bugernaught",
+				"Variable": "mt.bugernaught",
+				"Category": "Badniks",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "mt.dragonfly",
+				"DisplayName": "MHZ Dragonfly",
+				"Variable": "mt.dragonfly",
+				"Category": "Badniks",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "mt.toxomister",
+				"DisplayName": "LRZ Toxomister (PNG)",
+				"Variable": "mt.toxomister",
+				"Category": "Badniks",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "mt.dither",
+				"DisplayName": "Dithered Flames / Smoke",
+				"Variable": "mt.dither",
+				"Category": "Effects",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "mt.bubbles",
+				"DisplayName": "Bubbles",
+				"Variable": "mt.bubbles",
+				"Category": "Effects",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "mt.electricity",
+				"DisplayName": "Electricity",
+				"Variable": "mt.electricity",
+				"Category": "Effects",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "mt.snowfall",
+				"DisplayName": "Snowfall",
+				"Variable": "mt.snowfall",
+				"Category": "Effects",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "mt.lasers",
+				"DisplayName": "Small Lasers",
+				"Variable": "mt.lasers",
+				"Category": "Effects",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "mt.energyballs",
+				"DisplayName": "Energy Balls",
+				"Variable": "mt.energyballs",
+				"Category": "Effects",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "mt.telebeam",
+				"DisplayName": "Teleporter Beams (PNG)",
+				"Variable": "mt.telebeam",
+				"Category": "Effects",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "mt.fbzlaser",
+				"DisplayName": "FBZ2 Barrier Eggman",
+				"Variable": "mt.fbzlaser",
+				"Category": "Big Boss Effects",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "mt.supermecha",
+				"DisplayName": "SSZ Super Mecha",
+				"Variable": "mt.supermecha",
+				"Category": "Big Boss Effects",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "mt.dez1laser",
+				"DisplayName": "DEZ1 Red Eye (PNG)",
+				"Variable": "mt.dez1laser",
+				"Category": "Big Boss Effects",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "mt.dez2laser",
+				"DisplayName": "Boss DEZ2 Huge Eggman Robo (PNG)",
+				"Variable": "mt.dez2laser",
+				"Category": "Big Boss Effects",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "mt.fixlbz2",
+				"DisplayName": "Beam Rocket Flame Flash",
+				"Variable": "mt.fixlbz2",
+				"Category": "Extras",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "mt.teleframe",
+				"DisplayName": "Teleporter Frames (PNG)",
+				"Variable": "mt.teleframe",
+				"Category": "Extras",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "mt.amyheart",
+				"DisplayName": "ES Amy Heart",
+				"Variable": "mt.amyheart",
+				"Category": "Extras",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "mt.amytrail",
+				"DisplayName": "ES Amy Hammer Trail Flash",
+				"Variable": "mt.amytrail",
+				"Category": "Extras",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			}
+		]
+	}
+}

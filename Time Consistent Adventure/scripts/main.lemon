@@ -11,6 +11,8 @@ global bool tca.fadetype
 global bool tca.leftescape
 global bool tca.fbz_explosions
 global bool tca.ssz_knux_fade
+global bool tca.bg_stars
+global bool tca.zone_icons
 
 global u8 transition_state = 0
 global u16 transition_time = 0
@@ -60,28 +62,35 @@ function void yieldExecution()
 	}
 	
 	// Data Select Palettes
-	
-	tca.ds_char = u8[0xffffe6ac + u32(max(dataselect.slot_selected - 1, 0)) * 10 + 0x02] >> 4
-	
-	if (tca.ds_char == 3 || tca.ds_char == 4)
+	if (tca.zone_icons)
 	{
-		if (tca.soz)
-			System.loadExternalRawData("SOZ_Zone_Card_Knux", 0x00CC18)
-		if (tca.ssz)
-			System.loadExternalRawData("SSZ_Zone_Card_Knux", 0x00CC78)
-	}
-	else
-	{
-		if (tca.soz)
-			System.loadExternalRawData("SOZ_Zone_Card_Sonic", 0x00CC18)
-		if (tca.ssz)
-			System.loadExternalRawData("SSZ_Zone_Card_Sonic", 0x00CC78)
-	}
-	
+		tca.ds_char = u8[0xffffe6ac + u32(max(dataselect.slot_selected - 1, 0)) * 10 + 0x02] >> 4
+		
+		if (tca.ds_char == 3 || tca.ds_char == 4)
+		{
+			if (tca.soz)
+				System.loadExternalRawData("SOZ_Zone_Card_Knux", 0x00CC18)
+			if (tca.ssz)
+				System.loadExternalRawData("SSZ_Zone_Card_Knux", 0x00CC78)
+		}
+		else
+		{
+			if (tca.soz)
+				System.loadExternalRawData("SOZ_Zone_Card_Sonic", 0x00CC18)
+			if (tca.ssz)
+			{
+				if (Mods.isModActive("Moar Transparency") && System.getGlobalVariableValueByName("mt.teleframe"))
+					System.loadExternalRawData("SSZ_Zone_Card_Sonic_Compat", 0x00CC78)
+				else
+					System.loadExternalRawData("SSZ_Zone_Card_Sonic", 0x00CC78)
+			}
+		}
+		
 		if (tca.fbz)
 			System.loadExternalRawData("FBZ_Zone_Card", 0x00CBF8)
 		if (tca.lbz)
 			System.loadExternalRawData("LBZ_Zone_Card", 0x00CBB8)
+	}
 	
 	// Zone Logic
 	if (tca.mgz && global.zone_act == 0x0200) // MGZ Act 1
@@ -134,7 +143,7 @@ function void yieldExecution()
 	{
 		System.loadExternalRawData("FBZ1_Palette", 0x052dd0)
 		
-		if (tca.infbz1forreal)
+		if (tca.infbz1forreal && tca.bg_stars)
 		{
 			for (u16 fs = 0 ; fs*128 < getScreenWidth(); fs++)
 			{
@@ -226,7 +235,7 @@ function void yieldExecution()
 	{
 		if (transition_state == 0 )
 		{
-			if (!tca.knux_stars_off)
+			if (!tca.knux_stars_off && tca.bg_stars)
 			{
 			
 				for (u16 fs = 0 ; fs*128 < getScreenWidth(); fs++)
@@ -303,42 +312,51 @@ function void yieldExecution()
 //# address-hook(0x00d96a) end(0x00d9f2)
 function void fn00d96a()
 {
-	if (u16[A0 + 0x36] == 0x007 && s16[0xffffb04a + 0x2e] == 0)
+	if (tca.zone_icons)
 	{
-		if (tca.fbz)
+		if (u16[A0 + 0x36] == 0x007 && s16[0xffffb04a + 0x2e] == 0)
 		{
-			SpriteHandle dataselpreview = Renderer.addSpriteHandle("fbz_icon", (objA0.position.x.u16 + getScreenExtend() - 208) - getScreenExtend() + 40, 16, 0x9ff9)
-			dataselpreview.setFlags(0x40)
+			if (tca.fbz)
+			{
+				SpriteHandle dataselpreview = Renderer.addSpriteHandle("fbz_icon", (objA0.position.x.u16 + getScreenExtend() - 208) - getScreenExtend() + 40, 16, 0x9ff9)
+				dataselpreview.setFlags(0x40)
+			}
 		}
-	}
-	if (u16[A0 + 0x36] == 0x005 && s16[0xffffb04a + 0x2e] == 0)
-	{
-		if (tca.lbz)
-		{	
-			u64 lbzkey = "lbz_icon"
-			if (tca.ds_char == 0x03 || tca.ds_char == 0x04)
-				lbzkey = "lbz_icon_knux"
-				
-			SpriteHandle dataselpreview = Renderer.addSpriteHandle(lbzkey, (objA0.position.x.u16 + getScreenExtend() - 208) - getScreenExtend() + 40, 16, 0x9ff9)
-			dataselpreview.setFlags(0x40)
-		}
-	}
-	if (u16[A0 + 0x36] == 0x008 && s16[0xffffb04a + 0x2e] == 0)
-	{
-		if (tca.fbz)
+		if (u16[A0 + 0x36] == 0x005 && s16[0xffffb04a + 0x2e] == 0)
 		{
-			SpriteHandle dataselpreview = Renderer.addSpriteHandle("soz_icon", (objA0.position.x.u16 + getScreenExtend() - 208) - getScreenExtend() + 40, 16, 0x9ff9)
-			dataselpreview.setFlags(0x40)
+			if (tca.lbz)
+			{	
+				u64 lbzkey = "lbz_icon"
+				if (tca.ds_char == 0x03 || tca.ds_char == 0x04)
+					lbzkey = "lbz_icon_knux"
+					
+				SpriteHandle dataselpreview = Renderer.addSpriteHandle(lbzkey, (objA0.position.x.u16 + getScreenExtend() - 208) - getScreenExtend() + 40, 16, 0x9ff9)
+				dataselpreview.setFlags(0x40)
+			}
 		}
-	}
-	else if (u16[A0 + 0x36] == 0x000b && s16[0xffffb04a + 0x2e] == 0 && (tca.ds_char == 0x03 || tca.ds_char == 0x04))
-	{
-		if (tca.ssz && (tca.ds_char == 0x03 || tca.ds_char == 0x04))
+		if (u16[A0 + 0x36] == 0x008 && s16[0xffffb04a + 0x2e] == 0)
 		{
-			SpriteHandle dataselpreview = Renderer.addSpriteHandle("ssz_icon_knux", (objA0.position.x.u16 + getScreenExtend() - 208) - getScreenExtend() + 40, 16, 0x9ff9)
-			dataselpreview.setFlags(0x40)
+			if (tca.fbz)
+			{
+				SpriteHandle dataselpreview = Renderer.addSpriteHandle("soz_icon", (objA0.position.x.u16 + getScreenExtend() - 208) - getScreenExtend() + 40, 16, 0x9ff9)
+				dataselpreview.setFlags(0x40)
+			}
+		}
+		else if (u16[A0 + 0x36] == 0x000b && s16[0xffffb04a + 0x2e] == 0)
+		{
+			if (tca.ssz && (tca.ds_char == 0x03 || tca.ds_char == 0x04))
+			{
+				SpriteHandle dataselpreview = Renderer.addSpriteHandle("ssz_icon_knux", (objA0.position.x.u16 + getScreenExtend() - 208) - getScreenExtend() + 40, 16, 0x9ff9)
+				dataselpreview.setFlags(0x40)
+			}
+			else if (Mods.isModActive("Moar Transparency") && System.getGlobalVariableValueByName("mt.teleframe"))
+			{
+				SpriteHandle dataselpreview = Renderer.addSpriteHandle("ssz_icon_compat", (objA0.position.x.u16 + getScreenExtend() - 208) - getScreenExtend() + 40, 16, 0x9ff9)
+				dataselpreview.setFlags(0x40)
+			}
 		}
 	}
+	
 	base.fn00d96a()
 }
 
@@ -629,6 +647,42 @@ function void fn085ee6()
 {
 	tca.knux_stars_off = 1
 	base.fn085ee6()
+}
+
+// Fix for Knuckles falling in the floor
+//# address-hook(0x07ccb0) end(0x07ccf8)
+function void fn07ccb0()
+{
+	if (!tca.ssz)
+	{
+		base.fn07ccb0()
+		return
+	}
+	
+	--objA0.countdown_value
+	if (objA0.countdown_value == 0)
+	{
+		A1 = 0xffffb000
+		objA1.animation.sprite = 0xcb		// Set Knuckles' dropping sprite
+		UpdatePlayer1SpritePatterns()
+	}
+
+	UpdateMovementSimple()
+	A1 = 0xffffb000
+	objA1.position.x.u16 = objA0.position.x.u16
+	objA1.position.y.u16 = objA0.position.y.u16
+	CheckGroundCollision()
+	if (D1.s16 >= 0)
+	{
+		return
+	}
+
+	A1 = 0xffffb000
+	StopObjectA1()
+	u8[A1 + 0x2e] = 0
+	objA1.position.y.u16 = 0x4a8
+
+	UnloadObject()
 }
 
 //------------------

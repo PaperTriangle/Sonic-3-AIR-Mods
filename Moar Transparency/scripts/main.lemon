@@ -1,0 +1,1170 @@
+global bool mt.instashield
+global bool mt.fireshield
+global bool mt.bubbleshield
+global bool mt.lightningshield
+
+global bool mt.snowfall
+
+global bool mt.dither
+global bool mt.electricity
+global bool mt.bubbles
+
+global bool mt.lasers
+global bool mt.energyballs
+//global bool mt.fireball
+global bool mt.fbzlaser
+global bool mt.dez1laser
+global bool mt.dez2laser
+global bool mt.supermecha
+
+global bool mt.bugernaught
+global bool mt.dragonfly
+global bool mt.toxomister
+
+global bool mt.telebeam
+global bool mt.teleframe
+
+global bool mt.fixlbz2
+
+global bool mt.amyheart
+global bool mt.amytrail
+
+global u8 dez_laser_val
+
+function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
+{
+	// This function gets called once when rendering an object, even if it consists of multiple VDP sprites
+	//  -> That is in contrast to e.g. "Standalone.onDrawVdpSprite" which gets called for each VDP sprite
+	//  -> So if an object's sprites should be replaced with a new loaded graphics, this here is the place to go
+
+	u8 gameMode = global.game_mode & 0x7f
+	bool prioFlag = (objA0.sprite_attributes & sprite_attribute.PRIORITY) != 0
+
+	if (gameMode == 0x0c || gameMode == 0x08)
+	{
+		// Direct object rendering = replacement with custom sprites initialized from the ROM data, but independent from patterns in VRAM
+		if (DIRECT_OBJECT_RENDERING)
+		{
+			
+			// Shield rendering code adapted from Raine's A.I.R. Freshener branch of Sonic 3 A.I.R. - Credit goes to Useott to Raine
+			
+			// Insta-Shield
+			if (mt.instashield && objA0.update_address == 0x01952a && objA0.update_address != 0x019732)
+			{
+				u64 key = Renderer.setupCustomCharacterSprite(objA0.shield.art_offset, objA0.shield.pattern_offset, objA0.mapping_offset, objA0.animation.sprite, 0x00)
+				Renderer.drawSprite(key, px, py, 0x00, objA0.render_flags | (prioFlag ? SPRITE_FLAG_PRIO : 0), renderQueue, 0, 208)
+				return true
+			}
+			
+			// Lightning Shield
+			if (mt.lightningshield && objA0.update_address == 0x01952a && objA0.update_address == 0x019732)
+			{
+				u64 key = Renderer.setupCustomCharacterSprite(objA0.shield.art_offset, objA0.shield.pattern_offset, objA0.mapping_offset, objA0.animation.sprite, 0x00)
+				
+				if (ROMDataAnalyser.isEnabled())
+				{
+					string category = (objA0.update_address == 0x019602) ? "shield_fire" : (objA0.update_address == 0x019732) ? "shield_lightning" : (objA0.update_address == 0x019922) ? "shield_bubble" : "instaShield"
+					Renderer.extractCustomSprite(key, category, objA0.animation.sprite, 0x00)
+				}
+				
+				Renderer.drawSprite(key, px, py, 0x00, objA0.render_flags | (prioFlag ? SPRITE_FLAG_PRIO : 0), renderQueue, 0, 224)
+				return true
+			}
+			
+			// Bubble Shield
+			if (mt.bubbleshield && objA0.update_address == 0x019922)
+			{
+				if (objA0.animation.sprite > 8)
+					objA0.value26 = objA0.animation.sprite
+				else
+					objA0.flags2e = objA0.animation.sprite
+				u64 key
+				key = Renderer.setupCustomCharacterSprite(objA0.shield.art_offset, objA0.shield.pattern_offset, objA0.mapping_offset, objA0.value26, 0x00)
+				Renderer.drawSprite(key, px, py, 0x00, objA0.render_flags | (prioFlag ? SPRITE_FLAG_PRIO : 0), renderQueue, 0, 192)
+				if (objA0.animation.sprite <= 10)
+				{
+					key = Renderer.setupCustomCharacterSprite(objA0.shield.art_offset, objA0.shield.pattern_offset, objA0.mapping_offset, objA0.flags2e, 0x00)
+					Renderer.drawSprite(key, px, py, 0x00, objA0.render_flags | (prioFlag ? SPRITE_FLAG_PRIO : 0), renderQueue, 0, 192)
+				}
+				return true
+			}
+			
+			// Flame Shield
+			if (mt.fireshield && objA0.update_address == 0x019602)
+			{
+				if (objA0.animation.sprite > 8)
+					objA0.value26 = objA0.animation.sprite
+				else
+					objA0.flags2e = objA0.animation.sprite
+				u64 key
+				key = Renderer.setupCustomCharacterSprite(objA0.shield.art_offset, objA0.shield.pattern_offset, objA0.mapping_offset, objA0.value26, 0x00)
+				Renderer.drawSprite(key, px, py, 0x00, objA0.render_flags | (prioFlag ? SPRITE_FLAG_PRIO : 0), objA0.value26 < 0x0f ? 0x9f80 : 0x9e00, 0, 0xff)
+				if (objA0.value26 >= 0x0f)
+				{
+					key = Renderer.setupCustomCharacterSprite(objA0.shield.art_offset, objA0.shield.pattern_offset, objA0.mapping_offset, objA0.flags2e, 0x00)
+					Renderer.drawSprite(key, px, py, 0x00, objA0.render_flags | (prioFlag ? SPRITE_FLAG_PRIO : 0), 0x9e01, 0, 0xff)
+					Renderer.drawSprite(key, px, py, 0x00, objA0.render_flags | (prioFlag ? SPRITE_FLAG_PRIO : 0), 0x9f80, 0, 192)
+				}
+				return true
+			}
+			
+		}
+		
+		if (mt.dez1laser)
+			// DEZ1 Laser
+			if (objA0.update_address == 0x07ea3c)
+			{
+				Renderer.drawSprite(stringformat("laser_%d", level.framecounter % 3), px, 0xb0, 0x00, objA0.render_flags | (prioFlag ? SPRITE_FLAG_PRIO : 0), renderQueue, 0, 192)
+				
+				return true
+			}
+			else if (objA0.update_address == 0x07ea9a)
+			{
+				return true
+			}
+		}
+		
+		if ((mt.amyheart || mt.amytrail) && objA0.update_address == 0x2042F0)
+		{
+			u8 flags = ((objA0.render_flags & 0x01) ? SPRITE_FLAG_FLIP_X : 0) | ((objA0.render_flags & 0x02) ? SPRITE_FLAG_FLIP_Y : 0) | ((objA0.sprite_attributes & 0x8000) ? SPRITE_FLAG_PRIO : 0)
+			py -= 2
+			if (mt.amyheart && objA0.subtype2c == 0x02 && objA0.value26 == 0x02) // Heart
+			{
+				Renderer.drawSprite("amyheart_02t", px, py, 0, flags | u8[A0 + 0x2b], renderQueue, 0, 127)
+				return true
+			}
+			else if (mt.amytrail && objA0.subtype2c == 0x03) // Hammer swing
+			{
+				if (level.framecounter & 0x02)
+					Renderer.drawCustomSprite(stringformat("amyhammerswing_0%d", objA0.value26), px, py, 0, flags | u8[A0 + 0x2b], renderQueue, 0, 0xffffffff, 0x10000 - 0x1000)
+				return true
+			}
+		}
+	
+	
+	return base.Standalone.onWriteToSpriteTable(px, py, renderQueue)
+}
+
+function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16 renderQueue)
+{
+
+	// Dithered Plume Effects
+	if (mt.dither)
+	{
+		// Explosions from AIZ2 Green Bomber Bombs
+		if (objA0.mapping_offset == 0x23c1b2)
+		{
+			
+			if (objA0.animation.frame == 0x05)
+			{
+				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 64)
+				Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 64)
+			}
+			else if (objA0.animation.frame == 0x06)
+			{
+				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 112)
+				Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 112)
+			}
+			else
+			{
+				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 255)
+			}
+			return true
+		}
+		
+		// AIZ1 / FBZ2 Flame Thrower
+		if (objA0.mapping_offset == 0x36165c || objA0.mapping_offset == 0x071090)
+		{
+			if (objA0.animation.sprite == 0x04)
+			{
+				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 127)
+				Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 127)
+				
+				return true
+			}
+		}
+		else if (objA0.mapping_offset == 0x83ffc)
+		{
+			if (objA0.animation.sprite >= 0x04)
+			{
+				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 112)
+				Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 112)
+				
+				return true
+			}
+		}
+		
+		// ICZ2 Boss Cloud
+		if (objA0.mapping_offset == 0x362cb4)
+		{
+			if (objA0.animation.sprite == 0x0f || objA0.animation.sprite == 0x0a)
+			{
+				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 127)
+				Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 127)
+				
+				return true
+			}
+		}
+		
+		// DEZ2 Flame Thrower
+		if (objA0.mapping_offset == 0x187888)
+		{
+			if (objA0.animation.sprite == 0x0b || objA0.animation.sprite == 0x11 || objA0.animation.sprite == 0x12)
+			{
+				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 96)
+				Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 96)
+				
+				return true
+			}
+		}
+		
+		// HPZ Dust
+		if (objA0.update_address == 0x01abb6 || objA0.update_address == 0x06520a)
+		{
+			if (objA0.animation.sprite == 0x16 || objA0.animation.sprite == 0x17)
+			{
+				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 127)
+				Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 127)
+				return true
+			}
+		}
+	}
+	
+	// Shields
+	
+	// Lightning Shield + Spark
+	if (mt.lightningshield && objA0.mapping_offset == 0x019dc8)
+	{
+		Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 208)
+		
+		return true
+	}
+
+	// Energy Balls
+	if (mt.energyballs)
+	{
+		// Enemy Energy Balls (HCZ / MGZ / FBZ / LBZ)
+		if (objA0.update_address == 0x086d5e && (global.zone == 0x01 || global.zone == 0x02 || global.zone == 0x04 || global.zone == 0x06))
+		{
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
+			
+			return true
+		}
+		
+		// LRZ Wall Thing Energy Balls
+		if (objA0.update_address == 0x042ee8)
+		{
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
+			
+			return true
+		}
+		
+		// LRZ1 Boss Energy Balls
+		if (objA0.update_address == 0x078a1c)
+		{
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
+			
+			return true
+		}
+		
+		// DEZ Ball Barrier Platforms
+		if (objA0.update_address == 0x047e8c || objA0.update_address == 0x047e62 || objA0.update_address == 0x047f2c || objA0.update_address == 0x047f56)
+		{
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
+			
+			return true
+		}
+	}
+	
+	// Electricity!
+	if (mt.electricity)
+	{
+		// CNZ Electricity
+		if (objA0.update_address == 0x089256 || objA0.update_address == 0x0892a0)
+		{
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
+			
+			return true
+		}
+		
+		// CNZ1 Boss Electricity
+		if (objA0.update_address == 0x06df4a || objA0.update_address == 0x06df94)
+		{
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 224)
+			
+			return true
+		}
+		
+		// CNZ2 Boss Electricity
+		if (objA0.update_address == 0x06eb16 || objA0.update_address == 0x06eb0c)
+		{
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
+			
+			return true
+		}
+		
+		// DEZ Electricity
+		if (objA0.update_address == 0x0478e2)
+		{
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 224)
+			
+			return true
+		}
+	}
+	
+	// Lasers!
+	if (mt.lasers)
+	{
+		// LBZ Enemy Lasers
+		if (objA0.update_address == 0x08c8e6 || objA0.update_address == 0x01abb6)
+		{
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
+			
+			return true
+		}
+		
+		// LBZ2 Laser
+		if (objA0.update_address == 0x0732f6 || objA0.update_address == 0x073358 || objA0.update_address == 0x01abb6)
+		{
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
+			
+			return true
+		}
+		
+		// SOZ2 Laser
+		if (objA0.update_address == 0x077fbc || objA0.update_address == 0x077eb8)
+		{
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
+			
+			return true
+		}
+		
+		// SSZ Laser
+		if (objA0.update_address == 0x0917b4)
+		{
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
+			
+			return true
+		}
+	}
+	
+	if (mt.fbzlaser)
+	{
+		// FBZ2 Laser
+		if (objA0.update_address == 0x070220 || objA0.update_address == 0x08488a)
+		{
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
+			
+			return true
+		}
+		
+		// FBZ2 Barrier
+		if (objA0.update_address == 0x070152)
+		{
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 160)
+			
+			return true
+		}
+	}
+	
+	// DEZ1 Laser
+	if (mt.dez1laser && objA0.update_address == 0x07ea12)
+	{
+		Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
+		
+		return true
+	}
+	
+	
+	// DEZ2 Laser
+	if (mt.dez2laser && (objA0.update_address == 0x0808fa || objA0.update_address == 0x080810))
+	{
+		Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
+		
+		return true
+	}
+	
+	// Fire Balls
+	//if (mt.fireball)
+	//{
+	//	// AIZ2 Boss Fire Balls
+	//	if (objA0.update_address == 0x069914 || objA0.update_address == 0x069908 || objA0.update_address == 0x06998a)
+	//	{
+	//		Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 224)
+	//		
+	//		return true
+	//	}
+	//	
+	//	// LRZ Lava Balls
+	//	if (objA0.update_address == 0x042c80)
+	//	{
+	//		Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 224)
+	//		
+	//		return true
+	//	}
+	//	
+	//	// LRZ Worm Flames
+	//	if (objA0.update_address == 0x08f95c)
+	//	{
+	//		Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 224)
+	//		
+	//		return true
+	//	}
+	//}
+	
+	// Bubbles!
+	if (mt.bubbles)
+	{
+		// Player's Bubbles
+		if (objA0.update_address == 0x018164)
+		{
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 160)
+			
+			return true
+		}
+		
+		// HCZ Fan Bubbles
+		if (objA0.update_address == 0x030834)
+		{
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 127)
+			
+			return true
+		}
+		
+		// Oxygen Bubbles
+		if (objA0.update_address == 0x02f938)
+		{
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
+			
+			return true
+		}
+		
+		// HCZ Boss Bubbles
+		if (objA0.mapping_offset == 0x02fcb2)
+		{
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 160)
+			
+			return true
+		}
+	}
+	
+	// ICZ Snowfall
+	if (mt.snowfall && objA0.update_address == 0x08b73a)
+	{
+		Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 176)
+		return true
+	}
+	
+	// HCZ Bugernaught
+	if (mt.bugernaught)
+	{
+		if (objA0.update_address == 0x087a2a && (index == 0xac52 || index == 0xa452 || index == 0xb452 || index == 0xbc52))
+		{
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 127)
+			Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 127)
+			return true
+		}
+		else if (objA0.update_address == 0x087abc && (index == 0xa45a || index == 0xac5a || index == 0xb45a || index == 0xbc5a))
+		{
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 127)
+			Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 127)
+			return true
+		}
+	}
+	
+	// MHZ Dragonfly
+	// Dragonfly wing rendering code adapted from Raine's A.I.R. Freshener branch of Sonic 3 A.I.R. - Credit goes to Useott to Raine
+	if (mt.dragonfly && objA0.update_address == 0x08df52)
+	{
+		Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 127)
+		Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 127)
+		return true
+	}
+	
+	// LRZ Toxomister
+	if (mt.toxomister)
+	{
+		if (objA0.update_address == 0x08fedc && objA0.subtype2c == 0x00 && objA0.value3e < 56) // Only draw after spawning animation
+		{
+			u8 frameindex = (objA0.value3e % 56) / 8
+			Renderer.drawSprite(stringformat("mist_spawn_%d", frameindex), px, py, index, SPRITE_FLAG_PRIO, renderQueue, 0, 160)
+			
+			return true
+		}
+		else if (objA0.update_address == 0x08fedc && objA0.subtype2c == 0x00 && objA0.value3e >= 56) // Only draw after spawning animation
+		{
+			u8 frameindex = ((objA0.value3e - 56) % 48) / 8
+			Renderer.drawSprite(stringformat("mist_%d", frameindex), px, py, index, SPRITE_FLAG_PRIO, renderQueue, 0, 160)
+			
+			return true
+		}
+		else if (objA0.update_address == 0x08fedc && (objA0.subtype2c != 0x00 || objA0.value3e >= 0x11e)) // Remove other mists
+		{
+			return true
+		}
+
+		if (objA0.update_address == 0x08ff42) // The despawning puffs can render normally
+		{
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 80)
+			
+			return true
+		}
+	}
+	
+	// SSZ Super Mecha
+	if (mt.supermecha)
+	{
+		// SSZ Super Mecha Trails
+		if (objA0.update_address == 0x07c79c || objA0.update_address == 0x07c7d4 || objA0.update_address == 0x07c80a || objA0.update_address == 0x01abb6)
+		{
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
+			
+			return true
+		}
+			
+		// SSZ Super Mecha Energy Balls
+		if (objA0.update_address == 0x07c77a)
+		{
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
+			
+			return true
+		}
+	}
+	
+	
+	// Other
+	if (mt.teleframe)
+	{
+		// HPZ Teleporter Frame
+		if (objA0.mapping_offset == 0x046b3c && (index == 0x4537 || index == 0x6365 || index == 0xe365))
+		{
+			Renderer.drawSprite("teleporter_frame", px, py, index, SPRITE_FLAG_PRIO, renderQueue, 0, 0xff)
+			
+			return false
+		}
+		else if (objA0.mapping_offset == 0x046b3c && (index == 0x4d37 || index == 0x6b65 || index == 0xeb65))
+		{
+			return true
+		}
+	}
+	
+	//LBZ2 Eggman Flames
+	if (mt.fixlbz2 && objA0.update_address == 0x073384)
+		return level.framecounter & 1
+
+	return base.Standalone.onDrawVdpSprite(px, py, size, index, renderQueue)
+}
+
+function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 index, u16 renderQueue, u8 spriteCounter)
+{
+	if (mt.telebeam)
+	{
+		// Teleporter
+		if (objA0.update_address == 0x0459b4)
+		{
+			Renderer.drawSprite(stringformat("biimu_%d", min(u8[A0 + 0x46], 18)), px - 24, py, index, (global.zone == 0x0a) ? SPRITE_FLAG_PRIO : 0x00, renderQueue, 0, 192)
+			
+			return true
+		}
+
+		// Early Teleporter
+		if (objA0.mapping_offset == 0x046b3c)
+		{
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 160)
+			
+			return true
+		}
+	}
+	
+	return base.Standalone.onDrawVdpSpriteCompound(px, py, size, index, renderQueue, spriteCounter)
+}
+
+// Teleporter Adjustments
+
+// Teleporters in stages
+
+//# address-hook(0x045916) end(0x045990)
+function void fn045916()
+{
+	if (!mt.telebeam)
+	{
+		base.fn045916()
+		return
+	}
+	
+	if (u8[A0 + 0x47] != 0)
+	{
+		--u8[A0 + 0x47]
+		return
+	}
+
+	//if ((level.framecounter.low & 0x01) == 0)
+	//	return
+
+	A1 = A0 + 0x18
+	D0.u16 = objA0.position.y.u16
+	D1.u16 = objA0.compound.count - 1
+
+	while (D1.s16 >= 0)
+	{
+		u16[A1] = objA0.position.x.u16
+		u16[A1 + 0x02] = D0.u16
+		if (D1.u16 == 0)
+		{
+			u8[A0 + 0x46] ^= 0xff
+			if (u8[A0 + 0x46] & 0xff)
+			{
+				u8[A1 + 0x05] = 1
+			}
+			else
+			{
+				u8[A1 + 0x05] = 2
+				++objA0.compound.count
+			}
+		}
+		else
+		{
+			u8[A1 + 0x05] = 2
+			D0.u16 -= 0x20
+			A1 += 6
+		}
+
+		--D1.s16
+	}
+
+	if (objA0.compound.count >= 7 && u8[A0 + 0x46] == 0)
+	{
+		objA0.update_address = 0x045992
+		u8[A0 + 0x47] = 0x10
+	}
+	
+	DrawObject()
+}
+
+//# address-hook(0x045992) end(0x0459ae)
+function void fn045992()
+{
+	if (!mt.telebeam)
+	{
+		base.fn045992()
+		return
+	}
+	
+	--u8[A0 + 0x47]
+	if (u8[A0 + 0x47] != 0)
+	{
+		//if (level.framecounter.low & 0x01)
+		{
+			DrawObject()
+		}
+	}
+	else
+	{
+		objA0.update_address = 0x0459b4
+		objA0.compound.count = 1
+		fn0459b4()
+	}
+}
+
+//# address-hook(0x0459b4) end(0x045a64)
+function void fn0459b4()
+{
+	if (!mt.telebeam)
+	{
+		base.fn0459b4()
+		return
+	}
+	
+	if (level.framecounter.low & 0x01)
+	{
+		// Update position of the beam
+		D0.u16 = min(u16[A0 + 0x44], camera.position.y.u16 + 0x68)
+		objA0.position.y.u16 = D0.u16
+
+		D1.u16 = objA0.position.x.u16
+		D2 = u8[A0 + 0x46]
+		D3.u16 = D2.u16
+		D2.u16 = min(D2.u16, 0x12) + 6
+		D3.u16 <<= 3
+
+		A1 = (global.zone == 0x0a || global.zone == 0x16) ? 0x046734 : 0x0467fc
+		A1.u16 += D3.u16
+		A2 = A0 + 0x18
+		u16[A2]    = D1.u16 //- D2.u16
+		u16[A2+2]  = u16[A1] + D0.u16
+		u16[A2+4]  = u16[A1+2]
+		u16[A2+6]  = D1.u16 //+ D2.u16
+		u16[A2+8]  = u16[A1+4] + D0.u16
+		u16[A2+10] = u16[A1+6]
+		A2 += 12
+
+		if (objA0.base_state != 0)
+		{
+			--u8[A0 + 0x46]
+			if (s8[A0 + 0x46] >= 0)
+			{
+				DrawObject()
+				return
+			}
+
+			objA0.animation.sprite = 0x09
+			u16[A0 + 0x16] = 0
+			objA0.update_address = addressof(UnloadObject)
+			A1 = 0xffff0000 + objA0.respawn_entry
+			u8[A1 + 0x38] = 0
+		}
+		else
+		{
+			if (level.framecounter.low & 0x02)
+			{
+				if (u8[A0 + 0x46] < 0x18)
+				{
+					++u8[A0 + 0x46]
+					
+				}
+			}
+		}
+		
+	}
+	DrawObject()
+}
+
+// Teleporter ICZ Start
+//# address-hook(0x053ad4) end(0x053b9c)
+function void fn053ad4()
+{
+	if (!mt.telebeam)
+	{
+		base.fn053ad4()
+		return
+	}
+	
+	if (!allocDynamicObjectAfterA0())
+		return
+
+	objA0.update_address = 0x053ba2
+	objA0.render_flags = render_flag.WORLD
+	objA0.box_size.y = 0x10
+	objA0.box_size.x = 0x20
+	objA0.sprite_priority = 0x80
+	objA0.sprite_attributes = (sprite_attribute.PALETTE.LINE1 | 0x0347)
+	objA0.mapping_offset = 0x363c44
+	objA0.position.x.u16 = 0x3640
+	objA0.position.y.u16 = 0x0670
+	objA0.animation.sprite = 0x1a
+	objA0.value3e = u16[0xffffb000 + 0x14]
+	u16[A0 + 0x3c] = A1.u16
+
+	objA1.update_address = 0x0459b4
+	objA1.render_flags = (render_flag.COMPOUND | render_flag.WORLD)
+	u8[A1 + 0x05] = 0xff
+	objA1.box_size.y = 0x80
+	objA1.box_size.x = 0x18
+	objA1.sprite_priority = 0x80
+	objA1.sprite_attributes = (sprite_attribute.PALETTE.LINE1 | 0x055e)
+	objA1.mapping_offset = 0x046b3c
+	objA1.position.x.u16 = objA0.position.x.u16
+	objA1.position.y.u16 = objA0.position.y.u16
+	objA1.compound.count = 0x01
+	u16[A1 + 0x44] = objA0.position.y.u16 - 0x80
+	u8[A1 + 0x46] = 0x18
+	u16[A1 + 0x48] = A0.u16
+
+	fn053ba2()
+}
+
+// Teleporter SSZ Start
+//# address-hook(0x057c1e) end(0x057cd0)
+function void fn057c1e()
+{
+	if (!mt.telebeam)
+	{
+		base.fn057c1e()
+		return
+	}
+	
+	if (!allocDynamicObjectAfterA0())
+		return
+
+	objA0.update_address = 0x057cd2
+	objA0.position.y.u16 = 0x1000
+	u16[A0 + 0x38] = 0xff00
+	u16[A0 + 0x3c] = A1.u16
+
+	objA1.update_address = 0x0459b4
+	objA1.render_flags = (render_flag.COMPOUND | render_flag.WORLD)
+	objA1.box_size.y = 0x80
+	objA1.box_size.x = 0x18
+	objA1.sprite_priority = 0x80
+	objA1.sprite_attributes = (sprite_attribute.PRIORITY | sprite_attribute.PALETTE.LINE3 | 0x035c)
+	objA1.mapping_offset = 0x046b3c
+	objA1.position.x.u16 = objA0.position.x.u16
+	objA1.position.y.u16 = objA0.position.y.u16
+	objA1.compound.count = 0x01
+	u16[A1 + 0x44] = objA0.position.y.u16 - 0x88
+	u8[A1 + 0x46] = 0x18
+	u16[A1 + 0x48] = A0.u16
+
+	if (global.act == 0)
+	{
+		if (allocDynamicObjectAfterA1())
+		{
+			objA1.update_address = 0x057e34
+			u16[A1 + 0x2c] = 0x60
+
+		#if STANDALONE
+			Game.startSkippableCutscene()
+		#endif
+		}
+	}
+
+	u8[0xffffeed6] = 0xff
+	A1 = 0xffffb000
+	objA1.position.y.u16 = camera.position.y.u16 + 0x65
+	objA1.state = char.state.RUNNING
+	u8[A1 + 0x22] = 0
+	u8[A1 + 0x2e] = (control_flag.DISABLE_ANIMATION | control_flag.DISABLE_UPDATE)
+}
+
+// FBZ2 mid-boss
+//# address-hook(0x070152) end(0x07018c)
+function void fn070152()
+{
+	if (!mt.fbzlaser)
+	{
+		base.fn070152()
+		return
+	}
+	
+	A1 = 0xffff0000 + u16[A0 + 0x46]
+	if ((u8[A1 + 0x38] & 0x04) == 0)
+	{
+		u16 backup_px = objA0.position.x.u16
+		A1 = 0xffff0000 + u16[A0 + 0x44]
+		objA0.position.x.u16 = objA1.position.x.u16
+
+		D1 = 0x13
+		D2 = 0x50
+		D3.u16 = 0x60
+		D4.u16 = backup_px
+		fn01dc56()
+
+		//if ((global.framecounter.low & 0x01) == 0)
+		{
+			DrawObject()
+		}
+	}
+	else
+	{
+		UnloadObject()
+	}
+}
+
+// FBZ2 mid-boss laser
+//# address-hook(0x070220) end(0x07025c)
+function void fn070220()
+{
+	if (!mt.fbzlaser)
+	{
+		base.fn070220()
+		return
+	}
+	
+	u8[A0 + 0x28] = 0
+	if (objA0.animation.sprite == 0x08)
+	{
+		objA0.collision_attributes = (collision.flag.THREAT | collision.size.24x64)
+	}
+
+	A2 = 0xffffb000
+	if (u8[A2 + 0x05] != base_state.HURT)
+	{
+		A2 = 0xffffb04a
+		if (u8[A2 + 0x05] == base_state.HURT)
+		{
+			objA0.flags2a |= 0x40
+		}
+	}
+	else
+	{
+		objA0.flags2a |= 0x40
+	}
+
+	u8 oldsprite = objA0.animation.sprite
+	
+	Object.AnimationProgressByLocalA1()
+	Object.CountdownAndTrigger()
+	if (objA0.animation.sprite == 0x0a)
+		objA0.animation.sprite = oldsprite
+	
+	Enemy.DrawDynamicObject()
+}
+
+// DEZ2 Laser
+//# address-hook(0x08086c) end(0x080884)
+function void fn08086c()
+{
+	if (!mt.dez2laser)
+	{
+		base.fn08086c()
+		return
+	}
+	
+	Object.AnimationProgressByLocalA1.DistinctTimer()
+	if (!_equal())
+	{
+		D0 = 0
+		D0.u8 = objA0.animation.sprite
+		dez_laser_val = D0.u8
+	}
+	
+	if (dez_laser_val > 0)
+	{
+		for (u8 i = 0; i < getScreenWidth() / 2; i++)
+			Renderer.drawSprite(stringformat("dez_%d", dez_laser_val), u32(0x48 + getScreenExtend() + i*2), u32(objA0.position.y.u16 - camera.position.y.u16), 0x01, 0, 0x9fff, 0, 192)
+	}
+	
+	fn080fa6()
+	fn081024()
+	fn08494e()
+}
+
+
+// HCZ Bugernaught
+
+//# address-hook(0x087a2a) end(0x087a38)
+//# alias(fn087a2a) deprecated
+function void Bugernaut.BaseUpdate()
+{
+	if (!mt.bugernaught)
+	{
+		base.Bugernaut.BaseUpdate()
+		return
+	}
+	
+	// Targets:
+	//  - 0x087a42	-> objA0.base_state = 0x00
+	//  - 0x087a74	-> objA0.base_state = 0x02
+	//  - 0x087a92	-> objA0.base_state = 0x04
+	call tableLookupAddress(0x087a3c, objA0.base_state)
+	
+	objA0.animation.sprite = 0x01 + (global.framecounter / 2) % 2	
+	
+	Enemy.DrawOrUnload()
+}
+
+//# address-hook(0x087abc) end(0x087aca)
+function void fn087abc()
+{
+	if (!mt.bugernaught)
+	{
+		base.fn087abc()
+		return
+	}
+	
+	// Targets:
+	//  - 0x087ad4	-> objA0.base_state = 0x00
+	//  - 0x087ae6	-> objA0.base_state = 0x02
+	//  - 0x087b4c	-> objA0.base_state = 0x04
+	call tableLookupAddress(0x087ace, objA0.base_state)
+	
+	objA0.animation.sprite = 0x04 + (global.framecounter / 2) % 2	
+	
+	fn085180()
+}
+
+// MHZ Dragonfly
+// Dragonfly wing rendering code adapted from Raine's A.I.R. Freshener branch of Sonic 3 A.I.R. - Credit goes to Useott to Raine
+//# address-hook(0x08df52) end(0x08df62)
+function void fn08df52()
+{
+	if (!mt.dragonfly)
+	{
+		base.fn08df52()
+		return
+	}
+	
+	MoveWithParent()
+	
+	objA0.animation.sprite = 7 + (global.framecounter / 2) % 2
+
+	fn084920()
+}
+
+// LRZ Toxomister
+//# address-hook(0x08fe8e) end(0x08fec2)
+function void fn08fe8e()
+{
+	if (!mt.toxomister)
+	{
+		base.fn08fe8e()
+		return
+	}
+	
+	setupObjectAttributesBasic(0x09003a)
+
+	objA0.update_address = 0x08fec8
+	u32[A0 + 0x30] = 0x090074
+	D0.u8 = 0x0c - objA0.subtype2c
+	objA0.subtype2c = D0.u8
+	objA0.value2f = D0.u8 * 4
+	objA0.countdown_callback = 0x08fed4
+	objA0.value3e = 0x0000
+	fn08494e()
+}
+
+//# address-hook(0x08fedc) end(0x08ff3c)
+function void fn08fedc()
+{
+	if (!mt.toxomister)
+	{
+		base.fn08fedc()
+		return
+	}
+	
+	A1 = 0xffff0000 + u16[A0 + 0x46]
+	if ((u8[A1 + 0x2a] & 0x80) == 0)
+	{
+		MoveWithParent()
+		Object.AnimationProgressByLocalA1()
+		objA0.value3e++
+
+		//D0.u8 = (global.framecounter.low & 0x01) ? 0xff : 0x00
+		//if (objA0.subtype2c & 0x01)
+		//{
+		//	D0.u8 ^= 0xff
+		//}
+		//if (D0.u8 == 0)
+		{
+			fn084920()
+		}
+		return
+	}
+
+	objA0.velocity.x = 0
+	if (u8[A1 + 0x38] & 0x04)
+	{
+		fn090002()
+	}
+
+	objA0.velocity.y = 0
+	objA0.update_address = 0x08ff42
+	u32[A0 + 0x30] = 0x090085
+	objA0.countdown_callback = addressof(Object.TriggerUnloading)
+	fn0850d4()
+}
+
+// SSZ Super Mecha Energy Balls
+//# address-hook(0x07c77a) end(0x07c788)
+function void fn07c77a()
+{
+	if (!mt.supermecha)
+	{
+		base.fn07c77a()
+		return
+	}
+	
+	Object.animationProgress(0x07d6a3)
+	UpdateMovementStraightSimple()
+
+	if (objA0.animation.sprite == 0)
+		objA0.animation.sprite = 0x0d
+		
+	fn085180()
+}
+
+// Lightning Shield Spark
+//# address-hook(0x019874) end(0x019898)
+function void LightningShieldSpark.Update()
+{
+	if (!mt.lightningshield)
+	{
+		base.LightningShieldSpark.Update()
+		return
+	}
+	
+	if (super.active)
+	{
+		base.LightningShieldSpark.Update()
+		return
+	}
+	
+	UpdateMovementStraightSimple()
+	objA0.velocity.y += 0x18
+
+	Object.animationUpdate(0x019a2a)
+	objA0.animation.sprite = (global.framecounter >> 1 & 1) ? 0x0c : 0x0d
+	
+	if (objA0.base_state == 0)
+	{
+		DrawObject()
+	}
+	else
+	{
+		UnloadObject()
+	}
+	
+}
+
+// Bubble Shield
+//# address-hook(0x019922) end(0x019998)
+function void BubbleShield.Update()
+{
+	if (!mt.bubbleshield)
+	{
+		base.BubbleShield.Update()
+		return
+	}
+	
+	A2 = 0xffff0000 + objA0.shield.character_address
+	if ((u8[A2 + 0x2b] & char.bonus.INVINCIBLE) || (u8[A2 + 0x20] == char.state.DISAPPEARED))
+		return
+
+	// Lost shield?
+	if ((u8[A2 + 0x2b] & char.bonus.ANY_SHIELD) == 0)
+	{
+		u8[A2 + 0x2b] &= ~char.bonus.ALL_SHIELDS
+		objA0.update_address = addressof(InstaShield.Init)		// Insta-Shield
+		return
+	}
+
+	objA0.position.x.u16 = u16[A2 + 0x10]
+	objA0.position.y.u16 = u16[A2 + 0x14]
+	objA0.flags2a = u8[A2 + 0x2a] & char.flag.FACING_LEFT
+	if (global.inv_gravity)
+		objA0.flags2a |= 0x02
+
+	objA0.sprite_attributes = (objA0.sprite_attributes & ~sprite_attribute.PRIORITY) | (u16[A2 + 0x0a] & sprite_attribute.PRIORITY)
+
+	Object.animationUpdate(0x019a7a)
+	if (objA0.animation.sprite <= 10)
+	{
+		Object.animationUpdate(0x019a7a)
+		Object.animationUpdate(0x019a7a)
+	}
+
+	Shield.SharedSpriteUpdate()
+	DrawObject()
+}
+
+// ICZ Snowfall
+//# address-hook(0x08b73a) end(0x08b750)
+function void fn08b73a()
+{
+	if (!mt.snowfall)
+	{
+		base.fn08b73a()
+		return
+	}
+	
+	UpdateMovementStraightSimple()
+	if (objA0.render_flags & render_flag.VISIBLE)
+	{
+		objA0.flags38 ^= 0x01
+		DrawObject()
+	}
+	else
+	{
+		fn08b756()
+	}
+}
