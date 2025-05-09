@@ -34,7 +34,10 @@
 	"mist_4":  { "File": "mist_4.png", "Rect": "0,0,38,23", "Center": "16,8" },
 	"mist_5":  { "File": "mist_5.png", "Rect": "0,0,36,22", "Center": "16,8" },
 	
-	"teleporter_frame":  { "File": "teleporter_frame.png", "Rect": "0,0,48,24", "Center": "0,0" },
+	"teleporter_frame":  { "File": "teleporter_frame.png", "Rect": "0,0,48,24", "Center": "0,2" },
+	
+	"s2_laser":  { "File": "s2_laser.png", "Rect": "0,0,51,10", "Center": "0,-4" },
+	"s2_laser_boss":  { "File": "s2_laser_boss.png", "Rect": "0,0,21,10", "Center": "0,-4" },
 	
 	"laser_0":  { "File": "laser_0.png", "Rect": "0,0,48,100", "Center": "24,96" },
 	"laser_1":  { "File": "laser_1.png", "Rect": "0,0,48,100", "Center": "24,96" },

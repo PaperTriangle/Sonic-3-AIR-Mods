@@ -192,6 +192,18 @@
 				}
 			},
 			{
+				"InternalName": "mt.sszs2laser",
+				"DisplayName": "SSZ Flying Eggman (PNG)",
+				"Variable": "mt.sszs2laser",
+				"Category": "Big Boss Effects",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
 				"InternalName": "mt.supermecha",
 				"DisplayName": "SSZ Super Mecha",
 				"Variable": "mt.supermecha",

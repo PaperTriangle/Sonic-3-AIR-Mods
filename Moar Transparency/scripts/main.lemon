@@ -13,6 +13,7 @@ global bool mt.lasers
 global bool mt.energyballs
 //global bool mt.fireball
 global bool mt.fbzlaser
+global bool mt.sszs2laser
 global bool mt.dez1laser
 global bool mt.dez2laser
 global bool mt.supermecha
@@ -30,6 +31,7 @@ global bool mt.amyheart
 global bool mt.amytrail
 
 global u8 dez_laser_val
+global bool ssz_s2_laser
 
 function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 {
@@ -239,7 +241,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		// Enemy Energy Balls (HCZ / MGZ / FBZ / LBZ)
 		if (objA0.update_address == 0x086d5e && (global.zone == 0x01 || global.zone == 0x02 || global.zone == 0x04 || global.zone == 0x06))
 		{
-			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 208)
 			
 			return true
 		}
@@ -247,7 +249,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		// LRZ Wall Thing Energy Balls
 		if (objA0.update_address == 0x042ee8)
 		{
-			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 208)
 			
 			return true
 		}
@@ -255,7 +257,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		// LRZ1 Boss Energy Balls
 		if (objA0.update_address == 0x078a1c)
 		{
-			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 208)
 			
 			return true
 		}
@@ -263,7 +265,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		// DEZ Ball Barrier Platforms
 		if (objA0.update_address == 0x047e8c || objA0.update_address == 0x047e62 || objA0.update_address == 0x047f2c || objA0.update_address == 0x047f56)
 		{
-			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 208)
 			
 			return true
 		}
@@ -339,6 +341,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 			
 			return true
 		}
+		
 	}
 	
 	if (mt.fbzlaser)
@@ -356,6 +359,32 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		{
 			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 160)
 			
+			return true
+		}
+	}
+	
+	if (mt.sszs2laser)
+	{
+		// SSZ Sonic 2 Boss Laser
+		if (objA0.update_address == 0x07abee && (index == 0xac83 && !ssz_s2_laser))
+		{
+			Renderer.drawSprite("s2_laser", px, py, index, SPRITE_FLAG_PRIO, renderQueue, 0, 192)
+			return true
+		}
+		else if (objA0.update_address == 0x07abee && (index == 0xa483 && ssz_s2_laser))
+		{
+			Renderer.drawSprite("s2_laser", px - 0x23, py, index, SPRITE_FLAG_PRIO, renderQueue, 0, 192)
+			return true
+		}
+		else if (objA0.update_address == 0x07abee)
+		{
+			return true
+		}
+		
+		if (objA0.update_address == 0x07abc2)
+		{
+			ssz_s2_laser = index == 0xac83
+			Renderer.drawSprite("s2_laser_boss", (ssz_s2_laser) ? px + 0x10 : px, py, index, objA0.render_flags, renderQueue, 0, 192)
 			return true
 		}
 	}
@@ -411,7 +440,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		// Player's Bubbles
 		if (objA0.update_address == 0x018164)
 		{
-			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 160)
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
 			
 			return true
 		}
@@ -518,7 +547,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		// SSZ Super Mecha Energy Balls
 		if (objA0.update_address == 0x07c77a)
 		{
-			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 208)
 			
 			return true
 		}
@@ -531,7 +560,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		// HPZ Teleporter Frame
 		if (objA0.mapping_offset == 0x046b3c && (index == 0x4537 || index == 0x6365 || index == 0xe365))
 		{
-			Renderer.drawSprite("teleporter_frame", px, py, index, SPRITE_FLAG_PRIO, renderQueue, 0, 0xff)
+			Renderer.drawSprite("teleporter_frame", px, py, index, (index == 0xe365) ? SPRITE_FLAG_PRIO : 0x00, renderQueue, 0, 0xff)
 			
 			return false
 		}
