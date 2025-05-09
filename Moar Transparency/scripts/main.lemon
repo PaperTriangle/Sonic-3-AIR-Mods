@@ -49,7 +49,7 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 			// Shield rendering code adapted from Raine's A.I.R. Freshener branch of Sonic 3 A.I.R. - Credit goes to Useott to Raine
 			
 			// Insta-Shield
-			if (mt.instashield && objA0.update_address == 0x01952a && objA0.update_address != 0x019732)
+			if (mt.instashield && objA0.update_address == 0x01952a)
 			{
 				u64 key = Renderer.setupCustomCharacterSprite(objA0.shield.art_offset, objA0.shield.pattern_offset, objA0.mapping_offset, objA0.animation.sprite, 0x00)
 				Renderer.drawSprite(key, px, py, 0x00, objA0.render_flags | (prioFlag ? SPRITE_FLAG_PRIO : 0), renderQueue, 0, 208)
@@ -57,16 +57,9 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 			}
 			
 			// Lightning Shield
-			if (mt.lightningshield && objA0.update_address == 0x01952a && objA0.update_address == 0x019732)
+			if (mt.lightningshield && objA0.update_address == 0x019732)
 			{
 				u64 key = Renderer.setupCustomCharacterSprite(objA0.shield.art_offset, objA0.shield.pattern_offset, objA0.mapping_offset, objA0.animation.sprite, 0x00)
-				
-				if (ROMDataAnalyser.isEnabled())
-				{
-					string category = (objA0.update_address == 0x019602) ? "shield_fire" : (objA0.update_address == 0x019732) ? "shield_lightning" : (objA0.update_address == 0x019922) ? "shield_bubble" : "instaShield"
-					Renderer.extractCustomSprite(key, category, objA0.animation.sprite, 0x00)
-				}
-				
 				Renderer.drawSprite(key, px, py, 0x00, objA0.render_flags | (prioFlag ? SPRITE_FLAG_PRIO : 0), renderQueue, 0, 224)
 				return true
 			}
