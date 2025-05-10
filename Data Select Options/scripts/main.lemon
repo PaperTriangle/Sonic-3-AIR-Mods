@@ -321,10 +321,12 @@ function void fn00d9f4()
 	if (lsds.alphashadow && A1 == 0x00db36)
 	{
 		D0 -= 1
-		A1 = 0x00db2b	// Empty tiles
+		// Render empty tiles
+		A1 = 0x00db2b
 		base.fn00d9f4()
 
-		A1 = 0x00db36	// CLEAR label
+		// Render "CLEAR" label
+		A1 = 0x00db36
 		D0.u16 = D7.u16
 		base.fn00d9f4()
 		
@@ -333,7 +335,8 @@ function void fn00d9f4()
 	else if (lsds.alphashadow && A1 == 0x00db2b)
 	{
 		D0 -= 1
-		A1 = 0x00db2b	// Empty tiles
+		// Render empty tiles
+		A1 = 0x00db2b
 		base.fn00d9f4()
 		
 		return
