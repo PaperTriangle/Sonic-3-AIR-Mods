@@ -30,6 +30,8 @@ global bool mt.fixlbz2
 global bool mt.amyheart
 global bool mt.amytrail
 
+global u8 mt.laser_transparency = 224
+
 global u8 dez_laser_val
 global bool ssz_s2_laser
 
@@ -201,25 +203,41 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 			}
 		}
 		
-		// DEZ2 Flame Thrower
-		if (objA0.mapping_offset == 0x187888)
-		{
-			if (objA0.animation.sprite == 0x0b || objA0.animation.sprite == 0x11 || objA0.animation.sprite == 0x12)
-			{
-				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 96)
-				Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 96)
-				
-				return true
-			}
-		}
-		
 		// HPZ Dust
-		if (objA0.update_address == 0x01abb6 || objA0.update_address == 0x06520a)
+		if (global.zone == 0x16 && (objA0.update_address == 0x01abb6 || objA0.update_address == 0x06520a))
 		{
 			if (objA0.animation.sprite == 0x16 || objA0.animation.sprite == 0x17)
 			{
 				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 127)
 				Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 127)
+				return true
+			}
+		}
+
+		// DEZ2 Flame Thrower
+		if (objA0.mapping_offset == 0x187888)
+		{
+			if (objA0.animation.sprite == 0x12 || objA0.animation.sprite == 0x11 || objA0.animation.sprite == 0x0b)
+			{
+				Renderer.drawVdpSprite(px, py, size, index, renderQueue)
+				Renderer.drawVdpSprite(px+1, py, size, index, renderQueue)
+				
+				return true
+			}
+		}
+		
+		// DDZ Missile Smoke
+		if (global.zone == 0x0c && (objA0.update_address == 0x0821c2 || objA0.update_address == 0x01abb6))
+		{
+			if (index == 0xc42f || index == 0x442f)
+			{
+				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 127)
+				Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 127)
+				return true
+			}
+			else if (index == 0xc433 || index == 0x4433)
+			{
+				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 127)
 				return true
 			}
 		}
@@ -269,6 +287,14 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 			
 			return true
 		}
+		
+		// DDZ Energy Balls
+		if (objA0.update_address == 0x081f26)
+		{
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 208)
+			
+			return true
+		}
 	}
 	
 	// Electricity!
@@ -311,17 +337,17 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 	if (mt.lasers)
 	{
 		// LBZ Enemy Lasers
-		if (objA0.update_address == 0x08c8e6 || objA0.update_address == 0x01abb6)
+		if (global.zone == 0x06 && (objA0.update_address == 0x08c8e6 || objA0.update_address == 0x01abb6))
 		{
-			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 208)
 			
 			return true
 		}
 		
 		// LBZ2 Laser
-		if (objA0.update_address == 0x0732f6 || objA0.update_address == 0x073358 || objA0.update_address == 0x01abb6)
+		if (global.zone == 0x06 && (objA0.update_address == 0x0732f6 || objA0.update_address == 0x073358 || objA0.update_address == 0x01abb6))
 		{
-			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 208)
 			
 			return true
 		}
@@ -329,7 +355,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		// SOZ2 Laser
 		if (objA0.update_address == 0x077fbc || objA0.update_address == 0x077eb8)
 		{
-			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 208)
 			
 			return true
 		}
@@ -337,7 +363,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		// SSZ Laser
 		if (objA0.update_address == 0x0917b4)
 		{
-			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 208)
 			
 			return true
 		}
@@ -357,7 +383,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		// FBZ2 Barrier
 		if (objA0.update_address == 0x070152)
 		{
-			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 160)
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
 			
 			return true
 		}
@@ -368,12 +394,12 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		// SSZ Sonic 2 Boss Laser
 		if (objA0.update_address == 0x07abee && (index == 0xac83 && !ssz_s2_laser))
 		{
-			Renderer.drawSprite("s2_laser", px, py, index, SPRITE_FLAG_PRIO, renderQueue, 0, 192)
+			Renderer.drawSprite("s2_laser", px, py, index, SPRITE_FLAG_PRIO, renderQueue, 0, 208)
 			return true
 		}
 		else if (objA0.update_address == 0x07abee && (index == 0xa483 && ssz_s2_laser))
 		{
-			Renderer.drawSprite("s2_laser", px - 0x23, py, index, SPRITE_FLAG_PRIO, renderQueue, 0, 192)
+			Renderer.drawSprite("s2_laser", px - 0x23, py, index, SPRITE_FLAG_PRIO, renderQueue, 0, 208)
 			return true
 		}
 		else if (objA0.update_address == 0x07abee)
@@ -384,7 +410,8 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		if (objA0.update_address == 0x07abc2)
 		{
 			ssz_s2_laser = index == 0xac83
-			Renderer.drawSprite("s2_laser_boss", (ssz_s2_laser) ? px + 0x10 : px, py, index, objA0.render_flags, renderQueue, 0, 192)
+			u64 key = Mods.isModActive("Sonic 1&2 Egg Mobile in SSZ") ? (Mods.isModActive("Sonic 3-Styled S1&2 Eggmobile") ? "s2_laser_boss_s3_compat" : "s2_laser_boss_compat") : "s2_laser_boss"
+			Renderer.drawSprite(key, (ssz_s2_laser) ? px + 0x10 : px, py, index, objA0.render_flags, renderQueue, 0, 208)
 			return true
 		}
 	}
@@ -537,7 +564,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 	if (mt.supermecha)
 	{
 		// SSZ Super Mecha Trails
-		if (objA0.update_address == 0x07c79c || objA0.update_address == 0x07c7d4 || objA0.update_address == 0x07c80a || objA0.update_address == 0x01abb6)
+		if (global.zone == 0x0a && (objA0.update_address == 0x07c79c || objA0.update_address == 0x07c7d4 || objA0.update_address == 0x07c80a || objA0.update_address == 0x01abb6))
 		{
 			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
 			
@@ -562,7 +589,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		{
 			Renderer.drawSprite("teleporter_frame", px, py, index, (index == 0xe365) ? SPRITE_FLAG_PRIO : 0x00, renderQueue, 0, 0xff)
 			
-			return false
+			return true
 		}
 		else if (objA0.mapping_offset == 0x046b3c && (index == 0x4d37 || index == 0x6b65 || index == 0xeb65))
 		{

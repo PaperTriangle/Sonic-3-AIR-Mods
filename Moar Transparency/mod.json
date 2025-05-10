@@ -7,6 +7,13 @@
 		"Description": "Adds varying levels of transparency to more objects! Credit to Useott and Raine for some code that was adapted from A.I.R. Freshener.",
 		"ModVersion": "1.0"
 	},
+	"OtherMods": {
+		"extra-slot-project-amy": {
+			"DisplayName": "Extra Slot Amy",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		}
+	},
 	"Settings":
 	{
 		"List":
