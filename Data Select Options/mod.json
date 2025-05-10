@@ -5,7 +5,7 @@
 		"UniqueID": "data-select-options",
 		"Author": "PaperTriangle",
 		"Description": "Adds options to slightly customise the Data Select screen.",
-		"ModVersion": "1.2"
+		"ModVersion": "2.0"
 	},
 	"Settings":
 	{
@@ -13,19 +13,8 @@
 		[
 			{
 				"InternalName": "lsds.leftshift",
-				"DisplayName": "Left Align Data Select",
+				"DisplayName": "Space Efficient Data Select",
 				"Variable": "lsds.leftshift",	
-				"DefaultValue": "1",
-				"Options":
-				{
-					"0": "Disabled",
-					"1": "Enabled"
-				}
-			},
-			{
-				"InternalName": "lsds.textdown",
-				"DisplayName": "Lower the \"Data Select\" Text",
-				"Variable": "lsds.textdown",	
 				"DefaultValue": "1",
 				"Options":
 				{

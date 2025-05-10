@@ -1,5 +1,4 @@
 global bool lsds.leftshift
-global bool lsds.textdown
 global bool lsds.noflicker
 global bool lsds.alphashadow
 global bool lsds.nodetail
@@ -14,10 +13,6 @@ function void DataSelect.setup()
 	{
 		camera.foreground.x.u16 += getScreenExtend()
 		u16[0xffffe002] -= getScreenExtend()
-	}
-	
-	if (lsds.textdown)
-	{
 		u16[0xffffb000 + 0x14] += 0x05
 	}
 
