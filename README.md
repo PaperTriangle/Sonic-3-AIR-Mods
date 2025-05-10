@@ -77,11 +77,13 @@ There are a few configurations options, however it is mostly intended that you w
 **PLEASE NOTE:** This is intended to be played alongside a mod that restores the original zone order, and stops Knuckles from visiting FBZ. Probably will not work right with other palette mods or any mods that alter the FBZ, SOZ, HPZ or SSZ backgrounds / tiles.
 
 ## Moar Transparency
-Adds transparency effects to more objects in the game. The effects can be incredibly subtle at some points, and I have probably missed a bunch of bits. However, please note that I avoided adding transparency to flashing exhaust flames or breaking objects. 
+Adds transparency effects to more objects in the game. The effects can be __incredibly subtle__ at some points.
 
-I have tried to avoid using PNG replacements as much as I can and just use the in game art, however I have had to use PNGs to re-draw the Teleportation Beam, Red Eye's laser, Huge Eggman Robot's laser and the Toxomister's mist... That was "fun"...
+I have probably missed a whole load of possible candidates for transparency because I am forgetful... However, before suggesting something please note that I avoided adding transparency to flashing exhaust flames or breaking objects and have no intention of adding transparency to them. 
 
-I have also added a few extra options to add a consistent PNG replacement to the teleporter frames between HPZ and SSZ, make the Beam Rocket's exhaust flame flash, and add some transparency / flash for ES Amy's hearts and hammer trail, respectively.
+I have tried to avoid using PNG replacements as much as I can and just use the in game art, however I have had to use PNGs to re-draw the Teleportation Beam, the Flying Eggman's laser, Red Eye's laser, Huge Eggman Robot's laser and the Toxomister's mist... That last one was "fun"...
+
+I have also added a few extra options to add a consistent PNG replacement to the teleporter frames between HPZ and SSZ, make the Beam Rocket's exhaust flame flash, and add some transparency and flashing for ES Amy's hearts and hammer trail, respectively.
 
 ## Paper's HUD Additions
 Adds a new Sonic CD inspired life icon and a Transform button. Should work with regular and mobile views with compatibility with **Haru's Forever-esque HUD**, **Extra Sloy Mighty, Ray & Amy** and **Extra Slot 3D in 2D Shadow**. The transform button has compatibility with **Characters Go Super Then Hyper** and possibly **Super Post-Trade**.
