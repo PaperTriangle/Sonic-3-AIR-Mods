@@ -77,7 +77,7 @@ There are a few configurations options, however it is mostly intended that you w
 **PLEASE NOTE:** This is intended to be played alongside a mod that restores the original zone order, and stops Knuckles from visiting FBZ. Probably will not work right with other palette mods or any mods that alter the FBZ, SOZ, HPZ or SSZ backgrounds / tiles.
 
 ## Moar Transparency
-Adds transparency effects to more objects in the game. The effects can be __incredibly subtle__ at some points.
+Adds transparency effects to more objects in the game. The effects can be *incredibly subtle* at some points.
 
 I have probably missed a whole load of possible candidates for transparency because I am forgetful... However, before suggesting something please note that I avoided adding transparency to flashing exhaust flames or breaking objects and have no intention of adding transparency to them. 
 
