@@ -310,6 +310,18 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 	return base.Standalone.onWriteToSpriteTable(px, py, renderQueue)
 }
 
+function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 index, u16 renderQueue, u8 spriteCounter)
+{
+		// New Save Slot Arrows
+		if (lsds.nodetail && objA0.update_address == 0x00d42c && (index == 0x93bd || index == 0x83bd) && u8[A0 + 0x38] == 0)
+		{
+			Renderer.drawVdpSprite(px, py + 0x10, size, index, renderQueue)
+			return true
+		}
+
+	return base.Standalone.onDrawVdpSpriteCompound(px, py, size, index, renderQueue, spriteCounter)
+}
+
 //# address-hook(0x001506) end(0x00da1c)
 function void fn001506()
 {
@@ -341,8 +353,11 @@ function void fn00d9f4()
 	}
 	else if (lsds.alphashadow && A1 == 0x00db2b)
 	{
-		D0 -= 1
 		// Render empty tiles
+		A1 = 0x00db2b
+		base.fn00d9f4()
+		
+		D0 -= 2
 		A1 = 0x00db2b
 		base.fn00d9f4()
 		
@@ -376,4 +391,13 @@ function void fn00d42c()
 	
 	oldposy = objA0.position.y.u16
 	objA0.position.y.u16 += 0x10
+}
+
+// Amy Galore Compat?
+function void MISC.drawLifeContSprite(s16 px, s16 py, u16 renderQueue, u8 slotnum)
+{
+	if (lsds.nodetail)
+		return
+
+	base.MISC.drawLifeContSprite( px, py, renderQueue, slotnum)
 }
