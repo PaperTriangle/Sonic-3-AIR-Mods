@@ -298,7 +298,7 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 			return false
 			
 		}
-		else if (Mods.isModActive("Extra Character Slots"))
+		else if (Mods.isModActive("Extra Character Slots") && objA0.animation.sprite == 5 && objA0.animation.timer != 0)
 		{
 			renderQueue -= 100
 		}

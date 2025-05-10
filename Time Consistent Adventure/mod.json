@@ -12,7 +12,7 @@
 		"useott-s-original-zone-order":
 		{
 			"DisplayName": "Useott's Original Zone Order",
-			"IsRequired": "1",
+			"IsRequired": "0",
 			"Priority": "Lower"
 		}
 	},

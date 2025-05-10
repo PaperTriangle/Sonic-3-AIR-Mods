@@ -473,7 +473,7 @@ function void fn07092a()
 		requestLoadingPatterns(0x5a)
 		spawnChildObject(0x083f22, 0x00, 0, 0)
 	}
-	if (camera.position.x.u16 >= 0x3260 && transition_state == 2)
+	if (camera.position.x.u16 >= 0x3250 && transition_state == 2)
 	{
 		transition_state = 3
 		spawnChildObject(0x083f22, 0x00, 0, 0)
