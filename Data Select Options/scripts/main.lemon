@@ -256,7 +256,7 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 		}
 		
 		// Hackey way to handle extra slot compat...
-		if (lsds.nodetail && objA0.update_address == 0x00d42c && objA0.animation.sprite == 0x05 && objA0.animation.timer > 0x00)
+		if (lsds.nodetail && Mods.isModActive("Extra Character Slots") && objA0.update_address == 0x00d42c && objA0.animation.sprite == 0x05 && objA0.animation.timer > 0x00)
 		{
 			
 			if (u8[A0 + 0x38] == 0xff && objA0.animation.sprite == 5 && objA0.animation.timer != 0 && u16[0xffffb04a + 0x30] == 0)
@@ -275,25 +275,32 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 
 				if (Renderer.hasCustomSprite(portrait))
 				{
-					Renderer.drawCustomSprite(portrait, px, py - 16, 0, SPRITE_FLAG_PRIO, renderQueue)
+					Renderer.drawCustomSprite(portrait, px, py - 16, 0, SPRITE_FLAG_PRIO, renderQueue - 100)
 					u8[A0 + 0x23] = 0
 				}
 				
 				if (Renderer.hasCustomSprite(portraitesp))
 				{
-					Renderer.drawCustomSprite(portraitesp, px, py - 16, 0, SPRITE_FLAG_PRIO, renderQueue)
+					Renderer.drawCustomSprite(portraitesp, px, py - 16, 0, SPRITE_FLAG_PRIO, renderQueue - 100)
 					u8[A0 + 0x23] = 0
 				}
 			}
 			
 			if (Renderer.hasCustomSprite(stringformat("dataSel_slot%d", objA0.animation.timer)))
 			{
-				renderQueue = 0x00
-				ExtraChar.DataSelect.drawCharacterSprite(px, py, 0x9fff)
+				u64 charactersprite = "dataSel_slot%d"
+				if (objA0.animation.timer == 1 && (Mods.isModActive("Extra Slot Mighty") || Mods.isModActive("Extra Slot Mighty SHC")) && System.getGlobalVariableValueByName("Mighty_Sprite_type") == 1)
+					charactersprite = "S3_portrait"
+					
+				Renderer.drawSprite(stringformat(charactersprite, objA0.animation.timer), px, py, (objA0.animation.timer > 0x03) ? 0xff : 0x40 + (objA0.animation.timer + 0x02) * 0x20, SPRITE_FLAG_PRIO, renderQueue)
 			}
 			
 			return false
 			
+		}
+		else if (Mods.isModActive("Extra Character Slots"))
+		{
+			renderQueue -= 100
 		}
 	}
 
