@@ -236,7 +236,7 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 {
 	u8 gameMode = global.game_mode & 0x7f
 
-	if (gameMode == 0x4c || gameMode == 0x0c)
+	if (gameMode == 0x4c)
 	{
 		if (lsds.alphashadow && (objA0.mapping_offset == 0x00ce0e || objA0.mapping_offset == 0x20bd68))
 		{

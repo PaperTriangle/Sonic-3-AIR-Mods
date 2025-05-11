@@ -1,3 +1,5 @@
+define u8 global.xtrachar	= u8[0xffffe654]
+
 //# address-hook(0x027424) end(0x027590)
 function void fn027424()
 {
@@ -26,7 +28,7 @@ function void fn027424()
 			}
 			else
 			{
-				if (super.active)
+				if (super.active || ( (Mods.isModActive("Extra Slot Amy") || Mods.isModActive("Extra Slot Amy SHC")) && global.xtrachar == 3 && (System.getGlobalVariableValueByName("Amy_HammerSpinAttacking") || super.active.tails) ) || ( Mods.isModActive("Extra Slot 3D in 2D Shadow") && global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.isBoosting") ) )
 				{
 					// Super form breaks walls even when going slow
 					canBreakWall = true
