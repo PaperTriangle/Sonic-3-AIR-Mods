@@ -661,7 +661,7 @@ function void fn07ccb0()
 	
 	A1 = 0xffffb000
 	objA1.velocity.x = 0
-	objA1.groundspeed = 0
+	objA1.groundspeed = 0x01
 	u8[A1 + 0x2a] = char.flag.FACING_LEFT
 	u8[A1 + 0x2e] = 0
 	u8[A1 + 0x20] = char.state.KNUX_FALLING

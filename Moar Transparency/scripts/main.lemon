@@ -552,7 +552,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 			return true
 		}
 
-		if (objA0.update_address == 0x08ff42) // The despawning puffs can render normally
+		if (objA0.mapping_offset == 0x9008e) // The despawning puffs can render normally
 		{
 			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 80)
 			
