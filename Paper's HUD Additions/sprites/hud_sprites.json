@@ -30,6 +30,7 @@
 	"character_miles_lives_text_haru":  { "File": "text_haru.png", "Rect": "1,48,32,16", "Center": "-17,0" },
 	"character_knuckles_lives_text_haru":  { "File": "text_haru.png", "Rect": "1,32,54,16", "Center": "-17,0" },
 	"character_miles_lives_text":  { "File": "text.png", "Rect": "1,48,32,16", "Center": "-17,0" },
+	
 	"character_slot1_lives_icon":  { "File": "mighty.bmp", "Rect": "0,0,18,17", "Center": "2,0" },
 	"character_slot2_lives_icon":  { "File": "ray.bmp", "Rect": "0,0,18,17", "Center": "2,0" },
 	"character_slot3_lives_icon":  { "File": "amy.bmp", "Rect": "0,0,19,17", "Center": "3,-1" },
@@ -75,8 +76,8 @@
 	"no_lives_text_s3":  { "File": "no_text.png", "Rect": "1,0,8,16", "Center": "-17,0" },
 	"no_lives_text_haru":  { "File": "no_text_haru.png", "Rect": "1,0,32,16", "Center": "-17,0" },
 	
-	"hyper_icon_normal":  { "File": "super_normal.png", "Rect": "0,0,19,19", "Center": "8,8" },
-	"hyper_icon_normal":  { "File": "super_normal.png", "Rect": "0,0,19,19", "Center": "8,8" },
+	"super_icon_normal":  { "File": "super_normal.png", "Rect": "0,0,19,19", "Center": "8,8" },
+	"hyper_icon_normal":  { "File": "hyper_normal.png", "Rect": "0,0,19,19", "Center": "8,8" },
 	"super_icon_border_s3":  { "File": "super.png", "Rect": "0,0,19,19", "Center": "8,8" },
 	"hyper_icon_border_s3":  { "File": "hyper.png", "Rect": "0,0,19,19", "Center": "8,8" },
 	"super_icon_border_haru":  { "File": "super_haru.png", "Rect": "0,0,19,19", "Center": "8,8" },

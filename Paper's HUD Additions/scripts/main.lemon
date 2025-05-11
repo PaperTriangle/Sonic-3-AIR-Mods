@@ -102,6 +102,63 @@ function void RenderHUD()
 	{
 		if (!isBonusStage)
 		{
+		
+			// Lives (not visible in Time Attack or with infinite lives setting)
+		if (!Game.isTimeAttack() && !Game.getSetting(SETTING_INFINITE_LIVES))
+		{
+			bool useMobilePosition = HUD.useMobileLivesDisplay()
+			u16 px = useMobilePosition ? (getScreenWidth() - baseX - 0x30) : baseX
+			u16 py = useMobilePosition ? baseY : 200
+
+			u64 characterSprite = ((phud.allowsuper && global.xtrachar == 0) || (phud.allowsuperesu && global.xtrachar > 0)) ? getCharacterSpriteKey(u8[0xffffb000 + 0x38]) : getCharacterSpriteKey(u8[0xffffb000 + 0x38], false)
+			u64 characterName = getCharacterSpriteKey(u8[0xffffb000 + 0x38], false)
+			
+			if (((phud.allowsuper && global.xtrachar == 0) || (phud.allowsuperesu && global.xtrachar > 0)) && !Renderer.hasCustomSprite(stringformat("%s_lives_icon", characterSprite)))
+				characterSprite = getCharacterSpriteKey(u8[0xffffb000 + 0x38], false)
+				
+			if (((phud.allowsuper && global.xtrachar == 0) || (phud.allowsuperesu && global.xtrachar > 0)) && !Renderer.hasCustomSprite(stringformat("%s_lives_icon", characterSprite)))
+			{
+				base.RenderHUD()
+				return
+			}
+			
+			if (characterSprite == "character_tails" && Mods.isModActive("Plush's Ariff Tails"))
+				characterSprite = "character_ariff_tails"
+			
+			if (characterName == "character_tails" && !(global.region_code & 0x80))
+				characterName = "character_miles"
+			
+			HUD.drawSprite(stringformat("%s_lives_icon", characterSprite), px, py, renderQueue)
+			++renderQueue
+			
+			u64 livesborderstring = (phud.livesborder) ? stringformat("ring_%s", compatName) : stringformat("border_%s", compatName) 
+			
+			HUD.drawSprite(stringformat("%s_lives_icon_%s", characterSprite, livesborderstring), px, py, renderQueue)
+			++renderQueue
+			
+			
+			if (phud.name)
+			{
+				HUD.drawSprite(stringformat("%s_lives_text_%s", characterName, compatName), px, py, renderQueue)
+			}
+			else
+			{
+				HUD.drawSprite(stringformat("no_lives_text_%s", compatName), px, py, renderQueue)
+			}
+			++renderQueue
+
+			if (lives_counter >= 10)
+			{
+				HUD.drawSmallDigit(u16((lives_counter / 10) % 10), px + 0x18, py + 8, renderQueue)
+				HUD.drawSmallDigit(u16(lives_counter % 10), px + 0x20, py + 8, renderQueue)
+			}
+			else
+			{
+				HUD.drawSmallDigit(u16(lives_counter % 10), px + 0x18, py + 8, renderQueue)
+			}
+			++renderQueue
+		}
+		
 			// Score
 			HUD.drawSprite("hud_text_score", baseX, baseY, renderQueue)
 			++renderQueue
@@ -171,52 +228,6 @@ function void RenderHUD()
 				value /= 10
 				if (value == 0)
 					break
-			}
-			++renderQueue
-		}
-
-		// Lives (not visible in Time Attack or with infinite lives setting)
-		if (!Game.isTimeAttack() && !Game.getSetting(SETTING_INFINITE_LIVES))
-		{
-			bool useMobilePosition = HUD.useMobileLivesDisplay()
-			u16 px = useMobilePosition ? (getScreenWidth() - baseX - 0x30) : baseX
-			u16 py = useMobilePosition ? baseY : 200
-
-			u64 characterSprite = ((phud.allowsuper && global.xtrachar == 0) || (phud.allowsuperesu && global.xtrachar > 0)) ? getCharacterSpriteKey(u8[0xffffb000 + 0x38]) : getCharacterSpriteKey(u8[0xffffb000 + 0x38], false)
-			u64 characterName = getCharacterSpriteKey(u8[0xffffb000 + 0x38], false)
-			
-			if (characterSprite == "character_tails" && Mods.isModActive("Plush's Ariff Tails"))
-				characterSprite = "character_ariff_tails"
-			
-			if (characterName == "character_tails" && !(global.region_code & 0x80))
-				characterName = "character_miles"
-			
-			HUD.drawSprite(stringformat("%s_lives_icon", characterSprite), px, py, renderQueue)
-			++renderQueue
-			
-			u64 livesborderstring = (phud.livesborder) ? stringformat("ring_%s", compatName) : stringformat("border_%s", compatName) 
-			
-			HUD.drawSprite(stringformat("%s_lives_icon_%s", characterSprite, livesborderstring), px, py, renderQueue)
-			++renderQueue
-			
-			if (phud.name)
-			{
-				HUD.drawSprite(stringformat("%s_lives_text_%s", characterName, compatName), px, py, renderQueue)
-			}
-			else
-			{
-				HUD.drawSprite(stringformat("no_lives_text_%s", compatName), px, py, renderQueue)
-			}
-			++renderQueue
-
-			if (lives_counter >= 10)
-			{
-				HUD.drawSmallDigit(u16((lives_counter / 10) % 10), px + 0x18, py + 8, renderQueue)
-				HUD.drawSmallDigit(u16(lives_counter % 10), px + 0x20, py + 8, renderQueue)
-			}
-			else
-			{
-				HUD.drawSmallDigit(u16(lives_counter % 10), px + 0x18, py + 8, renderQueue)
 			}
 			++renderQueue
 		}
@@ -315,7 +326,7 @@ function bool CanTransform()
 			hyper_count = 100
 	}
 	
-	if (((ring_counter < 50 && (super.active == 0 || super.active.tails == 0)) || (Mods.isModActive("Characters Go Super Then Hyper") && (super.active == 1 || super.active.tails == 1) && ring_counter < hyper_count)) || !hud.dirty.timer)
+	if (((ring_counter < 50 && (super.active == 0 && super.active.tails == 0)) || (Mods.isModActive("Characters Go Super Then Hyper") && (super.active == 1 || super.active.tails == 1) && (ring_counter < hyper_count))) || !hud.dirty.timer)
 		return false
 
 	return true
