@@ -30,7 +30,7 @@ function void fn027424()
 			{
 				if (super.active || ( (Mods.isModActive("Extra Slot Amy") || Mods.isModActive("Extra Slot Amy SHC")) && global.xtrachar == 3 && (System.getGlobalVariableValueByName("Amy_HammerSpinAttacking") || super.active.tails) ) || ( Mods.isModActive("Extra Slot 3D in 2D Shadow") && global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.isBoosting") ) )
 				{
-					// Super form breaks walls even when going slow
+					// Super form breaks walls even when going slow, so can a hammer swinging Amy and a boosting Shadow!
 					canBreakWall = true
 				}
 				else if ((objA0.flags2a & object.flag.P1_PUSHING) || (u8[A1 + 0x2b] & char.bonus.SHIELD_FIRE))
