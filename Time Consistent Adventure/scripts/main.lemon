@@ -143,9 +143,8 @@ function void yieldExecution()
 	{
 		System.loadExternalRawData("FBZ1_Palette", 0x052dd0)
 		
-		if (tca.infbz1forreal && tca.bg_stars && u16[0xfffffc00 + 0x39 * 2] != 0x442)
+		if (tca.infbz1forreal && tca.bg_stars && u16[0xfffffc00 + 0x39 * 2] != u16[0x00052dc0 + 0x07 * 2])
 		{
-			System.writeDisplayLine(stringformat("ZoneAct: 0x%04x", u16[0xfffffc00 + 0x39 * 2]))
 			for (u16 fs = 0 ; fs*128 < getScreenWidth(); fs++)
 			{
 				Renderer.drawSprite("fbz_stars_1", 128 + fs*128 - ((level.framecounter + camera.position.x.u16) % 1152) / 9, 128 - (camera.background.y >> 16) - camera.screenshake.offset, 0, SPRITE_FLAG_PRIO, 0x1001)
