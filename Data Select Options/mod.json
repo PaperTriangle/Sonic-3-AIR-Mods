@@ -7,6 +7,15 @@
 		"Description": "Adds options to slightly customise the Data Select screen.",
 		"ModVersion": "2.1"
 	},
+	"OtherMods":
+	{
+		"time-consistent-adventure":
+		{
+			"DisplayName": "Time Consistent Adventure",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		}
+	},
 	"Settings":
 	{
 		"Uncategorized":

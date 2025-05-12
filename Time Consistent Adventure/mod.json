@@ -5,7 +5,7 @@
 		"UniqueID": "time-consistent-adventure",
 		"Author": "PaperTriangle",
 		"Description": "Makes some changes to level palettes and art to make the time of day more consistent through both the Sonic & Tails and the Knuckles adventures over Angel Island. Credit to Useott for some code re-use and palette credits to: haha_hollie & Drawbits (MGZ - Arvo), Sonic 3 Complete (FBZ1 - Night), Useott (MHZ2 - Arvo), imnotmgm64 (SOZ1 - Arvo)",
-		"ModVersion": "1.0"
+		"ModVersion": "1.1"
 	},
 	"OtherMods":
 	{
@@ -14,8 +14,15 @@
 			"DisplayName": "Useott's Original Zone Order",
 			"IsRequired": "0",
 			"Priority": "Lower"
+		},
+		"data-select-options":
+		{
+			"DisplayName": "Data Select Options",
+			"IsRequired": "0",
+			"Priority": "Higher"
 		}
 	},
+	
 	"Settings":
 	{
 		"Uncategorized":
