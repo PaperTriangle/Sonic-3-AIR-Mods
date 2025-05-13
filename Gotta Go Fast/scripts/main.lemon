@@ -42,8 +42,8 @@ function bool Standalone.drawCharacterSprite(u8 character, u8 variant, s16 px, s
 
 	sonic.fastrunanim.timer = 0
 	
-	u16 regularspeed = ggf.speed ? 0xb00 : 0x900
-	u16 superspeed =  ggf.speed ? 0xb00 : 0xa00
+	u16 regularspeed = ggf.speed ? 0xc00 : 0xa00
+	u16 superspeed =  ggf.speed ? 0xc00 : 0xb00
 
 
 	if (global.xtrachar == 0 && character == CHARACTER_SONIC && animationSpriteEx == animationSprite && !super.active && animationSprite >= 0x21 && animationSprite <= 0x30 && abs(char.groundspeed) >= regularspeed && ggf.sonic)
@@ -98,7 +98,7 @@ function bool Standalone.drawCharacterSprite(u8 character, u8 variant, s16 px, s
 		animationSpriteEx = 0x21 + (animationSprite & 3)
 		key = stringformat("character_amy_0x%02x", animationSpriteEx)
 	}
-	else if (global.xtrachar == 5 && character == CHARACTER_SONIC && animationSpriteEx == animationSprite && !super.active && animationSprite >= 0x21 && animationSprite <= 0x30 && abs(char.groundspeed) >= regularspeed + 0x100 && ggf.esu.shadow)
+	else if (global.xtrachar == 5 && character == CHARACTER_SONIC && animationSpriteEx == animationSprite && !super.active && animationSprite >= 0x21 && animationSprite <= 0x30 && abs(char.groundspeed) >= regularspeed && ggf.esu.shadow)
 	{
 		if (System.getGlobalVariableValueByName("shadow.airBoost") && !System.getGlobalVariableValueByName("shadow.waterRun"))
 			return base.Standalone.drawCharacterSprite(character, variant, px, py, asSmallGhost)
@@ -107,7 +107,7 @@ function bool Standalone.drawCharacterSprite(u8 character, u8 variant, s16 px, s
 
 		key = stringformat("shadow_fast_run_%d", animationSpriteEx - CHAR_ANIMSPRITE_SONIC_PEELOUT)
 	}
-	else if (global.xtrachar == 5 && character == CHARACTER_SONIC && animationSpriteEx == animationSprite && super.active && animationSprite >= 0x21 && animationSprite <= 0x30 && (abs(char.groundspeed) < superspeed + 0x100) && ggf.esu.supershadow)
+	else if (global.xtrachar == 5 && character == CHARACTER_SONIC && animationSpriteEx == animationSprite && super.active && animationSprite >= 0x21 && animationSprite <= 0x30 && (abs(char.groundspeed) < superspeed) && ggf.esu.supershadow)
 	{
 		if (System.getGlobalVariableValueByName("shadow.isBoosting") && char.flags & char.flag.IN_AIR)
 			return base.Standalone.drawCharacterSprite(character, variant, px, py, asSmallGhost)
