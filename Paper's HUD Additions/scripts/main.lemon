@@ -115,7 +115,15 @@ function void RenderHUD()
 			
 			if (((phud.allowsuper && global.xtrachar == 0) || (phud.allowsuperesu && global.xtrachar > 0)) && !Renderer.hasCustomSprite(stringformat("%s_lives_icon", characterSprite)))
 				characterSprite = getCharacterSpriteKey(u8[0xffffb000 + 0x38], false)
-				
+			
+			System.writeDisplayLine(stringformat("ZoneAct: 0x%02x",u8[0xffffb000 + 0x38]))
+			
+			if (Mods.isModActive("Amy Galore: Standalone edition") && (global.characters == 0x04))
+			{
+				characterSprite = getCharacterSpriteKey(u8[0xffffb000 + 0x38])
+				characterName = getCharacterSpriteKey(u8[0xffffb000 + 0x38])
+			}
+			
 			if (((phud.allowsuper && global.xtrachar == 0) || (phud.allowsuperesu && global.xtrachar > 0)) && !Renderer.hasCustomSprite(stringformat("%s_lives_icon", characterSprite)))
 			{
 				base.RenderHUD()

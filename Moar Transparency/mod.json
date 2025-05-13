@@ -104,7 +104,7 @@
 			},
 			{
 				"InternalName": "mt.dither",
-				"DisplayName": "Dithered Flames / Smoke",
+				"DisplayName": "Flames / Dust / Smoke",
 				"Variable": "mt.dither",
 				"Category": "Effects",	
 				"DefaultValue": "1",
@@ -190,7 +190,7 @@
 				"InternalName": "mt.fbzlaser",
 				"DisplayName": "FBZ2 Barrier Eggman",
 				"Variable": "mt.fbzlaser",
-				"Category": "Big Boss Effects",	
+				"Category": "Boss Effects",	
 				"DefaultValue": "1",
 				"Options":
 				{
@@ -202,7 +202,7 @@
 				"InternalName": "mt.sszs2laser",
 				"DisplayName": "SSZ Flying Eggman (PNG)",
 				"Variable": "mt.sszs2laser",
-				"Category": "Big Boss Effects",	
+				"Category": "Boss Effects",	
 				"DefaultValue": "1",
 				"Options":
 				{
@@ -214,7 +214,7 @@
 				"InternalName": "mt.supermecha",
 				"DisplayName": "SSZ Super Mecha",
 				"Variable": "mt.supermecha",
-				"Category": "Big Boss Effects",	
+				"Category": "Boss Effects",	
 				"DefaultValue": "1",
 				"Options":
 				{
@@ -226,7 +226,7 @@
 				"InternalName": "mt.dez1laser",
 				"DisplayName": "DEZ1 Red Eye (PNG)",
 				"Variable": "mt.dez1laser",
-				"Category": "Big Boss Effects",	
+				"Category": "Boss Effects",	
 				"DefaultValue": "1",
 				"Options":
 				{
@@ -238,7 +238,7 @@
 				"InternalName": "mt.dez2laser",
 				"DisplayName": "Boss DEZ2 Huge Eggman Robo (PNG)",
 				"Variable": "mt.dez2laser",
-				"Category": "Big Boss Effects",	
+				"Category": "Boss Effects",	
 				"DefaultValue": "1",
 				"Options":
 				{
