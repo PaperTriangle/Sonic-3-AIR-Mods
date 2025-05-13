@@ -5,6 +5,33 @@
 		"UniqueID": "stop-dropping-my-dash",
 		"Author": "PaperTriangle",
 		"Description": "Allows Sonic to hold a drop dash while bouncing off of more objects.",
-		"ModVersion": "1.1"
+		"ModVersion": "1.2"
+	},
+	"OtherMods":
+	{
+		"es-3d2d-shadow":
+		{
+			"DisplayName": "Extra Slot 3D in 2D Shadow",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		},
+		"extra-slot-project-amy":
+		{
+			"DisplayName": "Extra Slot Amy",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		},
+		"extra-slot-project-mighty":
+		{
+			"DisplayName": "Extra Slot Mighty",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		},
+		"extra-slot-project-ray":
+		{
+			"DisplayName": "Extra Slot Ray",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		}
 	}
 }

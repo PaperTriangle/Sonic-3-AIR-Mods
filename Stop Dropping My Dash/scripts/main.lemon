@@ -1,4 +1,41 @@
 define u8 global.xtrachar	= u8[0xffffe654]
+global u8 oldJumpState1
+global u8 oldJumpState2
+
+//# address-hook(0x01dc56) end(0x01dcb4)
+function void fn01dc56()
+{
+	oldJumpState1 = u8[0xffffb000 + 0x40]
+	oldJumpState2 = u8[0xffffb000 + 0x2f]
+	
+	// Check player 1
+	A1 = 0xffffb000
+	D6 = 3		// object.flag.P1_ON_OBJECT
+#if STANDALONE
+	if (debug_mode.state == 0)
+#endif
+	{
+		u32 backupD1 = D1
+		u32 backupD2 = D2
+		u32 backupD3 = D3
+		u32 backupD4 = D4
+
+		fn01dc74()
+
+		D1 = backupD1
+		D2 = backupD2
+		D3 = backupD3
+		D4 = backupD4
+	}
+
+	// Check player 2
+	A1 = 0xffffb04a
+	if (objA1.render_flags & render_flag.VISIBLE)
+	{
+		++D6.u8		// object.flag.P2_ON_OBJECT, do not simply set to 4, as upper bits should be preserved
+		fn01dc74()
+	}
+}
 
 //--------------
 // ICZ Ice Block
@@ -7,11 +44,13 @@ define u8 global.xtrachar	= u8[0xffffe654]
 //# address-hook(0x08b3aa) end(0x08b430)
 function void fn08b3aa()
 {
-	if (global.characters > 1 || global.xtrachar != 0)
+	if ((global.xtrachar == 1 && u8[0xffffb000 + 0x0d] & 0x02) || (global.xtrachar == 3 && System.getGlobalVariableValueByName("Amy_HammerSpinAttacking")) || (global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.DropDown")))
 	{
 		base.fn08b3aa()
 		return
 	}
+
+	
 	// Note that this differs from the original code (usage of A2)
 	//  -> Needed for standalone to fix the known bugs here
 
@@ -20,6 +59,7 @@ function void fn08b3aa()
 	if ((objA0.flags2a & object.flag.P1_ON_OBJECT) && (objA0.value3a == char.state.ROLLING || objA0.value3a == char.state.SONIC_DROPDASH))
 	{
 		A1 = 0xffffb000
+		//System.writeDisplayLine(stringformat("ZoneAct: 0x%02x", u8[A1 + 0x40]))
 		if (objA0.flags2a & object.flag.P2_ON_OBJECT)
 		{
 			A2 = 0xffffb04a
@@ -47,6 +87,9 @@ function void fn08b3aa()
 	objA1.state = (A1 == 0xffffb000) ? objA0.value3a : char.state.ROLLING
 	objA1.flags2a |= (char.flag.IN_AIR | char.flag.ROLLING)
 	objA1.flags2a &= ~char.flag.ON_OBJECT
+	
+	u8[A1 + 0x40] = oldJumpState1
+	u8[A1 + 0x2f] = oldJumpState2
 
 	if (A2 != 0)
 	{
@@ -80,7 +123,7 @@ function void fn08b3aa()
 //# address-hook(0x01faf2) end(0x01fb4a)
 function void Rocks.Update()
 {
-	if (global.characters > 1 || global.xtrachar != 0)
+	if ((global.xtrachar == 1 && u8[0xffffb000 + 0x0d] & 0x02) || (global.xtrachar == 3 && System.getGlobalVariableValueByName("Amy_HammerSpinAttacking")) || (global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.DropDown")))
 	{
 		base.Rocks.Update()
 		return
@@ -155,6 +198,9 @@ function void fn01fbae_dd()
 	objA1.state = u8[A0 + 0x32]
 	objA1.flags2a |= (char.flag.IN_AIR | char.flag.ROLLING)
 	objA1.flags2a &= ~char.flag.ON_OBJECT
+	
+	u8[A1 + 0x40] = oldJumpState1
+	u8[A1 + 0x2f] = oldJumpState2
 }
 
 function void fn01fba8_dd()
@@ -168,6 +214,9 @@ function void fn01fba8_dd()
 		u8[A1 + 0x05] = base_state.NORMAL
 		u8[A1 + 0x2a] |= char.flag.IN_AIR
 		u8[A1 + 0x2a] &= ~char.flag.ON_OBJECT
+		
+		u8[A1 + 0x40] = oldJumpState1
+		u8[A1 + 0x2f] = oldJumpState2
 	}
 }
 
@@ -178,7 +227,7 @@ function void fn01fba8_dd()
 //# address-hook(0x02a502) end(0x02a586)
 function void fn02a502()
 {
-	if (global.characters > 1 || global.xtrachar != 0)
+	if ((global.xtrachar == 1 && u8[0xffffb000 + 0x0d] & 0x02) || (global.xtrachar == 3 && System.getGlobalVariableValueByName("Amy_HammerSpinAttacking")) || (global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.DropDown")))
 	{
 		base.fn02a502()
 		return
@@ -250,6 +299,9 @@ function void fn02a588_dd()
 		u8[A1 + 0x2a] |= char.flag.IN_AIR
 		u8[A1 + 0x2a] &= ~char.flag.ON_OBJECT
 		u8[A1 + 0x05] = base_state.NORMAL
+		
+		u8[A1 + 0x40] = oldJumpState1
+		u8[A1 + 0x2f] = oldJumpState2
 	}
 }
 
@@ -263,6 +315,9 @@ function void fn02a58e_dd()
 	objA1.state = u8[A0 + 0x34]
 	objA1.velocity.y = -0x300
 	u8[A1 + 0x05] = base_state.NORMAL
+	
+	u8[A1 + 0x40] = oldJumpState1
+	u8[A1 + 0x2f] = oldJumpState2
 }
 
 //------------
@@ -272,7 +327,12 @@ function void fn02a58e_dd()
 //# address-hook(0x0317ae) end(0x03181c)
 function void fn0317ae()
 {
-	if (global.characters > 1 || global.xtrachar != 0)
+	if (global.xtrachar == 3)
+	{
+		fn0317ae_amy()
+		return
+	}
+	else if (global.xtrachar != 0)
 	{
 		base.fn0317ae()
 		return
@@ -315,6 +375,44 @@ function void fn0317ae()
 	}
 }
 
+//# address-hook(0x0317ae) end(0x03181c)
+function void fn0317ae_amy()
+{
+	
+	objA1.velocity.y = -0x700
+	objA1.flags2a |= char.flag.IN_AIR
+	objA1.flags2a &= ~(char.flag.CONTROL_LOCK | char.flag.PUSHING)
+
+	// Check for active Hammer Spin
+	if (!System.getGlobalVariableValueByName("Amy_HammerSpinAttacking"))
+	{
+		u8[A1 + 0x2e] = 0
+		u8[A1 + 0x40] = 0
+	}
+
+	objA0.state |= 0x01
+	if (s8[A0 + 0x2c] < 0)
+	{
+		objA1.velocity.y = -0x380
+		if (level.water_present != 0 && u8[A0 + 0x34] == 0)
+		{
+			A2 = 0x03185a
+			fn03181e()
+			fn03181e()
+			fn03181e()
+			fn03181e()
+			objA1.position.x.u16 = objA0.position.x.u16
+			objA1.position.y.u16 = objA0.position.y.u16
+		}
+	}
+
+	if (u8[A0 + 0x34] == 0)
+	{
+		playSound(0x77)
+		u8[A0 + 0x34] = 0x01
+	}
+}
+
 //----------
 // SOZ Rocks
 //----------
@@ -322,7 +420,7 @@ function void fn0317ae()
 //# address-hook(0x04172e) end(0x0417a4)
 function void fn04172e()
 {
-	if (global.characters > 1 || global.xtrachar != 0)
+	if ((global.xtrachar == 1 && u8[0xffffb000 + 0x0d] & 0x02) || (global.xtrachar == 3 && System.getGlobalVariableValueByName("Amy_HammerSpinAttacking")) || (global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.DropDown")))
 	{
 		base.fn04172e()
 		return
@@ -398,4 +496,7 @@ function void fn0417a6_dd()
 	u8[A1 + 0x2a] |= char.flag.IN_AIR
 	u8[A1 + 0x2a] &= ~char.flag.ON_OBJECT
 	u8[A1 + 0x05] = base_state.NORMAL
+	
+	u8[A1 + 0x40] = oldJumpState1
+	u8[A1 + 0x2f] = oldJumpState2
 }
