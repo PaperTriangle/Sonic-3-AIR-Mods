@@ -7,6 +7,21 @@
 		"Description": "Smoother sky fade for Big Arm fight that respects custom palettes.",
 		"ModVersion": "1.2"
 	},
+	"OtherMods":
+	{
+		"weathermod":
+		{
+			"DisplayName": "WeatherMod v3",
+			"IsRequired": "0",
+			"Priority": "Higher"
+		},
+		"AmbientMod":
+		{
+			"DisplayName": "AmbientMod",
+			"IsRequired": "0",
+			"Priority": "Higher"
+		}
+	},
 	"Settings":
 	{
 		"List":
@@ -19,7 +34,8 @@
 				"Options":
 				{
 					"0x01": "Smooth",
-					"0x0c": "Stepped"
+					"0x0c": "Stepped",
+					"0x10": "Original"
 				}
 			}
 		]
