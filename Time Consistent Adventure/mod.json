@@ -5,7 +5,7 @@
 		"UniqueID": "time-consistent-adventure",
 		"Author": "PaperTriangle",
 		"Description": "Makes some changes to level palettes and art to make the time of day more consistent through both the Sonic & Tails and the Knuckles adventures over Angel Island. Credit to Useott for some code re-use and palette credits to: haha_hollie & Drawbits (MGZ - Arvo), Sonic 3 Complete (FBZ1 - Night), Useott (MHZ2 - Arvo), imnotmgm64 (SOZ1 - Arvo)",
-		"ModVersion": "1.1"
+		"ModVersion": "1.2"
 	},
 	"OtherMods":
 	{
@@ -112,9 +112,21 @@
 				}
 			},
 			{
-				"InternalName": "tca.ssz",
-				"DisplayName": "SSZ Changes",
-				"Variable": "tca.ssz",
+				"InternalName": "tca.ssz_sonic",
+				"DisplayName": "SSZ (Sonic & Tails) Changes",
+				"Variable": "tca.ssz_sonic",
+				"Category": "Stage Settings",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "tca.ssz_knux",
+				"DisplayName": "SSZ (Knuckles) Changes",
+				"Variable": "tca.ssz_knux",
 				"Category": "Stage Settings",	
 				"DefaultValue": "1",
 				"Options":
@@ -175,6 +187,18 @@
 				"InternalName": "tca.fbz_explosions",
 				"DisplayName": "Explosions in FBZ",
 				"Variable": "tca.fbz_explosions",
+				"Category": "Extra Settings",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Off",
+					"1": "On"
+				}
+			},
+			{
+				"InternalName": "tca.ssz_knux_csfix",
+				"DisplayName": "SSZ Knuckles Cutscene Change",
+				"Variable": "tca.ssz_knux_csfix",
 				"Category": "Extra Settings",	
 				"DefaultValue": "1",
 				"Options":

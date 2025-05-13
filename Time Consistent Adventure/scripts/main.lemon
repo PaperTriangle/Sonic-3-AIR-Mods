@@ -5,11 +5,13 @@ global bool tca.lbz
 global bool tca.mvz
 global bool tca.soz
 global bool tca.hpz
-global bool tca.ssz
+global bool tca.ssz_sonic
+global bool tca.ssz_knux
 
 global bool tca.fadetype
 global bool tca.leftescape
 global bool tca.fbz_explosions
+global bool tca.ssz_knux_csfix
 global bool tca.ssz_knux_fade
 global bool tca.bg_stars
 global bool tca.zone_icons
@@ -70,20 +72,18 @@ function void yieldExecution()
 		{
 			if (tca.soz)
 				System.loadExternalRawData("SOZ_Zone_Card_Knux", 0x00CC18)
-			if (tca.ssz)
+			if (tca.ssz_knux)
 				System.loadExternalRawData("SSZ_Zone_Card_Knux", 0x00CC78)
 		}
 		else
 		{
 			if (tca.soz)
 				System.loadExternalRawData("SOZ_Zone_Card_Sonic", 0x00CC18)
-			if (tca.ssz)
-			{
-				if (Mods.isModActive("Moar Transparency") && System.getGlobalVariableValueByName("mt.teleframe"))
-					System.loadExternalRawData("SSZ_Zone_Card_Sonic_Compat", 0x00CC78)
-				else
-					System.loadExternalRawData("SSZ_Zone_Card_Sonic", 0x00CC78)
-			}
+
+			if (tca.ssz_sonic && Mods.isModActive("Moar Transparency") && System.getGlobalVariableValueByName("mt.teleframe"))
+				System.loadExternalRawData("SSZ_Zone_Card_Sonic_Compat", 0x00CC78)
+			else if (tca.ssz_sonic || tca.ssz_knux)
+				System.loadExternalRawData("SSZ_Zone_Card_Sonic", 0x00CC78)
 		}
 		
 		if (tca.fbz)
@@ -209,7 +209,7 @@ function void yieldExecution()
 		if (isMainCharacter(CHARACTER_KNUCKLES))
 			System.loadExternalRawData("HPZ_Roof_Fix", 0x1C3F2C)
 	}
-	else if (tca.ssz && global.zone_act == 0x0a00) // SSZ Sonic
+	else if (tca.ssz_sonic && global.zone_act == 0x0a00) // SSZ Sonic
 	{
 		if (checkpoint.number == 0)
 			System.loadExternalRawData("SSZ1_Palette_Morning", 0x0A973C)
@@ -231,7 +231,7 @@ function void yieldExecution()
 			}
 		}	
 	}
-	else if (tca.ssz && global.zone_act == 0x0a01) // SSZ Knuckles
+	else if (tca.ssz_knux && global.zone_act == 0x0a01) // SSZ Knuckles
 	{
 		if (transition_state == 0 )
 		{
@@ -344,12 +344,12 @@ function void fn00d96a()
 		}
 		else if (u16[A0 + 0x36] == 0x000b && s16[0xffffb04a + 0x2e] == 0)
 		{
-			if (tca.ssz && (tca.ds_char == 0x03 || tca.ds_char == 0x04))
+			if (tca.ssz_knux && (tca.ds_char == 0x03 || tca.ds_char == 0x04))
 			{
 				SpriteHandle dataselpreview = Renderer.addSpriteHandle("ssz_icon_knux", (objA0.position.x.u16 + getScreenExtend() - 208) - getScreenExtend() + 40, 16, 0x9ff9)
 				dataselpreview.setFlags(0x40)
 			}
-			else if (Mods.isModActive("Moar Transparency") && System.getGlobalVariableValueByName("mt.teleframe"))
+			else if (tca.ssz_sonic && Mods.isModActive("Moar Transparency") && System.getGlobalVariableValueByName("mt.teleframe"))
 			{
 				SpriteHandle dataselpreview = Renderer.addSpriteHandle("ssz_icon_compat", (objA0.position.x.u16 + getScreenExtend() - 208) - getScreenExtend() + 40, 16, 0x9ff9)
 				dataselpreview.setFlags(0x40)
@@ -638,7 +638,7 @@ function void fn23e20e()
 //# address-hook(0x05e80a) end(0x05e830)
 function void fn05e80a()
 {
-	if (!tca.ssz)
+	if (!tca.ssz_knux)
 	{
 		base.fn05e80a()
 		return
@@ -665,7 +665,7 @@ function void fn085ee6()
 //# address-hook(0x07ccb0) end(0x07ccf8)
 function void fn07ccb0()
 {
-	if (!tca.ssz)
+	if (!tca.ssz_knux || !tca.ssz_knux_csfix)
 	{
 		base.fn07ccb0()
 		return
