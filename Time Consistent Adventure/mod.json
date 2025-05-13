@@ -197,7 +197,7 @@
 			},
 			{
 				"InternalName": "tca.ssz_knux_csfix",
-				"DisplayName": "SSZ Knuckles Cutscene Change",
+				"DisplayName": "SSZ Knuckles Glide Change",
 				"Variable": "tca.ssz_knux_csfix",
 				"Category": "Extra Settings",	
 				"DefaultValue": "1",
