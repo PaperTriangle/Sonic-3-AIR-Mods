@@ -11,7 +11,6 @@ global bool mt.bubbles
 
 global bool mt.lasers
 global bool mt.energyballs
-//global bool mt.fireball
 global bool mt.fbzlaser
 global bool mt.sszs2laser
 global bool mt.dez1laser
@@ -190,6 +189,14 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 				return true
 			}
 		}
+				
+		// AIZ2 Boss Fire Ball Trails
+		if (objA0.update_address == 0x06998a)
+		{
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 160)
+			
+			return true
+		}
 		
 		// ICZ2 Boss Cloud
 		if (objA0.mapping_offset == 0x362cb4)
@@ -201,6 +208,16 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 				
 				return true
 			}
+		}
+
+		
+		// LRZ Worm Flames
+		if (objA0.update_address == 0x08f95c)
+		{
+			
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 0xf - objA0.animation.frame * 32)
+			
+			return true
 		}
 		
 		// HPZ Dust
@@ -432,34 +449,6 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		
 		return true
 	}
-	
-	// Fire Balls
-	//if (mt.fireball)
-	//{
-	//	// AIZ2 Boss Fire Balls
-	//	if (objA0.update_address == 0x069914 || objA0.update_address == 0x069908 || objA0.update_address == 0x06998a)
-	//	{
-	//		Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 224)
-	//		
-	//		return true
-	//	}
-	//	
-	//	// LRZ Lava Balls
-	//	if (objA0.update_address == 0x042c80)
-	//	{
-	//		Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 224)
-	//		
-	//		return true
-	//	}
-	//	
-	//	// LRZ Worm Flames
-	//	if (objA0.update_address == 0x08f95c)
-	//	{
-	//		Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 224)
-	//		
-	//		return true
-	//	}
-	//}
 	
 	// Bubbles!
 	if (mt.bubbles)
