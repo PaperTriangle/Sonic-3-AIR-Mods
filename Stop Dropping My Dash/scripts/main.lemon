@@ -44,7 +44,7 @@ function void fn01dc56()
 //# address-hook(0x08b3aa) end(0x08b430)
 function void fn08b3aa()
 {
-	if ((global.xtrachar == 1 && u8[0xffffb000 + 0x0d] & 0x02) || (global.xtrachar == 3 && System.getGlobalVariableValueByName("Amy_HammerSpinAttacking")) || (global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.DropDown")))
+	if (global.characters > 0x03 || (global.xtrachar == 1 && u8[0xffffb000 + 0x0d] & 0x02) || (global.xtrachar == 3 && System.getGlobalVariableValueByName("Amy_HammerSpinAttacking")) || (global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.DropDown")))
 	{
 		base.fn08b3aa()
 		return
@@ -123,7 +123,7 @@ function void fn08b3aa()
 //# address-hook(0x01faf2) end(0x01fb4a)
 function void Rocks.Update()
 {
-	if ((global.xtrachar == 1 && u8[0xffffb000 + 0x0d] & 0x02) || (global.xtrachar == 3 && System.getGlobalVariableValueByName("Amy_HammerSpinAttacking")) || (global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.DropDown")))
+	if (global.characters > 0x03 || (global.xtrachar == 1 && u8[0xffffb000 + 0x0d] & 0x02) || (global.xtrachar == 3 && System.getGlobalVariableValueByName("Amy_HammerSpinAttacking")) || (global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.DropDown")))
 	{
 		base.Rocks.Update()
 		return
@@ -227,7 +227,7 @@ function void fn01fba8_dd()
 //# address-hook(0x02a502) end(0x02a586)
 function void fn02a502()
 {
-	if ((global.xtrachar == 1 && u8[0xffffb000 + 0x0d] & 0x02) || (global.xtrachar == 3 && System.getGlobalVariableValueByName("Amy_HammerSpinAttacking")) || (global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.DropDown")))
+	if (global.characters > 0x03 || (global.xtrachar == 1 && u8[0xffffb000 + 0x0d] & 0x02) || (global.xtrachar == 3 && System.getGlobalVariableValueByName("Amy_HammerSpinAttacking")) || (global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.DropDown")))
 	{
 		base.fn02a502()
 		return
@@ -332,7 +332,7 @@ function void fn0317ae()
 		fn0317ae_amy()
 		return
 	}
-	else if (global.xtrachar != 0)
+	else if (global.characters > 0x03 || global.xtrachar != 0)
 	{
 		base.fn0317ae()
 		return
@@ -420,7 +420,7 @@ function void fn0317ae_amy()
 //# address-hook(0x04172e) end(0x0417a4)
 function void fn04172e()
 {
-	if ((global.xtrachar == 1 && u8[0xffffb000 + 0x0d] & 0x02) || (global.xtrachar == 3 && System.getGlobalVariableValueByName("Amy_HammerSpinAttacking")) || (global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.DropDown")))
+	if (global.characters > 0x03 || (global.xtrachar == 1 && u8[0xffffb000 + 0x0d] & 0x02) || (global.xtrachar == 3 && System.getGlobalVariableValueByName("Amy_HammerSpinAttacking")) || (global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.DropDown")))
 	{
 		base.fn04172e()
 		return

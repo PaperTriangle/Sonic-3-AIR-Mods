@@ -4,7 +4,7 @@
 		"Name": "Hydrocity Shake",
 		"UniqueID": "hydrocity-shake",
 		"Author": "PaperTriangle",
-		"Description": "Characters do their balance animation during the HCZ2 outro cutscene.",
-		"ModVersion": "1.2"
+		"Description": "Fixes the animation on tiles near HCZ1 boss and make the characters do their balance animation during the HCZ2 outro cutscene.",
+		"ModVersion": "1.3"
 	}
 }
