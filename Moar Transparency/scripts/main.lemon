@@ -19,6 +19,7 @@ global bool mt.supermecha
 
 global bool mt.bugernaught
 global bool mt.dragonfly
+global bool mt.ghosts
 global bool mt.toxomister
 
 global bool mt.telebeam
@@ -524,6 +525,14 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 	{
 		Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 127)
 		Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 127)
+		return true
+	}
+	
+	// SOZ2 Ghosts
+	if (mt.ghosts && (objA0.update_address == 0x08f11e || objA0.update_address == 0x08f37a || objA0.update_address == 0x08f45e))
+	{
+		Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
+		
 		return true
 	}
 	

@@ -91,6 +91,18 @@
 				}
 			},
 			{
+				"InternalName": "mt.ghosts",
+				"DisplayName": "SOZ2 Ghosts",
+				"Variable": "mt.ghosts",
+				"Category": "Badniks",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
 				"InternalName": "mt.toxomister",
 				"DisplayName": "LRZ Toxomister (PNG)",
 				"Variable": "mt.toxomister",
