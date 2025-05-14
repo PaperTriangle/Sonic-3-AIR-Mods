@@ -89,10 +89,15 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 			// Flame Shield
 			if (mt.fireshield && objA0.update_address == 0x019602)
 			{
+				
 				if (objA0.animation.sprite > 8)
 					objA0.value26 = objA0.animation.sprite
 				else
 					objA0.flags2e = objA0.animation.sprite
+					
+				if (objA0.value26 == 0x17 && objA0.flags2e == 0x00)
+					objA0.value26 = 0x0f
+				
 				u64 key
 				key = Renderer.setupCustomCharacterSprite(objA0.shield.art_offset, objA0.shield.pattern_offset, objA0.mapping_offset, objA0.value26, 0x00)
 				Renderer.drawSprite(key, px, py, 0x00, objA0.render_flags | (prioFlag ? SPRITE_FLAG_PRIO : 0), objA0.value26 < 0x0f ? 0x9f80 : 0x9e00, 0, 224)

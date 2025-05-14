@@ -1,6 +1,7 @@
 define u8 global.xtrachar	= u8[0xffffe654]
 global u8 oldJumpState1
 global u8 oldJumpState2
+global u8 balloonjump
 
 //# address-hook(0x01dc56) end(0x01dcb4)
 function void fn01dc56()
@@ -321,18 +322,13 @@ function void fn02a58e_dd()
 }
 
 //------------
-// CNZ Baloons
+// CNZ Balloons
 //------------
 
 //# address-hook(0x0317ae) end(0x03181c)
 function void fn0317ae()
 {
-	if (global.xtrachar == 3)
-	{
-		fn0317ae_amy()
-		return
-	}
-	else if (global.characters > 0x03 || global.xtrachar != 0)
+	if (global.characters > 0x03 || (global.xtrachar == 1 && u8[0xffffb000 + 0x0d] & 0x02) || (global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.DropDown")))
 	{
 		base.fn0317ae()
 		return
@@ -342,15 +338,10 @@ function void fn0317ae()
 	objA1.flags2a |= char.flag.IN_AIR
 	objA1.flags2a &= ~(char.flag.CONTROL_LOCK | char.flag.PUSHING)
 
-#if STANDALONE
-	// Check for active dropdash
-	if (u8[A1 + 0x38] != CHARACTER_SONIC || u8[A1 + 0x20] != char.state.SONIC_DROPDASH)
-#endif
-	{
-		u8[A1 + 0x2e] = 0
-		// Reset the "char.jumping" to make the character bounce off ignoring the velocity-y limit
-		u8[A1 + 0x40] = 0
-	}
+
+	u8[A1 + 0x2e] = 0
+	if (u8[A1 + 0x40] == 1)
+		balloonjump = 1
 
 	objA0.state |= 0x01
 	if (s8[A0 + 0x2c] < 0)
@@ -375,42 +366,23 @@ function void fn0317ae()
 	}
 }
 
-//# address-hook(0x0317ae) end(0x03181c)
-function void fn0317ae_amy()
+function void Character.updateJumpMoves()
 {
+	s16 balloon_vel = char.velocity.y
+	if (balloon_vel >= 0)
+		balloonjump = 0
 	
-	objA1.velocity.y = -0x700
-	objA1.flags2a |= char.flag.IN_AIR
-	objA1.flags2a &= ~(char.flag.CONTROL_LOCK | char.flag.PUSHING)
-
-	// Check for active Hammer Spin
-	if (!System.getGlobalVariableValueByName("Amy_HammerSpinAttacking"))
+	if (A0 != 0xffffb000 || !balloonjump)
 	{
-		u8[A1 + 0x2e] = 0
-		u8[A1 + 0x40] = 0
+		base.Character.updateJumpMoves()
+		return
 	}
 
-	objA0.state |= 0x01
-	if (s8[A0 + 0x2c] < 0)
-	{
-		objA1.velocity.y = -0x380
-		if (level.water_present != 0 && u8[A0 + 0x34] == 0)
-		{
-			A2 = 0x03185a
-			fn03181e()
-			fn03181e()
-			fn03181e()
-			fn03181e()
-			objA1.position.x.u16 = objA0.position.x.u16
-			objA1.position.y.u16 = objA0.position.y.u16
-		}
-	}
-
-	if (u8[A0 + 0x34] == 0)
-	{
-		playSound(0x77)
-		u8[A0 + 0x34] = 0x01
-	}
+	char.velocity.y = 0
+	base.Character.updateJumpMoves()
+	
+	if !(global.xtrachar == 1 && u8[0xffffb000 + 0x0d] & 0x02)
+		char.velocity.y = balloon_vel
 }
 
 //----------
