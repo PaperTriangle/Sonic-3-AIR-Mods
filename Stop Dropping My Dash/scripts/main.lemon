@@ -371,11 +371,17 @@ function void fn0317ae()
 
 function void Character.updateJumpMoves()
 {
+	if (A0 != 0xffffb000)
+	{
+		base.Character.updateJumpMoves()
+		return
+	}
+	
 	s16 balloon_vel = char.velocity.y
 	if (balloon_vel >= 0)
 		balloonjump = 0
 	
-	if (A0 != 0xffffb000 || !balloonjump)
+	if (!balloonjump)
 	{
 		base.Character.updateJumpMoves()
 		return
@@ -386,6 +392,12 @@ function void Character.updateJumpMoves()
 	
 	if !(global.xtrachar == 1 && u8[0xffffb000 + 0x0d] & 0x02)
 		char.velocity.y = balloon_vel
+}
+
+function void yieldExecution()
+{
+	System.writeDisplayLine(stringformat("Flag: 0x%02x", balloonjump))
+	base.yieldExecution()
 }
 
 //----------
