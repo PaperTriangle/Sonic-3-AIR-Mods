@@ -328,13 +328,14 @@ function void fn02a58e_dd()
 //# address-hook(0x0317ae) end(0x03181c)
 function void fn0317ae()
 {
-	if (global.characters > 0x03 || (global.xtrachar == 1 && u8[0xffffb000 + 0x0d] & 0x02) || (global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.DropDown")))
+	if (global.characters > 0x03 || (global.xtrachar == 1 && u8[0xffffb000 + 0x0d] & 0x02))
 	{
 		base.fn0317ae()
 		return
 	}
 	
-	objA1.velocity.y = -0x700
+	if !((global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.DropDown")) || (global.xtrachar == 3 && System.getGlobalVariableValueByName("Amy_HammerSpinAttacking") && u8[A1 + 0x2f] == 0))
+		objA1.velocity.y = -0x700
 	objA1.flags2a |= char.flag.IN_AIR
 	objA1.flags2a &= ~(char.flag.CONTROL_LOCK | char.flag.PUSHING)
 
@@ -346,7 +347,9 @@ function void fn0317ae()
 	objA0.state |= 0x01
 	if (s8[A0 + 0x2c] < 0)
 	{
-		objA1.velocity.y = -0x380
+		if !((global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.DropDown")) || (global.xtrachar == 3 && System.getGlobalVariableValueByName("Amy_HammerSpinAttacking") && u8[A1 + 0x2f] == 0))
+			objA1.velocity.y = -0x380
+		
 		if (level.water_present != 0 && u8[A0 + 0x34] == 0)
 		{
 			A2 = 0x03185a
