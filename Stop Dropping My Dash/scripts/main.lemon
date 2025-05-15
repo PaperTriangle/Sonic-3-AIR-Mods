@@ -394,12 +394,6 @@ function void Character.updateJumpMoves()
 		char.velocity.y = balloon_vel
 }
 
-function void yieldExecution()
-{
-	System.writeDisplayLine(stringformat("Flag: 0x%02x", balloonjump))
-	base.yieldExecution()
-}
-
 //----------
 // SOZ Rocks
 //----------
