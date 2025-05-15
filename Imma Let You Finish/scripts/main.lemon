@@ -13,7 +13,8 @@ function void fn0868f8()
 		control.player1 = 0
 		player2.control_override = 0xff
 		control.player2 = 0
-		tails.ai_routine = 0x06
+		tails.up_press_timer = 0
+		control.tails = 0
 	}
 	
 	base.fn0868f8()
@@ -28,7 +29,8 @@ function void fn083912()
 	control.player1 = 0
 	player2.control_override = 0xff
 	control.player2 = 0
-	tails.ai_routine = 0x06
+	tails.up_press_timer = 0
+	control.tails = 0
 	
 	base.fn083912()
 }
