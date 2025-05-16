@@ -85,7 +85,7 @@ function void RenderHUD()
 		if (!Game.isTimeAttack() && !Game.getSetting(SETTING_INFINITE_LIVES))
 		{
 			bool useMobilePosition = HUD.useMobileLivesDisplay()
-			u16 px = useMobilePosition ? (getScreenWidth() - baseX - 0x30) : baseX
+			u16 px = useMobilePosition ? (getScreenWidth() - baseX - (isMainCharacter(CHARACTER_KNUCKLES) && phud.name ? 0x40 : 0x30)) : baseX
 			u16 py = useMobilePosition ? baseY : 200
 
 			u64 characterSprite = ((phud.allowsuper && global.xtrachar == 0) || (phud.allowsuperesu && global.xtrachar > 0)) ? getCharacterSpriteKey(u8[0xffffb000 + 0x38]) : getCharacterSpriteKey(u8[0xffffb000 + 0x38], false)
@@ -287,7 +287,7 @@ function bool PHUD.CanTransform()
 		{
 			possibleSuperForm = 2
 		}
-		else if (global.chaos_emeralds >= 7 && (global.traded_emeralds == 0 && !Mods.isModActive("Super Post-Trade")))
+		else if (global.chaos_emeralds >= 7 && (global.traded_emeralds == 0 || Mods.isModActive("Super Post-Trade")))
 		{
 			possibleSuperForm = 1
 		}
