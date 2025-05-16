@@ -481,3 +481,39 @@ function void fn0417a6_dd()
 	u8[A1 + 0x40] = oldJumpState1
 	u8[A1 + 0x2f] = oldJumpState2
 }
+
+
+//---------------------------
+// Super then Hyper Compat...
+//---------------------------
+function void SuperThenHyperfunc()
+{
+	u8 input_state     = (char.character == CHARACTER_TAILS) ? control.tails.state   : control.player1.state
+	u8 input_pressed   = (char.character == CHARACTER_TAILS) ? control.tails.pressed : control.player1.pressed
+	bool isSuperActive = (char.character == CHARACTER_TAILS) ? super.active.tails    : super.active
+
+	if (char.jumping)
+	{
+		if (char.double_jump_state == 0)
+		{
+			#if STANDALONE
+				if (Input.buttonPressed(BUTTON_Y) && !System.getGlobalVariableValueByName("original_mode"))
+				{
+					if ((super.active == 0xff || super.active.tails == 0xff) == 0 && char.invuln.countdown == 0)	// Check invulnerability to prevent spamming of super activate + cancel
+					{
+						if (global.chaos_emeralds >= 7 && global.traded_emeralds == 0 && (super.active == 1 || super.active.tails == 1))
+						{
+							char.jumping = 0
+							return
+						}
+						if (Character.performSuperTransformation())
+						{
+							char.jumping = 0
+							return
+						}
+					}
+				}
+			#endif
+		}
+	}
+}
