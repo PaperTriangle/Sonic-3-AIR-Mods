@@ -34,37 +34,15 @@ function void RenderHUD()
 				else
 					fade = 160
 
-				if (CanTransform() && phud.offset > 0)
+				u8 possibleSuperForm = PHUD.CanTransform()	// 1 for Super, 2 for Hyper
+
+				if (possibleSuperForm > 0 && phud.offset > 0)
 				{
 					phud.offset -= 0x08
 				}
-				else if (!CanTransform() && phud.offset < 0x70)
+				else if (possibleSuperForm == 0 && phud.offset < 0x70)
 				{
 					phud.offset += 0x08
-				}
-
-				u8 possibleSuperForm = 0	// 1 for Super, 2 for Hyper
-
-				// Special handling for Tails
-				if (isMainCharacter(CHARACTER_TAILS) && !Game.getSetting(SETTING_HYPER_TAILS))
-				{
-					// Ready to get Super Tails?
-					if (global.super_emeralds >= 7)
-					{
-						possibleSuperForm = 2
-					}
-				}
-				else
-				{
-					// Can go super?
-					if (global.super_emeralds >= 7)
-					{
-						possibleSuperForm = 2
-					}
-					else if ((global.chaos_emeralds >= 7) && (global.traded_emeralds == 0 && !Mods.isModActive("Super Post-Trade")))
-					{
-						possibleSuperForm = 1
-					}
 				}
 
 				u64 transformstring = (phud.transformstyle != 0) ? ((phud.transformstyle == 1) ? stringformat("border_%s", compatName) : stringformat("ring_%s", compatName)) : "normal"
@@ -276,26 +254,23 @@ function void RenderHUD()
 	}
 }
 
-function bool CanTransform()
+function bool PHUD.CanTransform()
 {
 	if (global.zone_act == 0x0c00)
-		return false
+		return 0
 
 	if ((super.active == 1  || super.active.tails == 1) && global.super_emeralds <= 6)
-		return false
+		return 0
 		
 	if (super.active == 0xff || super.active.tails == 0xff)
-		return false
-
-	u8 possibleSuperForm = 0	// 1 for Super, 2 for Hyper
+		return 0
 
 	// Tails is first player?
-	if (char.character == CHARACTER_TAILS)
-	{
-		if (!isMainCharacter(CHARACTER_TAILS))
-			return false
-	}
+	if (char.character == CHARACTER_TAILS && !isMainCharacter(CHARACTER_TAILS))
+		return 0
 
+	u8 possibleSuperForm = 0	// 1 for Super, 2 for Hyper
+	
 	// Special handling for Tails
 	if (isMainCharacter(CHARACTER_TAILS) && !Game.getSetting(SETTING_HYPER_TAILS))
 	{
@@ -318,9 +293,6 @@ function bool CanTransform()
 		}
 	}
 
-	if (possibleSuperForm == 0)
-		return false
-
 	u8 hyper_count = 0
 	if (Mods.isModActive("Characters Go Super Then Hyper"))
 	{
@@ -333,9 +305,9 @@ function bool CanTransform()
 	}
 	
 	if (((ring_counter < 50 && (super.active == 0 && super.active.tails == 0)) || (Mods.isModActive("Characters Go Super Then Hyper") && (super.active == 1 || super.active.tails == 1) && (ring_counter < hyper_count))) || !hud.dirty.timer)
-		return false
+		return 0
 
-	return true
+	return possibleSuperForm
 }
 
 
@@ -346,5 +318,4 @@ function void Character.Initialization.shared(u8 character)
 	phud.offset = 0x70
 
 	base.Character.Initialization.shared(character)
-
 }
