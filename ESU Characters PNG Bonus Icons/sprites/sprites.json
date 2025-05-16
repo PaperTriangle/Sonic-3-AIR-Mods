@@ -1,0 +1,5 @@
+{
+	"hud_bonus_icon_Mighty":  { "File": "character_mighty_levelresults_bonusicon.png", "Rect":  "0,0,12,19" },
+	"hud_bonus_icon_slot2":  { "File": "character_ray_levelresults_bonusicon.png", "Rect":  "0,0,12,19" },
+	"hud_bonus_icon_slot3":   { "File": "character_amy_levelresults_bonusicon.png", "Rect":  "0,0,12,19" }
+}

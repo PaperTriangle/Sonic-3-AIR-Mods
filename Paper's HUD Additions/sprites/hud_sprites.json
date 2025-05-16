@@ -85,9 +85,5 @@
 	"super_icon_ring_s3":  { "File": "super_ring.png", "Rect": "0,0,19,19", "Center": "8,8" },
 	"hyper_icon_ring_s3":  { "File": "hyper_ring.png", "Rect": "0,0,19,19", "Center": "8,8" },
 	"super_icon_ring_haru":  { "File": "super_ring_haru.png", "Rect": "0,0,19,19", "Center": "8,8" },
-	"hyper_icon_ring_haru":  { "File": "hyper_ring_haru.png", "Rect": "0,0,19,19", "Center": "8,8" },
-	
-	"hud_bonus_icon_Mighty":  { "File": "character_mighty_levelresults_bonusicon.png", "Rect":  "0,0,12,19" },
-	"hud_bonus_icon_slot2":  { "File": "character_ray_levelresults_bonusicon.png", "Rect":  "0,0,12,19" },
-	"hud_bonus_icon_slot3":   { "File": "character_amy_levelresults_bonusicon.png", "Rect":  "0,0,12,19" }
+	"hyper_icon_ring_haru":  { "File": "hyper_ring_haru.png", "Rect": "0,0,19,19", "Center": "8,8" }
 }
