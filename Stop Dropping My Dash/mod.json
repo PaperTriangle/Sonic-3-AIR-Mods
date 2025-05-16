@@ -32,6 +32,12 @@
 			"DisplayName": "Extra Slot Ray",
 			"IsRequired": "0",
 			"Priority": "Lower"
+		},
+		"super-then-hyper-2":
+		{
+			"DisplayName": "Characters Go Super Then Hyper",
+			"IsRequired": "0",
+			"Priority": "Lower"
 		}
 	}
 }
