@@ -50,5 +50,5 @@
 	"dez_22":  { "File": "dez_22.png", "Rect": "0,0,2,44", "Center": "0,22" },
 	"dez_30":  { "File": "dez_30.png", "Rect": "0,0,2,59", "Center": "0,30" },
 	
-	"amyheart_02t":  { "File": "amy_heart.png", "Rect": "0,0,11,9", "Center": "5,3" },
+	"amyheart_02t":  { "File": "amy_heart.bmp", "Rect": "0,0,11,9", "Center": "5,3" },
 }

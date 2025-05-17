@@ -284,7 +284,7 @@
 			},
 			{
 				"InternalName": "mt.amyheart",
-				"DisplayName": "ES Amy Heart (PNG)",
+				"DisplayName": "ES Amy Heart",
 				"Variable": "mt.amyheart",
 				"Category": "Extras",	
 				"DefaultValue": "1",
