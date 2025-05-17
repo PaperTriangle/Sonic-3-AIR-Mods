@@ -245,13 +245,20 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 			}
 		}
 
-		// DEZ2 Flame Thrower
+		// DEZ2 Huge Eggman Robot Flame Thrower
 		if (objA0.mapping_offset == 0x187888)
 		{
-			if (objA0.animation.sprite == 0x12 || objA0.animation.sprite == 0x11 || objA0.animation.sprite == 0x0b)
+			if (objA0.animation.sprite == 0x12)
 			{
-				Renderer.drawVdpSprite(px, py, size, index, renderQueue)
-				Renderer.drawVdpSprite(px+1, py, size, index, renderQueue)
+				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 127)
+				Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 127)
+				
+				return true
+			}
+			else if (objA0.animation.sprite == 0x11 || objA0.animation.sprite == 0x0b)
+			{
+				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 63)
+				Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 63)
 				
 				return true
 			}
