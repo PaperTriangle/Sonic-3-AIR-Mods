@@ -369,6 +369,72 @@ function void fn0317ae()
 	}
 }
 
+//------------
+// CNZ Bumpers
+//------------
+
+//# address-hook(0x032f56) end(0x032fee)
+function void fn032f56()
+{
+	if (global.characters > 0x03 || (global.xtrachar == 1 && u8[0xffffb000 + 0x0d] & 0x02) || (global.xtrachar == 3 && System.getGlobalVariableValueByName("Amy_HammerSpinAttacking")) || (global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.DropDown")))
+	{
+		base.fn032f56()
+		return
+	}
+
+	D1.u16 = objA0.position.x.u16 - objA1.position.x.u16
+	D2.u16 = objA0.position.y.u16 - objA1.position.y.u16
+	LookupAngleByVector()
+
+	D1.u16 = u8[0xfffffe04] & 0x03
+	D0.u16 += D1.u16
+	LookupSinCos()
+
+	D1.s32 = s32(D1.s16) * -0x700
+	D1.s32 >>= 8
+	objA1.velocity.x = D1.u16
+
+	D0.s32 = s32(D0.s16) * -0x700
+	D0.s32 >>= 8
+	objA1.velocity.y = D0.u16
+
+	objA1.flags2a |= char.flag.IN_AIR
+	objA1.flags2a &= ~(char.flag.CONTROL_LOCK | char.flag.PUSHING)
+	
+	if (u8[A1 + 0x40] == 1)
+		balloonjump = 1
+	
+	objA0.state = 0x01
+
+	playSound(0xaa)
+
+	D0.u16 = objA0.respawn_entry
+	if (D0.u16 != 0)
+	{
+		A2 = 0xffff0000 + D0.u16
+		if (u8[A2] >= 0x8a)
+			return
+
+		++u8[A2]
+	}
+
+	A3 = 0xffff0000 + A1.u16
+	addScore(1)
+
+	if (allocDynamicObjectStd())
+	{
+		// Spawn floating points display
+		objA1.update_address = addressof(FloatingPoints.Init)
+		objA1.position.x.u16 = objA0.position.x.u16
+		objA1.position.y.u16 = objA0.position.y.u16
+		objA1.animation.sprite = 0x04
+	}
+}
+
+//------------------
+// CNZ Helper Method
+//------------------
+
 function void Character.updateJumpMoves()
 {
 	if (A0 != 0xffffb000)
