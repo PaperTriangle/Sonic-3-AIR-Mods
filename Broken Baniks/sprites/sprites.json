@@ -1,5 +1,5 @@
 {
-	"bonker_1":  { "File": "bonker1.png", "Center": "15,15" },
-	"bonker_2":  { "File": "bonker2.png", "Center": "15,15" },
-	"bonker_3":  { "File": "bonker3.png", "Center": "15,15" }
+	"bonker_1":  { "File": "bonker1.bmp", "Center": "14,14" },
+	"bonker_2":  { "File": "bonker2.bmp", "Center": "14,14" },
+	"bonker_3":  { "File": "bonker3.bmp", "Center": "14,14" }
 }
