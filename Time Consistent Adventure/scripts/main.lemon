@@ -8,6 +8,7 @@ global bool tca.hpz
 global bool tca.ssz_sonic
 global bool tca.ssz_knux
 
+global bool tca.intended
 global bool tca.fadetype
 global bool tca.leftescape
 global bool tca.fbz_explosions
@@ -41,7 +42,7 @@ function void yieldExecution()
 	//System.writeDisplayLine(stringformat("ZoneAct: 0x%04x, TransState: %d, TransTime: 0x%02x, FadeVal: %d", global.zone_act, transition_state, transition_time, transition_time * 2 + transition_time / 8 + 1))
 
 	//Tile Data
-	if (tca.hpz)
+	if (tca.mgz)
 	{
 		System.loadExternalRawData("MGZ_Mountain_Fix_1", 0x3C8A70)
 		System.loadExternalRawData("MGZ_Mountain_Fix_2", 0x3CA132)
@@ -50,7 +51,7 @@ function void yieldExecution()
 	if (tca.fbz)
 		System.loadExternalRawData("FBZ_Cloud_Fix", 0x195040)
 	
-	if (isMainCharacter(CHARACTER_KNUCKLES))
+	if (isMainCharacter(CHARACTER_KNUCKLES) && tca.intended)
 	{
 		
 		if (tca.soz)
@@ -64,7 +65,7 @@ function void yieldExecution()
 	}
 	
 	// Data Select Palettes
-	if (tca.zone_icons)
+	if (tca.zone_icons && tca.intended)
 	{
 		tca.ds_char = u8[0xffffe6ac + u32(max(dataselect.slot_selected - 1, 0)) * 10 + 0x02] >> 4
 		
@@ -88,6 +89,27 @@ function void yieldExecution()
 		
 		if (tca.fbz)
 			System.loadExternalRawData("FBZ_Zone_Card", 0x00CBF8)
+		if (tca.lbz)
+			System.loadExternalRawData("LBZ_Zone_Card", 0x00CBB8)
+	}
+	else if (tca.zone_icons && !tca.intended)
+	{
+		tca.ds_char = u8[0xffffe6ac + u32(max(dataselect.slot_selected - 1, 0)) * 10 + 0x02] >> 4
+		
+		if (tca.ssz_knux && (tca.ds_char == 3 || tca.ds_char == 4))
+		{
+			System.loadExternalRawData("SSZ_Zone_Card_Knux_Released", 0x00CC78)
+		}
+		else
+		{
+			if (tca.ssz_sonic && Mods.isModActive("Moar Transparency") && System.getGlobalVariableValueByName("mt.teleframe"))
+				System.loadExternalRawData("SSZ_Zone_Card_Sonic_Compat", 0x00CC78)
+			else if (tca.ssz_sonic || tca.ssz_knux)
+				System.loadExternalRawData("SSZ_Zone_Card_Sonic", 0x00CC78)
+		}
+		
+		if (tca.soz)
+			System.loadExternalRawData("SOZ_Zone_Card_Sonic", 0x00CC18)
 		if (tca.lbz)
 			System.loadExternalRawData("LBZ_Zone_Card", 0x00CBB8)
 	}
@@ -139,7 +161,7 @@ function void yieldExecution()
 		}
 		
 	}
-	else if (tca.fbz && global.zone_act == 0x0400) // FBZ Act 1
+	else if (tca.fbz && global.zone_act == 0x0400 && tca.intended) // FBZ Act 1
 	{
 		System.loadExternalRawData("FBZ1_Palette", 0x052dd0)
 		
@@ -152,7 +174,7 @@ function void yieldExecution()
 		}
 		
 	}
-	else if (tca.fbz && global.zone_act == 0x0401) // FBZ Act 2
+	else if (tca.fbz && global.zone_act == 0x0401 && tca.intended) // FBZ Act 2 (Intended)
 	{
 
 		if (camera.position.x.u16 >= 0x2980)
@@ -173,6 +195,15 @@ function void yieldExecution()
 			}
 		}
 	}
+	else if (tca.fbz && global.zone_act == 0x0401 && !tca.intended) // FBZ Act 2 (As Released) ****
+	{
+
+		if (camera.position.x.u16 >= 0x2980)
+			System.loadExternalRawData("FBZ2_Palette_2_Released", 0x052dd0)
+		else
+			System.loadExternalRawData("FBZ2_Palette_1_Released", 0x052dd0)
+
+	}
 	else if (tca.icz && global.zone_act == 0x0501) // ICZ Act 2
 	{
 		if (transition_state == 1 && transition_time <= 0x78)
@@ -192,24 +223,24 @@ function void yieldExecution()
 		System.loadExternalRawData("LBZ1_Palette", 0x0A929C)
 		System.loadExternalRawData("LBZ2_Palette", 0x0A92FC)
 	}
-	else if (tca.mvz && global.zone_act == 0x0701) // MVZ Act 2
+	else if (tca.mvz && global.zone_act == 0x0701 && tca.intended) // MVZ Act 2
 	{
 		if (!isMainCharacter(CHARACTER_KNUCKLES) && camera.position.x.u16 > 0x3abd)
 			System.loadExternalRawData("MVZ2_Palette_Sunset", 0x0A943C)
 	}
 	else if (tca.soz && global.zone_act == 0x0800) // SOZ Act 1
 	{	
-		if (isMainCharacter(CHARACTER_KNUCKLES))
+		if (isMainCharacter(CHARACTER_KNUCKLES) && tca.intended)
 			System.loadExternalRawData("SOZ1_Palette_Day", 0x0A94FC)
 		else
 			System.loadExternalRawData("SOZ1_Palette_Arvo", 0x0A94FC)
 	}
-	else if (tca.hpz && global.zone == 0x1601)
+	else if (tca.hpz && global.zone == 0x1601 && tca.intended)
 	{
 		if (isMainCharacter(CHARACTER_KNUCKLES))
 			System.loadExternalRawData("HPZ_Roof_Fix", 0x1C3F2C)
 	}
-	else if (tca.ssz_sonic && global.zone_act == 0x0a00) // SSZ Sonic
+	else if (tca.ssz_sonic && global.zone_act == 0x0a00 && tca.intended) // SSZ Sonic
 	{
 		if (checkpoint.number == 0)
 			System.loadExternalRawData("SSZ1_Palette_Morning", 0x0A973C)
@@ -231,7 +262,7 @@ function void yieldExecution()
 			}
 		}	
 	}
-	else if (tca.ssz_knux && global.zone_act == 0x0a01) // SSZ Knuckles
+	else if (tca.ssz_knux && global.zone_act == 0x0a01 && tca.intended) // SSZ Knuckles (Intended)
 	{
 		if (transition_state == 0 )
 		{
@@ -312,7 +343,7 @@ function void yieldExecution()
 //# address-hook(0x00d96a) end(0x00d9f2)
 function void fn00d96a()
 {
-	if (tca.zone_icons)
+	if (tca.zone_icons && tca.intended)
 	{
 		if (u16[A0 + 0x36] == 0x007 && s16[0xffffb04a + 0x2e] == 0)
 		{
@@ -336,7 +367,7 @@ function void fn00d96a()
 		}
 		if (u16[A0 + 0x36] == 0x008 && s16[0xffffb04a + 0x2e] == 0)
 		{
-			if (tca.fbz)
+			if (tca.soz)
 			{
 				SpriteHandle dataselpreview = Renderer.addSpriteHandle("soz_icon", (objA0.position.x.u16 + getScreenExtend() - 208) - getScreenExtend() + 40, 16, 0x9ff9)
 				dataselpreview.setFlags(0x40)
@@ -347,6 +378,42 @@ function void fn00d96a()
 			if (tca.ssz_knux && (tca.ds_char == 0x03 || tca.ds_char == 0x04))
 			{
 				SpriteHandle dataselpreview = Renderer.addSpriteHandle("ssz_icon_knux", (objA0.position.x.u16 + getScreenExtend() - 208) - getScreenExtend() + 40, 16, 0x9ff9)
+				dataselpreview.setFlags(0x40)
+			}
+			else if (tca.ssz_sonic && Mods.isModActive("Moar Transparency") && System.getGlobalVariableValueByName("mt.teleframe"))
+			{
+				SpriteHandle dataselpreview = Renderer.addSpriteHandle("ssz_icon_compat", (objA0.position.x.u16 + getScreenExtend() - 208) - getScreenExtend() + 40, 16, 0x9ff9)
+				dataselpreview.setFlags(0x40)
+			}
+		}
+	}
+	else if (tca.zone_icons && !tca.intended)
+	{
+		if (u16[A0 + 0x36] == 0x005 && s16[0xffffb04a + 0x2e] == 0)
+		{
+			if (tca.lbz)
+			{	
+				u64 lbzkey = "lbz_icon"
+				if (tca.ds_char == 0x03 || tca.ds_char == 0x04)
+					lbzkey = "lbz_icon_knux"
+					
+				SpriteHandle dataselpreview = Renderer.addSpriteHandle(lbzkey, (objA0.position.x.u16 + getScreenExtend() - 208) - getScreenExtend() + 40, 16, 0x9ff9)
+				dataselpreview.setFlags(0x40)
+			}
+		}
+		if (u16[A0 + 0x36] == 0x008 && s16[0xffffb04a + 0x2e] == 0)
+		{
+			if (tca.soz)
+			{
+				SpriteHandle dataselpreview = Renderer.addSpriteHandle("soz_icon", (objA0.position.x.u16 + getScreenExtend() - 208) - getScreenExtend() + 40, 16, 0x9ff9)
+				dataselpreview.setFlags(0x40)
+			}
+		}
+		if (u16[A0 + 0x36] == 0x000b && s16[0xffffb04a + 0x2e] == 0)
+		{
+			if (tca.ssz_knux && (tca.ds_char == 0x03 || tca.ds_char == 0x04))
+			{
+				SpriteHandle dataselpreview = Renderer.addSpriteHandle("ssz_icon_knux_released", (objA0.position.x.u16 + getScreenExtend() - 208) - getScreenExtend() + 40, 16, 0x9ff9)
 				dataselpreview.setFlags(0x40)
 			}
 			else if (tca.ssz_sonic && Mods.isModActive("Moar Transparency") && System.getGlobalVariableValueByName("mt.teleframe"))
@@ -508,7 +575,7 @@ function void fn07092a()
 //# address-hook(0x0713e8) end(0x07141a)
 function void fn0713e8()
 {
-	if (!tca.icz)
+	if (!tca.icz || !tca.intended)
 	{
 		base.fn0713e8()
 		return
@@ -534,13 +601,13 @@ function void fn0713e8()
 //# address-hook(0x071de2) end(0x071e22)
 function void fn071de2()
 {
-	if (!tca.icz)
+	if (!tca.icz || !tca.intended)
 	{
 		base.fn071de2()
 		return
 	}
 	
-	if (isMainCharacter(CHARACTER_KNUCKLES) && transition_state == 0)
+	if ((isMainCharacter(CHARACTER_KNUCKLES)) && transition_state == 0)
 	{
 		transition_state = 1
 		
@@ -555,7 +622,7 @@ function void fn071de2()
 //# address-hook(0x23de96) end(0x23dec4)
 function void fn23de96()
 {
-		if (!tca.icz)
+		if (!tca.icz || !tca.intended)
 		{
 			base.fn23de96()
 			return
@@ -577,7 +644,7 @@ function void fn23de96()
 //# address-hook(0x23e1aa) end(0x23e1d8)
 function void fn23e1aa()
 {
-	if (!tca.icz)
+	if (!tca.icz || !tca.intended)
 	{
 		base.fn23e1aa()
 		return
@@ -597,7 +664,7 @@ function void fn23e1aa()
 //# address-hook(0x23e20e) end(0x23e23c)
 function void fn23e20e()
 {
-	if (!tca.icz)
+	if (!tca.icz || !tca.intended)
 	{
 		base.fn23e20e()
 		return
@@ -638,7 +705,7 @@ function void fn23e20e()
 //# address-hook(0x05e80a) end(0x05e830)
 function void fn05e80a()
 {
-	if (!tca.ssz_knux)
+	if (!tca.ssz_knux || !tca.intended)
 	{
 		base.fn05e80a()
 		return

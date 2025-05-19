@@ -27,6 +27,12 @@
 	"FBZ2_Palette_2": {
 		"File": "FBZ2_Outdoors_Palette_2.bin"
 	},
+	"FBZ2_Palette_1_Released": {
+		"File": "FBZ2_Outdoors_Palette_1_Released.bin"
+	},
+	"FBZ2_Palette_2_Released": {
+		"File": "FBZ2_Outdoors_Palette_2_Released.bin"
+	},
 	"LBZ1_Palette": {
 		"File": "LBZ1_Palette.bin"
 	},
@@ -88,6 +94,10 @@
 	"SSZ_Zone_Card_Knux":
 	{
 		"File": "SSZ_Zone_Card_Knux.bin"
+	},
+	"SSZ_Zone_Card_Knux_Released":
+	{
+		"File": "SSZ_Zone_Card_Knux_Released.bin"
 	},
 	"SSZ_Zone_Card_Sonic":
 	{
