@@ -204,7 +204,7 @@ function void yieldExecution()
 			System.loadExternalRawData("FBZ2_Palette_1_Released", 0x052dd0)
 
 	}
-	else if (tca.icz && global.zone_act == 0x0501) // ICZ Act 2
+	else if (tca.icz && global.zone_act == 0x0501 && tca.intended) // ICZ Act 2
 	{
 		if (transition_state == 1 && transition_time <= 0x78)
 		{	
