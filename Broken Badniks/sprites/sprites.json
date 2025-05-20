@@ -1,5 +1,9 @@
 {
 	"bonker_1":  { "File": "bonker1.bmp", "Center": "14,14" },
 	"bonker_2":  { "File": "bonker2.bmp", "Center": "14,14" },
-	"bonker_3":  { "File": "bonker3.bmp", "Center": "14,14" }
+	"bonker_3":  { "File": "bonker3.bmp", "Center": "14,14" },
+	"ribot_0":  { "File": "ribot_chain.bmp", "Center": "4,4" },
+	"ribot_1":  { "File": "ribot_weight.bmp", "Center": "8,8" },
+	"skorp_0":  { "File": "skorp_tail.bmp", "Center": "4,4" },
+	"skorp_1":  { "File": "skorp_stinger.bmp", "Center": "8,8" }
 }

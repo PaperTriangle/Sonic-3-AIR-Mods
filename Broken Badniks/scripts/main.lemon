@@ -1,3 +1,7 @@
+global bool bb.ribit
+global bool bb.skorp
+global bool bb.spikebonker
+
 //----------------
 // Generic Methods
 //----------------
@@ -7,7 +11,7 @@ function void BB.SpawnPart(s16 speed.x, s16 speed.y, u8 part, u8 index)
 {
 	if (allocDynamicObjectStd())										// Get a memory address (or don't do anything if there is none available)
 	{
-		objA1.update_address = 0x200160									// Set an update address.
+		objA1.update_address = 0x202501									// Set an update address.
 		objA1.render_flags = (render_flag.WORLD | render_flag.VISIBLE)	// Make sure the object renders correctly.
 
 		objA1.box_size.x = 0x40											// Set its draw distance (how far off-screen can it go).
@@ -27,7 +31,7 @@ function void BB.SpawnPart(s16 speed.x, s16 speed.y, u8 part, u8 index)
 }
 
 // Update Object
-//# address-hook(0x200160)
+//# address-hook(0x202501)
 function void BB.Particle.Update()
 {
 	UpdateMovementStraightSimple()					// Movement function, uses objA0.velocity.x and y.
@@ -50,12 +54,20 @@ function void BB.Particle.Update()
 function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 {
 	
-	if (objA0.update_address == 0x200160)															// It's our object.
+	if (objA0.update_address == 0x202501)															// It's our object.
 	{
 		u64 key
-		if objA0.state == 1																			// Spikebonker
+		if (objA0.state == 1)																		// Spikebonker
 		{
 			key = stringformat("bonker_%d", objA0.animation.sprite)
+		}
+		else if (objA0.state == 2)																	// Ribot
+		{
+			key = stringformat("ribot_%d", objA0.animation.sprite)
+		}
+		else if (objA0.state == 3)																	// Skorp
+		{
+			key = stringformat("skorp_%d", objA0.animation.sprite)
 		}
 		else
 		{
@@ -75,6 +87,12 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 //# address-hook(0x091aec) end(0x091b38)
 function void fn091aec()
 {
+	if (!bb.spikebonker)
+	{
+		base.fn091aec()
+		return
+	}
+	
 	MoveAndFlipWithParent()
 	A1 = 0xffff0000 + u16[A0 + 0x44]
 
@@ -102,6 +120,12 @@ function void fn091aec()
 //# address-hook(0x091b3e) end(0x091b50)
 function void fn091b3e()
 {
+	if (!bb.spikebonker)
+	{
+		base.fn091b3e()
+		return
+	}
+	
 	D0.u16 = objA0.position.x.u16 + objA0.velocity.x
 	objA0.position.x.u16 = D0.u16
 	Object.CountdownAndTrigger()
@@ -111,6 +135,12 @@ function void fn091b3e()
 //# address-hook(0x091b70) end(0x091ba2)
 function void fn091b70()
 {
+	if (!bb.spikebonker)
+	{
+		base.fn091b70()
+		return
+	}
+	
 	A1 = 0xffff0000 + u16[A0 + 0x44]
 	D0.u8 = u8[A1 + 0x3c]
 	if (D0.u8 != 0x80)
@@ -135,6 +165,136 @@ function void BB.BreakBall()
 	if (u8[A1 + 0x2a] & 0x80)
 	{
 		BB.SpawnPart(objA0.velocity.x * 0x100, 0, 0x01, u8[0xffff0000 + u16[A0 + 0x44] + 0x22])
+		Object.TriggerUnloading()
+	}
+}
+
+//-------
+// Ribbit
+//-------
+
+
+// Variant: Swinging its weight in a circle around him
+
+//# address-hook(0x08c370) end(0x08c388)
+function void fn08c370()
+{
+	if (!bb.ribit)
+	{
+		base.fn08c370()
+		return
+	}
+	
+	A1 = 0xffff0000 + u16[A0 + 0x46]
+	D2 = u8[A1 + 0x2c]
+
+	// Targets:
+	//  - 0x08c396	-> objA0.base_state = 0x00
+	//  - 0x08c3bc	-> objA0.base_state = 0x02
+	//  - 0x08c428	-> objA0.base_state = 0x04
+	//  - 0x08c48e	-> objA0.base_state = 0x06
+	//  - 0x08c4ba	-> objA0.base_state = 0x08
+	call tableLookupAddress(0x08c38c, objA0.base_state)
+
+	BB.BreakFrog(true)
+}
+
+
+// Weight
+
+//# address-hook(0x08c502) end(0x08c51e)
+function void fn08c502()
+{
+	if (!bb.ribit)
+	{
+		base.fn08c502()
+		return
+	}
+	
+	setupObjectAttributesBasic(0x08c5dc)
+	objA0.update_address = 0x08c522
+	objA0.value3e = objA0.position.x.u16
+	u16[A0 + 0x40] = objA0.position.y.u16
+	BB.BreakFrog(false)
+}
+
+
+//# address-hook(0x08c522) end(0x08c544)
+function void fn08c522()
+{
+	if (!bb.ribit)
+	{
+		base.fn08c522()
+		return
+	}
+	
+	A1 = 0xffff0000 + u16[A0 + 0x46]
+	D2.u16 = objA1.position.x.u16 - objA0.value3e
+	D3.u16 = objA1.position.y.u16 - u16[A0 + 0x40]
+
+	// Targets:
+	//  - 0x08c54e	-> objA0.subtype2c = 0x00
+	//  - 0x08c568	-> objA0.subtype2c = 0x02
+	//  - 0x08c57e	-> objA0.subtype2c = 0x04
+	call tableLookupAddress(0x08c548, objA0.subtype2c)
+	BB.BreakFrog(false)
+}
+
+function void BB.BreakFrog(bool dyn)
+{
+	A1 = 0xffff0000 + u16[A0 + 0x46]
+	if (u8[A1 + 0x2a] & 0x80)
+	{
+		BB.SpawnPart((System.rand() & 1) ? System.rand() % 0x300 : System.rand() % 0x300 * -1, 0, 0x02, objA0.update_address == 0x08c370 ? 1 : 0)
+		Object.TriggerUnloading()
+	}
+	else
+	{
+		if (dyn)
+			AddAsDynamicObject()
+			
+		DrawObject()
+	}
+}
+
+//------
+// Skorp
+//------
+
+//# address-hook(0x08e744) end(0x08e772)
+function void fn08e744()
+{
+	if (!bb.skorp)
+	{
+		base.fn08e744()
+		return
+	}
+	
+	// Targets:
+	//  - 0x08e78c	-> objA0.base_state = 0x00
+	//  - 0x08e7d4	-> objA0.base_state = 0x02
+	//  - 0x08e828	-> objA0.base_state = 0x04
+	//  - 0x08e868	-> objA0.base_state = 0x06
+	//  - 0x08e88c	-> objA0.base_state = 0x08
+	//  - 0x08e8c4	-> objA0.base_state = 0x0a
+	//  - 0x08e8be	-> objA0.base_state = 0x0c
+	//  - 0x08e8be	-> objA0.base_state = 0x0e
+	//  - 0x08e918	-> objA0.base_state = 0x10
+	//  - 0x08e958	-> objA0.base_state = 0x12
+	call tableLookupAddress(0x08e778, objA0.base_state)
+
+	A1 = 0xffff0000 + u16[A0 + 0x44]
+	if ((u8[A1 + 0x2a] & 0x80) == 0)
+	{
+		if (objA0.subtype2c == 0x0a)
+		{
+			AddAsDynamicObject()
+		}
+		DrawObject()
+	}
+	else
+	{
+		BB.SpawnPart((System.rand() & 1) ? System.rand() % 0x300 : System.rand() % 0x300 * -1, System.rand() % 0x200 * -1, 0x03, objA0.subtype2c == 0x0a ? 1 : 0)
 		Object.TriggerUnloading()
 	}
 }
