@@ -11,7 +11,7 @@ function void BB.SpawnPart(s16 speed.x, s16 speed.y, u8 part, u8 index)
 {
 	if (allocDynamicObjectStd())										// Get a memory address (or don't do anything if there is none available)
 	{
-		objA1.update_address = 0x202501									// Set an update address.
+		objA1.update_address = 0x302501									// Set an update address.
 		objA1.render_flags = (render_flag.WORLD | render_flag.VISIBLE)	// Make sure the object renders correctly.
 
 		objA1.box_size.x = 0x40											// Set its draw distance (how far off-screen can it go).
@@ -31,7 +31,7 @@ function void BB.SpawnPart(s16 speed.x, s16 speed.y, u8 part, u8 index)
 }
 
 // Update Object
-//# address-hook(0x202501)
+//# address-hook(0x302501)
 function void BB.Particle.Update()
 {
 	UpdateMovementStraightSimple()					// Movement function, uses objA0.velocity.x and y.
@@ -54,7 +54,7 @@ function void BB.Particle.Update()
 function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 {
 	
-	if (objA0.update_address == 0x202501)															// It's our object.
+	if (objA0.update_address == 0x302501)															// It's our object.
 	{
 		u64 key
 		if (objA0.state == 1)																		// Spikebonker
@@ -71,7 +71,7 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 		}
 		else
 		{
-			return true
+			return base.Standalone.onWriteToSpriteTable(px, py, renderQueue)
 		}
 		
 		Renderer.drawCustomSprite(key, px, py, 0x00, SPRITE_FLAG_PRIO, 0x9fff, 0x00, 0xff)			// High priority and renderQueue, to appear above most other things.
