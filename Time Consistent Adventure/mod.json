@@ -160,6 +160,18 @@
 				}
 			},
 			{
+				"InternalName": "tca.mgz2boss",
+				"DisplayName": "MGZ Eggman Cutscene Position",
+				"Variable": "tca.mgz2boss",
+				"Category": "Extra Settings",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Centre",
+					"1": "Right Screen Edge"
+				}
+			},
+			{
 				"InternalName": "tca.leftescape",
 				"DisplayName": "CNZ Eggman Escape Direction",
 				"Variable": "tca.leftescape",

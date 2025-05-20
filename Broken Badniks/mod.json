@@ -48,6 +48,42 @@
 				}
 			},
 			{
+				"InternalName": "bb.cutsceneadjust",
+				"DisplayName": "AIZ Fire Breath Cutscene",
+				"Variable": "bb.cutsceneadjust",
+				"Category": "Mini-Boss Adjustments",
+				"DefaultValue": "1",
+				"Options":
+				{
+					"1": "Default A.I.R.",
+					"2": "Closer to the Edge"
+				}
+			},
+			{
+				"InternalName": "bb.firebreath",
+				"DisplayName": "AIZ Fire Breath Fight",
+				"Variable": "bb.firebreath",
+				"Category": "Mini-Boss Adjustments",
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Default A.I.R.",
+					"1": "Closer to the Edge"
+				}
+			},
+			{
+				"InternalName": "bb.twinhammer",
+				"DisplayName": "LBZ Twin Hammers Position",
+				"Variable": "bb.twinhammer",
+				"Category": "Mini-Boss Adjustments",
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Default",
+					"1": "Lower"
+				}
+			},
+			{
 				"InternalName": "bb.monkeydude",
 				"DisplayName": "AIZ Smoother Monkeydude",
 				"Variable": "bb.monkeydude",
