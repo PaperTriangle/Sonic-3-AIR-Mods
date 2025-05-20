@@ -1,3 +1,4 @@
+global bool bb.monkeydude
 global bool bb.ribit
 global bool bb.skorp
 global bool bb.spikebonker
@@ -11,7 +12,7 @@ function void BB.SpawnPart(s16 speed.x, s16 speed.y, u8 part, u8 index)
 {
 	if (allocDynamicObjectStd())										// Get a memory address (or don't do anything if there is none available)
 	{
-		objA1.update_address = 0x200160									// Set an update address.
+		objA1.update_address = 0x251000									// Set an update address.
 		objA1.render_flags = (render_flag.WORLD | render_flag.VISIBLE)	// Make sure the object renders correctly.
 
 		objA1.box_size.x = 0x40											// Set its draw distance (how far off-screen can it go).
@@ -25,13 +26,12 @@ function void BB.SpawnPart(s16 speed.x, s16 speed.y, u8 part, u8 index)
 
 		objA1.state = part												// What badnik part?
 		objA1.animation.sprite = index									// What sprite index? Use 0 if not needed.
-		
 
 	}
 }
 
 // Update Object
-//# address-hook(0x200160)
+//# address-hook(0x251000)
 function void BB.Particle.Update()
 {
 	UpdateMovementStraightSimple()					// Movement function, uses objA0.velocity.x and y.
@@ -54,7 +54,7 @@ function void BB.Particle.Update()
 function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 {
 	
-	if (objA0.update_address == 0x200160)															// It's our object.
+	if (objA0.update_address == 0x251000)															// It's our object.
 	{
 		u64 key
 		if (objA0.state == 1)																		// Spikebonker
@@ -164,6 +164,9 @@ function void BB.BreakBall()
 	A1 = 0xffff0000 + u16[A0 + 0x46]
 	if (u8[A1 + 0x2a] & 0x80)
 	{
+		if (objA0.velocity.x == 0)
+			objA0.velocity.x = (System.rand() & 1) ? 4 : -4
+
 		BB.SpawnPart(objA0.velocity.x * 0x100, 0, 0x01, u8[0xffff0000 + u16[A0 + 0x44] + 0x22])
 		Object.TriggerUnloading()
 	}
@@ -270,6 +273,15 @@ function void fn08e744()
 		return
 	}
 	
+	A1 = 0xffff0000 + u16[A0 + 0x44]
+	if !((u8[A1 + 0x2a] & 0x80) == 0)
+	{
+		BB.SpawnPart((System.rand() & 1) ? System.rand() % 0x300 : System.rand() % 0x300 * -1, System.rand() % 0x200 * -1, 0x03, objA0.subtype2c == 0x0a ? 1 : 0)
+		
+		Object.TriggerUnloading()
+		return
+	}
+	
 	// Targets:
 	//  - 0x08e78c	-> objA0.base_state = 0x00
 	//  - 0x08e7d4	-> objA0.base_state = 0x02
@@ -284,7 +296,6 @@ function void fn08e744()
 	call tableLookupAddress(0x08e778, objA0.base_state)
 
 	A1 = 0xffff0000 + u16[A0 + 0x44]
-	System.writeDisplayLine(stringformat("ZoneAct: 0x%04x", objA0.position.x))
 	if ((u8[A1 + 0x2a] & 0x80) == 0)
 	{
 		if (objA0.subtype2c == 0x0a)
@@ -295,7 +306,68 @@ function void fn08e744()
 	}
 	else
 	{
-		BB.SpawnPart((System.rand() & 1) ? System.rand() % 0x300 : System.rand() % 0x300 * -1, System.rand() % 0x200 * -1, 0x03, objA0.subtype2c == 0x0a ? 1 : 0)
 		Object.TriggerUnloading()
 	}
+}
+
+//------------
+// Monkey Dude
+//------------
+
+
+//# address-hook(0x0871da) end(0x087246)
+function void fn0871da()
+{
+	if (!bb.monkeydude)
+	{
+		base.fn0871da()
+		return
+	}
+	
+	Object.AnimationProgressByLocalA1.DistinctTimer()
+
+	bool goto087218 = false
+	if (objA0.flags38 & 0x04)
+	{
+		if (objA0.animation.sprite != 2)
+			return
+
+		--objA0.value39
+		if (objA0.value39 != 0)
+		{
+			objA0.position.y.u16 -= 1
+			return
+		}
+		goto087218 = true
+	}
+
+	if (objA0.animation.sprite == 0)
+	{
+		objA0.position.y.u16 += 1
+		--objA0.value39
+		goto087218 = (objA0.value39 == 1)
+	}
+
+	if (goto087218)
+	{
+		objA0.base_state = 0x02
+		objA0.value39 = objA0.subtype2c * 8
+		objA0.flags38 ^= 0x04
+		objA0.countdown_value = 0x3b
+		u32[A0 + 0x30] = 0x0876b4
+		objA0.animation.sprite = 0
+		objA0.animation.frame = 0
+		objA0.animation.timer = 0
+	}
+
+}
+
+//# address-hook(0x087172) end(0x0871b8)
+function void fn087172()
+{
+	base.fn087172()
+
+	if (bb.monkeydude)
+		objA0.value39 *= 8
+
 }
