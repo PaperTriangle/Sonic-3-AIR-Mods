@@ -205,9 +205,9 @@ function void yieldExecution()
 			System.loadExternalRawData("FBZ2_Palette_1_Released", 0x052dd0)
 
 	}
-	else if (tca.icz && global.zone_act == 0x0501 && tca.intended) // ICZ Act 2
+	else if (tca.icz && global.zone == 0x05) // ICZ Act 1 & 2
 	{
-		if (transition_state == 1 && transition_time <= 0x78)
+		if (transition_state == 1 && transition_time <= 0x78 && camera.position.y.u16 < 0x800)
 		{	
 			transition_time += (tca.fadetype) ? 1 : 2
 			if (transition_time % 24 == 0 || !tca.fadetype)
@@ -620,7 +620,7 @@ function void fn07092a()
 //# address-hook(0x0713e8) end(0x07141a)
 function void fn0713e8()
 {
-	if (!tca.icz || !tca.intended)
+	if (!tca.icz)
 	{
 		base.fn0713e8()
 		return
@@ -632,6 +632,14 @@ function void fn0713e8()
 	if (objA1.update_address == 0x08b660)
 	{
 		u8[A1 + 0x38] |= 0x20
+	}
+	
+	if (!tca.intended)
+	{
+		transition_state = 1
+		
+		if transition_time == 0
+			transition_time = 1
 	}
 
 	// Spawn boss giblets
@@ -667,7 +675,7 @@ function void fn071de2()
 //# address-hook(0x23de96) end(0x23dec4)
 function void fn23de96()
 {
-		if (!tca.icz || !tca.intended)
+		if (!tca.icz)
 		{
 			base.fn23de96()
 			return
@@ -682,6 +690,23 @@ function void fn23de96()
 		u32[A1 + 0x14] = 0x0c000000
 		u32[A1 + 0x18] = 0x0aec0cea
 		u16[A1 + 0x1c] = 0x0e80
+		
+	if (!tca.intended)
+	{
+		u16[A1 + 0x00] = 0x0eee
+		u16[A1 + 0x02] = 0x0eec
+		u16[A1 + 0x04] = 0x0eea
+		u16[A1 + 0x06] = 0x0ec8
+		u16[A1 + 0x08] = 0x0ea6
+		u16[A1 + 0x0a] = 0x0e84
+		u16[A1 + 0x0c] = 0x0c62
+		u16[A1 + 0x0e] = 0x0a40
+		u16[A1 + 0x10] = 0x0820
+		u16[A1 + 0x12] = 0x0600
+		u16[A1 + 0x14] = 0x0400
+		u16[A1 + 0x18] = 0x0aec
+		u16[A1 + 0x1a] = 0x0cea
+	}
 }
 
 // Force Knux onto dawn palette

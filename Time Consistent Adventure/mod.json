@@ -161,7 +161,7 @@
 			},
 			{
 				"InternalName": "tca.mgz2boss",
-				"DisplayName": "MGZ Eggman Cutscene Position",
+				"DisplayName": "MGZ Eggman Boss Cutscene",
 				"Variable": "tca.mgz2boss",
 				"Category": "Extra Settings",	
 				"DefaultValue": "1",
