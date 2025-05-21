@@ -13,7 +13,7 @@
 		[
 			{
 				"InternalName": "bb.ribit",
-				"DisplayName": "LBZ Ribit",
+				"DisplayName": "LBZ Ribot",
 				"Variable": "bb.ribit",
 				"Category": "Broken Bits",
 				"DefaultValue": "1",
@@ -85,7 +85,7 @@
 			},
 			{
 				"InternalName": "bb.monkeydude",
-				"DisplayName": "AIZ Smoother Monkeydude",
+				"DisplayName": "AIZ Smoother Monkey Dude",
 				"Variable": "bb.monkeydude",
 				"Category": "Extras",
 				"DefaultValue": "1",
