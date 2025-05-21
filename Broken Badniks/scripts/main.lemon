@@ -167,6 +167,7 @@ function void BB.BreakBall()
 	A1 = 0xffff0000 + u16[A0 + 0x46]
 	if (u8[A1 + 0x2a] & 0x80)
 	{
+		// Adds velocity randomly if the mob has not thrown the ball. Looks acceptable.
 		if (objA0.velocity.x == 0)
 			objA0.velocity.x = (System.rand() & 1) ? 4 : -4
 
@@ -276,6 +277,8 @@ function void fn08e744()
 		return
 	}
 	
+	// I had to do this call here before the table lookup,
+	// otherwise the direction is not considered when idle.
 	A1 = 0xffff0000 + u16[A0 + 0x44]
 	if !((u8[A1 + 0x2a] & 0x80) == 0)
 	{
@@ -338,7 +341,7 @@ function void fn0871da()
 		--objA0.value39
 		if (objA0.value39 != 0)
 		{
-			objA0.position.y.u16 -= 1
+			objA0.position.y.u16 -= 1				// Divided by 8.
 			return
 		}
 		goto087218 = true
@@ -346,7 +349,7 @@ function void fn0871da()
 
 	if (objA0.animation.sprite == 0)
 	{
-		objA0.position.y.u16 += 1
+		objA0.position.y.u16 += 1					// Divided by 8.
 		--objA0.value39
 		goto087218 = (objA0.value39 == 1)
 	}
@@ -354,7 +357,7 @@ function void fn0871da()
 	if (goto087218)
 	{
 		objA0.base_state = 0x02
-		objA0.value39 = objA0.subtype2c * 8
+		objA0.value39 = objA0.subtype2c * 8			// I made it move 8 times less so it needs to be 8 times.
 		objA0.flags38 ^= 0x04
 		objA0.countdown_value = 0x3b
 		u32[A0 + 0x30] = 0x0876b4
@@ -371,7 +374,7 @@ function void fn087172()
 	base.fn087172()
 
 	if (bb.monkeydude)
-		objA0.value39 *= 8
+		objA0.value39 *= 8 			// I made it move 8 times less so it needs to be 8 times.
 
 }
 
@@ -397,7 +400,7 @@ function void fn068a46()
 
 #if STANDALONE
 	// Move to the right, so that there is no dead corner where character is behind him
-	objA0.position.x.u16 += getScreenExtend()
+	objA0.position.x.u16 += getScreenExtend() 			// This was in the 3 A.I.R. code already but with an extra offset.
 #endif
 }
 
@@ -414,6 +417,8 @@ function void fn068b92()
 	objA0.value39 = 0x04
 	objA0.countdown_callback = 0x068bdc
 	objA0.flags38 ^= 0x08		// Flip horizontal movement direction
+	
+	// Adjust he velocity to ensure the boss moves consistently across the stage, keeping the same pace as the original fight.
 	objA0.velocity.x = (objA0.flags38 & 0x08) ? -0x100 - getScreenExtend() * 2 - getScreenExtend() * 2 / 14 : 0x100 + getScreenExtend() * 2 + getScreenExtend() * 2 / 14
 	fn0685e2()
 }
@@ -431,7 +436,7 @@ function void fn068508()
 	
 #if STANDALONE
 	// Move to the right for widescreen
-	objA0.position.x.u16 += getScreenExtend() * bb.cutsceneadjust
+	objA0.position.x.u16 += getScreenExtend() * bb.cutsceneadjust			// 0x02 is the conifg option for closer to wall.
 #endif
 }
 
@@ -461,9 +466,9 @@ function void fn08cf80()
 	move_area.right = u16[(A1+=2)-2]
 	fn08d0ea()
 
-	objA0.position.y.u16 += 0x50
-	u8[0xffff8c41] = 0xc1
-	u8[0xffff8ce1] = 0xdb
+	objA0.position.y.u16 += 0x50					// Move the boss down
+	u8[0xffff8c41] = 0xc1							// Change the tile to wall
+	u8[0xffff8ce1] = 0xdb							// Change the tile to open boxess
 	// "spawnChildObjects(0x08d26c)" replaced by:
 	spawnChildObject(0x08d046, 0x00, -32, 0)
 	spawnChildObject(0x08d046, 0x02, 32, 0)
@@ -473,6 +478,8 @@ function void fn08cf80()
 }
 
 // Stop doing the strange thing to the tile...
+// Not sure exactly how this works but this is what fixed the issue.
+// There must be a similar function messing with the box graphics themselves.
 //# address-hook(0x054146) end(0x054162)
 function void fn054146()
 {
