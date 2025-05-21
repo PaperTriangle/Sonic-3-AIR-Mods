@@ -3,9 +3,15 @@ global u8 oldJumpState1
 global u8 oldJumpState2
 global u8 balloonjump
 
+
+// TODO: Work this out so Player 2 gets the same abilities.
+// TODO: Consolidate Glide and Pipe mod into this for easier management.
+
+
 //# address-hook(0x01dc56) end(0x01dcb4)
 function void fn01dc56()
 {
+	// Save player 1's jump states
 	oldJumpState1 = u8[0xffffb000 + 0x40]
 	oldJumpState2 = u8[0xffffb000 + 0x2f]
 	
@@ -89,6 +95,7 @@ function void fn08b3aa()
 	objA1.flags2a |= (char.flag.IN_AIR | char.flag.ROLLING)
 	objA1.flags2a &= ~char.flag.ON_OBJECT
 	
+	// Restore player 1's jump states... Does this do odd things for P2 here?
 	u8[A1 + 0x40] = oldJumpState1
 	u8[A1 + 0x2f] = oldJumpState2
 
@@ -200,6 +207,7 @@ function void fn01fbae_dd()
 	objA1.flags2a |= (char.flag.IN_AIR | char.flag.ROLLING)
 	objA1.flags2a &= ~char.flag.ON_OBJECT
 	
+	// Restore player 1's jump states
 	u8[A1 + 0x40] = oldJumpState1
 	u8[A1 + 0x2f] = oldJumpState2
 }
@@ -216,6 +224,7 @@ function void fn01fba8_dd()
 		u8[A1 + 0x2a] |= char.flag.IN_AIR
 		u8[A1 + 0x2a] &= ~char.flag.ON_OBJECT
 		
+		// Restore player 1's jump states
 		u8[A1 + 0x40] = oldJumpState1
 		u8[A1 + 0x2f] = oldJumpState2
 	}
@@ -301,6 +310,7 @@ function void fn02a588_dd()
 		u8[A1 + 0x2a] &= ~char.flag.ON_OBJECT
 		u8[A1 + 0x05] = base_state.NORMAL
 		
+		// Restore player 1's jump states
 		u8[A1 + 0x40] = oldJumpState1
 		u8[A1 + 0x2f] = oldJumpState2
 	}
@@ -317,6 +327,7 @@ function void fn02a58e_dd()
 	objA1.velocity.y = -0x300
 	u8[A1 + 0x05] = base_state.NORMAL
 	
+	// Restore player 1's jump states
 	u8[A1 + 0x40] = oldJumpState1
 	u8[A1 + 0x2f] = oldJumpState2
 }
@@ -334,7 +345,8 @@ function void fn0317ae()
 		return
 	}
 	
-	if !((global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.DropDown")) || (global.xtrachar == 3 && System.getGlobalVariableValueByName("Amy_HammerSpinAttacking") && u8[A1 + 0x2f] == 0))
+	// This is not handled via the specific mods, adding here for consistency
+	if !((global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.DropDown")) || (global.xtrachar == 3 && System.getGlobalVariableValueByName("Amy_HammerSpinAttacking") && u8[A1 + 0x2f] == 0)) 
 		objA1.velocity.y = -0x700
 	objA1.flags2a |= char.flag.IN_AIR
 	objA1.flags2a &= ~(char.flag.CONTROL_LOCK | char.flag.PUSHING)
@@ -342,11 +354,12 @@ function void fn0317ae()
 
 	u8[A1 + 0x2e] = 0
 	if (u8[A1 + 0x40] == 1)
-		balloonjump = 1
+		balloonjump = 1				// This flag forces vertical velocity
 
 	objA0.state |= 0x01
 	if (s8[A0 + 0x2c] < 0)
 	{
+		// This is not handled via the specific mods, adding here for consistency
 		if !((global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.DropDown")) || (global.xtrachar == 3 && System.getGlobalVariableValueByName("Amy_HammerSpinAttacking") && u8[A1 + 0x2f] == 0))
 			objA1.velocity.y = -0x380
 		
@@ -402,7 +415,7 @@ function void fn032f56()
 	objA1.flags2a &= ~(char.flag.CONTROL_LOCK | char.flag.PUSHING)
 	
 	if (u8[A1 + 0x40] == 1)
-		balloonjump = 1
+		balloonjump = 1					// This flag forces vertical velocity
 	
 	objA0.state = 0x01
 
@@ -435,6 +448,7 @@ function void fn032f56()
 // CNZ Helper Method
 //------------------
 
+// Force vertical velocity
 function void Character.updateJumpMoves()
 {
 	if (A0 != 0xffffb000)
@@ -453,10 +467,10 @@ function void Character.updateJumpMoves()
 		return
 	}
 
-	char.velocity.y = 0
+	char.velocity.y = 0 											// Velocity was set to 0 here otherwise secondary jump actions would not work.
 	base.Character.updateJumpMoves()
 	
-	if !(global.xtrachar == 1 && u8[0xffffb000 + 0x0d] & 0x02)
+	if !(global.xtrachar == 1 && u8[0xffffb000 + 0x0d] & 0x02) 		// skip restoring velocity if mighty is hammer dropping
 		char.velocity.y = balloon_vel
 }
 
@@ -544,6 +558,7 @@ function void fn0417a6_dd()
 	u8[A1 + 0x2a] &= ~char.flag.ON_OBJECT
 	u8[A1 + 0x05] = base_state.NORMAL
 	
+	// Restore player 1's jump states
 	u8[A1 + 0x40] = oldJumpState1
 	u8[A1 + 0x2f] = oldJumpState2
 }
@@ -552,6 +567,10 @@ function void fn0417a6_dd()
 //---------------------------
 // Super then Hyper Compat...
 //---------------------------
+
+// I had to add this function because this mod also forced
+// the velocity limit for some reason where it did not need to.
+
 function void SuperThenHyperfunc()
 {
 	u8 input_state     = (char.character == CHARACTER_TAILS) ? control.tails.state   : control.player1.state

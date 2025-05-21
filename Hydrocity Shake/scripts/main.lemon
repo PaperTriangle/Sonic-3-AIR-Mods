@@ -1,6 +1,7 @@
 //# address-hook(0x06b7bc) end(0x06b7ea)
 function void fn06b7bc()
 {
+	// Set balance animation and lock character.
 	if (!isMainCharacter(CHARACTER_KNUCKLES))
 	{
 		u8[0xffffb000 + 0x20] = char.state.BALANCING1
@@ -24,7 +25,7 @@ function void fn06b882()
 	D0.u16 = objA0.position.y.u16 - 0x60
 	if (D0.u16 < objA1.position.y.u16)
 	{
-		objA1.state = char.state.FALLING_PANIC
+		objA1.state = char.state.FALLING_PANIC // Use falling animation.
 		u8[A1 + 0x2e] = (control_flag.DISABLE_INTERACTION | control_flag.DISABLE_UPDATE)
 		objA0.update_address = 0x06b8c8
 		objA0.countdown_value = 0x5f
@@ -100,6 +101,7 @@ function void fn069eda()
 		}
 	}
 	
+	// Freeze animation and do pattern loading here.
 	if (camera.position.y.u16 >= 0x0450 && u8[0xffffeee8] != 0xff)
 	{
 		u8[0xffffeee8] = 0xff

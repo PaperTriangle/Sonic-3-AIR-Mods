@@ -8,6 +8,8 @@ global u16 altlbz2cs.hudgobyedanger = 0
 global bool altlbz2cs.highjump
 global bool altlbz2cs.stopmusic
 
+// TODO: Go back and document this so people can follow what you did.
+
 //# address-hook(0x072b46) end(0x072b94)
 function void fn072b46()
 {

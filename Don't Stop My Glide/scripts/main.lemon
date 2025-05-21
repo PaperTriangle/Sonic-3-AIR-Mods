@@ -117,6 +117,7 @@ function void AIZ1a.checkPreBossArea()
 		return
 
 	// Using the upper or the lower path?
+	// Check char position here so Knuckles won't die from speeding through the rocks if too high.
 	bool isOnUpperPath = (camera.position.y.u16 < 0x400 && char.position.y.u16 < 0x400)
 
 	if (isOnUpperPath)

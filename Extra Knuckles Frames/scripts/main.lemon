@@ -13,6 +13,7 @@ function u64 stringformat(u64 format, u64 arg1)
 	return base.stringformat(format, arg1)
 }
 
+// Remove the programmed LBZ2 falling animation.
 //# address-hook(0x074952) end(0x0749a8)
 function void fn074952()
 {

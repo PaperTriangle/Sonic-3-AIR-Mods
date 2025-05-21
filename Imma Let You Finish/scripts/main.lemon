@@ -7,6 +7,7 @@ function void fn0868f8()
 		return
 	}
 	
+	// Prevent all movement! (Excluding MGZ2 Sonic & Tails route boss)
 	if (global.zone_act != 0x0201 || (global.zone_act == 0x0201 && camera.position.y.u16 < 0x0100))
 	{
 		player1.control_override = 0xff
@@ -25,7 +26,7 @@ function void fn0868f8()
 //# address-hook(0x083912) end(0x083936)
 function void fn083912()
 {
-
+	// Prevent all movement!
 	player1.control_override = 0xff
 	control.player1 = 0
 	player2.control_override = 0xff
@@ -75,6 +76,7 @@ function void LevelResults.AdvanceToNextAct()
 	{
 		level.results_done = 0xff
 		
+		// Restore movement after capsule, excluding some zones with cutscenes.
 		if (global.zone != 0x00 && global.zone != 0x01 && global.zone != 0x04 && global.zone_act != 0x06 && global.zone != 0x08 && global.zone != 0x0a && global.zone != 0x0b && global.zone != 0x16)
 		{
 			player1.control_override = 0
@@ -97,6 +99,7 @@ function void LevelResults.AdvanceToNextAct()
 		return
 	}
 	
+	// Restrore movement after cutscene transitions.
 	player1.control_override = 0
 	player2.control_override = 0
 	knuckles.preventclimbing &= ~0x80
