@@ -5,12 +5,36 @@
 		"UniqueID": "broken-badniks",
 		"Author": "PaperTriangle",
 		"Description": "Adds some breaking bits to certain badniks.",
-		"ModVersion": "1.0"
+		"ModVersion": "1.1"
 	},
 	"Settings":
 	{
 		"List":
 		[
+			{
+				"InternalName": "bb.monkeydude",
+				"DisplayName": "AIZ Monkey Dude",
+				"Variable": "bb.monkeydude",
+				"Category": "Broken Bits",
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "bb.turbospiker",
+				"DisplayName": "HCZ Turbospiker",
+				"Variable": "bb.turbospiker",
+				"Category": "Broken Bits",
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
 			{
 				"InternalName": "bb.ribit",
 				"DisplayName": "LBZ Ribot",
@@ -84,9 +108,9 @@
 				}
 			},
 			{
-				"InternalName": "bb.monkeydude",
+				"InternalName": "bb.monkeysmooth",
 				"DisplayName": "AIZ Smoother Monkey Dude",
-				"Variable": "bb.monkeydude",
+				"Variable": "bb.monkeysmooth",
 				"Category": "Extras",
 				"DefaultValue": "1",
 				"Options":

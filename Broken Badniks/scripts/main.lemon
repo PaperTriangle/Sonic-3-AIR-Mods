@@ -1,4 +1,6 @@
 global bool bb.monkeydude
+global bool bb.monkeysmooth
+global bool bb.turbospiker
 global bool bb.ribit
 global bool bb.skorp
 global bool bb.spikebonker
@@ -60,6 +62,8 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 	if (objA0.update_address == 0x251000)															// It's our object.
 	{
 		u64 key
+		u8 flags = SPRITE_FLAG_PRIO
+		
 		if (objA0.state == 1)																		// Spikebonker
 		{
 			key = stringformat("bonker_%d", objA0.animation.sprite)
@@ -72,12 +76,22 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 		{
 			key = stringformat("skorp_%d", objA0.animation.sprite)
 		}
+		else if (objA0.state == 4)																	// Turbospiker
+		{
+			key = "turbospiker_0"
+			if (objA0.animation.sprite == 0)
+				flags |=  SPRITE_FLAG_FLIP_X
+		}
+		else if (objA0.state == 5)																	// Turbospiker
+		{
+			key = "monkeydude_0"
+		}
 		else
 		{
 			return true
 		}
 		
-		Renderer.drawCustomSprite(key, px, py, 0x00, SPRITE_FLAG_PRIO, 0x9fff, 0x00, 0xff)			// High priority and renderQueue, to appear above most other things.
+		Renderer.drawCustomSprite(key, px, py, 0x00, flags, 0x9fff, 0x00, 0xff)						// High priority and renderQueue, to appear above most other things.
 		return true																					// Make sure to return after!
 	}
 	return base.Standalone.onWriteToSpriteTable(px, py, renderQueue)								// And then return the base.
@@ -317,14 +331,77 @@ function void fn08e744()
 }
 
 //------------
+// Turbospiker
+//------------
+
+
+//# address-hook(0x087d5e) end(0x087da0)
+function void fn087d5e()
+{
+	if (!bb.turbospiker)
+	{
+		base.fn087d5e()
+		return
+	}
+	
+	A1 = 0xffff0000 + u16[A0 + 0x46]
+	if (u8[A1 + 0x2a] & 0x80)
+	{
+		BB.SpawnPart((System.rand() & 1) ? System.rand() % 0x100 + 0x200 : System.rand() % 0x100 * -1 - 0x200, System.rand() % 0x100 * -1 - 0x200, 0x04, (objA0.render_flags & render_flag.FLIP_X) ? 1 : 0)
+		Object.TriggerUnloading()
+	}
+	
+	base.fn087d5e()
+}
+
+//------------
 // Monkey Dude
 //------------
 
+// Broken Bit
+
+//# address-hook(0x08741c) end(0x08742e)
+function void fn08741c()
+{
+	if (!bb.monkeydude)
+	{
+		base.fn08741c()
+		return
+	}
+	
+	fn087518()
+
+	// Targets:
+	//  - 0x087438	-> objA0.base_state = 0x00
+	//  - 0x087442	-> objA0.base_state = 0x02
+	//  - 0x08743e	-> objA0.base_state = 0x04
+	call tableLookupAddress(0x087432, objA0.base_state)
+
+	BB.BreakMonkeydude()
+}
+
+function void BB.BreakMonkeydude()
+{
+	A1 = 0xffff0000 + u16[A0 + 0x46]
+	if (u8[A1 + 0x2a] & 0x80)
+	{
+		if (objA0.subtype2c == 0x04)
+			BB.SpawnPart((System.rand() & 1) ? System.rand() % 0x100 + 0x100 : System.rand() % 0x100 * -1 - 0x100, System.rand() % 0x100 * -1 - 0x200, 0x05, 0)
+		
+		Object.TriggerUnloading()
+	}
+	else
+	{
+		DrawObject()
+	}
+}
+
+// Movement
 
 //# address-hook(0x0871da) end(0x087246)
 function void fn0871da()
 {
-	if (!bb.monkeydude)
+	if (!bb.monkeysmooth)
 	{
 		base.fn0871da()
 		return
@@ -373,7 +450,7 @@ function void fn087172()
 {
 	base.fn087172()
 
-	if (bb.monkeydude)
+	if (bb.monkeysmooth)
 		objA0.value39 *= 8 			// I made it move 8 times less so it needs to be 8 times.
 
 }
