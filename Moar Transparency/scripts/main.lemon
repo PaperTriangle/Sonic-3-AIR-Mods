@@ -1214,6 +1214,70 @@ function void BubbleShield.Update()
 	DrawObject()
 }
 
+// Fire Shield
+//# address-hook(0x019602) end(0x0196c0)
+function void FireShield.Update()
+{
+	if (!mt.fireshield)
+	{
+		base.FireShield.Update()
+		return
+	}
+	
+	A2 = 0xffff0000 + objA0.shield.character_address
+	if ((u8[A2 + 0x2b] & char.bonus.INVINCIBLE) || (u8[A2 + 0x20] == char.state.DISAPPEARED))
+		return
+
+	// Lost shield?
+	if ((u8[A2 + 0x2b] & char.bonus.ANY_SHIELD) == 0)
+	{
+		u8[A2 + 0x2b] &= ~char.bonus.ALL_SHIELDS
+		objA0.update_address = addressof(InstaShield.Init)		// Insta-Shield
+		return
+	}
+
+	if (u8[A2 + 0x2a] & char.flag.UNDERWATER)
+	{
+		u8[A2 + 0x2b] &= ~char.bonus.ALL_SHIELDS
+		if (allocDynamicObjectStd())
+		{
+			// Spawn small explosion
+			objA1.update_address = 0x01e68e
+			objA1.position.x.u16 = objA0.position.x.u16
+			objA1.position.y.u16 = objA0.position.y.u16
+			D0.u8 = 0x80 + objA0.compound.sprite1.animation.sprite * 0x10
+			objA1.velocity.y = -0x280
+		}
+		objA0.update_address = addressof(InstaShield.Init)		// Insta-Shield
+
+	#if STANDALONE
+		if (Game.getSetting(SETTING_SHIELD_TYPES) == 3)
+		{
+			// Replace with classic shield when using upgradable shields
+			u8[A2 + 0x2b] |= char.bonus.ANY_SHIELD
+		}
+	#endif
+		return
+	}
+
+	objA0.position.x.u16 = u16[A2 + 0x10]
+	objA0.position.y.u16 = u16[A2 + 0x14]
+	if (objA0.state == 0)
+	{
+		objA0.flags2a = u8[A2 + 0x2a] & char.flag.FACING_LEFT
+		if (global.inv_gravity)
+			objA0.flags2a |= 0x02
+
+		objA0.sprite_attributes = (objA0.sprite_attributes & ~sprite_attribute.PRIORITY) | (u16[A2 + 0x0a] & sprite_attribute.PRIORITY)
+	}
+
+	Object.animationUpdate(0x019a02)
+	objA0.sprite_priority = (objA0.animation.sprite >= 0x0f) ? 0x200 : 0x80
+
+	Shield.SharedSpriteUpdate()
+	DrawObject()
+}
+
 // ICZ Snowfall
 //# address-hook(0x08b73a) end(0x08b750)
 function void fn08b73a()
