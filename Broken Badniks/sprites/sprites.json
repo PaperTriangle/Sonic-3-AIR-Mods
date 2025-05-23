@@ -6,6 +6,5 @@
 	"ribot_1":  { "File": "ribot_weight.bmp", "Center": "8,8" },
 	"skorp_0":  { "File": "skorp_tail.bmp", "Center": "4,4" },
 	"skorp_1":  { "File": "skorp_stinger.bmp", "Center": "8,8" },
-	"turbospiker_0":  { "File": "turbospiker_rocket.bmp", "Center": "12,22" },
-	"monkeydude_0":  { "File": "monkeydude_coconut.bmp", "Center": "6,8" }
+	"turbospiker_0":  { "File": "turbospiker_rocket.bmp", "Center": "12,22" }
 }

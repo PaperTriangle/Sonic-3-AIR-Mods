@@ -1,4 +1,3 @@
-global bool bb.monkeydude
 global bool bb.monkeysmooth
 global bool bb.turbospiker
 global bool bb.ribit
@@ -81,10 +80,6 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 			key = "turbospiker_0"
 			if (objA0.animation.sprite == 0)
 				flags |=  SPRITE_FLAG_FLIP_X
-		}
-		else if (objA0.state == 5)																	// Turbospiker
-		{
-			key = "monkeydude_0"
 		}
 		else
 		{
@@ -357,46 +352,6 @@ function void fn087d5e()
 //------------
 // Monkey Dude
 //------------
-
-// Broken Bit
-
-//# address-hook(0x08741c) end(0x08742e)
-function void fn08741c()
-{
-	if (!bb.monkeydude)
-	{
-		base.fn08741c()
-		return
-	}
-	
-	fn087518()
-
-	// Targets:
-	//  - 0x087438	-> objA0.base_state = 0x00
-	//  - 0x087442	-> objA0.base_state = 0x02
-	//  - 0x08743e	-> objA0.base_state = 0x04
-	call tableLookupAddress(0x087432, objA0.base_state)
-
-	BB.BreakMonkeydude()
-}
-
-function void BB.BreakMonkeydude()
-{
-	A1 = 0xffff0000 + u16[A0 + 0x46]
-	if (u8[A1 + 0x2a] & 0x80)
-	{
-		if (objA0.subtype2c == 0x04)
-			BB.SpawnPart((System.rand() & 1) ? System.rand() % 0x100 + 0x100 : System.rand() % 0x100 * -1 - 0x100, System.rand() % 0x100 * -1 - 0x200, 0x05, 0)
-		
-		Object.TriggerUnloading()
-	}
-	else
-	{
-		DrawObject()
-	}
-}
-
-// Movement
 
 //# address-hook(0x0871da) end(0x087246)
 function void fn0871da()

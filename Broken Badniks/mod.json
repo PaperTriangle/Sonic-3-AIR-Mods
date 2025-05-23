@@ -12,18 +12,6 @@
 		"List":
 		[
 			{
-				"InternalName": "bb.monkeydude",
-				"DisplayName": "AIZ Monkey Dude",
-				"Variable": "bb.monkeydude",
-				"Category": "Broken Bits",
-				"DefaultValue": "1",
-				"Options":
-				{
-					"0": "Disabled",
-					"1": "Enabled"
-				}
-			},
-			{
 				"InternalName": "bb.turbospiker",
 				"DisplayName": "HCZ Turbospiker",
 				"Variable": "bb.turbospiker",
