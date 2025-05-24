@@ -2,6 +2,7 @@ global bool mt.instashield
 global bool mt.fireshield
 global bool mt.bubbleshield
 global bool mt.lightningshield
+global bool mt.stars
 
 global bool mt.snowfall
 
@@ -287,6 +288,14 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 	if (mt.lightningshield && objA0.mapping_offset == 0x019dc8)
 	{
 		Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 208)
+		
+		return true
+	}
+	
+	// Invincibility Stars
+	if (mt.stars && objA0.update_address == 0x0191a4)
+	{
+		Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
 		
 		return true
 	}
@@ -648,6 +657,21 @@ function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 in
 		{
 			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 160)
 			
+			return true
+		}
+	}
+	
+	// Invincibility Stars
+	if (mt.stars)
+	{
+		if (objA0.update_address == 0x018868)
+		{
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 208)
+			return true
+		}
+		if (objA0.update_address == 0x0188e8)
+		{
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 176)
 			return true
 		}
 	}

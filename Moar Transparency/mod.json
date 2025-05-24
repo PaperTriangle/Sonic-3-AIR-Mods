@@ -187,6 +187,18 @@
 				}
 			},
 			{
+				"InternalName": "mt.stars",
+				"DisplayName": "Invincibility Stars",
+				"Variable": "mt.stars",
+				"Category": "Effects",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
 				"InternalName": "mt.telebeam",
 				"DisplayName": "Teleporter Beams (PNG)",
 				"Variable": "mt.telebeam",
