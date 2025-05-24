@@ -31,7 +31,7 @@ function void BB.SpawnPart(s16 speed.x, s16 speed.y, u8 part, u8 index)
 
 		objA1.state = part												// What badnik part?
 		objA1.animation.sprite = index									// What sprite index? Use 0 if not needed.
-		objA0.flags38 = 0												// We will use this for flashing
+		objA0.flags38 = 2												// We will use this for flashing
 
 	}
 }
@@ -67,30 +67,38 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 		
 		if (objA0.state == 1)																		// Spikebonker
 		{
+			flags |=  SPRITE_FLAG_PRIO
 			key = stringformat("bonker_%d", objA0.animation.sprite)
 		}
 		else if (objA0.state == 2)																	// Ribot
 		{
 			key = stringformat("ribot_%d", objA0.animation.sprite)
 		}
-		else if (objA0.state == 3)																	// Skorp
+		else if (objA0.state == 3)																	// Skorp Tail
 		{
-			key = stringformat("skorp_%d", objA0.animation.sprite)
+			key = "skorp_tail"
 		}
-		else if (objA0.state == 4)																	// Turbospiker
+		else if (objA0.state == 4)																	// Skorp Tail Spike
 		{
-			key = "turbospiker_0"
+			key = "skorp_stinger"
+			if (objA0.animation.sprite == 1)
+				flags |=  SPRITE_FLAG_FLIP_X
+		}
+		else if (objA0.state == 5)																	// Turbospiker
+		{
+			key = "turbospiker_rocket"
+			flags |=  SPRITE_FLAG_PRIO
 			if (objA0.animation.sprite == 0)
 				flags |=  SPRITE_FLAG_FLIP_X
 		}
-		else if (objA0.state == 5)																	// Dragonfly Tail
+		else if (objA0.state == 6)																	// Dragonfly Tail
 		{
 			key = "dragonfly_tail"
 			flags |=  SPRITE_FLAG_PRIO																// We give it priority for Origins parity
 			if (objA0.animation.sprite == 1)
 				flags |=  SPRITE_FLAG_FLIP_Y
 		}
-		else if (objA0.state == 6)																	// Dragonfly Tail Tip
+		else if (objA0.state == 7)																	// Dragonfly Tail Tip
 		{
 			key = "dragonfly_tip"
 			flags |=  SPRITE_FLAG_PRIO																// We give it priority for Origins parity
@@ -231,9 +239,6 @@ function void fn08c370()
 	BB.BreakFrog(true)
 }
 
-
-// Weight
-
 //# address-hook(0x08c502) end(0x08c51e)
 function void fn08c502()
 {
@@ -307,7 +312,10 @@ function void fn08e744()
 	A1 = 0xffff0000 + u16[A0 + 0x44]
 	if !((u8[A1 + 0x2a] & 0x80) == 0)
 	{
-		BB.SpawnPart((System.rand() & 1) ? System.rand() % 0x100 + 0x100 : System.rand() % 0x100 * -1 - 0x100, System.rand() % 0x200 * -1 - 0x200, 0x03, objA0.subtype2c == 0x0a ? 1 : 0)
+		if (objA0.subtype2c != 0x0a)
+			BB.SpawnPart((System.rand() & 1) ? System.rand() % 0x100 + 0x100 : System.rand() % 0x100 * -1 - 0x100, System.rand() % 0x200 * -1 - 0x200, 0x03, 0)
+		else
+			BB.SpawnPart((System.rand() & 1) ? System.rand() % 0x100 + 0x100 : System.rand() % 0x100 * -1 - 0x100, System.rand() % 0x200 * -1 - 0x200, 0x04, (objA0.render_flags & render_flag.FLIP_X) ? 1 : 0)
 		
 		Object.TriggerUnloading()
 		return
@@ -345,7 +353,6 @@ function void fn08e744()
 // Turbospiker
 //------------
 
-
 //# address-hook(0x087d5e) end(0x087da0)
 function void fn087d5e()
 {
@@ -358,7 +365,7 @@ function void fn087d5e()
 	A1 = 0xffff0000 + u16[A0 + 0x46]
 	if (u8[A1 + 0x2a] & 0x80)
 	{
-		BB.SpawnPart((System.rand() & 1) ? System.rand() % 0x100 + 0x200 : System.rand() % 0x100 * -1 - 0x200, System.rand() % 0x100 * -1 - 0x200, 0x04, (objA0.render_flags & render_flag.FLIP_X) ? 1 : 0)
+		BB.SpawnPart((System.rand() & 1) ? System.rand() % 0x100 + 0x200 : System.rand() % 0x100 * -1 - 0x200, System.rand() % 0x200 * -1 - 0x300, 0x05, (objA0.render_flags & render_flag.FLIP_X) ? 1 : 0)
 		Object.TriggerUnloading()
 	}
 	
@@ -368,7 +375,6 @@ function void fn087d5e()
 //----------
 // Dragonfly
 //----------
-
 
 //# address-hook(0x08de26) end(0x08de34)
 function void fn08de26()
@@ -395,10 +401,10 @@ function void BB.BreakDragonfly()
 	A1 = 0xffff0000 + u16[A0 + 0x46]
 	if (u8[A1 + 0x2a] & 0x80)
 	{
-		if (objA0.subtype2c != 0x08)
-			BB.SpawnPart((System.rand() & 1) ? System.rand() % 0x100 + 0x200 : System.rand() % 0x100 * -1 - 0x200, System.rand() % 0x100 * -1 - 0x200, 0x05, (objA0.render_flags & render_flag.FLIP_Y) ? 1 : 0)
-		else
+		if (objA0.subtype2c != 0x0c)
 			BB.SpawnPart((System.rand() & 1) ? System.rand() % 0x100 + 0x200 : System.rand() % 0x100 * -1 - 0x200, System.rand() % 0x100 * -1 - 0x200, 0x06, (objA0.render_flags & render_flag.FLIP_Y) ? 1 : 0)
+		else
+			BB.SpawnPart((System.rand() & 1) ? System.rand() % 0x100 + 0x200 : System.rand() % 0x100 * -1 - 0x200, System.rand() % 0x100 * -1 - 0x200, 0x07, (objA0.render_flags & render_flag.FLIP_Y) ? 1 : 0)
 		
 		Object.TriggerUnloading()
 	}
