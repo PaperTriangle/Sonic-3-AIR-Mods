@@ -666,12 +666,13 @@ function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 in
 	{
 		if (objA0.update_address == 0x018868)
 		{
-			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 208)
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 224)
 			return true
 		}
 		if (objA0.update_address == 0x0188e8)
 		{
-			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 176)
+			System.writeDisplayLine(stringformat("ZoneAct: 0x%04x", u16(u8[A0 + 0x36])))
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 224 - u8[A0 + 0x36] * 32)
 			return true
 		}
 	}
