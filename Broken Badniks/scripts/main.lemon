@@ -372,7 +372,7 @@ function void fn08de26()
 {
 	if (!bb.dragonfly)
 	{
-		base.fn0871da()
+		base.fn08de26()
 		return
 	}
 	
