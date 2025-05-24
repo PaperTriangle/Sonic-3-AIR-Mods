@@ -2,6 +2,7 @@ global bool bb.monkeysmooth
 global bool bb.turbospiker
 global bool bb.ribit
 global bool bb.skorp
+global bool bb.dragonfly
 global bool bb.spikebonker
 global bool bb.cutsceneadjust
 global bool bb.firebreath
@@ -42,9 +43,9 @@ function void BB.Particle.Update()
 	
 	objA0.velocity.y += 0x060						// Simulate gravity.
 	
-	objA0.flags38 ^= 0x01
+	objA0.flags38 += 0x01
 	
-	if (objA0.flags38 & 0x01)						// Don't always render the object, to give it that breaking feeling.
+	if (objA0.flags38 & 0x02)						// Don't always render the object, to give it that breaking feeling.
 		DrawObject()
 
 	
@@ -80,6 +81,18 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 			key = "turbospiker_0"
 			if (objA0.animation.sprite == 0)
 				flags |=  SPRITE_FLAG_FLIP_X
+		}
+		else if (objA0.state == 5)																	// Dragonfly Tail
+		{
+			key = "dragonfly_tail"
+			if (objA0.animation.sprite == 1)
+				flags |=  SPRITE_FLAG_FLIP_Y
+		}
+		else if (objA0.state == 6)																	// Dragonfly Tail Tip
+		{
+			key = "dragonfly_tip"
+			if (objA0.animation.sprite == 1)
+				flags |=  SPRITE_FLAG_FLIP_Y
 		}
 		else
 		{
@@ -347,6 +360,50 @@ function void fn087d5e()
 	}
 	
 	base.fn087d5e()
+}
+
+//----------
+// Dragonfly
+//----------
+
+
+//# address-hook(0x08de26) end(0x08de34)
+function void fn08de26()
+{
+	if (!bb.dragonfly)
+	{
+		base.fn0871da()
+		return
+	}
+	
+	// Targets:
+	//  - 0x08de44	-> objA0.base_state = 0x00
+	//  - 0x08de74	-> objA0.base_state = 0x02
+	//  - 0x08de8a	-> objA0.base_state = 0x04
+	//  - 0x08deb6	-> objA0.base_state = 0x06
+	//  - 0x08def4	-> objA0.base_state = 0x08
+	call tableLookupAddress(0x08de3a, objA0.base_state)
+
+	BB.BreakDragonfly()
+}
+
+function void BB.BreakDragonfly()
+{
+	A1 = 0xffff0000 + u16[A0 + 0x46]
+	if (u8[A1 + 0x2a] & 0x80)
+	{
+		if (objA0.subtype2c != 0x08)
+			BB.SpawnPart((System.rand() & 1) ? System.rand() % 0x100 + 0x200 : System.rand() % 0x100 * -1 - 0x200, System.rand() % 0x100 * -1 - 0x200, 0x05, (objA0.render_flags & render_flag.FLIP_Y) ? 1 : 0)
+		else
+			BB.SpawnPart((System.rand() & 1) ? System.rand() % 0x100 + 0x200 : System.rand() % 0x100 * -1 - 0x200, System.rand() % 0x100 * -1 - 0x200, 0x06, (objA0.render_flags & render_flag.FLIP_Y) ? 1 : 0)
+		
+		Object.TriggerUnloading()
+	}
+	else
+	{
+		AddAsDynamicObject()			
+		DrawObject()
+	}
 }
 
 //------------

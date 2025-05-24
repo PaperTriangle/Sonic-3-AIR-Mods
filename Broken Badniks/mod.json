@@ -36,6 +36,18 @@
 				}
 			},
 			{
+				"InternalName": "bb.dragonfly",
+				"DisplayName": "MHZ Dragonfly",
+				"Variable": "bb.dragonfly",
+				"Category": "Broken Bits",
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
 				"InternalName": "bb.skorp",
 				"DisplayName": "SOZ Skorp",
 				"Variable": "bb.skorp",
