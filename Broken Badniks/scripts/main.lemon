@@ -31,6 +31,7 @@ function void BB.SpawnPart(s16 speed.x, s16 speed.y, u8 part, u8 index)
 
 		objA1.state = part												// What badnik part?
 		objA1.animation.sprite = index									// What sprite index? Use 0 if not needed.
+		objA0.flags38 = 0												// We will use this for flashing
 
 	}
 }
@@ -62,7 +63,7 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 	if (objA0.update_address == 0x251000)															// It's our object.
 	{
 		u64 key
-		u8 flags = SPRITE_FLAG_PRIO
+		u8 flags = 0 																				// No sprite flags in most cases
 		
 		if (objA0.state == 1)																		// Spikebonker
 		{
@@ -85,12 +86,14 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 		else if (objA0.state == 5)																	// Dragonfly Tail
 		{
 			key = "dragonfly_tail"
+			flags |=  SPRITE_FLAG_PRIO																// We give it priority for Origins parity
 			if (objA0.animation.sprite == 1)
 				flags |=  SPRITE_FLAG_FLIP_Y
 		}
 		else if (objA0.state == 6)																	// Dragonfly Tail Tip
 		{
 			key = "dragonfly_tip"
+			flags |=  SPRITE_FLAG_PRIO																// We give it priority for Origins parity
 			if (objA0.animation.sprite == 1)
 				flags |=  SPRITE_FLAG_FLIP_Y
 		}

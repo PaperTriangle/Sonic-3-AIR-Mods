@@ -383,6 +383,15 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		}
 		
 		// LBZ2 Laser
+		if (objA0.mapping_offset == 0x228394)
+		{
+			System.writeDisplayLine(stringformat("ZoneAct: 0x%08x", objA0.mapping_offset))
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 208)
+			
+			return true
+		}
+		
+		// LBZ2 Eggman Laser
 		if (global.zone == 0x06 && (objA0.update_address == 0x0732f6 || objA0.update_address == 0x073358 || objA0.update_address == 0x01abb6))
 		{
 			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 208)
