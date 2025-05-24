@@ -581,3 +581,16 @@ function void fn054146()
 		return
 	}
 }
+
+// Fix the messed up tile in the Sonic & Tails route.
+//# address-hook(0x08cb9e) end(0x08cbec)
+function void fn08cb9e()
+{
+	if (bb.twinhammer)
+	{
+		u8[0xffff8600] = 0x45
+	}
+	
+	
+	base.fn08cb9e()
+}
