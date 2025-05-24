@@ -48,18 +48,33 @@ function void fn01dc56()
 // ICZ Ice Block
 //--------------
 
+// Remove collision check from here for ESU support.
+//# address-hook(0x08b384) end(0x08b3a4)
+function void fn08b384()
+{
+	objA0.value3a = u8[0xffffb000 + 0x20]
+	objA0.value3b = u8[0xffffb04a + 0x20]
+
+	D1 = 0x23
+	D2 = 0x10
+	D3 = 0x10
+	D4.u16 = objA0.position.x.u16
+
+	fn08b3aa()
+	DrawOrUnloadObject()
+}
+
 //# address-hook(0x08b3aa) end(0x08b430)
 function void fn08b3aa()
 {
 	if (global.characters > 0x03 || (global.xtrachar == 1 && u8[0xffffb000 + 0x0d] & 0x02) || (global.xtrachar == 3 && System.getGlobalVariableValueByName("Amy_HammerSpinAttacking")) || (global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.DropDown")))
 	{
+		fn01dc56() 						// Do collision check here since we skipped it before.
 		base.fn08b3aa()
 		return
 	}
 
-	
-	// Note that this differs from the original code (usage of A2)
-	//  -> Needed for standalone to fix the known bugs here
+	fn01dc56() 							// Collision check was moved into this method!
 
 	// Any character on top rolling?
 	A2 = 0
