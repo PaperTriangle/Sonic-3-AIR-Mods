@@ -94,7 +94,6 @@ function void fn08b3aa()
 	if ((objA0.flags2a & object.flag.P1_ON_OBJECT) && (objA0.value3a == char.state.ROLLING || objA0.value3a == char.state.SONIC_DROPDASH))
 	{
 		A1 = 0xffffb000
-		//System.writeDisplayLine(stringformat("ZoneAct: 0x%02x", u8[A1 + 0x40]))
 		if (objA0.flags2a & object.flag.P2_ON_OBJECT)
 		{
 			A2 = 0xffffb04a

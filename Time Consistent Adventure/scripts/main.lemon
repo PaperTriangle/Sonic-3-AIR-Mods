@@ -587,7 +587,7 @@ function void fn0708aa()
 //# address-hook(0x07092a) end(0x070942)
 function void fn07092a()
 {
-	if (!tca.fbz && !tca.fbz_explosions)
+	if (!tca.fbz_explosions)
 	{
 		base.fn07092a()
 		return
@@ -804,7 +804,7 @@ function void fn085ee6()
 //# address-hook(0x07ccb0) end(0x07ccf8)
 function void fn07ccb0()
 {
-	if (!tca.ssz_knux || !tca.ssz_knux_csfix)
+	if (!tca.ssz_knux_csfix)
 	{
 		base.fn07ccb0()
 		return
