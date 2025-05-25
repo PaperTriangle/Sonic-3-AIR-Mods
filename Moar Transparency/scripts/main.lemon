@@ -208,7 +208,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		// ICZ2 Boss Cloud
 		if (objA0.mapping_offset == 0x362cb4)
 		{
-			if (objA0.animation.sprite == 0x0f || objA0.animation.sprite == 0x0a)
+			if (objA0.animation.sprite == 0x0f || objA0.animation.sprite == 0x0a || objA0.animation.sprite == 0x15 || objA0.animation.sprite == 0x15)
 			{
 				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 127)
 				Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 127)
