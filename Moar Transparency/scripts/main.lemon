@@ -482,7 +482,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 	
 	
 	// DEZ2 Laser
-	if (mt.dez2laser && (objA0.update_address == 0x0808fa || objA0.update_address == 0x080810))
+	if (mt.dez2laser && (objA0.update_address == 0x0808fa || objA0.update_address == 0x080810 || objA0.update_address == 0x073232 || objA0.update_address == 0x073270 || objA0.update_address == 0x0732a8))
 	{
 		Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
 		
