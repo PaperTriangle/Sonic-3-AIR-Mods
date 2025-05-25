@@ -91,7 +91,7 @@ function void fn08b3aa()
 
 	// Any character on top rolling?
 	A2 = 0
-	if ((objA0.flags2a & object.flag.P1_ON_OBJECT) && (objA0.value3a == char.state.ROLLING || objA0.value3a == char.state.SONIC_DROPDASH))
+	if ((objA0.flags2a & object.flag.P1_ON_OBJECT) && (objA0.value3a == char.state.ROLLING || (u8[0xffffb000 + 0x38] == CHARACTER_SONIC && objA0.value3a == char.state.SONIC_DROPDASH)))
 	{
 		A1 = 0xffffb000
 		if (objA0.flags2a & object.flag.P2_ON_OBJECT)
