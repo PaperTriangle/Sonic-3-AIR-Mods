@@ -38,6 +38,12 @@
 			"DisplayName": "Characters Go Super Then Hyper",
 			"IsRequired": "0",
 			"Priority": "Lower"
+		},
+		"Origins Parity Galore":
+		{
+			"DisplayName": "Origins Parity Galore",
+			"IsRequired": "0",
+			"Priority": "Lower"
 		}
 	}
 }
