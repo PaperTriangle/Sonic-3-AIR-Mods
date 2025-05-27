@@ -1,0 +1,57 @@
+//-----------------
+// SDMD Compat Test
+//-----------------
+
+function bool SDMD.canBounce(u8 state.in)
+{
+	if Mods.isModActive("Amy Galore: Standalone edition") && (global.characters == 0x04 || global.characters == 0x05)
+	{
+		return (state.in == 0x70 || state.in == 0x77 || (state.in == 0x71 && System.getGlobalVariableValueByName("AmyMISC.NoRollFBreak") == 0x01) || (state.in == 0x78))
+	}
+	
+	return base.SDMD.canBounce(state.in)
+}
+
+function bool SDMD.canSmash(u8 state.in)
+{	
+	if Mods.isModActive("Amy Galore: Standalone edition") && (global.characters == 0x04 || global.characters == 0x05)
+	{
+		return (state.in == 0x74 || (System.getGlobalVariableValueByName("AmyMISC.IdleHammer") == true && u8[0xffffb000 + 0x38] == CHARACTER_SONIC && System.getGlobalVariableValueByName("AmyMISC.IdleHammerAnim") > 7))
+	}
+
+	return base.SDMD.canSmash(state.in)
+}
+
+function bool SDMD.destroyObjectExternally()
+{
+	if Mods.isModActive("Amy Galore: Standalone edition") && (global.characters == 0x04 || global.characters == 0x05)
+	{
+		A1 = 0xffffb000
+		bool Valid
+		if (((objA0.position.x.u16 - objA1.position.x.u16) <= 0x35 && !(objA1.flags2a & char.flag.FACING_LEFT)) || ((objA0.position.x.u16 - objA1.position.x.u16) >= -0x35 && (objA1.flags2a & char.flag.FACING_LEFT))) && (((objA0.position.y.u16 - objA1.position.y.u16) <= 0x10) || ((objA0.position.y.u16 - objA1.position.y.u16) >= -0x10))
+			Valid = true
+			
+		return Valid && System.getGlobalVariableValueByName("AmyMISC.IdleHammer") == true && u8[0xffffb000 + 0x38] == CHARACTER_SONIC && System.getGlobalVariableValueByName("AmyMISC.IdleHammerAnim") > 7
+	}
+	
+	return base.SDMD.destroyObjectExternally()
+}
+
+//----------------
+// BDP Compat Test
+//----------------
+
+function bool BDP.canBreak(u8 state.in)
+{
+	if Mods.isModActive("Amy Galore: Standalone edition") && (global.characters == 0x04 || global.characters == 0x05)
+	{
+		A1 = 0xffffb000
+		bool Valid
+		if (((objA0.position.x.u16 - objA1.position.x.u16) <= 0x35 && !(objA1.flags2a & char.flag.FACING_LEFT)) || ((objA0.position.x.u16 - objA1.position.x.u16) >= -0x35 && (objA1.flags2a & char.flag.FACING_LEFT))) && (((objA0.position.y.u16 - objA1.position.y.u16) <= 0x10) || ((objA0.position.y.u16 - objA1.position.y.u16) >= -0x10))
+			Valid = true
+		
+		return (state.in == char.state.ROLLING || state.in == 0x70 || state.in == 0x77 || (state.in == 0x71 && System.getGlobalVariableValueByName("AmyMISC.NoRollFBreak") == 0x01) || (state.in == 0x78)) || ((Valid) && System.getGlobalVariableValueByName("AmyMISC.IdleHammer") == true && u8[0xffffb000 + 0x38] == CHARACTER_SONIC && System.getGlobalVariableValueByName("AmyMISC.IdleHammerAnim") > 7 && System.getGlobalVariableValueByName("AmyMISC.WallBreak") == 0x01)
+	}
+	
+	return base.BDP.canBreak(state.in)
+}

@@ -6,14 +6,66 @@ global u8 balloonjump
 global u8 oldJumpState1p2
 global u8 oldJumpState2p2
 global u8 oldJumpState3p2
-global bool esSupport
 
-// TODO: Work this out so Player 2 gets the same abilities.
-// TODO: Consolidate Glide and Pipe mod into this for easier management.
+//---------------------
+// Mod Compat Functions
+//---------------------
 
-//=============================
-// Bouncing off of object Fixes
-//=============================
+function bool SDMD.canBounce(u8 state.in)
+{
+	return (u8[0xffffb000 + 0x38] == CHARACTER_SONIC && state.in == char.state.SONIC_DROPDASH) || (global.xtrachar == 3 && System.getGlobalVariableValueByName("Amy_HammerSpinAttacking"))
+}
+
+function bool SDMD.canSmash(u8 state.in)
+{	
+	return (global.xtrachar == 1 && u8[0xffffb000 + 0x0d] & 0x02) || (global.xtrachar == 3 && System.getGlobalVariableValueByName("Amy_HammerSpinAttacking") && u8[0xffffb000 + 0x2f] == 0) || (global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.DropDown"))
+}
+
+function bool SDMD.allowUpwardsMotion()
+{
+	if (global.xtrachar == 1 && u8[0xffffb000 + 0x0d] & 0x02)
+		return false
+	
+	if (global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.DropDown"))
+		return false
+
+	return true
+}
+
+function void SDMD.restoreSmash()
+{	
+	if (global.xtrachar == 1)
+	{
+		u8[A1 + 0x0d] |= 0x02 
+		u8[A1 + 0x2f] = 1
+	}
+	
+	if (global.xtrachar == 3)
+	{
+		objA1.flags2a &= ~char.flag.ON_OBJECT
+		objA1.flags2a |= char.flag.IN_AIR
+		objA1.velocity.y = ESA.yVelocityLastFrame
+		Amy_InputTracker = 0
+		Amy_HammerSlamState = 0
+		Amy_HammerSlamFrameTimer++
+		u8[A1 + 0x2f] = 0               // Double jump state
+		u8[A1 + 0x20] = char.state.AMY_HAMMERSLAM
+	}
+	
+	if (global.xtrachar == 5)
+	{
+		System.setGlobalVariableValueByName("shadow.DropDown", 1)
+	}
+}
+
+function bool SDMD.destroyObjectExternally()
+{
+	return false
+}
+
+//----------------
+// Collision Check
+//----------------
 
 //# address-hook(0x01dc56) end(0x01dcb4)
 function void fn01dc56()
@@ -80,56 +132,78 @@ function void fn08b384()
 //# address-hook(0x08b3aa) end(0x08b430)
 function void fn08b3aa()
 {
-	if (global.characters > 0x03 || (global.xtrachar == 1 && u8[0xffffb000 + 0x0d] & 0x02) || (global.xtrachar == 3 && System.getGlobalVariableValueByName("Amy_HammerSpinAttacking")) || (global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.DropDown")))
-	{
-		fn01dc56() 						// Do collision check here since we skipped it before.
-		base.fn08b3aa()
-		return
-	}
+	bool smashOnThrough = SDMD.canSmash(objA0.value3a)
+	u16 vel.last = s16[0xffffb000 + 0x1a]
 
 	fn01dc56() 							// Collision check was moved into this method!
 
-	// Any character on top rolling?
-	A2 = 0
-	if ((objA0.flags2a & object.flag.P1_ON_OBJECT) && (objA0.value3a == char.state.ROLLING || (u8[0xffffb000 + 0x38] == CHARACTER_SONIC && objA0.value3a == char.state.SONIC_DROPDASH)))
+	if !SDMD.destroyObjectExternally()
 	{
-		A1 = 0xffffb000
-		if (objA0.flags2a & object.flag.P2_ON_OBJECT)
+
+		// Any character on top rolling?
+		A2 = 0
+		if ((objA0.flags2a & object.flag.P1_ON_OBJECT) && (objA0.value3a == char.state.ROLLING || smashOnThrough || SDMD.canBounce(objA0.value3a)))
 		{
-			A2 = 0xffffb04a
+			A1 = 0xffffb000
+			if (objA0.flags2a & object.flag.P2_ON_OBJECT)
+			{
+				A2 = 0xffffb04a
+			}
 		}
-	}
-	else if ((objA0.flags2a & object.flag.P2_ON_OBJECT) && (objA0.value3b == char.state.ROLLING))
-	{
-		A1 = 0xffffb04a
-	#if STANDALONE
-		if (objA0.flags2a & object.flag.P1_ON_OBJECT)
+		else if ((objA0.flags2a & object.flag.P2_ON_OBJECT) && (objA0.value3b == char.state.ROLLING))
 		{
-			A2 = 0xffffb000
+			A1 = 0xffffb04a
+		#if STANDALONE
+			if (objA0.flags2a & object.flag.P1_ON_OBJECT)
+			{
+				A2 = 0xffffb000
+			}
+		#endif
 		}
-	#endif
+		else
+		{
+			return
+		}
+
+		u8[A1 + 0x05] = base_state.NORMAL
+		objA1.velocity.y = -0x300
+		objA1.hitbox_extends.x = char.hitbox.x.ROLLING
+		objA1.hitbox_extends.y = char.hitbox.y.ROLLING
+		objA1.state = (A1 == 0xffffb04a) ? objA0.value3b : objA0.value3a
+		objA1.flags2a |= (char.flag.IN_AIR | char.flag.ROLLING)
+		objA1.flags2a &= ~char.flag.ON_OBJECT
+		
+		// Restore jump states
+		u8[A1 + 0x40] = (A1 == 0xffffb04a) ? oldJumpState1p2 : oldJumpState1
+		u8[A1 + 0x2f] = (A1 == 0xffffb04a) ? oldJumpState2p2 : oldJumpState2
+		
+		if (smashOnThrough && A1 == 0xffffb000)
+		{
+			objA1.velocity.y = vel.last
+			SDMD.restoreSmash()
+		}
+
+		if (A2 != 0)
+		{
+			u8[A2 + 0x2a] |= char.flag.IN_AIR
+			u8[A2 + 0x2a] &= ~char.flag.ON_OBJECT
+		}
 	}
 	else
 	{
-		return
-	}
-
-	u8[A1 + 0x05] = base_state.NORMAL
-	objA1.velocity.y = -0x300
-	objA1.hitbox_extends.x = char.hitbox.x.ROLLING
-	objA1.hitbox_extends.y = char.hitbox.y.ROLLING
-	objA1.state = (A1 == 0xffffb04a) ? objA0.value3b : objA0.value3a
-	objA1.flags2a |= (char.flag.IN_AIR | char.flag.ROLLING)
-	objA1.flags2a &= ~char.flag.ON_OBJECT
-	
-	// Restore jump states
-	u8[A1 + 0x40] = (A1 == 0xffffb04a) ? oldJumpState1p2 : oldJumpState1
-	u8[A1 + 0x2f] = (A1 == 0xffffb04a) ? oldJumpState2p2 : oldJumpState2
-
-	if (A2 != 0)
-	{
-		u8[A2 + 0x2a] |= char.flag.IN_AIR
-		u8[A2 + 0x2a] &= ~char.flag.ON_OBJECT
+		if (objA0.flags2a & object.flag.P2_ON_OBJECT)
+		{
+			u8[0xffffb000 + 0x2a] |= char.flag.IN_AIR
+			u8[0xffffb000 + 0x2a] &= ~char.flag.ON_OBJECT
+			u8[0xffffb000 + 0x05] = base_state.NORMAL
+		}
+		
+		if (objA0.flags2a & object.flag.P2_ON_OBJECT)
+		{
+			u8[0xffffb04a + 0x2a] |= char.flag.IN_AIR
+			u8[0xffffb04a + 0x2a] &= ~char.flag.ON_OBJECT
+			u8[0xffffb04a + 0x05] = base_state.NORMAL
+		}
 	}
 
 	// Spawn broken ice block chunks
@@ -158,24 +232,40 @@ function void fn08b3aa()
 //# address-hook(0x01faf2) end(0x01fb4a)
 function void Rocks.Update()
 {
-	if (global.characters > 0x03 || (global.xtrachar == 1 && u8[0xffffb000 + 0x0d] & 0x02) || (global.xtrachar == 3 && System.getGlobalVariableValueByName("Amy_HammerSpinAttacking")) || (global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.DropDown")))
-	{
-		esSupport = (global.xtrachar == 1 && u8[0xffffb000 + 0x0d] & 0x02) || (global.xtrachar == 3 && System.getGlobalVariableValueByName("Amy_HammerSpinAttacking")) || (global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.DropDown"))
-		base.Rocks.Update()
-		return
-	}
 	
 	u16[A0 + 0x38] = score.bonus_counter
 	u8[A0 + 0x32] = u8[0xffffb000 + 0x20]
 	u8[A0 + 0x33] = u8[0xffffb04a + 0x20]
 	objA0.value3a = u8[0xffffb000 + 0x2a]
 	objA0.value3b = u8[0xffffb04a + 0x2a]
+	
+	bool smashOnThrough = SDMD.canSmash(u8[A0 + 0x32])
+	u16 vel.last = s16[0xffffb000 + 0x1a]
 
 	D1 = objA0.box_size.x + 11
 	D2 = objA0.box_size.y
 	D3.u16 = D2.u16 + 1
 	D4.u16 = objA0.position.x.u16
 	fn01dc56()
+	
+	if (SDMD.destroyObjectExternally())
+	{
+		if (objA0.flags2a & object.flag.P2_ON_OBJECT)
+		{
+			u8[0xffffb000 + 0x2a] |= char.flag.IN_AIR
+			u8[0xffffb000 + 0x2a] &= ~char.flag.ON_OBJECT
+			u8[0xffffb000 + 0x05] = base_state.NORMAL
+		}
+		
+		if (objA0.flags2a & object.flag.P2_ON_OBJECT)
+		{
+			u8[0xffffb04a + 0x2a] |= char.flag.IN_AIR
+			u8[0xffffb04a + 0x2a] &= ~char.flag.ON_OBJECT
+			u8[0xffffb04a + 0x05] = base_state.NORMAL
+		}
+		
+		fn01fbf8()
+	}
 
 	if (objA0.subtype2c & 0x02)
 	{
@@ -189,17 +279,25 @@ function void Rocks.Update()
 		{
 			if (D0.u8 == (object.flag.P1_ON_OBJECT | object.flag.P2_ON_OBJECT))
 			{
-				if (u8[A0 + 0x32] == 2 || u8[A0 + 0x33] == 2 || (u8[0xffffb000 + 0x38] == CHARACTER_SONIC && u8[A0 + 0x32] == char.state.SONIC_DROPDASH))
+				if (u8[A0 + 0x32] == 2 || u8[A0 + 0x33] == 2 || smashOnThrough || SDMD.canBounce(u8[A0 + 0x32]))
 				{
 					A1 = 0xffffb000
 					D0.u8 = u8[A0 + 0x32]
 					fn01fba8()
-
+					
+					if (smashOnThrough)
+					{
+						A1 = 0xffffb000
+						objA1.velocity.y = vel.last
+						SDMD.restoreSmash()
+					}
+					
 					A1 = 0xffffb04a
 					D0.u8 = u8[A0 + 0x33]
 					fn01fba8()
-
+					
 					fn01fbf8()
+					
 					return
 				}
 			}
@@ -212,11 +310,19 @@ function void Rocks.Update()
 					return
 				}
 
-				if (u8[A0 + 0x32] == 2 || (u8[0xffffb000 + 0x38] == CHARACTER_SONIC && u8[A0 + 0x32] == char.state.SONIC_DROPDASH))
+				if (u8[A0 + 0x32] == 2 || smashOnThrough || SDMD.canBounce(u8[A0 + 0x32]))
 				{
 					A1 = 0xffffb000
 					fn01fbae()
 					fn01fbf8()
+					
+					if (smashOnThrough)
+					{
+						A1 = 0xffffb000
+						objA1.velocity.y = vel.last
+						SDMD.restoreSmash()
+					}
+					
 					return
 				}
 			}
@@ -229,13 +335,6 @@ function void Rocks.Update()
 //# address-hook(0x01fbae) end(0x01fbde)
 function void fn01fbae()
 {
-	if (global.characters > 0x03 || esSupport)
-	{
-		esSupport = 0
-		base.fn01fbae()
-		return
-	}
-	
 	u8[A1 + 0x05] = base_state.NORMAL
 	objA1.velocity.y = -0x300
 	objA1.hitbox_extends.x = char.hitbox.x.ROLLING
@@ -254,7 +353,7 @@ function void fn01fbae()
 //# address-hook(0x01fba8) end(0x01fbac)
 function void fn01fba8()
 {
-	if (D0.u8 == 0x02 || (u8[0xffffb000 + 0x38] == CHARACTER_SONIC && D0.u8 == char.state.SONIC_DROPDASH))
+	if (D0.u8 == 0x02  || SDMD.canSmash(D0.u8))
 	{
 		fn01fbae()
 	}
@@ -266,6 +365,24 @@ function void fn01fba8()
 	}
 }
 
+// Knuckles Specific Rock...
+//# address-hook(0x020056) end(0x020086)
+function void fn020056()
+{
+	u8[A1 + 0x2a] |= char.flag.ROLLING
+	objA1.hitbox_extends.x = char.hitbox.x.ROLLING
+	objA1.hitbox_extends.y = char.hitbox.y.ROLLING
+	objA1.state = (A1 == 0xffffb04a) ? oldJumpState3p2 : oldJumpState3
+	objA1.velocity.y = -0x300
+	objA1.flags2a |= char.flag.IN_AIR
+	objA1.flags2a &= ~char.flag.ON_OBJECT
+	u8[A1 + 0x05] = base_state.NORMAL
+	
+	// Restore jump states
+	u8[A1 + 0x40] = (A1 == 0xffffb04a) ? oldJumpState1p2 : oldJumpState1
+	u8[A1 + 0x2f] = (A1 == 0xffffb04a) ? oldJumpState2p2 : oldJumpState2
+}
+
 //-----------
 // Cork Floor
 //-----------
@@ -273,16 +390,13 @@ function void fn01fba8()
 //# address-hook(0x02a502) end(0x02a586)
 function void fn02a502()
 {
-	if (global.characters > 0x03 || (global.xtrachar == 1 && u8[0xffffb000 + 0x0d] & 0x02) || (global.xtrachar == 3 && System.getGlobalVariableValueByName("Amy_HammerSpinAttacking")) || (global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.DropDown")))
-	{
-		esSupport = (global.xtrachar == 1 && u8[0xffffb000 + 0x0d] & 0x02) || (global.xtrachar == 3 && System.getGlobalVariableValueByName("Amy_HammerSpinAttacking")) || (global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.DropDown"))
-		base.fn02a502()
-		return
-	}
-	
 	u16[A0 + 0x38] = score.bonus_counter
 	u8[A0 + 0x34] = u8[0xffffb000 + 0x20]
 	u8[A0 + 0x36] = u8[0xffffb04a + 0x20]
+	
+	bool smashOnThrough = SDMD.canSmash(u8[A0 + 0x34])
+	u16 vel.last = s16[0xffffb000 + 0x1a]
+	
 	D1 = objA0.box_size.x + 11
 	D2 = objA0.box_size.y
 	D3.u16 = D2.u16 + 1
@@ -298,7 +412,7 @@ function void fn02a502()
 
 	if (D0.u8 == (object.flag.P1_ON_OBJECT | object.flag.P2_ON_OBJECT))
 	{
-		if (u8[A0 + 0x34] != 2 && u8[A0 + 0x36] != 2 && !(u8[0xffffb000 + 0x38] == CHARACTER_SONIC && u8[A0 + 0x34] == char.state.SONIC_DROPDASH))
+		if (u8[A0 + 0x34] != 2 && u8[A0 + 0x36] != 2 && !smashOnThrough && !SDMD.canBounce(u8[A0 + 0x34]))
 		{
 			DrawOrUnloadObject()
 			return
@@ -308,6 +422,13 @@ function void fn02a502()
 		D0.u8 = u8[A0 + 0x34]
 		fn02a588()
 
+		if (smashOnThrough)
+        {
+        	A1 = 0xffffb000
+        	objA1.velocity.y = vel.last
+        	SDMD.restoreSmash()
+        }
+		
 		A1 = 0xffffb04a
 		D0.u8 = u8[A0 + 0x36]
 		fn02a588()
@@ -323,7 +444,7 @@ function void fn02a502()
 			return
 		}
 
-		if (u8[A0 + 0x34] != 2 && !(u8[0xffffb000 + 0x38] == CHARACTER_SONIC && u8[A0 + 0x34] == char.state.SONIC_DROPDASH))
+		if (u8[A0 + 0x34] != 2 && !smashOnThrough && !SDMD.canBounce(u8[A0 + 0x34]))
 		{
 			DrawOrUnloadObject()
 			return
@@ -331,6 +452,14 @@ function void fn02a502()
 
 		A1 = 0xffffb000
 		fn02a58e()
+		
+		if (smashOnThrough)
+		{
+			A1 = 0xffffb000
+			objA1.velocity.y = vel.last
+			SDMD.restoreSmash()
+		}
+		
 		fn02a5d8()
 	}
 }
@@ -338,13 +467,6 @@ function void fn02a502()
 //# address-hook(0x02a588) end(0x02a5be)
 function void fn02a58e()
 {
-	if (global.characters > 0x03 || esSupport)
-	{
-		esSupport = 0
-		base.fn02a58e()
-		return
-	}
-	
 	objA1.flags2a |= (char.flag.IN_AIR | char.flag.ROLLING)
 	objA1.flags2a &= ~char.flag.ON_OBJECT
 	objA1.hitbox_extends.x = char.hitbox.x.ROLLING
@@ -361,7 +483,7 @@ function void fn02a58e()
 //# address-hook(0x02a588) end(0x02a5be)
 function void fn02a588()
 {
-	if (D0.u8 == 2 || (u8[0xffffb000 + 0x38] == CHARACTER_SONIC && D0.u8 == char.state.SONIC_DROPDASH))
+	if (D0.u8 == 2 || SDMD.canBounce(D0.u8))
 	{
 		fn02a58e()
 	}
@@ -380,14 +502,9 @@ function void fn02a588()
 //# address-hook(0x0317ae) end(0x03181c)
 function void fn0317ae()
 {
-	if (global.characters > 0x03 || (global.xtrachar == 1 && u8[0xffffb000 + 0x0d] & 0x02))
-	{
-		base.fn0317ae()
-		return
-	}
 	
 	// This is not handled via the specific mods, adding here for consistency
-	if !((global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.DropDown")) || (global.xtrachar == 3 && System.getGlobalVariableValueByName("Amy_HammerSpinAttacking") && u8[A1 + 0x2f] == 0)) 
+	if (!SDMD.canSmash(u8[A1 + 0x20]))
 		objA1.velocity.y = -0x700
 	objA1.flags2a |= char.flag.IN_AIR
 	objA1.flags2a &= ~(char.flag.CONTROL_LOCK | char.flag.PUSHING)
@@ -401,7 +518,7 @@ function void fn0317ae()
 	if (s8[A0 + 0x2c] < 0)
 	{
 		// This is not handled via the specific mods, adding here for consistency
-		if !((global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.DropDown")) || (global.xtrachar == 3 && System.getGlobalVariableValueByName("Amy_HammerSpinAttacking") && u8[A1 + 0x2f] == 0))
+		if (!SDMD.canSmash(u8[A1 + 0x20]))
 			objA1.velocity.y = -0x380
 		
 		if (level.water_present != 0 && u8[A0 + 0x34] == 0)
@@ -430,12 +547,6 @@ function void fn0317ae()
 //# address-hook(0x032f56) end(0x032fee)
 function void fn032f56()
 {
-	if (global.characters > 0x03 || (global.xtrachar == 1 && u8[0xffffb000 + 0x0d] & 0x02) || (global.xtrachar == 3 && System.getGlobalVariableValueByName("Amy_HammerSpinAttacking")) || (global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.DropDown")))
-	{
-		base.fn032f56()
-		return
-	}
-
 	D1.u16 = objA0.position.x.u16 - objA1.position.x.u16
 	D2.u16 = objA0.position.y.u16 - objA1.position.y.u16
 	LookupAngleByVector()
@@ -504,9 +615,10 @@ function void Character.updateJumpMoves()
 	}
 
 	char.velocity.y = 0 											// Velocity was set to 0 here otherwise secondary jump actions would not work.
+	u8 backupjumpstate = char.double_jump_state 
 	base.Character.updateJumpMoves()
 	
-	if !(global.xtrachar == 1 && u8[0xffffb000 + 0x0d] & 0x02) 		// skip restoring velocity if mighty is hammer dropping
+	if (SDMD.allowUpwardsMotion())
 		char.velocity.y = balloon_vel
 }
 
@@ -526,10 +638,10 @@ function void P2Balloons()
 	if (u8[A1 + 0x40] == 1)
 		balloonjump |= (A1 == 0xffffb04a) ? 2 : 1				// This flag forces vertical velocity
 		
-	//if (s8[A0 + 0x2c] < 0)
-	//{
-	//	objA1.velocity.y = -0x380
-	//}
+	if (s8[A0 + 0x2c] < 0)
+	{
+		objA1.velocity.y = -0x380
+	}
 
     if (!objA0.value3a) // Only play the sound once when bouncing off the balloon
     {
@@ -544,21 +656,36 @@ function void P2Balloons()
 
 //# address-hook(0x04172e) end(0x0417a4)
 function void fn04172e()
-{
-	if (global.characters > 0x03 || (global.xtrachar == 1 && u8[0xffffb000 + 0x0d] & 0x02) || (global.xtrachar == 3 && System.getGlobalVariableValueByName("Amy_HammerSpinAttacking")) || (global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.DropDown")))
-	{
-		esSupport = (global.xtrachar == 1 && u8[0xffffb000 + 0x0d] & 0x02) || (global.xtrachar == 3 && System.getGlobalVariableValueByName("Amy_HammerSpinAttacking")) || (global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.DropDown"))
-		base.fn04172e()
-		return
-	}
-	
+{	
 	u8[A0 + 0x30] = u8[0xffffb000 + 0x20]
 	u8[A0 + 0x31] = u8[0xffffb04a + 0x20]
+	
+	bool smashOnThrough = SDMD.canSmash(u8[A0 + 0x30])
+	u16 vel.last = s16[0xffffb000 + 0x1a]
+	
 	D1.u16 = 0x23
 	D2.u16 = 0x10
 	D3.u16 = 0x11
 	D4.u16 = objA0.position.x.u16
 	fn01dc56()
+	
+	if (SDMD.destroyObjectExternally())
+	{
+		if (objA0.flags2a & object.flag.P2_ON_OBJECT)
+		{
+			u8[0xffffb000 + 0x2a] |= char.flag.IN_AIR
+			u8[0xffffb000 + 0x2a] &= ~char.flag.ON_OBJECT
+			u8[0xffffb000 + 0x05] = base_state.NORMAL
+		}
+		
+		if (objA0.flags2a & object.flag.P2_ON_OBJECT)
+		{
+			u8[0xffffb04a + 0x2a] |= char.flag.IN_AIR
+			u8[0xffffb04a + 0x2a] &= ~char.flag.ON_OBJECT
+			u8[0xffffb04a + 0x05] = base_state.NORMAL
+		}
+		fn0417f6()
+	}
 
 	D0.u8 = objA0.flags2a & (object.flag.P1_ON_OBJECT | object.flag.P2_ON_OBJECT)
 	if (D0.u8 == 0)
@@ -567,7 +694,7 @@ function void fn04172e()
 	}
 	else if (D0.u8 == (object.flag.P1_ON_OBJECT | object.flag.P2_ON_OBJECT))
 	{
-		if (u8[A0 + 0x30] != 0x02 && u8[A0 + 0x31] != 0x02 && !(u8[0xffffb000 + 0x38] == CHARACTER_SONIC && u8[A0 + 0x30] == char.state.SONIC_DROPDASH))
+		if (u8[A0 + 0x30] != 0x02 && u8[A0 + 0x31] != 0x02 && !smashOnThrough && !SDMD.canBounce(u8[A0 + 0x30]))
 		{
 			DrawOrUnloadObject()
 			return
@@ -576,6 +703,13 @@ function void fn04172e()
 		A1 = 0xffffb000
 		D0.u8 = u8[A0 + 0x30]
 		fn0417a6()
+		
+		if (smashOnThrough)
+		{
+			A1 = 0xffffb000
+			objA1.velocity.y = vel.last
+			SDMD.restoreSmash()
+		}
 
 		A1 = 0xffffb04a
 		D0.u8 = u8[A0 + 0x31]
@@ -592,7 +726,7 @@ function void fn04172e()
 			return
 		}
 
-		if (u8[A0 + 0x30] != 0x02 && !(u8[0xffffb000 + 0x38] == CHARACTER_SONIC && u8[A0 + 0x30] == char.state.SONIC_DROPDASH))
+		if (u8[A0 + 0x30] != 0x02 && !smashOnThrough && !SDMD.canBounce(u8[A0 + 0x30]))
 		{
 			DrawOrUnloadObject()
 			return
@@ -601,7 +735,14 @@ function void fn04172e()
 		A1 = 0xffffb000
 		D0.u8 = 2
 		fn0417a6()
-
+		
+		if (smashOnThrough)
+		{
+			A1 = 0xffffb000
+			objA1.velocity.y = vel.last
+			SDMD.restoreSmash()
+		}
+		
 		fn0417f6()
 	}
 }
@@ -609,14 +750,7 @@ function void fn04172e()
 //# address-hook(0x0417a6) end(0x0417dc)
 function void fn0417a6()
 {
-	if (global.characters > 0x03 || esSupport)
-	{
-		esSupport = 0
-		base.fn0417a6()
-		return
-	}
-	
-	if (D0.u8 == 2 || (u8[0xffffb000 + 0x38] == CHARACTER_SONIC && D0.u8 == char.state.SONIC_DROPDASH))
+	if (D0.u8 == 2 || SDMD.canBounce(D0.u8))
 	{
 		u8[A1 + 0x2a] |= char.flag.ROLLING
 		objA1.hitbox_extends.x = char.hitbox.x.ROLLING
@@ -635,7 +769,6 @@ function void fn0417a6()
 	
 
 }
-
 
 //---------------------------
 // Super then Hyper Compat...
@@ -674,359 +807,4 @@ function void SuperThenHyperfunc()
 			#endif
 		}
 	}
-}
-
-//==============================
-// Breaking through object Fixes
-//==============================
-
-//---------------
-// Knuckles Walls
-//---------------
-
-function void Rocks.BreakWall()
-{
-	fn01ff1e()
-	if (competition_mode.active == 0)
-	{
-		objA1.velocity.x = D1.u16
-		D0.u16 = objA0.position.x.u16
-		if (D0.u16 >= objA1.position.x.u16)
-		{
-			objA1.position.x.u16 -= 4
-			A4 = 0x020314
-		}
-		else
-		{
-			objA1.position.x.u16 += 4
-			A4 = 0x0202f4
-		}
-
-		objA1.groundspeed = objA1.velocity.x
-		u8[A1 + 0x2a] &= ~char.flag.PUSHING
-		if (u8[A1 + 0x38] == CHARACTER_KNUCKLES && u8[A1 + 0x2f] == 0x01)
-		{
-			if (objA1.velocity.x < 0)
-				objA1.groundspeed = -1 * objA1.velocity.x
-		}
-		
-
-
-		D0 = objA0.animation.sprite
-		if (global.zone == 0x09)		// Lava Reef Zone
-		{
-			D0 = (D0 - 4) * 2
-			objA0.update_address = 0x01fc66
-			fn0201de()
-		}
-		else
-		{
-			D0 *= 2
-			objA0.update_address = 0x01fc16
-			fn02013a()
-		}
-		fn01fc16()
-
-	#if STANDALONE
-		// Prevent this object from respawning
-		//  -> Otherwise the rocks next to the first AIZ 1 giant ring may respawn after the special stage
-		objA0.respawn_entry = 0
-	#endif
-	}
-	else
-	{
-		// Competition mode code
-		objA1.velocity.x = D1.u16
-		D0.u16 = objA0.position.x.u16
-		if (D0.u16 >= objA1.position.x.u16)
-		{
-			objA1.position.x.u16 -= 4
-			A4 = 0x020388
-		}
-		else
-		{
-			objA1.position.x.u16 += 4
-			A4 = 0x020370
-		}
-
-		objA1.groundspeed = objA1.velocity.x
-		u8[A1 + 0x2a] &= ~char.flag.PUSHING
-		fn01fcc8()
-		objA0.update_address = 0x01fcae
-		objA0.animation.sprite = 3
-		D0 = objA0.animation.sprite * 2
-		fn02013a()
-		fn01fcae()
-	}
-}
-
-function void fn0218ce()
-{
-	objA1.velocity.x = D1.u16
-	if (objA0.position.x.u16 >= objA1.position.x.u16)
-	{
-		objA1.position.x.u16 -= 4
-		A4 = u32[A0 + 0x38]
-	}
-	else
-	{
-		objA1.position.x.u16 += 4
-		A4 = objA0.countdown_callback
-	}
-
-	objA1.groundspeed = objA1.velocity.x
-	objA1.flags2a &= ~char.flag.PUSHING
-	if (u8[A1 + 0x38] == CHARACTER_KNUCKLES && u8[A1 + 0x2f] == 0x01)
-	{
-		if (objA1.velocity.x < 0)
-			objA1.groundspeed = -1 * objA1.velocity.x
-	}
-
-	objA0.update_address = 0x021692
-	++objA0.animation.sprite
-
-	Wall.Destroy()
-	fn021692()
-}
-
-//-----------------------------
-// AIZ1 Boss Knuckles Death Fix 
-//-----------------------------
-
-#if STANDALONE
-function void AIZ1a.checkPreBossArea()
-{
-	// Skip check for boss in Time Attack
-	if (Game.isTimeAttack())
-		return
-
-	// Using the upper or the lower path?
-	// Check char position here so Knuckles won't die from speeding through the rocks if too high.
-	bool isOnUpperPath = (camera.position.y.u16 < 0x400 && char.position.y.u16 < 0x400)
-
-	if (isOnUpperPath)
-	{
-		D0.u16 = (camera.position.x.u16 >= 0x0ed0) ? 0x02b8 : 0x0590
-	}
-	else
-	{
-		D0.u16 = (camera.position.x.u16 >= 0x0e80) ? 0x0450 : 0x0590
-	}
-	move_area.bottom.current = D0.u16
-	move_area.bottom.target = D0.u16
-
-	if (isOnUpperPath)
-	{
-		if (camera.position.x.u16 >= 0x0f50)
-		{
-			move_area.left = 0x0f50
-			// Choose boss area depending on which route has been taken, not the character selection
-			//  -> Search for this same comment to find another place with similar code
-			move_area.right = ((camera.position.y.u16 >= 0x03a0) ? 0x10c0 : 0x10e0) + getScreenExtend()
-
-			if (debug_mode.state == 0)
-			{
-				if (allocDynamicObjectStd())
-				{
-					// Trigger boss
-					objA1.update_address = addressof(Boss.AIZ1.BaseUpdate)
-					objA1.position.x.u16 = 0x11f0
-					objA1.position.y.u16 = 0x0289
-				}
-			}
-			camera.update_routine = 0x06
-		}
-	}
-	else
-	{
-		if (camera.position.x.u16 >= 0x1040)
-		{
-			move_area.left = 0x1040
-			if (debug_mode.state == 0)
-			{
-				if (allocDynamicObjectStd())
-				{
-					// Trigger boss
-					objA1.update_address = addressof(Boss.AIZ1.BaseUpdate)
-					objA1.position.x.u16 = 0x11d0
-					objA1.position.y.u16 = 0x0420
-				}
-			}
-			water.height.target = 0x0f80
-			camera.update_routine = 0x16
-		}
-	}
-}
-#endif
-
-//----------
-// LBZ2 Pipe
-//----------
-
-//# address-hook(0x027424) end(0x027590)
-function void fn027424()
-{
-	u16[A0 + 0x30] = u16[0xffffb000 + 0x18]
-	u16[A0 + 0x36] = u16[0xffffb04a + 0x18]
-
-	D1.u16 = 0x1b
-	D2.u16 = 0x20
-	D3.u16 = 0x21
-	D4.u16 = objA0.position.x.u16
-	fn01dc56()
-
-	D6 = (D6 << 16) + (D6 >> 16)
-	if (D6.u16 & 0x03)
-	{
-		bool canBreakWall = false
-
-		A1 = 0xffffb000
-		D1.u16 = u16[A0 + 0x30]
-		if (D6.u16 & 0x01)
-		{
-			if (u8[A1 + 0x38] == CHARACTER_KNUCKLES)
-			{
-				// Knuckles can break all walls
-				canBreakWall = true
-			}
-			else
-			{
-				if (super.active || ( (Mods.isModActive("Extra Slot Amy") || Mods.isModActive("Extra Slot Amy SHC")) && global.xtrachar == 3 && (System.getGlobalVariableValueByName("Amy_HammerSpinAttacking") || super.active.tails) ) || ( Mods.isModActive("Extra Slot 3D in 2D Shadow") && global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.isBoosting") ) )
-				{
-					// Super form breaks walls even when going slow, so can a hammer swinging Amy and a boosting Shadow!
-					canBreakWall = true
-				}
-				else if ((objA0.flags2a & object.flag.P1_PUSHING) || (u8[A1 + 0x2b] & char.bonus.SHIELD_FIRE))
-				{
-					// Normal Sonic and Tails need to quickly roll into a wall to break it (this includes the fire shield attack)
-					canBreakWall = (objA1.state == char.state.ROLLING && abs(D1.s16) >= 0x480)
-				}
-			}
-
-			if (canBreakWall)
-			{
-				objA0.flags2a &= ~object.flag.P1_PUSHING
-				LBZPipe.break()
-
-				if (objA0.flags2a & object.flag.P2_PUSHING)
-				{
-					// Check for second character
-					A1 = 0xffffb04a
-					if (u8[A1 + 0x38] == CHARACTER_KNUCKLES || objA1.state == char.state.ROLLING)
-					{
-						objA1.velocity.x = u16[A0 + 0x36]
-						objA1.groundspeed = objA1.velocity.x
-						objA0.flags2a &= ~object.flag.P2_PUSHING
-						objA1.flags2a &= ~char.flag.PUSHING
-					}
-				}
-			}
-		}
-
-		if (!canBreakWall)
-		{
-			// Give second character a try
-			A1 = 0xffffb04a
-			D1.u16 = u16[A0 + 0x36]
-
-			if (objA0.flags2a & object.flag.P2_PUSHING)
-			{
-				if (u8[A1 + 0x38] == CHARACTER_KNUCKLES)
-				{
-					// Knuckles can break all walls
-					canBreakWall = true
-				}
-				else
-				{
-					// Normal Sonic and Tails need to quickly roll into a wall to break it (this includes the fire shield attack)
-					canBreakWall = (objA1.state == char.state.ROLLING && abs(D1.s16) >= 0x480)
-				}
-			}
-
-			if (canBreakWall)
-			{
-				objA0.flags2a &= ~object.flag.P2_PUSHING
-				LBZPipe.break()
-				return
-			}
-		}
-	}
-	
-	DrawObject()	
-}
-
-function void LBZPipe.break()
-{
-	objA1.velocity.x = D1.u16
-
-	D0.u16 = objA0.position.x.u16
-	if (D0.u16 >= objA1.position.x.u16)
-	{
-		A4 = 0x027718
-		objA1.position.x.u16 -= 4
-	}
-	else
-	{
-		A4 = 0x0276d8
-		objA1.position.x.u16 += 4
-	}
-
-	objA1.groundspeed = objA1.velocity.x
-	u8[A1 + 0x2a] &= ~char.flag.PUSHING
-	
-	if (u8[A1 + 0x38] == CHARACTER_KNUCKLES && u8[A1 + 0x2f] == 0x01)
-	{
-		if (objA1.velocity.x < 0)
-			objA1.groundspeed = -1 * objA1.velocity.x
-	}
-	
-	D1.u8 = objA0.subtype2c
-	if (objA0.subtype2c != 0)
-	{
-		bool createWaterStream = true
-
-		if (objA0.subtype2c == 0x1f)
-		{
-			// Let the water rise (in Knuckles' area)
-			global.level_flag02 = 1
-			water.height.target = 0x0660
-			if (super.active)
-			{
-				water.height.changerate = 2
-			}
-		}
-		else
-		{
-			// Create the water flow logic (visual effect is separate)
-			if (allocDynamicObjectAfterA0())
-			{
-				objA1.update_address = 0x0295c2
-				objA1.position.x.u16 = objA0.position.x.u16
-				objA1.position.y.u16 = objA0.position.y.u16 + 2
-				u8[A1 + 0x24] = 0x07
-				u8[A1 + 0x2c] = D1.u8
-			}
-			else
-			{
-				createWaterStream = false
-			}
-		}
-
-		if (createWaterStream)
-		{
-			// Create water stream visual effect
-			if (allocDynamicObjectAfterA0())
-			{
-				objA1.update_address = 0x029896
-				objA1.position.x.u16 = objA0.position.x.u16
-				objA1.position.y.u16 = objA0.position.y.u16 - 0x20
-				objA1.velocity.y = 1
-				u8[A1 + 0x2c] = D1.u8
-			}
-		}
-	}
-
-	objA0.update_address = 0x027592
-	fn0275f2()
-	fn027592()
 }

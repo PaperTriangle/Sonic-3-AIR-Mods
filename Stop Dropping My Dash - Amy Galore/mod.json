@@ -1,0 +1,19 @@
+{
+	"Metadata": 
+	{
+		"Name": "Stop Dropping My Dash - Amy Galore",
+		"UniqueID": "stop-dropping-my-dash-amy-galore",
+		"Author": "PaperTriangle",
+		"Description": "Amy Galore compatability proof of concept mod.",
+		"ModVersion": "1.0"
+	},
+	"OtherMods":
+	{
+		"stop-dropping-my-dash":
+		{
+			"DisplayName": "Stop Dropping My Dash",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		}
+	}
+}
