@@ -12,7 +12,13 @@
 		"stop-dropping-my-dash":
 		{
 			"DisplayName": "Stop Dropping My Dash",
-			"IsRequired": "0",
+			"IsRequired": "1",
+			"Priority": "Lower"
+		},
+		"AmyGaloreMisc":
+		{
+			"DisplayName": "Amy Galore: Standalone edition",
+			"IsRequired": "1",
 			"Priority": "Lower"
 		}
 	}

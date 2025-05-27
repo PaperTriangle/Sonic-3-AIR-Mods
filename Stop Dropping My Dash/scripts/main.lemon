@@ -191,7 +191,7 @@ function void fn08b3aa()
 	}
 	else
 	{
-		if (objA0.flags2a & object.flag.P2_ON_OBJECT)
+		if (objA0.flags2a & object.flag.P1_ON_OBJECT)
 		{
 			u8[0xffffb000 + 0x2a] |= char.flag.IN_AIR
 			u8[0xffffb000 + 0x2a] &= ~char.flag.ON_OBJECT
@@ -250,7 +250,7 @@ function void Rocks.Update()
 	
 	if (SDMD.destroyObjectExternally())
 	{
-		if (objA0.flags2a & object.flag.P2_ON_OBJECT)
+		if (objA0.flags2a & object.flag.P1_ON_OBJECT)
 		{
 			u8[0xffffb000 + 0x2a] |= char.flag.IN_AIR
 			u8[0xffffb000 + 0x2a] &= ~char.flag.ON_OBJECT
@@ -671,7 +671,7 @@ function void fn04172e()
 	
 	if (SDMD.destroyObjectExternally())
 	{
-		if (objA0.flags2a & object.flag.P2_ON_OBJECT)
+		if (objA0.flags2a & object.flag.P1_ON_OBJECT)
 		{
 			u8[0xffffb000 + 0x2a] |= char.flag.IN_AIR
 			u8[0xffffb000 + 0x2a] &= ~char.flag.ON_OBJECT
