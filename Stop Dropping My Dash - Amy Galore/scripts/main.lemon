@@ -31,7 +31,7 @@ function bool SDMD.destroyObjectExternally()
 		if (((objA0.position.x.u16 - objA1.position.x.u16) <= 0x35 && !(objA1.flags2a & char.flag.FACING_LEFT)) || ((objA0.position.x.u16 - objA1.position.x.u16) >= -0x35 && (objA1.flags2a & char.flag.FACING_LEFT))) && (((objA0.position.y.u16 - objA1.position.y.u16) <= 0x10) || ((objA0.position.y.u16 - objA1.position.y.u16) >= -0x10))
 			Valid = true
 			
-		return Valid && System.getGlobalVariableValueByName("AmyMISC.IdleHammer") == true && u8[0xffffb000 + 0x38] == CHARACTER_SONIC && System.getGlobalVariableValueByName("AmyMISC.IdleHammerAnim") > 7
+		return Valid && ( (System.getGlobalVariableValueByName("AmyMISC.IdleHammer") == true && u8[0xffffb000 + 0x38] == CHARACTER_SONIC && System.getGlobalVariableValueByName("AmyMISC.IdleHammerAnim") > 7) || u8[0xffffb000 + 0x20] == 0x78 || u8[0xffffb000 + 0x20] == 0x72 )
 	}
 	
 	return base.SDMD.destroyObjectExternally()
