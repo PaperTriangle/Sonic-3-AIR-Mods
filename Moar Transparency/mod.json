@@ -5,7 +5,7 @@
 		"UniqueID": "moar-transparency",
 		"Author": "PaperTriangle",
 		"Description": "Adds varying levels of transparency to more objects! Credit to Useott and Raine for some code that was adapted from A.I.R. Freshener.",
-		"ModVersion": "1.0"
+		"ModVersion": "1.2"
 	},
 	"OtherMods": {
 		"extra-slot-project-amy": {
@@ -22,6 +22,18 @@
 				"InternalName": "mt.instashield",
 				"DisplayName": "Insta-Shield",
 				"Variable": "mt.instashield",
+				"Category": "Shields",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "mt.classicshield",
+				"DisplayName": "Classic Shield",
+				"Variable": "mt.classicshield",
 				"Category": "Shields",	
 				"DefaultValue": "1",
 				"Options":

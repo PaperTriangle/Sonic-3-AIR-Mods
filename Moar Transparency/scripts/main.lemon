@@ -1,4 +1,5 @@
 global bool mt.instashield
+global bool mt.classicshield
 global bool mt.fireshield
 global bool mt.bubbleshield
 global bool mt.lightningshield
@@ -52,6 +53,15 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 		{
 			
 			// Shield rendering code adapted from Raine's A.I.R. Freshener branch of Sonic 3 A.I.R. - Credit goes to Useott to Raine
+			
+			// Classic shield
+			if (mt.classicshield && objA0.update_address == 0x01952a && (u8[0xffff0000 + objA0.shield.character_address + 0x2b] & char.bonus.ANY_SHIELD))
+			{
+				u8 anim = (level.framecounter >> 2) % 6
+				Renderer.drawCustomSprite(stringformat("shield_classic_0%d", anim+1), px, py, 0x00, prioFlag ? SPRITE_FLAG_PRIO : 0, renderQueue, 0, 128)
+				Renderer.drawCustomSprite(stringformat("shield_classic_0%d", (anim == 5) ? 6 : 5-anim), px, py, 0x00, prioFlag ? SPRITE_FLAG_PRIO : 0, renderQueue-0x100, 0, 160)
+				return true
+			}
 			
 			// Insta-Shield
 			if (mt.instashield && objA0.update_address == 0x01952a)
