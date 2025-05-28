@@ -32,6 +32,12 @@
 			"DisplayName": "Extra Slot 3D in 2D Shadow",
 			"IsRequired": "0",
 			"Priority": "Lower"
+		},
+		"AmyGaloreMisc":
+		{
+			"DisplayName": "Amy Galore: Standalone edition",
+			"IsRequired": "0",
+			"Priority": "Lower"
 		}
 	},
 	"Settings":
@@ -200,6 +206,18 @@
 				"Variable": "ggf.esu.supershadow",
 				"Category": "ESU Compatibility",	
 				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Off",
+					"1": "On"
+				}
+			},
+			{
+				"InternalName": "ggf.misc.amy_galore",
+				"DisplayName": "Amy Galore's Fast Run",
+				"Variable": "ggf.misc.amy_galore",
+				"Category": "MISC Compatibility",	
+				"DefaultValue": "1",
 				"Options":
 				{
 					"0": "Off",
