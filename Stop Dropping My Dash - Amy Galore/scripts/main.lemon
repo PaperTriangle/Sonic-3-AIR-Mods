@@ -1,12 +1,15 @@
+global u8 sdmd.rushbreak
+
 //-----------------
 // SDMD Compat Test
 //-----------------
 
+#if AMY_GALORE_ACTIVE
 function bool SDMD.canBounce(u8 state.in)
 {
-	if Mods.isModActive("Amy Galore: Standalone edition") && (global.characters == 0x04 || global.characters == 0x05)
+	if (global.characters == CHARACTER_AMY || global.characters == CHARACTER_AMY_TAILS)
 	{
-		return (state.in == 0x70 || state.in == 0x77 || (state.in == 0x71 && System.getGlobalVariableValueByName("AmyMISC.NoRollFBreak") == 0x01) || (state.in == 0x78))
+		return (state.in == char.state.HAMMERJUMP || state.in == char.state.HAMMERSWING || (state.in == char.state.NOROLLJUMP && AmyMISC.NoRollFBreak == 0x01) || (state.in == char.state.HAMMERGLIDE))
 	}
 	
 	return base.SDMD.canBounce(state.in)
@@ -14,9 +17,9 @@ function bool SDMD.canBounce(u8 state.in)
 
 function bool SDMD.canSmash(u8 state.in)
 {	
-	if Mods.isModActive("Amy Galore: Standalone edition") && (global.characters == 0x04 || global.characters == 0x05)
+	if (global.characters == CHARACTER_AMY || global.characters == CHARACTER_AMY_TAILS)
 	{
-		return (state.in == 0x74 || (System.getGlobalVariableValueByName("AmyMISC.IdleHammer") == true && u8[0xffffb000 + 0x38] == CHARACTER_SONIC && System.getGlobalVariableValueByName("AmyMISC.IdleHammerAnim") > 7))
+		return (state.in == char.state.ATOMFALL || (AmyMISC.IdleHammer == true && u8[0xffffb000 + 0x38] == CHARACTER_SONIC && AmyMISC.IdleHammerAnim > 7))
 	}
 
 	return base.SDMD.canSmash(state.in)
@@ -24,15 +27,16 @@ function bool SDMD.canSmash(u8 state.in)
 
 function bool SDMD.destroyObjectExternally()
 {
-	if Mods.isModActive("Amy Galore: Standalone edition") && (global.characters == 0x04 || global.characters == 0x05)
+	if (global.characters == CHARACTER_AMY || global.characters == CHARACTER_AMY_TAILS)
 	{
 		A1 = 0xffffb000
 		bool Valid
 		if (((objA0.position.x.u16 - objA1.position.x.u16) <= 0x35 && !(objA1.flags2a & char.flag.FACING_LEFT)) || ((objA0.position.x.u16 - objA1.position.x.u16) >= -0x35 && (objA1.flags2a & char.flag.FACING_LEFT))) && (((objA0.position.y.u16 - objA1.position.y.u16) <= 0x10) || ((objA0.position.y.u16 - objA1.position.y.u16) >= -0x10))
 			Valid = true
 			
-		return Valid && ( (System.getGlobalVariableValueByName("AmyMISC.IdleHammer") == true && u8[0xffffb000 + 0x38] == CHARACTER_SONIC && System.getGlobalVariableValueByName("AmyMISC.IdleHammerAnim") > 7) || u8[0xffffb000 + 0x20] == 0x78 || u8[0xffffb000 + 0x20] == 0x72 )
+		return Valid && ( (AmyMISC.IdleHammer == true && u8[0xffffb000 + 0x38] == CHARACTER_SONIC && AmyMISC.IdleHammerAnim > 7) || u8[0xffffb000 + 0x20] == char.state.HAMMERGLIDE || u8[0xffffb000 + 0x20] == char.state.HIGHJUMP || ( AmyMISC.HammerRushing && ((sdmd.rushbreak == 0) ? false : (sdmd.rushbreak) == 1 ? AmyMISC.AntonRushing : 1) ) ) 
 	}
 	
 	return base.SDMD.destroyObjectExternally()
 }
+#endif

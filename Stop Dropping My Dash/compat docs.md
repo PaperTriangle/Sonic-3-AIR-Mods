@@ -5,11 +5,32 @@ In all cases your mod should be loaded ABOVE **Stop Dropping My Dash** for compa
 ## The Objects and Functions
 This mod replaces multiple functions of the base Sonic 3 A.I.R.
 
-I would advise that if you have some custom logic in your own mod when interacting with these objects, then I would advise having a section of code at the top of these functions to fall back and call the base function instead. Such code may look like:
+I would advise that if you have some custom logic in your own mod when interacting with these objects already, then I would suggest having checking the preprocessing varable ``SDMD_ACTIVE`` before loading those functions. Such a check might look like this:
+
+```
+#if !SDMD_ACTIVE
+function void functionOne()
+{
+  // Code here
+}
+
+function void functionTwo()
+{
+  // Code here
+}
+#endif
+```
+
+Such a check will load your code only if **Stop Dropping My Dash** is not loaded.
+
+Obviously, if you have some extra feature that your character can do that you will *need* to handle then you should not revert to the base function if the conditions of your function are met.
+
+You should be able to do this by checking if **Stop Dropping My Dash** is loaded and the special condition hasn't been met, then falling back to the base function should work. Such code may look like:
+
 ```
 function void functionName()
 {
-    if Mods.isModActive("Stop Dropping My Dash")
+    if (Mods.isModActive("Stop Dropping My Dash") && !ConditionMet)
     {
         base.functionName()
         return
@@ -18,8 +39,6 @@ function void functionName()
     // Rest of your code here
 }
 ```
-
-Obviously, if you have some extra feature that your character can do that you will *need* to handle then you should not revert to the base function if the conditions of your function are met.
 
 So you know what functions to look out for I have provided full list of the game objects, addresses and Functions that have been changed by **Stop Dropping My Dash** below.
 
@@ -44,6 +63,8 @@ In addition, a few other functions were altered that are not specific:
 |---|---|---|
 |Collision Check|``0x01dc56``|``fn01dc56()``
 |Character Jump Moves||``Character.updateJumpMoves()``
+
+>**PLEASE NOTE:** Please note that I have moved the Collision Check (``0x01dc56``) for the ICZ Ice Block out of ``0x08b384`` and into ``0x08b3aa``. So you may need to account for that if you have super specific character logic for the ICZ Ice Block.
 
 This mod also updated the method ``P2Balloons()`` from **Origins Parity Galore** and ``SuperThenHyperfunc()`` from **Characters Go Supper Then Hyper** to ensure compatible functionality.
 
@@ -79,6 +100,8 @@ This function will return a ``bool`` and is here to check if the extra upwards m
 This function should return ``true`` unless your characters move would normally push them down, such as **Extra Slot Mighty**'s hammer drop, that is checked for by default.
 
 ### Function 5: ``SDMD.destroyObjectExternally()``
-This function can be used with Rocks, ICZ Ice Blocks and SOZ Blocks to create an external reason to destroy the object.
+This function will return a ``bool`` and is here to check if Rocks, ICZ Ice Blocks and SOZ Blocks have been destroyed by some external reason distinct from landing on top of them.
 
-This method was created for some compatibility with **Amy Galore**'s Idle Hammer swing.
+If the value returned is ``true`` then the objects will be destroyed regardless of the interaction. This is called right after the collision check function ``fn01dc56()``, so you are able to do any collision checks if required.
+
+This function will return ``false`` by default and was created for some compatibility with **Amy Galore**'s Idle Hammer swing that destroys these objects from the side.

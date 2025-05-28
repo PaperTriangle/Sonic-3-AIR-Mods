@@ -1,0 +1,31 @@
+{
+	"Metadata": 
+	{
+		"Name": "Break That Pipe - Amy Galore",
+		"UniqueID": "break-that-pipe-amy-galore",
+		"Author": "PaperTriangle",
+		"Description": "Amy Galore compatability proof of concept mod.",
+		"ModVersion": "1.0"
+	},
+	"OtherMods":
+	{
+		"break-that-pipe":
+		{
+			"DisplayName": "Break That Pipe!",
+			"IsRequired": "1",
+			"Priority": "Lower"
+		},
+		"AmyGaloreMisc":
+		{
+			"DisplayName": "Amy Galore",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		},
+		"AmyGalorePlus":
+		{
+			"DisplayName": "Amy Galore",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		}
+	}
+}

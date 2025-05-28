@@ -1,0 +1,32 @@
+global u8 sdmd.rushbreak
+
+//----------------
+// BTP Compat Test
+//----------------
+
+#if AMY_GALORE_ACTIVE
+function bool BTP.canBreak(u8 state.in)
+{
+	if (global.characters == CHARACTER_AMY || global.characters == CHARACTER_AMY_TAILS)
+	{
+		return (state.in == char.state.HAMMERJUMP || state.in == char.state.HAMMERSWING || (state.in == char.state.NOROLLJUMP && AmyMISC.NoRollFBreak == 0x01) || (state.in == char.state.HAMMERGLIDE))
+	}
+	
+	return base.BTP.canBreak(state.in)
+}
+
+function bool BTP.destroyObjectExternally()
+{
+	if (global.characters == CHARACTER_AMY || global.characters == CHARACTER_AMY_TAILS)
+	{
+		A1 = 0xffffb000
+		bool Valid
+		if (((objA0.position.x.u16 - objA1.position.x.u16) <= 0x30 && !(objA1.flags2a & char.flag.FACING_LEFT)) || ((objA0.position.x.u16 - objA1.position.x.u16) >= -0x30 && (objA1.flags2a & char.flag.FACING_LEFT))) && (((objA0.position.y.u16 - objA1.position.y.u16) <= 0x55) || ((objA0.position.y.u16 - objA1.position.y.u16) >= -0x55))
+			Valid = true
+			
+		return Valid && ( (AmyMISC.IdleHammer == true && u8[0xffffb000 + 0x38] == CHARACTER_SONIC && AmyMISC.IdleHammerAnim > 7) || u8[0xffffb000 + 0x20] == char.state.HAMMERGLIDE || u8[0xffffb000 + 0x20] == char.state.HIGHJUMP || AmyMISC.HammerRushing ) 
+	}
+	
+	return base.BTP.destroyObjectExternally()
+}
+#endif

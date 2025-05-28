@@ -1,9 +1,22 @@
 define u8 global.xtrachar	= u8[0xffffe654]
 
-function bool BDP.canBreak(u8 state.in)
+//---------------------
+// Mod Compat Functions
+//---------------------
+
+function bool BTP.canBreak(u8 state.in)
 {
-	return ( (Mods.isModActive("Extra Slot Amy") || Mods.isModActive("Extra Slot Amy SHC")) && global.xtrachar == 3 && (System.getGlobalVariableValueByName("Amy_HammerSpinAttacking") || super.active.tails) ) || ( Mods.isModActive("Extra Slot 3D in 2D Shadow") && global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.isBoosting") )
+	return (global.xtrachar == 3 && (System.getGlobalVariableValueByName("Amy_HammerSpinAttacking") || super.active.tails)) || (global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.isBoosting"))
 }
+
+function bool BTP.destroyObjectExternally()
+{
+	return false
+}
+
+//----------
+// LBZ2 Pipe
+//----------
 
 //# address-hook(0x027424) end(0x027590)
 function void fn027424()
@@ -16,6 +29,36 @@ function void fn027424()
 	D3.u16 = 0x21
 	D4.u16 = objA0.position.x.u16
 	fn01dc56()
+	
+	if (BTP.destroyObjectExternally())
+	{
+		if (objA0.flags2a & object.flag.P1_ON_OBJECT)
+		{
+			u8[0xffffb000 + 0x2a] |= char.flag.IN_AIR
+			u8[0xffffb000 + 0x2a] &= ~char.flag.ON_OBJECT
+			u8[0xffffb000 + 0x05] = base_state.NORMAL
+		}
+		else if (objA0.flags2a & object.flag.P1_PUSHING)
+		{
+			u8[0xffffb000 + 0x2a] &= ~char.flag.PUSHING
+			u8[0xffffb000 + 0x05] = base_state.NORMAL
+		}
+		
+		if (objA0.flags2a & object.flag.P2_ON_OBJECT)
+		{
+			u8[0xffffb04a + 0x2a] |= char.flag.IN_AIR
+			u8[0xffffb04a + 0x2a] &= ~char.flag.ON_OBJECT
+			u8[0xffffb04a + 0x05] = base_state.NORMAL
+		}
+		else if (objA0.flags2a & object.flag.P2_PUSHING)
+		{
+			u8[0xffffb04a + 0x2a] &= ~char.flag.PUSHING
+			u8[0xffffb04a + 0x05] = base_state.NORMAL
+		}
+		
+		LBZPipe.break()
+		return
+	}
 
 	D6 = (D6 << 16) + (D6 >> 16)
 	if (D6.u16 & 0x03)
@@ -33,7 +76,7 @@ function void fn027424()
 			}
 			else
 			{
-				if (super.active || BDP.canBreak(u8[A1 + 0x20]))
+				if (super.active || BTP.canBreak(objA1.state))
 				{
 					// Super form breaks walls even when going slow, so can a hammer swinging Amy and a boosting Shadow!
 					canBreakWall = true
@@ -54,7 +97,7 @@ function void fn027424()
 				{
 					// Check for second character
 					A1 = 0xffffb04a
-					if (u8[A1 + 0x38] == CHARACTER_KNUCKLES || objA1.state == char.state.ROLLING)
+					if (u8[A1 + 0x38] == CHARACTER_KNUCKLES || objA1.state == char.state.ROLLING || BTP.canBreak(objA1.state))
 					{
 						objA1.velocity.x = u16[A0 + 0x36]
 						objA1.groundspeed = objA1.velocity.x
@@ -81,7 +124,7 @@ function void fn027424()
 				else
 				{
 					// Normal Sonic and Tails need to quickly roll into a wall to break it (this includes the fire shield attack)
-					canBreakWall = (objA1.state == char.state.ROLLING && abs(D1.s16) >= 0x480) || BDP.canBreak(u8[A1 + 0x20])
+					canBreakWall = (objA1.state == char.state.ROLLING && abs(D1.s16) >= 0x480) || BTP.canBreak(objA1.state)
 				}
 			}
 
