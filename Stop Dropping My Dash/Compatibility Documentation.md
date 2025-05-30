@@ -1,7 +1,9 @@
-# Compatibility Documentation
+# Stop Dropping My Dash − Compatibility Documentation
 This document will note some details that may be useful if you want to build compatibility between your mod and **Stop Dropping My Dash**.
 
 In all cases your mod should be loaded ABOVE **Stop Dropping My Dash** for compatibility to work as expected.
+
+I have included a "proof of concept" example mod for compatibility with **Amy Galore**. I do not match compatibility 1:1 with **Amy Galore**'s implementation of these objects and have taken my own little spin on how Amy should interact with these objects and there is even a configuration option! 
 ## The Objects and Functions
 This mod replaces multiple functions of the base Sonic 3 A.I.R.
 

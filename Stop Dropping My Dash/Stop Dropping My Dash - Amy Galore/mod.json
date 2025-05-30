@@ -39,9 +39,8 @@
 				"DefaultValue": "0",
 				"Options":
 				{
-					"0": "Never",
-					"1": "Only Anton Rush",
-					"2": "Always"
+					"0": "Disabled",
+					"1": "Enabled"
 				}
 			}
 		]

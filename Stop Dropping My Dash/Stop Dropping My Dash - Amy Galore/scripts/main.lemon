@@ -34,7 +34,7 @@ function bool SDMD.destroyObjectExternally()
 		if (((objA0.position.x.u16 - objA1.position.x.u16) <= 0x35 && !(objA1.flags2a & char.flag.FACING_LEFT)) || ((objA0.position.x.u16 - objA1.position.x.u16) >= -0x35 && (objA1.flags2a & char.flag.FACING_LEFT))) && (((objA0.position.y.u16 - objA1.position.y.u16) <= 0x10) || ((objA0.position.y.u16 - objA1.position.y.u16) >= -0x10))
 			Valid = true
 			
-		return Valid && ( (AmyMISC.IdleHammer == true && u8[0xffffb000 + 0x38] == CHARACTER_SONIC && AmyMISC.IdleHammerAnim > 7) || u8[0xffffb000 + 0x20] == char.state.HAMMERGLIDE || u8[0xffffb000 + 0x20] == char.state.HIGHJUMP || ( AmyMISC.HammerRushing && ((sdmd.rushbreak == 0) ? false : (sdmd.rushbreak) == 1 ? AmyMISC.AntonRushing : 1) ) ) 
+		return Valid && ( (AmyMISC.IdleHammer == true && u8[0xffffb000 + 0x38] == CHARACTER_SONIC && AmyMISC.IdleHammerAnim > 7) || u8[0xffffb000 + 0x20] == char.state.HAMMERGLIDE || u8[0xffffb000 + 0x20] == char.state.HIGHJUMP || (AmyMISC.HammerRushing && sdmd.rushbreak) ) 
 	}
 	
 	return base.SDMD.destroyObjectExternally()
