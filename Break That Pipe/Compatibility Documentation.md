@@ -2,6 +2,8 @@
 This document will note some details that may be useful if you want to build compatibility between your mod and **Break That Pipe!**
 
 In all cases your mod should be loaded ABOVE **Break That Pipe!** for compatibility to work as expected.
+
+I have included a "proof of concept" example mod for compatibility with **Amy Galore**. This compatibility is not actually required if you load **Break That Pipe!** below **Amy Galore** as they already handle this object within their own mod.
 ## The Objects and Functions
 This mod replaces the ``fn027424()`` function at address hook ``0x027424`` of the base Sonic 3 A.I.R.
 
