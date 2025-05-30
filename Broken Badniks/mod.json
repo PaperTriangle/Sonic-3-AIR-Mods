@@ -5,7 +5,16 @@
 		"UniqueID": "broken-badniks",
 		"Author": "PaperTriangle",
 		"Description": "Adds some breaking bits to certain badniks.",
-		"ModVersion": "1.1"
+		"ModVersion": "1.2"
+	},
+	"OtherMods":
+	{
+		"es-3d2d-shadow":
+		{
+			"DisplayName": "Extra Slot 3D in 2D Shadow",
+			"IsRequired": "0",
+			"Priority": "Higher"
+		}
 	},
 	"Settings":
 	{
@@ -111,6 +120,18 @@
 				"InternalName": "bb.monkeysmooth",
 				"DisplayName": "AIZ Smoother Monkey Dude",
 				"Variable": "bb.monkeysmooth",
+				"Category": "Extras",
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "bb.lbztriggers",
+				"DisplayName": "LBZ Better Wall Triggers",
+				"Variable": "bb.lbztriggers",
 				"Category": "Extras",
 				"DefaultValue": "1",
 				"Options":

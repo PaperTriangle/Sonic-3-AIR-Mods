@@ -7,6 +7,7 @@ global bool bb.spikebonker
 global bool bb.cutsceneadjust
 global bool bb.firebreath
 global bool bb.twinhammer
+global bool bb.lbztriggers
 
 //----------------
 // Generic Methods
@@ -599,4 +600,38 @@ function void fn08cb9e()
 	
 	
 	base.fn08cb9e()
+}
+
+//-----------------
+// LBZ Wall Trigger
+//-----------------
+
+//# address-hook(0x025d2c) end(0x025d52)
+function void fn025d2c()
+{
+	if (!bb.lbztriggers)
+	{
+		base.fn025d2c()
+		return
+	}
+	
+	if (u8[A1 + 0x20] == char.state.ROLLING || BB.canBreak(u8[A1 + 0x20]))
+	{
+		objA1.velocity.x = -objA1.velocity.x
+		objA1.velocity.y = -objA1.velocity.y
+		u8[A3] ^= (1 << D3.u8)
+		objA0.update_address = addressof(SmallExplosion.BaseUpdate)
+		objA0.base_state = 0x02
+		u8[A0 + 0x28] = 0
+		u8[A0 + 0x29] = 0
+	}
+}
+
+function bool BB.canBreak(u8 state.in)
+{
+#if AMY_GALORE_ACTIVE
+	if (global.characters == CHARACTER_AMY || global.characters == CHARACTER_AMY_TAILS) && u8[A1 + 0x38] == CHARACTER_SONIC
+		return (state.in == char.state.ROLLING) || (state.in == char.state.HAMMERJUMP) || (state.in == char.state.HAMMERSWING) || (state.in == char.state.HAMMERGLIDE) || (state.in == char.state.NOROLLJUMP && AmyMISC.NoRollDmg == 0x01)
+#endif
+	return (u8[A1 + 0x38] == CHARACTER_SONIC && state.in == char.state.SONIC_DROPDASH) || (u8[A1 + 0x38] == CHARACTER_TAILS && s16(objA0.position.y.u16) < s16(objA1.position.y.u16)) && (state.in == char.state.TAILS_FLYDOWN || state.in == char.state.TAILS_FLYUP || state.in == char.state.TAILS_CARRYDOWN || state.in == char.state.TAILS_CARRYUP) || (u8[A1 + 0x38] == CHARACTER_KNUCKLES && (u8[A1 + 0x2f] == 1 || u8[A0 + 0x2f] == 3))
 }
