@@ -9,6 +9,8 @@ global s8 phud.offset
 
 define u8 global.xtrachar = u8[0xffffe654]
 
+#define PHUD_ACTIVE
+
 //# address-hook(0x00db44) end(0x00dbb2)
 function void RenderHUD()
 {
@@ -20,42 +22,7 @@ function void RenderHUD()
 
 	if (phud.transform)
 	{
-	
-		s16 baseX = global.level_started
-
-		bool isBonusStage = (global.zone >= 0x13 && global.zone <= 0x15)
-		if (!debug_mode.state)
-		{
-			if (!isBonusStage)
-			{	
-				u8 fade
-				if (u8[0xffffb040] && u8[0xffffb02f] == 0 && u8[0xffffb02e] == 0)
-					fade = 255
-				else
-					fade = 160
-
-				u8 possibleSuperForm = PHUD.CanTransform()	// 1 for Super, 2 for Hyper
-
-				if (possibleSuperForm > 0 && phud.offset > 0)
-				{
-					phud.offset -= 0x08
-				}
-				else if (possibleSuperForm == 0 && phud.offset < 0x70)
-				{
-					phud.offset += 0x08
-				}
-
-				u64 transformstring = (phud.transformstyle != 0) ? ((phud.transformstyle == 1) ? stringformat("border_%s", compatName) : stringformat("ring_%s", compatName)) : "normal"
-
-				if (global.super_emeralds >= 7 && (super.active == 1  || super.active.tails == 1 || !Mods.isModActive("Characters Go Super Then Hyper")) && !(global.xtrachar == 0 && isMainCharacter(CHARACTER_TAILS) && !Game.getSetting(SETTING_HYPER_TAILS)))
-					HUD.drawSprite(stringformat("hyper_icon_%s", transformstring), getScreenWidth() - (baseX + 0x10 + HUD.useMobileLivesDisplay() * 0x28) + phud.offset, 0x10 + HUD.useMobileLivesDisplay() * 0x14, 0xe000)
-				else
-					HUD.drawSprite(stringformat("super_icon_%s", transformstring), getScreenWidth() - (baseX + 0x10 + HUD.useMobileLivesDisplay() * 0x28) + phud.offset, 0x10 + HUD.useMobileLivesDisplay() * 0x14, 0xe000)
-				
-				Renderer.drawCustomSprite("@input_icon_button_Y", getScreenWidth() - (baseX + 0x24) + phud.offset, 0x10 + HUD.useMobileLivesDisplay() * 0x14, 0, SPRITE_FLAG_PRIO, 0xe000, 0, fade)
-				
-			}
-		}
+		PHUD.RenderTransformButton()
 	}
 
 	if (!phud.lives)
@@ -85,62 +52,14 @@ function void RenderHUD()
 		if (!Game.isTimeAttack() && !Game.getSetting(SETTING_INFINITE_LIVES))
 		{
 			bool useMobilePosition = HUD.useMobileLivesDisplay()
-			u16 px = useMobilePosition ? (getScreenWidth() - baseX - (isMainCharacter(CHARACTER_KNUCKLES) && phud.name ? 0x40 : 0x30)) : baseX
+			u16 px = useMobilePosition ? (getScreenWidth() - baseX - (0x30 + (phud.name ? PHUD.MobileLivesOffset() : 0))) : baseX
 			u16 py = useMobilePosition ? baseY : 200
-
-			u64 characterSprite = ((phud.allowsuper && global.xtrachar == 0) || (phud.allowsuperesu && global.xtrachar > 0)) ? getCharacterSpriteKey(u8[0xffffb000 + 0x38]) : getCharacterSpriteKey(u8[0xffffb000 + 0x38], false)
-			u64 characterName = getCharacterSpriteKey(u8[0xffffb000 + 0x38], false)
-			
-			if (((phud.allowsuper && global.xtrachar == 0) || (phud.allowsuperesu && global.xtrachar > 0)) && !Renderer.hasCustomSprite(stringformat("%s_lives_icon", characterSprite)))
-				characterSprite = getCharacterSpriteKey(u8[0xffffb000 + 0x38], false)
-			
-			if (Mods.isModActive("Amy Galore: Standalone edition") && (global.characters == 0x04 || global.characters == 0x05))
-			{
-				characterSprite = getCharacterSpriteKey(u8[0xffffb000 + 0x38])
-				characterName = getCharacterSpriteKey(u8[0xffffb000 + 0x38])
-			}
-			
-			if (((phud.allowsuper && global.xtrachar == 0) || (phud.allowsuperesu && global.xtrachar > 0)) && !Renderer.hasCustomSprite(stringformat("%s_lives_icon", characterSprite)))
+	
+			if (!PHUD.RenderLives(px, py, renderQueue))
 			{
 				base.RenderHUD()
 				return
 			}
-			
-			if (characterSprite == "character_tails" && Mods.isModActive("Plush's Ariff Tails"))
-				characterSprite = "character_ariff_tails"
-			
-			if (characterName == "character_tails" && !(global.region_code & 0x80))
-				characterName = "character_miles"
-			
-			HUD.drawSprite(stringformat("%s_lives_icon", characterSprite), px, py, renderQueue)
-			++renderQueue
-			
-			u64 livesborderstring = (phud.livesborder) ? stringformat("ring_%s", compatName) : stringformat("border_%s", compatName) 
-			
-			HUD.drawSprite(stringformat("%s_lives_icon_%s", characterSprite, livesborderstring), px, py, renderQueue)
-			++renderQueue
-			
-			
-			if (phud.name)
-			{
-				HUD.drawSprite(stringformat("%s_lives_text_%s", characterName, compatName), px, py, renderQueue)
-			}
-			else
-			{
-				HUD.drawSprite(stringformat("no_lives_text_%s", compatName), px, py, renderQueue)
-			}
-			++renderQueue
-
-			if (lives_counter >= 10)
-			{
-				HUD.drawSmallDigit(u16((lives_counter / 10) % 10), px + 0x18, py + 8, renderQueue)
-				HUD.drawSmallDigit(u16(lives_counter % 10), px + 0x20, py + 8, renderQueue)
-			}
-			else
-			{
-				HUD.drawSmallDigit(u16(lives_counter % 10), px + 0x18, py + 8, renderQueue)
-			}
-			++renderQueue
 		}
 		
 			// Score
@@ -254,6 +173,46 @@ function void RenderHUD()
 	}
 }
 
+function void PHUD.RenderTransformButton()
+{
+	s16 baseX = global.level_started
+
+	bool isBonusStage = (global.zone >= 0x13 && global.zone <= 0x15)
+	if (!debug_mode.state)
+	{
+		if (!isBonusStage)
+		{	
+			u8 fade
+			if PHUD.ButtonIsValid()
+				fade = 255
+			else
+				fade = 160
+
+			u8 possibleSuperForm = PHUD.CanTransform()	// 1 for Super, 2 for Hyper
+
+			if (possibleSuperForm > 0 && phud.offset > 0)
+			{
+				phud.offset -= 0x08
+			}
+			else if (possibleSuperForm == 0 && phud.offset < 0x70)
+			{
+				phud.offset += 0x08
+			}
+
+			if (phud.transformstyle != 0)
+			{
+				u64 transformborder =  (phud.transformstyle == 1) ? stringformat("t_border_%s", compatName) : stringformat("t_ring_%s", compatName)
+				HUD.drawSprite(transformborder, getScreenWidth() - (baseX + 0x10 + HUD.useMobileLivesDisplay() * 0x28) + phud.offset, 0x10 + HUD.useMobileLivesDisplay() * 0x14, 0xe000)
+			}
+
+			HUD.drawSprite(PHUD.GetTransformIcon(phud.transformstyle != 0), getScreenWidth() - (baseX + 0x10 + HUD.useMobileLivesDisplay() * 0x28) + phud.offset, 0x10 + HUD.useMobileLivesDisplay() * 0x14, 0xe000)
+			
+			Renderer.drawCustomSprite("@input_icon_button_Y", getScreenWidth() - (baseX + 0x24) + phud.offset, 0x10 + HUD.useMobileLivesDisplay() * 0x14, 0, SPRITE_FLAG_PRIO, 0xe000, 0, fade)
+			
+		}
+	}
+}
+
 function bool PHUD.CanTransform()
 {
 	if (global.zone_act == 0x0c00)
@@ -310,8 +269,85 @@ function bool PHUD.CanTransform()
 	return possibleSuperForm
 }
 
+function bool PHUD.ButtonIsValid()
+{
+	return (u8[0xffffb040] && u8[0xffffb02f] == 0 && u8[0xffffb02e] == 0)
+}
 
+function u64 PHUD.GetTransformIcon(bool style)
+{
+	u64 returnIcon
+	if (global.super_emeralds >= 7 && (super.active == 1  || super.active.tails == 1 || !Mods.isModActive("Characters Go Super Then Hyper")) && !(global.xtrachar == 0 && isMainCharacter(CHARACTER_TAILS) && !Game.getSetting(SETTING_HYPER_TAILS)))
+		returnIcon = "hyper_icon"
+	else
+		returnIcon = "super_icon"
+		
+	return style ? returnIcon : stringformat("%s_normal", returnIcon)
+}
 
+function bool PHUD.RenderLives(u16 px, u16 py, u16 renderQueue)
+{
+	u64 compatName = (Mods.isModActive("Haru's Forever-esque HUD")) ? "haru" : "s3"
+	u64 characterSprite = ((phud.allowsuper && global.xtrachar == 0) || (phud.allowsuperesu && global.xtrachar > 0)) ? getCharacterSpriteKey(u8[0xffffb000 + 0x38]) : getCharacterSpriteKey(u8[0xffffb000 + 0x38], false)
+	u64 characterName = getCharacterSpriteKey(u8[0xffffb000 + 0x38], false)
+	
+	if (((phud.allowsuper && global.xtrachar == 0) || (phud.allowsuperesu && global.xtrachar > 0)) && !Renderer.hasCustomSprite(stringformat("%s_lives_icon", characterSprite)))
+		characterSprite = getCharacterSpriteKey(u8[0xffffb000 + 0x38], false)
+	
+	if (Mods.isModActive("Amy Galore: Standalone edition") && (global.characters == 0x04 || global.characters == 0x05))
+	{
+		characterSprite = getCharacterSpriteKey(u8[0xffffb000 + 0x38])
+		characterName = getCharacterSpriteKey(u8[0xffffb000 + 0x38])
+	}
+	
+	if (((phud.allowsuper && global.xtrachar == 0) || (phud.allowsuperesu && global.xtrachar > 0)) && !Renderer.hasCustomSprite(stringformat("%s_lives_icon", characterSprite)))
+	{
+		return false
+	}
+	
+	if (characterSprite == "character_tails" && Mods.isModActive("Plush's Ariff Tails"))
+		characterSprite = "character_ariff_tails"
+	
+	if (characterName == "character_tails" && !(global.region_code & 0x80))
+		characterName = "character_miles"
+	
+	HUD.drawSprite(stringformat("%s_lives_icon", characterSprite), px, py, renderQueue)
+	++renderQueue
+	
+	u64 livesborderstring = (phud.livesborder) ? stringformat("ring_%s", compatName) : stringformat("border_%s", compatName) 
+	
+	HUD.drawSprite(stringformat("%s_lives_icon_%s", characterSprite, livesborderstring), px, py, renderQueue)
+	++renderQueue
+	
+	
+	if (phud.name)
+	{
+		HUD.drawSprite(stringformat("%s_lives_text_%s", characterName, compatName), px, py, renderQueue)
+	}
+	else
+	{
+		HUD.drawSprite(stringformat("no_lives_text_%s", compatName), px, py, renderQueue)
+	}
+	++renderQueue
+
+	if (lives_counter >= 10)
+	{
+		HUD.drawSmallDigit(u16((lives_counter / 10) % 10), px + 0x18, py + 8, renderQueue)
+		HUD.drawSmallDigit(u16(lives_counter % 10), px + 0x20, py + 8, renderQueue)
+	}
+	else
+	{
+		HUD.drawSmallDigit(u16(lives_counter % 10), px + 0x18, py + 8, renderQueue)
+	}
+	++renderQueue
+	
+	return true
+}
+
+function u16 PHUD.MobileLivesOffset()
+{
+ return isMainCharacter(CHARACTER_KNUCKLES) ? 0x10 : 0
+}
 
 function void Character.Initialization.shared(u8 character)
 {

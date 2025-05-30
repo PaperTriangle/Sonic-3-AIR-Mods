@@ -1,0 +1,5 @@
+{
+	"revert_icon":  { "File": "revert.png", "Rect": "0,0,19,19", "Center": "8,8" },
+	"revert_icon_normal":  { "File": "revert_normal.png", "Rect": "0,0,19,19", "Center": "8,8" }
+
+}

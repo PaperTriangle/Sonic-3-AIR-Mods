@@ -1,0 +1,36 @@
+function bool PHUD.CanTransform()
+{
+	if (Game.getSetting(SETTING_SUPER_CANCEL))
+	{
+		if (global.zone_act == 0x0c00)
+			return 0
+		
+		if (super.active == 0xff || super.active.tails == 0xff)
+			return true
+		else if (super.active == 1 || super.active.tails == 1) && (!u8[0xffffb000 + 0x40] || u8[0xffffb02e] != 0 || global.super_emeralds < 7)
+			return true
+	}
+	
+	return base.PHUD.CanTransform()
+}
+
+function bool PHUD.ButtonIsValid()
+{
+	if Game.getSetting(SETTING_SUPER_CANCEL) && (super.active || super.active.tails) && (!u8[0xffffb000 + 0x40] || u8[0xffffb02e] != 0 || u8[0xffffb02f] > 0)
+		return true
+		
+	return base.PHUD.ButtonIsValid()
+}
+
+function u64 PHUD.GetIcon(bool style)
+{
+	if (Game.getSetting(SETTING_SUPER_CANCEL))
+	{
+		if (super.active == 0xff  || super.active.tails == 0xff)
+			return style ? "revert_icon" : "revert_icon_normal"
+		else if (super.active == 1  || super.active.tails == 1) && (!u8[0xffffb000 + 0x40] || u8[0xffffb02e] != 0 || u8[0xffffb02f] > 0 || global.super_emeralds < 7)
+			return style ? "revert_icon" : "revert_icon_normal"
+	}
+	
+	return base.PHUD.GetIcon(style)
+}

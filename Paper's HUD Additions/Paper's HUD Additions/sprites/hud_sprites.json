@@ -76,14 +76,12 @@
 	"no_lives_text_s3":  { "File": "no_text.png", "Rect": "1,0,8,16", "Center": "-17,0" },
 	"no_lives_text_haru":  { "File": "no_text_haru.png", "Rect": "1,0,32,16", "Center": "-17,0" },
 	
+	"super_icon":  { "File": "super.png", "Rect": "0,0,19,19", "Center": "8,8" },
+	"hyper_icon":  { "File": "hyper.png", "Rect": "0,0,19,19", "Center": "8,8" },
 	"super_icon_normal":  { "File": "super_normal.png", "Rect": "0,0,19,19", "Center": "8,8" },
 	"hyper_icon_normal":  { "File": "hyper_normal.png", "Rect": "0,0,19,19", "Center": "8,8" },
-	"super_icon_border_s3":  { "File": "super.png", "Rect": "0,0,19,19", "Center": "8,8" },
-	"hyper_icon_border_s3":  { "File": "hyper.png", "Rect": "0,0,19,19", "Center": "8,8" },
-	"super_icon_border_haru":  { "File": "super_haru.png", "Rect": "0,0,19,19", "Center": "8,8" },
-	"hyper_icon_border_haru":  { "File": "hyper_haru.png", "Rect": "0,0,19,19", "Center": "8,8" },
-	"super_icon_ring_s3":  { "File": "super_ring.png", "Rect": "0,0,19,19", "Center": "8,8" },
-	"hyper_icon_ring_s3":  { "File": "hyper_ring.png", "Rect": "0,0,19,19", "Center": "8,8" },
-	"super_icon_ring_haru":  { "File": "super_ring_haru.png", "Rect": "0,0,19,19", "Center": "8,8" },
-	"hyper_icon_ring_haru":  { "File": "hyper_ring_haru.png", "Rect": "0,0,19,19", "Center": "8,8" }
+	"t_border_s3":  { "File": "t_border_s3.png", "Rect": "0,0,19,19", "Center": "8,8" },
+	"t_border_haru":  { "File": "t_border_haru.png", "Rect": "0,0,19,19", "Center": "8,8" },
+	"t_ring_s3":  { "File": "t_ring_s3.png", "Rect": "0,0,19,19", "Center": "8,8" },
+	"t_ring_haru":  { "File": "t_ring_haru.png", "Rect": "0,0,19,19", "Center": "8,8" }
 }
