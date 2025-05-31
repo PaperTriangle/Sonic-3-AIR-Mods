@@ -118,7 +118,7 @@
 			},
 			{
 				"InternalName": "bb.monkeysmooth",
-				"DisplayName": "AIZ Smoother Monkey Dude",
+				"DisplayName": "Smoother AIZ Monkey Dude",
 				"Variable": "bb.monkeysmooth",
 				"Category": "Extras",
 				"DefaultValue": "1",
@@ -130,7 +130,7 @@
 			},
 			{
 				"InternalName": "bb.lbztriggers",
-				"DisplayName": "LBZ Better Wall Triggers",
+				"DisplayName": "Better LBZ Wall Triggers",
 				"Variable": "bb.lbztriggers",
 				"Category": "Extras",
 				"DefaultValue": "1",
