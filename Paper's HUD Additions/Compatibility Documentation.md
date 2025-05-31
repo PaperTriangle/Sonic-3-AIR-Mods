@@ -57,7 +57,7 @@ This function is a ``void`` function that simple renders the transform button on
 You generally should not need to interact with this method, but may want to call it if you are doing a total HUD replacement and are checking the preprocessing variable ``PHUD_ACTIVE``.
 
 ### Function 2: ``PHUD.RenderLives(u16 px, u16 py, u16 renderQueue)``
-This function will attempt to render the lives icon and will return a ``bool``. If it fails to render due to being unable to find the base character icon then it will return ``false``. In the base mod this causes the base ``RenderHUD()`` function to run.
+This function will attempt to render the lives icon and will return a ``bool``. If it fails to render due to the configuration setting being disabeled or if it is unable to find the base character icon then it will return ``false``. In the base mod this causes the base ``RenderHUD()`` function to run.
 
 Again, you generally should not need to interact with this method, but may want to call it if you are doing a total HUD replacement and are checking the preprocessing variable ``PHUD_ACTIVE``.
 

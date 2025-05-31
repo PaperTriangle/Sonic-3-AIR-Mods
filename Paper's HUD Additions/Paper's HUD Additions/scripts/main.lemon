@@ -18,12 +18,8 @@ function void RenderHUD()
 	if (DEBUG_DISABLE_HUD)
 		return
 
-	u64 compatName = (Mods.isModActive("Haru's Forever-esque HUD")) ? "haru" : "s3"
-
-	if (phud.transform)
-	{
-		PHUD.RenderTransformButton()
-	}
+	
+	PHUD.RenderTransformButton()
 
 	if (!phud.lives)
 	{
@@ -175,6 +171,9 @@ function void RenderHUD()
 
 function void PHUD.RenderTransformButton()
 {
+	if (!phud.transform)
+		return
+		
 	s16 baseX = global.level_started
 
 	bool isBonusStage = (global.zone >= 0x13 && global.zone <= 0x15)
@@ -182,6 +181,8 @@ function void PHUD.RenderTransformButton()
 	{
 		if (!isBonusStage)
 		{	
+			u64 compatName = (Mods.isModActive("Haru's Forever-esque HUD")) ? "haru" : "s3"
+				
 			u8 fade
 			if PHUD.ButtonIsValid()
 				fade = 255
@@ -287,6 +288,9 @@ function u64 PHUD.GetTransformIcon(bool style)
 
 function bool PHUD.RenderLives(u16 px, u16 py, u16 renderQueue)
 {
+	if (!phud.lives)
+		return false
+		
 	u64 compatName = (Mods.isModActive("Haru's Forever-esque HUD")) ? "haru" : "s3"
 	u64 characterSprite = ((phud.allowsuper && global.xtrachar == 0) || (phud.allowsuperesu && global.xtrachar > 0)) ? getCharacterSpriteKey(u8[0xffffb000 + 0x38]) : getCharacterSpriteKey(u8[0xffffb000 + 0x38], false)
 	u64 characterName = getCharacterSpriteKey(u8[0xffffb000 + 0x38], false)

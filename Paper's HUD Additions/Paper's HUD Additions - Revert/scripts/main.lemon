@@ -22,7 +22,7 @@ function bool PHUD.ButtonIsValid()
 	return base.PHUD.ButtonIsValid()
 }
 
-function u64 PHUD.GetIcon(bool style)
+function u64 PHUD.GetTransformIcon(bool style)
 {
 	if (Game.getSetting(SETTING_SUPER_CANCEL))
 	{
@@ -32,5 +32,5 @@ function u64 PHUD.GetIcon(bool style)
 			return style ? "revert_icon" : "revert_icon_normal"
 	}
 	
-	return base.PHUD.GetIcon(style)
+	return base.PHUD.GetTransformIcon(style)
 }
