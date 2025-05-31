@@ -130,3 +130,73 @@ function void fn069eda()
 	objA0.flags38 |= 0x08
 	loadPaletteLine1(0x06ae56)
 }
+
+// Fix for water pipes using hurt animation
+//# address-hook(0x030338) end(0x0303e8)
+function void fn030338()
+{
+	if (Game.getSetting(SETTING_HCZ_WATERPIPE))
+	{
+		// Move characters to the center, to avoid otherwise possible clipping at the border
+		for (u32 i = 0xffffb000 + 0x10; i <= 0xffffb04a + 0x10; i += 0x4a)
+		{
+			s16 dx = s16(u16[i] - objA0.position.x.u16)
+			if (dx < -8)
+				++u16[i]
+			else if (dx > 8)
+				--u16[i]
+		}
+	}
+
+	if (u16[A0 + 0x30] != 0)
+	{
+		--u16[A0 + 0x30]
+		objA0.position.y.u16 -= 8
+	}
+
+	u16[0xffffb000 + 0x14] -= 8
+	u16[0xffffb04a + 0x14] -= 8
+	if (u16[A0 + 0x30] <= 0x28)
+	{
+		u8[0xffffb000 + 0x20] = char.state.FALLING_PANIC
+		u8[0xffffb04a + 0x20] = char.state.FALLING_PANIC
+		objA0.update_address = 0x03041a
+
+		playSound(0x57)
+		level.palettefx.state = 1
+
+		A3 = 0x0303ea
+		D2.u16 = objA0.position.x.u16
+		D3.u16 = objA0.position.y.u16 - 0x80
+		D1 = 0x07
+		while (D1.s16 >= 0)
+		{
+			if (!allocDynamicObjectAfterA0())
+				break
+
+			objA1.update_address = 0x03011a
+			objA1.mapping_offset = 0x22ef0e
+			objA1.sprite_attributes = (sprite_attribute.PALETTE.LINE2 | 0x0558)
+			objA1.render_flags = (render_flag.WORLD | render_flag.VISIBLE)
+			objA1.position.x.u16 = D2.u16 + s8[(A3+=1)-1]
+			objA1.position.y.u16 = D3.u16 + s8[(A3+=1)-1]
+			objA1.sprite_priority = 0x0280
+			objA1.box_size.x = 0x18
+			objA1.box_size.y = 0x18
+			objA1.velocity.x = u16[(A3+=2)-2]
+			objA1.velocity.y = u16[(A3+=2)-2]
+			objA1.animation.sprite = D1.u8
+
+			--D1.s16
+		}
+	}
+}
+
+//# address-hook(0x03003c) end(0x030100)
+function void fn03003c()
+{
+	base.fn03003c()
+	
+	u8[0xffffb000 + 0x20] = char.state.FALLING_PANIC
+	u8[0xffffb04a + 0x20] = char.state.FALLING_PANIC
+}
