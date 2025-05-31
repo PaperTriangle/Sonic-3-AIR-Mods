@@ -5,7 +5,7 @@ In all cases your mod should be loaded ABOVE **Paper's HUD Additions** for compa
 
 I have included a "proof of concept" mod that turns the transform button into a revert button if the Super Cancel setting in Sonic 3 A.I.R. is on.
 ## Asset Compatibility Requirements
-To ensure that you custom character has compatibility with the new Lives Icon rendering mode, then you need to ensure that both the functions ``getCharacterSpriteKey(u8 character)`` and/or ``getCharacterSpriteKey(u8 character, bool isSuperActive)`` are return the correct character string for your character. The isSuperActive flag is used to retrieve the character detail regardless of super form for the character name art and related to the variables in the table below.
+To ensure that you custom character has compatibility with the new Lives Icon rendering mode, then you need to ensure that both the functions ``getCharacterSpriteKey(u8 character)`` and/or ``getCharacterSpriteKey(u8 character, bool isSuperActive)`` are return the correct character string for your character. The ``isSuperActive flag`` is used to retrieve the character detail regardless of super form for the character name art and related to the variables in the table below.
 
 |Variable|Function|
 |---|---|
@@ -14,15 +14,15 @@ To ensure that you custom character has compatibility with the new Lives Icon re
 
 For each character life icon, you are provided to provide assets that match the below strings.
 
-|%s|Texture String|Purpose
-|---|---|---|
-|``characterSprite``|``"%s_lives_icon"``|Character Face Sprite (BMP Preferred)
-|``characterSprite``|``"%s_lives_icon_ring_s3"``|Border of the character face in Sonic 3's HUD word style 
-|``characterSprite``|``"%s_lives_icon_ring_haru"``|Border of the character face in Haru's Forever-esc HUD word style 
-|``characterSprite``|``"%s_lives_icon_border_s3"``|Border of the character face in Sonic 3's HUD number style
-|``characterSprite``|``"%s_lives_icon_border_haru"``|Border of the character face in Haru's Forever-esc HUD number style
-|``characterName``|``"%s_lives_text_s3"``|Character name for the lives text in Sonic 3's HUD style, includes the ×.
-|``characterName``|``"%s_lives_text_haru"``|Character name for the lives text in Haru's Forever-esc HUD style, includes the ×.
+|%s|Texture String|Example|Purpose|
+|---|---|---|---|
+|``characterSprite``|``"%s_lives_icon"``|![Character Face](./images/character_face.bmp)|Character Face Sprite (BMP Preferred)
+|``characterSprite``|``"%s_lives_icon_ring_s3"``|![Ring Border](./images/ring_s3.png)|Border of the character face in Sonic 3's HUD word style 
+|``characterSprite``|``"%s_lives_icon_ring_haru"``|![Ring Border](./images/ring_haru.png)|Border of the character face in Haru's Forever-esc HUD word style 
+|``characterSprite``|``"%s_lives_icon_border_s3"``|![Border](./images/border_s3.png)|Border of the character face in Sonic 3's HUD number style
+|``characterSprite``|``"%s_lives_icon_border_haru"``|![Border](./images/border_haru.png)|Border of the character face in Haru's Forever-esc HUD number style
+|``characterName``|``"%s_lives_text_s3"``|![Character Name](./images/name_s3.png)|Character name for the lives text in Sonic 3's HUD style, includes the ×.
+|``characterName``|``"%s_lives_text_haru"``|![Character Name](./images/name_haru.png)|Character name for the lives text in Haru's Forever-esc HUD style, includes the ×.
 
 ## Compatibility with rendering the HUD
 This mod replaces the ``RenderHUD()`` function of the base Sonic 3 A.I.R. and as such, other mods that alter this function will possibly conflict.
