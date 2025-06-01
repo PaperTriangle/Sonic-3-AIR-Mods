@@ -46,12 +46,12 @@ function void SDMD.restoreSmash()
 	{
 		objA1.flags2a &= ~char.flag.ON_OBJECT
 		objA1.flags2a |= char.flag.IN_AIR
-		objA1.velocity.y = ESA.yVelocityLastFrame
-		Amy_InputTracker = 0
-		Amy_HammerSlamState = 0
-		Amy_HammerSlamFrameTimer++
+		objA1.velocity.y = System.getGlobalVariableValueByName("ESA.yVelocityLastFrame")
+		System.setGlobalVariableValueByName("Amy_InputTracker", 0)
+		System.setGlobalVariableValueByName("Amy_HammerSlamState", 0)
+		System.setGlobalVariableValueByName("Amy_HammerSlamFrameTimer", System.getGlobalVariableValueByName("Amy_HammerSlamFrameTimer") + 1) 
 		u8[A1 + 0x2f] = 0               // Double jump state
-		u8[A1 + 0x20] = char.state.AMY_HAMMERSLAM
+		u8[A1 + 0x20] = 0x7a 			// char.state.AMY_HAMMERSLAM
 	}
 	
 	if (global.xtrachar == 5)
