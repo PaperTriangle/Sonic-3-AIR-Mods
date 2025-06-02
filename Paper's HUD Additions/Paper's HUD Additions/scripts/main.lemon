@@ -292,8 +292,8 @@ function bool PHUD.RenderLives(u16 px, u16 py, u16 renderQueue)
 		return false
 		
 	u64 compatName = (Mods.isModActive("Haru's Forever-esque HUD")) ? "haru" : "s3"
-	u64 characterSprite = ((phud.allowsuper && global.xtrachar == 0) || (phud.allowsuperesu && global.xtrachar > 0)) ? getCharacterSpriteKey(u8[0xffffb000 + 0x38]) : getCharacterSpriteKey(u8[0xffffb000 + 0x38], false)
-	u64 characterName = getCharacterSpriteKey(u8[0xffffb000 + 0x38], false)
+	u64 characterSprite = PHUD.getCharacterSprite()
+	u64 characterName = PHUD.getCharacterName()
 	
 	if (((phud.allowsuper && global.xtrachar == 0) || (phud.allowsuperesu && global.xtrachar > 0)) && !Renderer.hasCustomSprite(stringformat("%s_lives_icon", characterSprite)))
 		characterSprite = getCharacterSpriteKey(u8[0xffffb000 + 0x38], false)
@@ -350,7 +350,17 @@ function bool PHUD.RenderLives(u16 px, u16 py, u16 renderQueue)
 
 function u16 PHUD.MobileLivesOffset()
 {
- return isMainCharacter(CHARACTER_KNUCKLES) ? 0x10 : 0
+	return isMainCharacter(CHARACTER_KNUCKLES) ? 0x10 : 0
+}
+
+function u64 PHUD.getCharacterSprite()
+{
+	return ((phud.allowsuper && global.xtrachar == 0) || (phud.allowsuperesu && global.xtrachar > 0)) ? getCharacterSpriteKey(u8[0xffffb000 + 0x38]) : getCharacterSpriteKey(u8[0xffffb000 + 0x38], false)
+}
+
+function u64 PHUD.getCharacterName()
+{
+	return getCharacterSpriteKey(u8[0xffffb000 + 0x38], false)
 }
 
 function void Character.Initialization.shared(u8 character)
