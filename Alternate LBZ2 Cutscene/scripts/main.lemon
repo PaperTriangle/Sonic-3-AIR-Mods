@@ -7,6 +7,10 @@ global u8 altlbz2cs.dangerhud
 global u16 altlbz2cs.hudgobyedanger = 0
 global bool altlbz2cs.highjump
 global bool altlbz2cs.stopmusic
+global bool altlbz2cs.eggup
+global bool altlbz2cs.deflash
+global bool altlbz2cs.tailsflight
+global bool altlbz2cs.eggchair
 
 // TODO: Go back and document this so people can follow what you did.
 
@@ -281,11 +285,39 @@ function u64 Standalone.getModdedSoundKey(u64 soundKey, u8 sfxId, u8 soundRegTyp
     return base.Standalone.getModdedSoundKey(soundKey, sfxId, soundRegType)
 }
 
+
+
 // Stops the invisible walls from being spawned
-// and spawns updrafts if needed
+// and spawns updrafts if needed.
+// Also includes the exhaust flashing.
 //# address-hook(0x08d47c) end(0x08d4c6)
 function void fn08d47c()
 {
+	
+	// Make the Death Egg launch exhaust flash
+	if (altlbz2cs.deflash)
+	{
+		if (level.framecounter & 1)
+		{
+			u8[0xffff896f] = 0x00
+			u8[0xffff8970] = 0x00
+			u8[0xffff8974] = 0x00
+			u8[0xffff8975] = 0x00
+			u8[0xffff8978] = 0x00
+			u8[0xffff8979] = 0x00
+		}
+		else
+		{
+			u8[0xffff896f] = 0xa6
+			u8[0xffff8970] = 0xa7
+			u8[0xffff8974] = 0xa6
+			u8[0xffff8975] = 0xa7
+			u8[0xffff8978] = 0xa6
+			u8[0xffff8979] = 0xa7
+		}
+		fillPlaneA_Default(camera.foreground.x.u16, camera.foreground.y.u16, getScreenWidth(), getScreenHeight())
+	}
+	
 	if (altlbz2cs.removewalls == 0)
 	{
 		base.fn08d47c()
@@ -592,4 +624,124 @@ function void fn0729de()
 	
 	level.vertical_wrap = move_area.bottom.current
 	base.fn0729de()
+}
+
+// Makes Eggman go straight up after defeat.
+//# address-hook(0x073056)
+function void fn073056()
+{
+	if (!altlbz2cs.eggup)
+	{
+		base.fn073056()
+		return
+	}
+	
+	// Wait for Robotnik to leave the screen to the top
+	D0.u16 = objA0.position.y.u16 - 1
+	D1.u16 = camera.position.y.u16 - 0x50
+	if (D0.u16 >= D1.u16)
+	{
+		objA0.position.y.u16 = D0.u16
+		DrawObject()
+		u16[A0 + 0x48] = 0
+	}
+	else
+	{
+		objA0.position.y.u16 = D1.u16
+		objA0.flags38 |= 0x20				// Stop the explosions
+		objA0.sprite_attributes &= ~sprite_attribute.PRIORITY	// Draw him in background
+		objA0.update_address = 0x07305a
+	}
+}
+
+// Tails taking flight to the boss arena
+
+//# address-hook(0x08d370) end(0x08d384)
+function void fn08d370()
+{
+	if (altlbz2cs.tailsflight && camera.position.x.u16 < 0x3bc8)
+		tails.ai_routine = 0x10
+	
+	base.fn08d370()
+}
+
+#if STANDALONE
+function void LBZ2MidBossCutscene.stopTailsFromSuicide()
+{
+	if (!altlbz2cs.tailsflight)
+	{
+		base.LBZ2MidBossCutscene.stopTailsFromSuicide()
+		return
+	}
+	
+	if (camera.position.x.u16 >= 0x3bc8)
+	{
+		u32 backupA0 = A0
+		A0 = 0xffffb04a
+		RespawnTails()
+		A0 = backupA0
+	}
+	else if (u16[0xffffb04a + 0x10] >= 0x3bb0 && u8[0xffffb04a + 0x20] != char.state.TAILS_FLYUP && u8[0xffffb04a + 0x20] != char.state.TAILS_FLYDOWN)
+	{
+		u16[0xffffb04a + 0x10] = 0x3bb0
+		u16[0xffffb04a + 0x14] = min(u16[0xffffb04a + 0x14], 0x0630)
+		u16[0xffffb04a + 0x18] = 0
+		u16[0xffffb04a + 0x1c] = 0
+	}
+	else if (u16[0xffffb04a + 0x10] >= 0x3bb0 && u8[0xffffb04a + 0x20] && (u8[0xffffb04a + 0x20] == char.state.TAILS_FLYUP || u8[0xffffb04a + 0x20] == char.state.TAILS_FLYDOWN))
+	{
+		level.vertical_wrap = camera.position.y.u16 - 0x20
+		u16[0xffffb04a + 0x18] += 0x04
+	}
+}
+#endif
+
+//# address-hook(0x01408a) end(0x0140c4)
+function void fn01408a()
+{
+	tails.control_counter = 0
+	tails.flight_countdown = 0xf0
+	control.tails = (level.framecounter.low & 0x0f) ? 0 : 0x7878		// (CONTROL_ABC | CONTROL_RIGHT), (CONTROL_ABC | CONTROL_RIGHT)
+
+	if (!(objA0.render_flags & render_flag.VISIBLE))
+	{
+		if (global.zone_act != 0x0601)
+		{
+			objA0.update_address = 0
+		}
+		objA0.position.x.u16 = 0
+		objA0.position.y.u16 = 0
+		tails.ai_routine = 0x0a
+	}
+}
+
+// Sparn a chair in the Egg Mobile
+//# address-hook(0x08d29c) end(0x08d2b0)
+function void fn08d29c()
+{
+	base.fn08d29c()
+	
+	if (altlbz2cs.eggchair)
+		spawnChildObject(0x073e0e, 0x00, 2, -28)	
+}
+
+// Fix for Eggman's chair floating in the scaffold
+//# address-hook(0x073e8e) end(0x073e9c)
+function void fn073e8e()
+{
+	A1 = 0xffff0000 + u16[A0 + 0x46]
+	if (u8[A1 + 0x38] & 0x20 || objA0.position.y.u16 > 0x0680)
+	{
+		Object.TriggerUnloading()
+	}
+}
+
+// Remove the chair once it passes boss arena
+//# address-hook(0x073e0e) end(0x073e22)
+function void fn073e0e()
+{
+	if (altlbz2cs.eggchair && objA0.position.x.u16 > 0x450a)
+		Object.TriggerUnloading()
+		
+	base.fn073e0e()
 }

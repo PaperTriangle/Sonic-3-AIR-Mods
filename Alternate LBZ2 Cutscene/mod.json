@@ -5,7 +5,7 @@
 		"UniqueID": "alt-lbz2-cutscene",
 		"Author": "PaperTriangle",
 		"Description": "A more Origins like cutscene for LBZ2.",
-		"ModVersion": "1.4"
+		"ModVersion": "1.5"
 	},
 	"OtherMods":
 	{
@@ -39,15 +39,39 @@
 		"List":
 		[
 			{
-				"InternalName": "skyfade",
-				"DisplayName": "Sky Fade Point",
-				"Variable": "altlbz2cs.fadeadjust",
+				"InternalName": "altlbz2cs.deflash",
+				"DisplayName": "Flashing Launch Exhaust",
+				"Variable": "altlbz2cs.deflash",
 				"Category": "General Settings",	
-				"DefaultValue": "0",
+				"DefaultValue": "1",
 				"Options":
 				{
-					"0": "After Fanfare",
-					"1": "Before Fanfare"
+					"0": "No Flashing",
+					"1": "Flashing"
+				}
+			},
+			{
+				"InternalName": "altlbz2cs.tailsflight",
+				"DisplayName": "Tails Takes Flight",
+				"Variable": "altlbz2cs.tailsflight",
+				"Category": "General Settings",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Stays Behind",
+					"1": "Takes Flight"
+				}
+			},
+			{
+				"InternalName": "altlbz2cs.eggchair",
+				"DisplayName": "Add Chair To Egg Mobile",
+				"Variable": "altlbz2cs.eggchair",
+				"Category": "General Settings",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "No Chair",
+					"1": "Has Chair"
 				}
 			},
 			{
@@ -63,6 +87,18 @@
 				}
 			},
 			{
+				"InternalName": "altlbz2cs.eggup",
+				"DisplayName": "Eggman's Defeat Movement",
+				"Variable": "altlbz2cs.eggup",
+				"Category": "General Settings",	
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Down Them Up",
+					"1": "Straight Up"
+				}
+			},
+			{
 				"InternalName": "altlbz2cs.stopmusic",
 				"DisplayName": "Stop Music After Boss",
 				"Variable": "altlbz2cs.stopmusic",
@@ -72,6 +108,18 @@
 				{
 					"0": "Don't Stop",
 					"1": "Stop It!"
+				}
+			},
+			{
+				"InternalName": "skyfade",
+				"DisplayName": "Sky Fade Point",
+				"Variable": "altlbz2cs.fadeadjust",
+				"Category": "General Settings",	
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "After Fanfare",
+					"1": "Before Fanfare"
 				}
 			},
 			{
