@@ -71,8 +71,6 @@ function void fn07305a()
 		u16[0xfffffc00 + 0x3d * 2] = BBAF.BigArmSky(2)
 		u16[0xfffffc00 + 0x3e * 2] = BBAF.BigArmSky(3)
 	}
-	
-	System.writeDisplayLine(stringformat("ZoneAct: 0x%04x, 0x%04x, 0x%04x, 0x%04x", u16[0xfffffc00 + 0x3b * 2], u16[0xfffffc00 + 0x3c * 2], u16[0xfffffc00 + 0x3d * 2], u16[0xfffffc00 + 0x3e * 2]))
 
 	++u16[A0 + 0x48]
 	if (u16[A0 + 0x48] <= 120)
