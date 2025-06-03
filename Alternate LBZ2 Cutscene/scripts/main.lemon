@@ -11,6 +11,8 @@ global bool altlbz2cs.eggup
 global bool altlbz2cs.deflash
 global bool altlbz2cs.tailsflight
 global bool altlbz2cs.eggchair
+global u8 altlbz2cs.knuxpipe
+global bool altlbz2cs.eggmanflames
 
 // TODO: Go back and document this so people can follow what you did.
 
@@ -744,4 +746,32 @@ function void fn073e0e()
 		Object.TriggerUnloading()
 		
 	base.fn073e0e()
+}
+
+// Adjust Knux Ending Tiles
+//# address-hook(0x0543cc) end(0x05440c)
+function void fn0543cc()
+{
+	base.fn0543cc()
+
+	if (altlbz2cs.knuxpipe == 1)
+	{
+		u8[0xffff867c] = 0x07
+		u8[0xffff8716] = 0x0f
+		u8[0xffff8715] = 0x56
+	}
+	else if (altlbz2cs.knuxpipe == 2)
+	{
+		u8[0xffff8548] = 0x47
+		u8[0xffff85e2] = 0x00
+	}
+}
+
+function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16 renderQueue)
+{
+	//LBZ2 Eggman Flames
+	if (altlbz2cs.eggmanflames && objA0.update_address == 0x073384)
+		return (level.framecounter & 1) ? base.Standalone.onDrawVdpSprite(px, py, size, index, renderQueue) : false
+
+	return base.Standalone.onDrawVdpSprite(px, py, size, index, renderQueue)
 }
