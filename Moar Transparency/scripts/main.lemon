@@ -233,7 +233,6 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		// LBZ Flame Spurts
 		if (objA0.update_address == 0x026460 && objA0.animation.frame >= 0x08)
 		{
-			
 			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 144)
 			
 			return true
@@ -242,10 +241,42 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		// LRZ Worm Flames
 		if (objA0.update_address == 0x08f95c)
 		{
-			
 			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 0xff - objA0.animation.frame * 32)
 			
 			return true
+		}
+		
+		// LRZ Boss Missile
+		if (global.zone_act == 0x1600 && (objA0.update_address == 0x0793c6 || objA0.update_address == 0x01abb6) && index == 0x2472)
+		{
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 127)
+			Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 127)
+			
+			return true
+		}
+		
+		// LRZ Boss Shadows
+		if (objA0.update_address == 0x079d08)
+		{
+			if (index == 0x4027)
+			{
+				Renderer.drawSprite("lrz_boss_rocks", px, py, 0x00, SPRITE_FLAG_PRIO, renderQueue)
+				return true
+			}
+			else if (index == 0x402f)
+			{
+				Renderer.drawSprite("lrz_boss_shadow_1", px, py, 0x00, SPRITE_FLAG_PRIO, renderQueue, 0, 127)
+				return true
+			}
+			else if (index == 0x4837)
+			{
+				Renderer.drawSprite("lrz_boss_shadow_2", px, py, 0x00, SPRITE_FLAG_PRIO, renderQueue, 0, 127)
+				return true
+			}
+			else if (index == 0x4837 || index == 0x482f || index == 0x4827 || index == 0x402f || index == 0x4037)
+			{
+				return true
+			}
 		}
 		
 		// HPZ Dust
@@ -462,12 +493,12 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		// SSZ Sonic 2 Boss Laser
 		if (objA0.update_address == 0x07abee && (index == 0xac83 && !ssz_s2_laser))
 		{
-			Renderer.drawSprite("s2_laser", px, py, index, SPRITE_FLAG_PRIO, renderQueue, 0, 208)
+			Renderer.drawSprite("s2_laser", px, py, 0x00, SPRITE_FLAG_PRIO, renderQueue, 0, 208)
 			return true
 		}
 		else if (objA0.update_address == 0x07abee && (index == 0xa483 && ssz_s2_laser))
 		{
-			Renderer.drawSprite("s2_laser", px - 0x23, py, index, SPRITE_FLAG_PRIO, renderQueue, 0, 208)
+			Renderer.drawSprite("s2_laser", px - 0x23, py, 0x00, SPRITE_FLAG_PRIO, renderQueue, 0, 208)
 			return true
 		}
 		else if (objA0.update_address == 0x07abee)
@@ -479,7 +510,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		{
 			ssz_s2_laser = index == 0xac83
 			u64 key = Mods.isModActive("Sonic 1&2 Egg Mobile in SSZ") ? (Mods.isModActive("Sonic 3-Styled S1&2 Eggmobile") ? "s2_laser_boss_s3_compat" : "s2_laser_boss_compat") : "s2_laser_boss"
-			Renderer.drawSprite(key, (ssz_s2_laser) ? px + 0x10 : px, py, index, objA0.render_flags, renderQueue, 0, 208)
+			Renderer.drawSprite(key, (ssz_s2_laser) ? px + 0x10 : px, py, 0x00, objA0.render_flags, renderQueue, 0, 208)
 			return true
 		}
 	}
@@ -584,14 +615,14 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		if (objA0.update_address == 0x08fedc && objA0.subtype2c == 0x00 && objA0.value3e < 56) // Only draw after spawning animation
 		{
 			u8 frameindex = (objA0.value3e % 56) / 8
-			Renderer.drawSprite(stringformat("mist_spawn_%d", frameindex), px, py, index, SPRITE_FLAG_PRIO, renderQueue, 0, 160)
+			Renderer.drawSprite(stringformat("mist_spawn_%d", frameindex), px, py, 0x00, SPRITE_FLAG_PRIO, renderQueue, 0, 160)
 			
 			return true
 		}
 		else if (objA0.update_address == 0x08fedc && objA0.subtype2c == 0x00 && objA0.value3e >= 56) // Only draw after spawning animation
 		{
 			u8 frameindex = ((objA0.value3e - 56) % 48) / 8
-			Renderer.drawSprite(stringformat("mist_%d", frameindex), px, py, index, SPRITE_FLAG_PRIO, renderQueue, 0, 160)
+			Renderer.drawSprite(stringformat("mist_%d", frameindex), px, py, 0x00, SPRITE_FLAG_PRIO, renderQueue, 0, 160)
 			
 			return true
 		}
@@ -635,12 +666,27 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		// HPZ Teleporter Frame
 		if (objA0.mapping_offset == 0x046b3c && (index == 0x4537 || index == 0x6365 || index == 0xe365))
 		{
-			Renderer.drawSprite("teleporter_frame", px, py, index, (index == 0xe365) ? SPRITE_FLAG_PRIO : 0x00, renderQueue, 0, 0xff)
+			Renderer.drawSprite("teleporter_frame", px, py, 0x00, (index == 0xe365) ? SPRITE_FLAG_PRIO : 0x00, renderQueue, 0, 0xff)
 			
 			return true
 		}
 		else if (objA0.mapping_offset == 0x046b3c && (index == 0x4d37 || index == 0x6b65 || index == 0xeb65))
 		{
+			return true
+		}
+		
+		// ICZ Teleporter Frame
+		if (objA0.update_address == 0x053bd4 || objA0.update_address == 0x053ba2)
+		{
+			if (index == 0x234d)
+			{
+				Renderer.drawSprite("teleporter_cnz_1", px, py, 0x00, SPRITE_FLAG_PRIO, renderQueue, 0, 0xff)
+			}
+			else if (index == 0x2347 || index == 0x2349 || index == 0x2b47)
+			{
+				Renderer.drawSprite("teleporter_cnz_2", (index == 0x2349) ? px + 5 : px, py, 0x00, (index == 0x2349) ? SPRITE_FLAG_PRIO : 0x00, (index == 0x2349) ? renderQueue : renderQueue - 0x1000, 0, 0xff)
+			}
+			
 			return true
 		}
 	}
@@ -655,7 +701,15 @@ function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 in
 		// Teleporter
 		if (objA0.update_address == 0x0459b4)
 		{
-			Renderer.drawSprite(stringformat("biimu_%d", min(u8[A0 + 0x46], 18)), px - 24, py, index, (global.zone == 0x0a) ? SPRITE_FLAG_PRIO : 0x00, renderQueue, 0, 192)
+			u64 key = "hpz_biimu_%d"
+			if (mt.teleframe)
+				key = "png_biimu_%d"			
+			else if (global.zone == 0x03 || global.zone == 0x05)
+				key = "bmp_biimu_%d"
+			else if (global.zone == 0x0a)
+				key = "ssz_biimu_%d"
+			
+			Renderer.drawSprite(stringformat(key, min(u8[A0 + 0x46], 18)), px - 24, py, 0x00, (global.zone == 0x0a) ? SPRITE_FLAG_PRIO : 0x00, renderQueue, 0, 192)
 			
 			return true
 		}
@@ -1029,7 +1083,7 @@ function void fn08086c()
 	if (dez_laser_val > 0)
 	{
 		for (u8 i = 0; i < getScreenWidth() / 2; i++)
-			Renderer.drawSprite(stringformat("dez_%d", dez_laser_val), u32(0x48 + getScreenExtend() + i*2), u32(objA0.position.y.u16 - camera.position.y.u16), 0x01, 0, 0x9fff, 0, 192)
+			Renderer.drawSprite(stringformat("dez_%d", dez_laser_val), u32(0x48 + getScreenExtend() + i*2), u32(objA0.position.y.u16 - camera.position.y.u16), 0x00, 0, 0x9e00, 0, 192)
 	}
 	
 	fn080fa6()
