@@ -14,8 +14,8 @@ global bool altlbz2cs.eggchair
 global u8 altlbz2cs.knuxpipe
 global bool altlbz2cs.eggmanflames
 
-// TODO: Go back and document this so people can follow what you did.
-
+// We cut a lot from this section as we are doing the winning poses later
+// We also skip straight to 0x072c0a, spawning 0x072d24 there instead!
 //# address-hook(0x072b46) end(0x072b94)
 function void fn072b46()
 {
@@ -44,6 +44,7 @@ function void fn072bbc()
 	}
 }
 
+// Moves the player to the middle before progressing the cutscene.
 //# address-hook(0x072c0a) end(0x072c62)
 function void fn072c0a()
 {
@@ -85,7 +86,7 @@ function void fn072dea()
 			u8[0xffffeec6] = 0xff
 		}
 
-		if (objA0.value39 == 0x18 && !altlbz2cs.fadeadjust)
+		if (objA0.value39 == 0x18 && !altlbz2cs.fadeadjust) // Results here if we do not change the fade point.
 		{
 			objA0.update_address = 0x072e2e
 			objA0.countdown_value = 0x003f
@@ -132,10 +133,11 @@ function void fn072dea()
 	}
 }
 
+// This is the function that handles the sky fading back
 //# address-hook(0x072e30)
 function void fn072e30()
 {
-	if (!altlbz2cs.fadeadjust || u16[A0 + 0x48] < 48)
+	if (!altlbz2cs.fadeadjust || u16[A0 + 0x48] < 48) // Ignore the steps that handle fading logic
 	{
 		base.fn072e30()
 		return
@@ -143,7 +145,7 @@ function void fn072e30()
 
 	if (u16[A0 + 0x48] == 48)
 	{
-		if (Mods.isModActive("Better Big Arm Fade"))
+		if (Mods.isModActive("Better Big Arm Fade")) // We want to use the saved palette values here
 		{
 			u16[0xfffffc00 + 0x3b * 2] = System.getGlobalVariableValueByName("bigarmfade.p1")
 			u16[0xfffffc00 + 0x3c * 2] = System.getGlobalVariableValueByName("bigarmfade.p2")
@@ -161,6 +163,7 @@ function void fn072e30()
 	}
 	else if (u16[A0 + 0x48] == 68)
 	{
+		// We do the results here if we are change the fade point.
 		objA0.update_address = 0x072e2e
 		objA0.countdown_value = 0x003f
 		
@@ -271,6 +274,7 @@ function void fn072e2e()
 	}
 }
 
+// Game clear sound instead of act clear
 function u64 Standalone.getModdedSoundKey(u64 soundKey, u8 sfxId, u8 soundRegType)
 {
 	if (!Mods.isModActive("Music Cues Customization"))
@@ -299,6 +303,7 @@ function void fn08d47c()
 	// Make the Death Egg launch exhaust flash
 	if (altlbz2cs.deflash)
 	{
+		// Here we are changing the tiles to be rendered each frame.
 		if (level.framecounter & 1)
 		{
 			u8[0xffff896f] = 0x00
@@ -317,6 +322,7 @@ function void fn08d47c()
 			u8[0xffff8978] = 0xa6
 			u8[0xffff8979] = 0xa7
 		}
+		// This function here re-renders the tiles, without it the changes are not applied while the tiles are on the screen.
 		fillPlaneA_Default(camera.foreground.x.u16, camera.foreground.y.u16, getScreenWidth(), getScreenHeight())
 	}
 	
@@ -324,6 +330,7 @@ function void fn08d47c()
 	{
 		base.fn08d47c()
 
+		// We will still play the jump sound regardless of settings.
 		if (objA0.position.x.u16 >= 0x4440)
 		playSound(0x62)
 
@@ -371,6 +378,7 @@ function void fn08d47c()
 	fn08d53e()
 	DrawObject()
 
+	// Added in a jump sound when they exit the Egg Mobile
 	if (objA0.position.x.u16 >= 0x4440)
 		playSound(0x62)
 }
@@ -385,7 +393,7 @@ function void fn03fbc4()
 		return
 	}
 
-	if (global.zone == 0x06 && (camera.position.x.u16 > 0x4350 && u16[A1 + 0x14] > 0x072c) && u8[A1 + 0x05] == base_state.HURT)
+	if (global.zone == 0x06 && (camera.position.x.u16 > 0x4350 && u16[A1 + 0x14] > 0x072c) && u8[A1 + 0x05] == base_state.HURT) // Otherwise they fall through to their death!
 	{
 		u8[A1 + 0x05] = base_state.NORMAL
 	}
@@ -394,6 +402,8 @@ function void fn03fbc4()
 }
 
 // Alt HUD removal
+// ...I do not want to document this...
+// It was annoying...
 
 function void HUD.drawSprite(u64 key, u16 px, u16 py, u16 renderQueue)
 {
@@ -509,9 +519,13 @@ function void fn0746f4()
     {
 		if (camera.position.y.u16 >= 0x0500)
 		{
+			// This is when the bounce collides with the ground
 			if (System.getGlobalVariableValueByName("OPG_EggTimer") == 2)
 			{
+				// Spawning these starts everything up!
 				spawnSimpleChildObjects(0x072d24, 2)
+				
+				// It should be fine to set this to 3.
 				System.setGlobalVariableValueByName("OPG_EggTimer", 3)
 			}
 		}
@@ -579,6 +593,7 @@ function void fn0549c6()
 			#endif
 		}
 
+		// This check is what is removed.
 		//if (camera.position.y.u16 >= 0x0668)
 		//{
 		//	level.vertical_wrap = move_area.bottom.current
@@ -626,7 +641,9 @@ function void fn0729de()
 		return
 	}
 	
+	// Set this value here, since we removed it from 0x0549c6
 	level.vertical_wrap = move_area.bottom.current
+	
 	base.fn0729de()
 }
 
@@ -652,9 +669,9 @@ function void fn073056()
 	else
 	{
 		objA0.position.y.u16 = D1.u16
-		objA0.flags38 |= 0x20				// Stop the explosions
+		objA0.flags38 |= 0x20									// Stop the explosions
 		objA0.sprite_attributes &= ~sprite_attribute.PRIORITY	// Draw him in background
-		objA0.update_address = 0x07305a
+		objA0.update_address = 0x07305a							// Skipping 0x073058.
 	}
 }
 
@@ -663,6 +680,7 @@ function void fn073056()
 //# address-hook(0x08d370) end(0x08d384)
 function void fn08d370()
 {
+	// Make tails use the CNZ fly away routine.
 	if (altlbz2cs.tailsflight && camera.position.x.u16 < 0x3bc8)
 		tails.ai_routine = 0x10
 	
@@ -692,9 +710,9 @@ function void LBZ2MidBossCutscene.stopTailsFromSuicide()
 		u16[0xffffb04a + 0x18] = 0
 		u16[0xffffb04a + 0x1c] = 0
 	}
-	else if (u16[0xffffb04a + 0x10] >= 0x3bb0 && u8[0xffffb04a + 0x20] && (u8[0xffffb04a + 0x20] == char.state.TAILS_FLYUP || u8[0xffffb04a + 0x20] == char.state.TAILS_FLYDOWN))
+	else if (u16[0xffffb04a + 0x10] >= 0x3bb0 && u8[0xffffb04a + 0x20] && (u8[0xffffb04a + 0x20] == char.state.TAILS_FLYUP || u8[0xffffb04a + 0x20] == char.state.TAILS_FLYDOWN)) // We want tails to move to the right while flying.
 	{
-		level.vertical_wrap = camera.position.y.u16 - 0x20
+		level.vertical_wrap = camera.position.y.u16 - 0x20 // Otherwise tails bangs his head on the top of the screen.
 		u16[0xffffb04a + 0x18] += 0x04
 	}
 }
@@ -709,7 +727,7 @@ function void fn01408a()
 
 	if (!(objA0.render_flags & render_flag.VISIBLE))
 	{
-		if (global.zone_act != 0x0601)
+		if (global.zone_act != 0x0601) // This is so we do not despawn tails in LBZ2!
 		{
 			objA0.update_address = 0
 		}
@@ -726,7 +744,7 @@ function void fn08d29c()
 	base.fn08d29c()
 	
 	if (altlbz2cs.eggchair)
-		spawnChildObject(0x073e0e, 0x00, 2, -28)	
+		spawnChildObject(0x073e0e, 0x00, 2, -28)	 // This is an element from the previous boss.
 }
 
 // Fix for Eggman's chair floating in the scaffold
@@ -734,6 +752,8 @@ function void fn08d29c()
 function void fn073e8e()
 {
 	A1 = 0xffff0000 + u16[A0 + 0x46]
+	
+	// Added a check for y-coord otherwise the chair latches to the scaffold in the cutscene...
 	if (u8[A1 + 0x38] & 0x20 || objA0.position.y.u16 > 0x0680)
 	{
 		Object.TriggerUnloading()
@@ -744,7 +764,7 @@ function void fn073e8e()
 //# address-hook(0x073e0e) end(0x073e22)
 function void fn073e0e()
 {
-	if (altlbz2cs.eggchair && objA0.position.x.u16 > 0x450a)
+	if (altlbz2cs.eggchair && objA0.position.x.u16 > 0x450a) // If we don't it will attach itself to a new object, like spilled rings!
 		Object.TriggerUnloading()
 		
 	base.fn073e0e()
@@ -756,19 +776,20 @@ function void fn0543cc()
 {
 	base.fn0543cc()
 
-	if (altlbz2cs.knuxpipe == 1)
+	if (altlbz2cs.knuxpipe == 1) // Longer pipe.
 	{
 		u8[0xffff867c] = 0x07
 		u8[0xffff8716] = 0x0f
 		u8[0xffff8715] = 0x56
 	}
-	else if (altlbz2cs.knuxpipe == 2)
+	else if (altlbz2cs.knuxpipe == 2) // Shorter pipe.
 	{
 		u8[0xffff8548] = 0x47
 		u8[0xffff85e2] = 0x00
 	}
 }
 
+// Make the exhaust flames from Beam Rocket flash
 function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16 renderQueue)
 {
 	//LBZ2 Eggman Flames
