@@ -64,7 +64,7 @@
 			},
 			{
 				"InternalName": "altlbz2cs.deflash",
-				"DisplayName": "Flashing Launch Exhaust",
+				"DisplayName": "Launch Exhaust Flicker",
 				"Variable": "altlbz2cs.deflash",
 				"Category": "Pre-Fight Settings",	
 				"DefaultValue": "1",
@@ -91,7 +91,7 @@
 				"DisplayName": "Platform Edge Protection",
 				"Variable": "altlbz2cs.removewalls",
 				"Category": "Pre-Fight Settings",	
-				"DefaultValue": "0",
+				"DefaultValue": "1",
 				"Options":
 				{
 					"0": "Invisible Walls",
@@ -101,7 +101,7 @@
 			},
 			{
 				"InternalName": "altlbz2cs.eggmanflames",
-				"DisplayName": "Flasing Beam Rocket Exhaust",
+				"DisplayName": "Beam Rocket Exhaust Flicker",
 				"Variable": "altlbz2cs.eggmanflames",
 				"Category": "Mid-Fight Settings",	
 				"DefaultValue": "1",
@@ -140,7 +140,7 @@
 				"DisplayName": "Sky Fade Point",
 				"Variable": "altlbz2cs.fadeadjust",
 				"Category": "Post-Fight Settings",	
-				"DefaultValue": "0",
+				"DefaultValue": "1",
 				"Options":
 				{
 					"0": "After Act Results",
@@ -164,7 +164,7 @@
 				"DisplayName": "Remove HUD After Fanfare",
 				"Variable": "altlbz2cs.removehud",
 				"Category": "Post-Fight Settings",	
-				"DefaultValue": "0",
+				"DefaultValue": "1",
 				"Options":
 				{
 					"0": "Disabled",

@@ -794,7 +794,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 {
 	//LBZ2 Eggman Flames
 	if (altlbz2cs.eggmanflames && objA0.update_address == 0x073384)
-		return (level.framecounter & 1) ? base.Standalone.onDrawVdpSprite(px, py, size, index, renderQueue) : false
+		return (level.framecounter & 1) ? base.Standalone.onDrawVdpSprite(px, py, size, index, renderQueue) : true
 
 	return base.Standalone.onDrawVdpSprite(px, py, size, index, renderQueue)
 }
