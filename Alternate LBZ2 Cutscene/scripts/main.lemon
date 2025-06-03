@@ -703,17 +703,17 @@ function void LBZ2MidBossCutscene.stopTailsFromSuicide()
 		RespawnTails()
 		A0 = backupA0
 	}
-	else if (u16[0xffffb04a + 0x10] >= 0x3bb0 && u8[0xffffb04a + 0x20] != char.state.TAILS_FLYUP && u8[0xffffb04a + 0x20] != char.state.TAILS_FLYDOWN)
+	else if (u16[0xffffb04a + 0x10] >= 0x3bb0 && u16[0xffffb000 + 0x10] > 0x3bb0 && (u8[0xffffb04a + 0x20] == char.state.TAILS_FLYUP || u8[0xffffb04a + 0x20] == char.state.TAILS_FLYDOWN)) // We want tails to move to the right while flying.
+	{
+		level.vertical_wrap = camera.position.y.u16 - 0x20 // Otherwise tails bangs his head on the top of the screen.
+		u16[0xffffb04a + 0x18] += 0x04
+	}
+	else if (u16[0xffffb04a + 0x10] >= 0x3bb0)
 	{
 		u16[0xffffb04a + 0x10] = 0x3bb0
 		u16[0xffffb04a + 0x14] = min(u16[0xffffb04a + 0x14], 0x0630)
 		u16[0xffffb04a + 0x18] = 0
 		u16[0xffffb04a + 0x1c] = 0
-	}
-	else if (u16[0xffffb04a + 0x10] >= 0x3bb0 && u8[0xffffb04a + 0x20] && (u8[0xffffb04a + 0x20] == char.state.TAILS_FLYUP || u8[0xffffb04a + 0x20] == char.state.TAILS_FLYDOWN)) // We want tails to move to the right while flying.
-	{
-		level.vertical_wrap = camera.position.y.u16 - 0x20 // Otherwise tails bangs his head on the top of the screen.
-		u16[0xffffb04a + 0x18] += 0x04
 	}
 }
 #endif
@@ -744,7 +744,7 @@ function void fn08d29c()
 	base.fn08d29c()
 	
 	if (altlbz2cs.eggchair)
-		spawnChildObject(0x073e0e, 0x00, 2, -28)	 // This is an element from the previous boss.
+		spawnChildObject(0x073e0e, 0x00, 1, -28)	 // This is an element from the previous boss.
 }
 
 // Fix for Eggman's chair floating in the scaffold
