@@ -1,3 +1,5 @@
+global bool ilyf.tailspleasestop
+
 //# address-hook(0x0868f8) end(0x086930)
 function void fn0868f8()
 {
@@ -122,4 +124,15 @@ function void LevelResults.AdvanceToNextAct()
 		checkpoint.move_area.bottom = 0x0590	// Overwrite move_area.bottom.* backup accordingly
 	}
 #endif
+}
+
+//# address-hook(0x083a70)
+function void fn083a70()
+{
+	A1 = 0xffff0000 + D0.u16
+	
+	if (ilyf.tailspleasestop && A1 == 0xffffb04a)
+		return
+	
+	base.fn083a70()
 }

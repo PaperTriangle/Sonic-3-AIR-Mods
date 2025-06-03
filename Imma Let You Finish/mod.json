@@ -6,5 +6,23 @@
 		"Author": "PaperTriangle",
 		"Description": "Forces the characters to stop moving around so the act finishes.",
 		"ModVersion": "1.2"
+	},
+	"Settings":
+	{
+		"List":
+		[
+			{
+				"InternalName": "ilyf.tailspleasestop",
+				"DisplayName": "Player 2 Signpost Interaction",
+				"Variable": "ilyf.tailspleasestop",
+				"Category": "General Settings",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Can Bounce It",
+					"1": "No Interaction"
+				}
+			}
+		]
 	}
 }
