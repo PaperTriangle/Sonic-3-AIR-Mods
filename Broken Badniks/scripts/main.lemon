@@ -539,6 +539,19 @@ function void fn068508()
 #endif
 }
 
+// Fix bug where signpost can appear behind trees in AIZ1.
+//# address-hook(0x0837b2) end(0x0837c8)
+function void SignPost.BaseUpdate()
+{
+	if (global.zone == 0x00)
+	{
+		objA0.sprite_priority = 0x180
+		objA0.sprite_attributes |= sprite_attribute.PRIORITY
+	}
+	
+	base.SignPost.BaseUpdate()
+}
+
 //-------------
 // Twin Hammers
 //-------------
