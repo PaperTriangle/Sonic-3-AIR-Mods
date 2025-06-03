@@ -323,6 +323,10 @@ function void fn08d47c()
 	if (altlbz2cs.removewalls == 0)
 	{
 		base.fn08d47c()
+
+		if (objA0.position.x.u16 >= 0x4440)
+		playSound(0x62)
+
 		return
 	}
 	
@@ -366,11 +370,9 @@ function void fn08d47c()
 
 	fn08d53e()
 	DrawObject()
-	if (Mods.isModActive("Origins Parity Galore"))
-    {
-		if (objA0.position.x.u16 >= 0x4440)
-			playSound(0x62)
-	}
+
+	if (objA0.position.x.u16 >= 0x4440)
+		playSound(0x62)
 }
 
 // Fix for getting hurt and falling into updrafts
