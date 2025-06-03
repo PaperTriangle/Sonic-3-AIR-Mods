@@ -5,7 +5,7 @@
 		"UniqueID": "moar-transparency",
 		"Author": "PaperTriangle",
 		"Description": "Adds varying levels of transparency to more objects! Credit to Useott and Raine for some code that was adapted from A.I.R. Freshener.",
-		"ModVersion": "1.2"
+		"ModVersion": "1.3"
 	},
 	"OtherMods": {
 		"extra-slot-project-amy": {
@@ -275,18 +275,6 @@
 				"DisplayName": "Boss DEZ2 Huge Eggman Robo (PNG)",
 				"Variable": "mt.dez2laser",
 				"Category": "Boss Effects",	
-				"DefaultValue": "1",
-				"Options":
-				{
-					"0": "Disabled",
-					"1": "Enabled"
-				}
-			},
-			{
-				"InternalName": "mt.fixlbz2",
-				"DisplayName": "Beam Rocket Flame Flash",
-				"Variable": "mt.fixlbz2",
-				"Category": "Extras",	
 				"DefaultValue": "1",
 				"Options":
 				{

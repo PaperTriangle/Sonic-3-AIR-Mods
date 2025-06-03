@@ -27,8 +27,6 @@ global bool mt.toxomister
 global bool mt.telebeam
 global bool mt.teleframe
 
-global bool mt.fixlbz2
-
 global bool mt.amyheart
 global bool mt.amytrail
 
@@ -646,10 +644,6 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 			return true
 		}
 	}
-	
-	//LBZ2 Eggman Flames
-	if (mt.fixlbz2 && objA0.update_address == 0x073384)
-		return level.framecounter & 1
 
 	return base.Standalone.onDrawVdpSprite(px, py, size, index, renderQueue)
 }
