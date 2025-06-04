@@ -26,6 +26,8 @@ global bool mt.toxomister
 
 global bool mt.telebeam
 global bool mt.teleframe
+global bool mt.beamstyle1
+global bool mt.beamstyle2
 
 global bool mt.amyheart
 global bool mt.amytrail
@@ -255,7 +257,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 			return true
 		}
 		
-		// LRZ Boss Shadows
+		// LRZ Boss Lava Flow (Or is this supposed to be shadows?)
 		if (objA0.update_address == 0x079d08)
 		{
 			if (index == 0x4027)
@@ -696,26 +698,31 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 
 function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 index, u16 renderQueue, u8 spriteCounter)
 {
-	if (mt.telebeam)
+	if (mt.telebeam || mt.teleframe)
 	{
 		// Teleporter
 		if (objA0.update_address == 0x0459b4)
 		{
 			u64 key = "hpz_biimu_%d"
 			if (mt.teleframe)
-				key = "png_biimu_%d"			
+			{
+				if ((global.zone == 0x03 || global.zone == 0x05))
+					key = mt.beamstyle1 ? "png_ssz_biimu_%d" : "png_biimu_%d"
+				else
+					key = mt.beamstyle2 ? "png_ssz_biimu_%d" : "png_biimu_%d"
+			}
 			else if (global.zone == 0x03 || global.zone == 0x05)
 				key = "bmp_biimu_%d"
 			else if (global.zone == 0x0a)
 				key = "ssz_biimu_%d"
-			
-			Renderer.drawSprite(stringformat(key, min(u8[A0 + 0x46], 18)), px - 24, py, 0x00, (global.zone == 0x0a) ? SPRITE_FLAG_PRIO : 0x00, renderQueue, 0, 192)
+				
+			Renderer.drawSprite(stringformat(key, min(u8[A0 + 0x46], 18)), px - 24, py, 0x00, (global.zone == 0x0a) ? SPRITE_FLAG_PRIO : 0x00, renderQueue, 0, mt.telebeam ? 192: 0xff)
 			
 			return true
 		}
 
 		// Early Teleporter
-		if (objA0.mapping_offset == 0x046b3c)
+		if (mt.telebeam && objA0.mapping_offset == 0x046b3c)
 		{
 			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 160)
 			
@@ -748,7 +755,7 @@ function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 in
 //# address-hook(0x045916) end(0x045990)
 function void fn045916()
 {
-	if (!mt.telebeam)
+	if (!mt.telebeam && !mt.teleframe)
 	{
 		base.fn045916()
 		return
@@ -760,8 +767,8 @@ function void fn045916()
 		return
 	}
 
-	//if ((level.framecounter.low & 0x01) == 0)
-	//	return
+	if (!mt.telebeam && (level.framecounter.low & 0x01) == 0)
+		return
 
 	A1 = A0 + 0x18
 	D0.u16 = objA0.position.y.u16
@@ -806,7 +813,7 @@ function void fn045916()
 //# address-hook(0x045992) end(0x0459ae)
 function void fn045992()
 {
-	if (!mt.telebeam)
+	if (!mt.telebeam && !mt.teleframe)
 	{
 		base.fn045992()
 		return
@@ -815,7 +822,7 @@ function void fn045992()
 	--u8[A0 + 0x47]
 	if (u8[A0 + 0x47] != 0)
 	{
-		//if (level.framecounter.low & 0x01)
+		if (!mt.telebeam && (level.framecounter.low & 0x01) == 0)
 		{
 			DrawObject()
 		}
@@ -831,7 +838,7 @@ function void fn045992()
 //# address-hook(0x0459b4) end(0x045a64)
 function void fn0459b4()
 {
-	if (!mt.telebeam)
+	if (!mt.telebeam && !mt.teleframe)
 	{
 		base.fn0459b4()
 		return
@@ -888,14 +895,15 @@ function void fn0459b4()
 		}
 		
 	}
-	DrawObject()
+	if (mt.telebeam || level.framecounter.low & 0x01)
+		DrawObject()
 }
 
 // Teleporter ICZ Start
 //# address-hook(0x053ad4) end(0x053b9c)
 function void fn053ad4()
 {
-	if (!mt.telebeam)
+	if (!mt.telebeam && !mt.teleframe)
 	{
 		base.fn053ad4()
 		return
@@ -939,7 +947,7 @@ function void fn053ad4()
 //# address-hook(0x057c1e) end(0x057cd0)
 function void fn057c1e()
 {
-	if (!mt.telebeam)
+	if (!mt.telebeam && !mt.teleframe)
 	{
 		base.fn057c1e()
 		return

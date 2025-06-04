@@ -116,7 +116,7 @@
 			},
 			{
 				"InternalName": "mt.toxomister",
-				"DisplayName": "LRZ Toxomister (PNG)",
+				"DisplayName": "LRZ Toxomister",
 				"Variable": "mt.toxomister",
 				"Category": "Badniks",	
 				"DefaultValue": "1",
@@ -212,7 +212,7 @@
 			},
 			{
 				"InternalName": "mt.telebeam",
-				"DisplayName": "Teleporter Beams (PNG)",
+				"DisplayName": "Teleporter Beams",
 				"Variable": "mt.telebeam",
 				"Category": "Effects",	
 				"DefaultValue": "1",
@@ -236,7 +236,7 @@
 			},
 			{
 				"InternalName": "mt.sszs2laser",
-				"DisplayName": "SSZ Flying Eggman (PNG)",
+				"DisplayName": "SSZ Flying Eggman",
 				"Variable": "mt.sszs2laser",
 				"Category": "Boss Effects",	
 				"DefaultValue": "1",
@@ -260,7 +260,7 @@
 			},
 			{
 				"InternalName": "mt.dez1laser",
-				"DisplayName": "DEZ1 Red Eye (PNG)",
+				"DisplayName": "DEZ1 Red Eye",
 				"Variable": "mt.dez1laser",
 				"Category": "Boss Effects",	
 				"DefaultValue": "1",
@@ -272,7 +272,7 @@
 			},
 			{
 				"InternalName": "mt.dez2laser",
-				"DisplayName": "Boss DEZ2 Huge Eggman Robo (PNG)",
+				"DisplayName": "Boss DEZ2 Huge Eggman Robo",
 				"Variable": "mt.dez2laser",
 				"Category": "Boss Effects",	
 				"DefaultValue": "1",
@@ -284,14 +284,38 @@
 			},
 			{
 				"InternalName": "mt.teleframe",
-				"DisplayName": "Consisten PNG Teleporters",
+				"DisplayName": "Consistent PNG Teleporters",
 				"Variable": "mt.teleframe",
-				"Category": "Extras",	
+				"Category": "PNG Sprite Teleporters",	
 				"DefaultValue": "1",
 				"Options":
 				{
 					"0": "Disabled",
 					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "mt.beamstyle1",
+				"DisplayName": "CNZ / ICZ Beam Style",
+				"Variable": "mt.beamstyle1",
+				"Category": "PNG Sprite Teleporters",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "HPZ Style",
+					"1": "SSZ Style"
+				}
+			},
+			{
+				"InternalName": "mt.beamstyle2",
+				"DisplayName": "HPZ / SSZ Beam Style",
+				"Variable": "mt.beamstyle2",
+				"Category": "PNG Sprite Teleporters",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "HPZ Style",
+					"1": "SSZ Style"
 				}
 			},
 			{
