@@ -1,0 +1,9 @@
+{
+	"super_flicky_0":  { "File": "super_flicky.bmp", "Rect": "1,1,16,16", "Center": "8,8" },
+	"super_flicky_1":  { "File": "super_flicky.bmp", "Rect": "18,1,16,15", "Center": "8,8" },
+	"super_flicky_2":  { "File": "super_flicky.bmp", "Rect": "35,1,15,21", "Center": "8,12" },
+	
+	"green_super_flicky_0":  { "File": "super_flicky_green_eyes.bmp", "Rect": "1,1,16,16", "Center": "8,8" },
+	"green_super_flicky_1":  { "File": "super_flicky_green_eyes.bmp", "Rect": "18,1,16,15", "Center": "8,8" },
+	"green_super_flicky_2":  { "File": "super_flicky_green_eyes.bmp", "Rect": "35,1,15,21", "Center": "8,12" }
+}

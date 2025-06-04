@@ -1,0 +1,28 @@
+global bool sff.green_eyes
+
+// Render the new sprites
+function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
+{
+    if(objA0.update_address == 0x01a1f4 && global.characters == CHARS_TAILS_ALONE) 
+    {
+        u64 key = stringformat(sff.green_eyes ? "green_super_flicky_%d" : "super_flicky_%d", objA0.animation.sprite)
+       	u8 atex = 0x40 + 0x20 * CHARACTER_SONIC
+        if(Renderer.hasCustomSprite(key))
+        {
+            Renderer.drawCustomSprite(key, px, py, atex, objA0.render_flags | SPRITE_FLAG_PRIO, renderQueue)
+            return true
+        }
+    }
+ 
+    return base.Standalone.onWriteToSpriteTable(px, py, renderQueue)
+}
+
+// Use Sonic's extended palette to blend (incase someone is using more pixels in Tails' palette)
+function void UpdatePaletteEffects.SuperForm.blendFlicky(u32 source1, u32 source2, u16 blendFactor, bool underwater)
+{
+	u16 offset = CHARACTER_SONIC * 0x40 + (underwater ? 0x300 : 0)
+	for (u8 k = 0; k < 6; k += 2)
+	{
+		u16[0x802004 + offset + k] = blendColorsPacked(u16[source1 + k], u16[source2 + k], blendFactor)
+	}
+}

@@ -1,0 +1,27 @@
+{
+	"Metadata": 
+	{
+		"Name": "Super Flicky Fix",
+		"UniqueID": "super-flicky-fix",
+		"Author": "PaperTriangle",
+		"Description": "Fixes handling of the super flicky to use Sonic's extended palette.",
+		"ModVersion": "1.0"
+	},
+	"Settings":
+	{
+		"List":
+		[
+			{
+				"InternalName": "sff.green_eyes",
+				"DisplayName": "Super Flicky Eye Colour",
+				"Variable": "sff.green_eyes",
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Black",
+					"1": "Green"
+				}
+			}
+		]
+	}
+}
