@@ -724,7 +724,14 @@ function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 in
 		// Early Teleporter
 		if (mt.telebeam && objA0.mapping_offset == 0x046b3c)
 		{
-			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 160)
+			if (mt.teleframe)
+			{
+				Renderer.drawSprite("png_biimu_small", px, py, 0x00, (global.zone == 0x0a) ? SPRITE_FLAG_PRIO : 0x00, renderQueue, 0, mt.telebeam ? 160: 0xff)
+			}
+			else
+			{
+				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 160)
+			}
 			
 			return true
 		}
@@ -780,15 +787,23 @@ function void fn045916()
 		u16[A1 + 0x02] = D0.u16
 		if (D1.u16 == 0)
 		{
-			u8[A0 + 0x46] ^= 0xff
-			if (u8[A0 + 0x46] & 0xff)
-			{
-				u8[A1 + 0x05] = 1
-			}
-			else
+			if (mt.teleframe)
 			{
 				u8[A1 + 0x05] = 2
 				++objA0.compound.count
+			}
+			else
+			{
+				u8[A0 + 0x46] ^= 0xff
+				if (u8[A0 + 0x46] & 0xff)
+				{
+					u8[A1 + 0x05] = 1
+				}
+				else
+				{
+					u8[A1 + 0x05] = 2
+					++objA0.compound.count
+				}
 			}
 		}
 		else
@@ -822,7 +837,7 @@ function void fn045992()
 	--u8[A0 + 0x47]
 	if (u8[A0 + 0x47] != 0)
 	{
-		if (!mt.telebeam && (level.framecounter.low & 0x01) == 0)
+		if (mt.telebeam || (level.framecounter.low & 0x01) == 0)
 		{
 			DrawObject()
 		}
@@ -981,7 +996,7 @@ function void fn057c1e()
 		{
 			objA1.update_address = 0x057e34
 			u16[A1 + 0x2c] = 0x60
-
+	
 		#if STANDALONE
 			Game.startSkippableCutscene()
 		#endif

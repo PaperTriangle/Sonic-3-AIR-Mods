@@ -39,6 +39,8 @@
 	"png_ssz_biimu_1":   { "File": "biimu_ssz.png", "Rect": "0,544,48,32", "Center": "0,0" },
 	"png_ssz_biimu_0":   { "File": "biimu_ssz.png", "Rect": "0,576,48,32", "Center": "0,0" },
 	
+	"png_biimu_small":  { "File": "biimu_small.png", "Rect": "0,0,1,32", "Center": "0,0" },
+	
 	"bmp_biimu_18":  { "File": "biimu.bmp", "Rect": "0,0,48,32", "Center": "0,0" },
 	"bmp_biimu_17":  { "File": "biimu.bmp", "Rect": "0,32,48,32", "Center": "0,0" },
 	"bmp_biimu_16":  { "File": "biimu.bmp", "Rect": "0,64,48,32", "Center": "0,0" },
