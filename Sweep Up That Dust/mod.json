@@ -26,8 +26,8 @@
 				"DefaultValue": "1",
 				"Options":
 				{
-					"0": "Off",
-					"1": "On"
+					"0": "Disabled",
+					"1": "Enabled"
 				}
 			}
 		]
