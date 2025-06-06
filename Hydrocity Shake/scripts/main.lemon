@@ -131,7 +131,7 @@ function void fn069eda()
 	loadPaletteLine1(0x06ae56)
 }
 
-// Fix for water pipes using hurt animation
+// Pipe spurts use falling panic animation.
 //# address-hook(0x030338) end(0x0303e8)
 function void fn030338()
 {
@@ -192,6 +192,7 @@ function void fn030338()
 	}
 }
 
+// Fixes rolling animation out of pipe if player holds down.
 //# address-hook(0x03003c) end(0x030100)
 function void fn03003c()
 {
@@ -199,6 +200,87 @@ function void fn03003c()
 	
 	u8[0xffffb000 + 0x20] = char.state.FALLING_PANIC
 	u8[0xffffb04a + 0x20] = char.state.FALLING_PANIC
+}
+
+// Falling panic animation after fans.
+//# address-hook(0x006f90)
+function void fn006f90()
+{
+	u8 bit = (1 << D5.u8)
+
+	A2 = (global.act == 0) ? 0x00705c : 0x007130
+	D2.u16 = u16[(A2+=2)-2]
+
+	while (D2.s16 >= 0)
+	{
+		D0.u16 = objA1.position.x.u16
+		D1.u16 = objA1.position.y.u16
+		if (D0.u16 >= u16[A2] && D0.u16 < u16[A2 + 4] && D1.u16 >= u16[A2 + 2] && D1.u16 < u16[A2 + 6])
+		{
+			if (u8[A1 + 0x05] >= base_state.HURT)
+			{
+				u8[A3] = 0
+				return
+			}
+
+			if ((level.HCZ_breakable_bar_flags & bit) == 0)
+			{
+				if (u8[A1 + 0x2e] != 0)
+				{
+					u8[A3] = 0
+					return
+				}
+
+				u8[A3] = 1
+				objA1.velocity.x = s16[A2 + 0x08]
+				objA1.velocity.y = s16[A2 + 0x0a]
+				D0.s32 = s32(objA1.velocity.x) << 8
+				D1.s32 = s32(objA1.velocity.y) << 8
+				objA1.position.x += D0
+				objA1.position.y += D1
+
+				objA1.state = char.state.LIFTED
+				objA1.flags2a |= char.flag.IN_AIR
+				u8[A1 + 0x2f] = 0
+				if (u8[A2 + 0x0c] != 0)
+				{
+					if (D6 & CONTROL_LEFT)
+					{
+						--objA1.position.x.u16
+					}
+					if (D6 & CONTROL_RIGHT)
+					{
+						++objA1.position.x.u16
+					}
+				}
+				else
+				{
+					if (D6 & CONTROL_UP)
+					{
+						--objA1.position.y.u16
+					}
+					if (D6 & CONTROL_DOWN)
+					{
+						++objA1.position.y.u16
+					}
+				}
+
+			#if STANDALONE
+				u8[A1 + 0x40] = 0	// Clear "char.jumping"
+			#endif
+			}
+			return
+		}
+
+		A2.u16 += 14
+		--D2.s16
+	}
+
+	if (u8[A3] != 0)
+	{
+		objA1.state = char.state.FALLING_PANIC
+		u8[A3] = 0
+	}
 }
 
 //# address-hook(0x02797e) end(0x027982)
