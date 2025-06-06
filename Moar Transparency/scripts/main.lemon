@@ -32,8 +32,6 @@ global bool mt.beamstyle2
 global bool mt.amyheart
 global bool mt.amytrail
 
-global u8 mt.laser_transparency = 224
-
 global u8 dez_laser_val
 global bool ssz_s2_laser
 
@@ -80,7 +78,7 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 			if (mt.lightningshield && objA0.update_address == 0x019732)
 			{
 				u64 key = Renderer.setupCustomCharacterSprite(objA0.shield.art_offset, objA0.shield.pattern_offset, objA0.mapping_offset, objA0.animation.sprite, 0x00)
-				Renderer.drawSprite(key, px, py, 0x00, objA0.render_flags | (prioFlag ? SPRITE_FLAG_PRIO : 0), renderQueue, 0, 224)
+				Renderer.drawSprite(key, px, py, 0x00, objA0.render_flags | (prioFlag ? SPRITE_FLAG_PRIO : 0), renderQueue, 0, 208)
 				return true
 			}
 			
@@ -93,11 +91,11 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 					objA0.flags2e = objA0.animation.sprite
 				u64 key
 				key = Renderer.setupCustomCharacterSprite(objA0.shield.art_offset, objA0.shield.pattern_offset, objA0.mapping_offset, objA0.value26, 0x00)
-				Renderer.drawSprite(key, px, py, 0x00, objA0.render_flags | (prioFlag ? SPRITE_FLAG_PRIO : 0), renderQueue, 0, 192)
+				Renderer.drawSprite(key, px, py, 0x00, objA0.render_flags | (prioFlag ? SPRITE_FLAG_PRIO : 0), renderQueue, 0, 176)
 				if (objA0.animation.sprite <= 10)
 				{
 					key = Renderer.setupCustomCharacterSprite(objA0.shield.art_offset, objA0.shield.pattern_offset, objA0.mapping_offset, objA0.flags2e, 0x00)
-					Renderer.drawSprite(key, px, py, 0x00, objA0.render_flags | (prioFlag ? SPRITE_FLAG_PRIO : 0), renderQueue, 0, 192)
+					Renderer.drawSprite(key, px, py, 0x00, objA0.render_flags | (prioFlag ? SPRITE_FLAG_PRIO : 0), renderQueue, 0, 176)
 				}
 				return true
 			}
@@ -116,12 +114,12 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 				
 				u64 key
 				key = Renderer.setupCustomCharacterSprite(objA0.shield.art_offset, objA0.shield.pattern_offset, objA0.mapping_offset, objA0.value26, 0x00)
-				Renderer.drawSprite(key, px, py, 0x00, objA0.render_flags | (prioFlag ? SPRITE_FLAG_PRIO : 0), objA0.value26 < 0x0f ? 0x9f80 : 0x9e00, 0, 224)
+				Renderer.drawSprite(key, px, py, 0x00, objA0.render_flags | (prioFlag ? SPRITE_FLAG_PRIO : 0), objA0.value26 < 0x0f ? 0x9f80 : 0x9e00, 0, 208)
 				if (objA0.value26 >= 0x0f)
 				{
 					key = Renderer.setupCustomCharacterSprite(objA0.shield.art_offset, objA0.shield.pattern_offset, objA0.mapping_offset, objA0.flags2e, 0x00)
 					Renderer.drawSprite(key, px, py, 0x00, objA0.render_flags | (prioFlag ? SPRITE_FLAG_PRIO : 0), 0x9e01, 0, 32)
-					Renderer.drawSprite(key, px, py, 0x00, objA0.render_flags | (prioFlag ? SPRITE_FLAG_PRIO : 0), 0x9f80, 0, 192)
+					Renderer.drawSprite(key, px, py, 0x00, objA0.render_flags | (prioFlag ? SPRITE_FLAG_PRIO : 0), 0x9f80, 0, 176)
 				}
 				return true
 			}
@@ -396,7 +394,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		// CNZ Electricity
 		if (objA0.update_address == 0x089256 || objA0.update_address == 0x0892a0)
 		{
-			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 208)
 			
 			return true
 		}
@@ -404,7 +402,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		// CNZ1 Boss Electricity
 		if (objA0.update_address == 0x06df4a || objA0.update_address == 0x06df94)
 		{
-			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 224)
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 208)
 			
 			return true
 		}
@@ -412,7 +410,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		// CNZ2 Boss Electricity
 		if (objA0.update_address == 0x06eb16 || objA0.update_address == 0x06eb0c)
 		{
-			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 208)
 			
 			return true
 		}
@@ -420,7 +418,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		// DEZ Electricity
 		if (objA0.update_address == 0x0478e2)
 		{
-			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 224)
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 208)
 			
 			return true
 		}
@@ -540,7 +538,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		// Player's Bubbles
 		if (objA0.update_address == 0x018164)
 		{
-			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 176)
 			
 			return true
 		}
@@ -556,7 +554,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		// Oxygen Bubbles
 		if (objA0.update_address == 0x02f938)
 		{
-			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 176)
 			
 			return true
 		}
@@ -742,12 +740,12 @@ function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 in
 	{
 		if (objA0.update_address == 0x018868)
 		{
-			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 224)
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 208)
 			return true
 		}
 		if (objA0.update_address == 0x0188e8)
 		{
-			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 224 - u8[A0 + 0x36] * 32)
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 208 - u8[A0 + 0x36] * 32)
 			return true
 		}
 	}
