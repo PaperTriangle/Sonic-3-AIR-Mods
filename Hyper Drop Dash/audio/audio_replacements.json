@@ -1,0 +1,6 @@
+{
+	"hyper_dropdash_charge":			{ "File": "s3air_hyper_drop_dash.ogg",	"Type": "Sound", "Channel": "AB" },
+	"hyper_dropdash_charge_peelout":	{ "File": "scd_hyper_drop_dash.ogg",	"Type": "Sound", "Channel": "AB" },
+	"hyper_dropdash_charge_mania":		{ "File": "mania_hyper_drop_dash.ogg",	"Type": "Sound", "Channel": "AB" },
+	"hyper_dropdash_charge_forces":		{ "File": "forces_hyper_drop_dash.ogg",	"Type": "Sound", "Channel": "AB" }
+}

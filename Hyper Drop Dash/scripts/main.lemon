@@ -75,30 +75,34 @@ function void SonicPressedJumpInMidAir()
 				char.velocity.y = (char.velocity.y > 0) ? (char.velocity.y - 0x200) : (char.velocity.y < 0) ? (char.velocity.y + 0x200) : 0
 			}
 		#endif
-			sonic.dropdash_counter = DROPDASH_FULLCHARGE
-			char.state = char.state.SONIC_DROPDASH
-			
-			if (hdd.playsound)
+		
+			if (isHyperSonic)
 			{
-				u64 key = "dropdash_charge"
+				sonic.dropdash_counter = DROPDASH_FULLCHARGE
+				char.state = char.state.SONIC_DROPDASH
 				
-				if (Mods.isModActive("Drop Dash +"))
+				if (hdd.playsound)
 				{
-					if (System.getGlobalVariableValueByName("dropdashchargesfx") == 1)
+					u64 key = "hyper_dropdash_charge"
+					
+					if (Mods.isModActive("Drop Dash +"))
 					{
-						key = "peelout_charge"
+						if (System.getGlobalVariableValueByName("dropdashchargesfx") == 1)
+						{
+							key = "hyper_dropdash_charge_peelout"
+						}
+						else if (System.getGlobalVariableValueByName("dropdashchargesfx") == 2)
+						{
+							key = "hyper_dropdash_charge_mania"
+						}
+						else if (System.getGlobalVariableValueByName("dropdashchargesfx") == 3)
+						{
+							key = "hyper_dropdash_charge_forces"
+						}
 					}
-					else if (System.getGlobalVariableValueByName("dropdashchargesfx") == 2)
-					{
-						key = "dropdash_charge_mania"
-					}
-					else if (System.getGlobalVariableValueByName("dropdashchargesfx") == 3)
-					{
-						key = "dropdash_charge_forces"
-					}
+					
+					Audio.playAudio(key, AudioContext.CONTEXT_SOUND)
 				}
-				
-				Audio.playAudio(key, AudioContext.CONTEXT_SOUND)
 			}
 			
 			char.groundspeed = char.velocity.x
