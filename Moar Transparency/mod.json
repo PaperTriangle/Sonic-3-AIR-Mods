@@ -5,7 +5,7 @@
 		"UniqueID": "moar-transparency",
 		"Author": "PaperTriangle",
 		"Description": "Adds varying levels of transparency to more objects! Credit to Useott and Raine for some code that was adapted from A.I.R. Freshener.",
-		"ModVersion": "1.3"
+		"ModVersion": "1.4"
 	},
 	"OtherMods": {
 		"extra-slot-project-amy": {

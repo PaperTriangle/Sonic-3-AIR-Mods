@@ -114,12 +114,12 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 				
 				u64 key
 				key = Renderer.setupCustomCharacterSprite(objA0.shield.art_offset, objA0.shield.pattern_offset, objA0.mapping_offset, objA0.value26, 0x00)
-				Renderer.drawSprite(key, px, py, 0x00, objA0.render_flags | (prioFlag ? SPRITE_FLAG_PRIO : 0), objA0.value26 < 0x0f ? 0x9f80 : 0x9e00, 0, 208)
+				Renderer.drawSprite(key, px, py, 0x00, objA0.render_flags | (prioFlag ? SPRITE_FLAG_PRIO : 0), objA0.value26 < 0x0f ? 0x9f70 : 0x9e00, 0, 208)
 				if (objA0.value26 >= 0x0f)
 				{
 					key = Renderer.setupCustomCharacterSprite(objA0.shield.art_offset, objA0.shield.pattern_offset, objA0.mapping_offset, objA0.flags2e, 0x00)
 					Renderer.drawSprite(key, px, py, 0x00, objA0.render_flags | (prioFlag ? SPRITE_FLAG_PRIO : 0), 0x9e01, 0, 32)
-					Renderer.drawSprite(key, px, py, 0x00, objA0.render_flags | (prioFlag ? SPRITE_FLAG_PRIO : 0), 0x9f80, 0, 176)
+					Renderer.drawSprite(key, px, py, 0x00, objA0.render_flags | (prioFlag ? SPRITE_FLAG_PRIO : 0), 0x9f70, 0, 176)
 				}
 				return true
 			}
@@ -164,7 +164,7 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 			{
 				u8 flags = ((objA0.render_flags & 0x01) ? SPRITE_FLAG_FLIP_X : 0) | ((objA0.render_flags & 0x02) ? SPRITE_FLAG_FLIP_Y : 0) | ((objA0.sprite_attributes & 0x8000) ? SPRITE_FLAG_PRIO : 0)
 				
-				Renderer.drawCustomSprite(stringformat("esu_smallhyper_%d", objA0.value26), px, py, 0, flags | u8[A0 + 0x2b], renderQueue, 0, 0xff - objA0.value26 * 0x30)
+				Renderer.drawCustomSprite(stringformat("esu_smallhyper_%d", objA0.value26), px, py, 0, flags | u8[A0 + 0x2b], renderQueue, 0, 0xff - objA0.value26 * 0x40)
 
 				return true
 			}
@@ -355,7 +355,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		// Super Stars
 		if (objA0.update_address == 0x0191a4)
 		{
-			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 0xff - 0x20 * (objA0.animation.sprite - 1))
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 0xff - 0x30 * (objA0.animation.sprite - 1))
 			
 			return true
 		}
