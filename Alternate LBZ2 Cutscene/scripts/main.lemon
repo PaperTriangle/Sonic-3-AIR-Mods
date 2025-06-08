@@ -133,6 +133,14 @@ function void fn072dea()
 		}
 	}
 }
+// make debris fall infront sometimes...
+//# address-hook(0x072e54) end(0x072e94)
+function void fn072e54()
+{
+	base.fn072e54()
+	if (level.framecounter & 1)
+		objA0.sprite_attributes |= sprite_attribute.PRIORITY
+}
 
 // This is the function that handles the sky fading back
 //# address-hook(0x072e30)
@@ -768,13 +776,39 @@ function void fn0543cc()
 }
 
 // Make the exhaust flames from Beam Rocket flash
+// Also fix the arm showing infront of players during fall
 function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16 renderQueue)
 {
 	//LBZ2 Eggman Flames
 	if (altlbz2cs.eggmanflames && objA0.update_address == 0x073384)
 		return (level.framecounter & 1) ? base.Standalone.onDrawVdpSprite(px, py, size, index, renderQueue) : true
+	
+	// Fix Big Arm's arm during drop
+	if (altlbz2cs.behind && (objA0.update_address == 0x074b36 || objA0.update_address == 0x0749d0))
+	{
+		Renderer.drawVdpSprite(px, py, size, index, renderQueue - 0x1000)
+		return true
+	}
 
 	return base.Standalone.onDrawVdpSprite(px, py, size, index, renderQueue)
+}
+
+// fix for Big Arm's arm during cutscene!
+global bool altlbz2cs.behind
+
+//# address-hook(0x07432a) end(0x07435a)
+function void fn07432a()
+{
+	altlbz2cs.behind = true
+	base.fn07432a()
+	
+}
+
+//# address-hook(0x0743ce) end(0x0743e0)
+function void fn0743ce()
+{
+	altlbz2cs.behind = false
+	base.fn0743ce()
 }
 
 // Add extra time to the countdown to account for game clear sound being longer.
