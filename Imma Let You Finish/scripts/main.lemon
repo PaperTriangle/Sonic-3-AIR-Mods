@@ -79,7 +79,7 @@ function void LevelResults.AdvanceToNextAct()
 		level.results_done = 0xff
 		
 		// Restore movement after capsule, excluding some zones with cutscenes.
-		if (global.zone != 0x00 && global.zone != 0x01 && global.zone != 0x04 && global.zone_act != 0x06 && global.zone != 0x08 && global.zone != 0x0a && global.zone != 0x0b && global.zone_act != 0x1601)
+		if (global.zone != 0x00 && global.zone != 0x01 && global.zone != 0x04 && global.zone_act != 0x0601 && global.zone != 0x08 && global.zone != 0x0a && global.zone != 0x0b && global.zone_act != 0x1601)
 		{
 			player1.control_override = 0
 			player2.control_override = 0
