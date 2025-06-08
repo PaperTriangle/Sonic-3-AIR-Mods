@@ -76,7 +76,7 @@ function void SonicPressedJumpInMidAir()
 			}
 		#endif
 		
-			if (isHyperSonic)
+			if (Game.getSetting(SETTING_DROPDASH) && isHyperSonic)
 			{
 				sonic.dropdash_counter = DROPDASH_FULLCHARGE
 				char.state = char.state.SONIC_DROPDASH
