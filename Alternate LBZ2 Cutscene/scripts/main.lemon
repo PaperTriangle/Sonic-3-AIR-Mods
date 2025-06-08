@@ -1,4 +1,5 @@
-global u8 altlbz2cs.gameclear
+global bool altlbz2cs.gameclear
+global bool altlbz2cs.restoremusic
 global u8 altlbz2cs.removewalls
 global bool altlbz2cs.fadeadjust
 global bool altlbz2cs.removehud
@@ -6,7 +7,7 @@ global u8 altlbz2cs.hudgobye = 0
 global u8 altlbz2cs.dangerhud
 global u16 altlbz2cs.hudgobyedanger = 0
 global bool altlbz2cs.highjump
-global bool altlbz2cs.stopmusic
+global u8 altlbz2cs.stopmusic
 global bool altlbz2cs.eggup
 global bool altlbz2cs.deflash
 global bool altlbz2cs.tailsflight
@@ -219,15 +220,12 @@ function void fn072e2e()
 		}
 	}
 	
-	if (!altlbz2cs.gameclear || Mods.isModActive("Music Cues Customization"))
-	{
-		if (!Mods.isModActive("Music Cues Customization"))
-		{
-			PlayMusicAfterLevelResults()
-		}
-		stopCharacterWinPose(0xffffb000)
-		stopCharacterWinPose(0xffffb04a)
-	}
+	if (altlbz2cs.restoremusic)
+		PlayMusicAfterLevelResults()
+
+	stopCharacterWinPose(0xffffb000)
+	stopCharacterWinPose(0xffffb04a)
+
 
 	if (Mods.isModActive("LBZ Eggman Fleeing"))
 	{
@@ -239,17 +237,9 @@ function void fn072e2e()
 	if (objA0.countdown_value >= 0)
 		return
 
-	if (Mods.isModActive("Music Cues Customization"))
-	{
-		fn072b96() // Calling this function here seems fine for compat since I skip from 0x072b46 straight to 0x072bbc
-	}
-
 	u8[0xfffffa88] |= 0x01
 	objA0.value39 = 0
 	objA0.countdown_value = 0
-	
-	stopCharacterWinPose(0xffffb000)
-	stopCharacterWinPose(0xffffb04a)
 
 	// "spawnChildObjects(0x07380c)" replaced by:
 	spawnChildObject(0x072e9e, 0x00, 0, 0)
@@ -273,25 +263,6 @@ function void fn072e2e()
 		Object.TriggerUnloading()
 	}
 }
-
-// Game clear sound instead of act clear
-function u64 Standalone.getModdedSoundKey(u64 soundKey, u8 sfxId, u8 soundRegType)
-{
-	if (!Mods.isModActive("Music Cues Customization"))
-	{
-		if (altlbz2cs.gameclear && camera.position.y.u16 > 0x0500 && global.zone_act == 0x0601)
-		{
-			if (soundKey == MUSIC_LEVELCLEAR)
-			{
-				return soundKey = MUSIC_GAMECLEAR
-			}
-		}
-	}
-	
-    return base.Standalone.getModdedSoundKey(soundKey, sfxId, soundRegType)
-}
-
-
 
 // Stops the invisible walls from being spawned
 // and spawns updrafts if needed.
@@ -492,21 +463,14 @@ function void yieldExecution()
 	base.yieldExecution()	
 }
 
-//# address-hook(0x072cda) end(0x072cf4)
-function void fn072cda()
+// Remove the flags on loading titlecards.
+//# address-hook(0x02d856) end(0x02d8dc)
+function void TitleCard.Show()
 {
-	base.fn072cda()
-	global.level_started = 0
 	altlbz2cs.hudgobye = 0
 	altlbz2cs.hudgobyedanger = 0
-}
 
-//# address-hook(0x085e3a) end(0x085e50)
-function void TriggerNextZone()
-{
-	altlbz2cs.hudgobye = 0
-	altlbz2cs.hudgobyedanger = 0
-	base.TriggerNextZone()
+	base.TitleCard.Show()
 }
 
 // Origins Parity Galore Compatability 
@@ -533,14 +497,28 @@ function void fn0746f4()
 }
 
 // Stop Music at Defeat
-
-//# address-hook(0x0746d8) end(0x0746ee)
-function void fn0746d8()
+//# address-hook(0x074fd2) end(0x07508c)
+function void fn074fd2()
 {
-	if (altlbz2cs.stopmusic)
+	base.fn074fd2()
+	
+	if (altlbz2cs.stopmusic == 1 && objA0.update_address == 0x08566a)
 		Standalone.playAudio(MUSIC_CTRL_FADEOUT)
-		
-	base.fn0746d8()
+	else if (altlbz2cs.stopmusic == 2 && objA0.update_address == 0x08566a)
+		objA0.update_address = 0x085668
+}
+
+// Restore music for Knuckles
+//# address-hook(0x07473a) end(0x074764)
+function void fn07473a()
+{
+	if (level.wait_for_results || u8[0xfffffaa2] == 0)
+		return
+
+	if (altlbz2cs.restoremusic)
+		PlayMusicAfterLevelResults()
+
+	base.fn07473a()
 }
 
 // Extra Cutscene Jump Height
@@ -681,7 +659,7 @@ function void fn073056()
 function void fn08d370()
 {
 	// Make tails use the CNZ fly away routine.
-	if (altlbz2cs.tailsflight && camera.position.x.u16 < 0x3bc8)
+	if (altlbz2cs.tailsflight && camera.position.x.u16 < 0x3bc8 && (s16[0xffffb04a + 0x1a] == 0 || u8[0xffffb04a + 0x20] == char.state.TAILS_FLYUP || u8[0xffffb04a + 0x20] == char.state.TAILS_FLYDOWN))
 		tails.ai_routine = 0x10
 	
 	base.fn08d370()
@@ -703,7 +681,7 @@ function void LBZ2MidBossCutscene.stopTailsFromSuicide()
 		RespawnTails()
 		A0 = backupA0
 	}
-	else if (u16[0xffffb04a + 0x10] >= 0x3bb0 && u16[0xffffb000 + 0x10] > 0x3bb0 && (u8[0xffffb04a + 0x20] == char.state.TAILS_FLYUP || u8[0xffffb04a + 0x20] == char.state.TAILS_FLYDOWN)) // We want tails to move to the right while flying.
+	else if (u16[0xffffb000 + 0x10] > 0x3bd9 && (u8[0xffffb04a + 0x20] == char.state.TAILS_FLYUP || u8[0xffffb04a + 0x20] == char.state.TAILS_FLYDOWN)) // We want tails to move to the right while flying.
 	{
 		level.vertical_wrap = camera.position.y.u16 - 0x20 // Otherwise tails bangs his head on the top of the screen.
 		u16[0xffffb04a + 0x18] += 0x04
@@ -797,4 +775,116 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		return (level.framecounter & 1) ? base.Standalone.onDrawVdpSprite(px, py, size, index, renderQueue) : true
 
 	return base.Standalone.onDrawVdpSprite(px, py, size, index, renderQueue)
+}
+
+// Add extra time to the countdown to account for game clear sound being longer.
+//# address-hook(0x02dae6) end(0x02dbc8)
+function void fn02dae6()
+{
+	base.fn02dae6()
+	
+	if (altlbz2cs.gameclear && camera.position.y.u16 > 0x0500 && global.zone_act == 0x0601)
+		objA0.countdown_value = 670
+}
+
+
+// Play game clear sound here
+//# address-hook(0x02dc36) end(0x02dd38)
+function void LevelResults.UpdateBonusCounting()
+{
+	// Only play game clear sound given these conditions
+	if (altlbz2cs.gameclear && camera.position.y.u16 > 0x0500 && global.zone_act == 0x0601) 
+	{
+		if (objA0.countdown_value != 0)
+		{
+			--objA0.countdown_value
+			if (objA0.countdown_value != 599) // Value here is larger to account for longer sample
+				return
+
+			// Reset char.drown_countdown for both characters
+			u8[0xffffb000 + 0x2c] = 30
+			u8[0xffffb04a + 0x2c] = 30
+
+			playMusic(MUSIC_GAMECLEAR)
+			return
+		}
+	}
+	else // Original logic here
+	{
+		if (objA0.countdown_value != 0)
+		{
+			--objA0.countdown_value
+			if (objA0.countdown_value != 289)
+				return
+
+			// Reset char.drown_countdown for both characters
+			u8[0xffffb000 + 0x2c] = 30
+			u8[0xffffb04a + 0x2c] = 30
+
+			playMusic(MUSIC_LEVELCLEAR)
+			return
+		}
+	}
+
+	u16 delta = 10
+#if STANDALONE
+	if (Game.getSetting(SETTING_LEVELRESULT_SCORE))
+	{
+		// Count faster over time
+		if (results.total_bonus >= 3000)
+			delta = 30
+		else if (results.total_bonus >= 1000)
+			delta = 20
+
+		// Allow for manually (more or less) skipping the counter
+		if ((control.pad1.state & (CONTROL_ABC | CONTROL_START)) || Input.buttonDown(BUTTON_Y))
+		{
+			delta = 200
+		}
+	}
+#endif
+
+	D0 = 0
+	if (results.time_bonus != 0)
+	{
+		u16 diff = min(delta, results.time_bonus)
+		D0.u16 += diff
+		results.time_bonus -= diff
+	}
+	if (results.ring_bonus != 0)
+	{
+		u16 diff = min(delta, results.ring_bonus)
+		D0.u16 += diff
+		results.ring_bonus -= diff
+	}
+
+	results.total_bonus += D0.u16
+	if (D0.u16 != 0)
+	{
+		// Still counting
+		addScore(D0)
+		if ((level.framecounter & 0x03) == 0)
+		{
+			playSound(SFX_CLICK)
+		#if STANDALONE
+			Input.setControllerRumble(-1, 0.0f, 0.25f, 100)
+		#endif
+		}
+	}
+	else
+	{
+		// Done
+		playSound(0xb0)
+
+		// Special handling for Sky Sanctuary Zone (S/T) and probably also Lava Reef Boss
+		if (global.zone_act == 0x0a00 || u16[A0 + 0x2c] != 0)
+		{
+			sram.block_interrupts.u8 = 0xff
+			SaveGameOnLevelFinished()
+		}
+
+		objA0.countdown_value = 90
+		objA0.base_state += 2
+		LevelResults.AdvanceToNextAct()
+	}
 }

@@ -5,7 +5,7 @@
 		"UniqueID": "alt-lbz2-cutscene",
 		"Author": "PaperTriangle",
 		"Description": "A more Origins like cutscene for LBZ2.",
-		"ModVersion": "2.0"
+		"ModVersion": "2.1"
 	},
 	"OtherMods":
 	{
@@ -125,14 +125,15 @@
 			},
 			{
 				"InternalName": "altlbz2cs.stopmusic",
-				"DisplayName": "Stop Music After Boss",
+				"DisplayName": "Change Music After Boss",
 				"Variable": "altlbz2cs.stopmusic",
 				"Category": "Post-Fight Settings",	
 				"DefaultValue": "0",
 				"Options":
 				{
 					"0": "Disabled",
-					"1": "Enabled"
+					"1": "Enabled (Stop Music)",
+					"2": "Enabled (Stage Music)"
 				}
 			},
 			{
@@ -157,6 +158,18 @@
 				{
 					"0": "Stage Clear",
 					"1": "Game Clear"
+				}
+			},
+			{
+				"InternalName": "altlbz2cs.restoremusic",
+				"DisplayName": "Restore Music After Fanfare",
+				"Variable": "altlbz2cs.restoremusic",
+				"Category": "Post-Fight Settings",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
 				}
 			},
 			{
