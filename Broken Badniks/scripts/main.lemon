@@ -47,7 +47,7 @@ function void BB.Particle.Update()
 	
 	objA0.flags38 += 0x01
 	
-	if (objA0.flags38 & 0x02)						// Don't always render the object, to give it that breaking feeling.
+	if (objA0.flags38 & 0x01)			// Don't always render the object, to give it that breaking feeling.
 		DrawObject()
 
 	
