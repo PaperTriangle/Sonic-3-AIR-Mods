@@ -36,3 +36,12 @@ function void UpdatePaletteEffects.SuperForm.blendFlicky(u32 source1, u32 source
 		u16[0x802004 + offset + k] = blendColorsPacked(u16[source1 + k], u16[source2 + k], blendFactor)
 	}
 }
+
+
+function void UpdatePaletteEffects.SuperForm.applyGeneral(u8 characterVersion, u32 source)
+{
+	if (characterVersion == 0xff)
+		characterVersion = 1
+		
+	base.UpdatePaletteEffects.SuperForm.applyGeneral(characterVersion, source)
+}
