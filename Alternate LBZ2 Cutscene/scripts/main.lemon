@@ -138,6 +138,9 @@ function void fn072dea()
 function void fn072e54()
 {
 	base.fn072e54()
+	
+	objA0.position.x.u16 += getScreenExtend()
+	
 	if (level.framecounter & 1)
 		objA0.sprite_attributes |= sprite_attribute.PRIORITY
 }
