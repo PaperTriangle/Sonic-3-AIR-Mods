@@ -1,8 +1,0 @@
-// Push HUD higher
-function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
-{
-	if (objA0.update_address == 0x02d8e2)
-		return base.Standalone.onWriteToSpriteTable(px, py, renderQueue + 0x4800)
-
-	return base.Standalone.onWriteToSpriteTable(px, py, renderQueue)
-}
