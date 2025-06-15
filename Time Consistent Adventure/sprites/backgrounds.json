@@ -6,6 +6,11 @@
 	"lbz_icon_knux": { "File": "lbz_icon_knux.bmp", "Rect": "0,0,80,56"},
 	"soz_icon": { "File": "soz_icon.bmp", "Rect": "0,0,80,56"},
 	"ssz_icon_compat": { "File": "ssz_icon_compat.bmp", "Rect": "0,0,80,56"},
+	"ssz_icon_dawn": { "File": "ssz_icon_dawn.bmp", "Rect": "0,0,80,56"},
 	"ssz_icon_knux": { "File": "ssz_icon_knux.bmp", "Rect": "0,0,80,56"},
-	"ssz_icon_knux_released": { "File": "ssz_icon_knux_released.bmp", "Rect": "0,0,80,56"}
+	"ssz_icon_knux_released": { "File": "ssz_icon_knux_released.bmp", "Rect": "0,0,80,56"},
+	
+	"ssz_rubble": { "File": "ssz_rubble.bmp", "Rect": "0,0,40,16", "Center": "20,-8"},
+	"master_emerald": { "File": "master_emerald.bmp", "Rect": "0,0,64,48", "Center": "32,24"},
+	"master_emerald_flash": { "File": "master_emerald_flash.bmp", "Rect": "0,0,64,48", "Center": "32,24"}
 }

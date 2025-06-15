@@ -18,20 +18,20 @@
 	"FBZ_Cloud_Fix": {
 		"File": "FBZ_Cloud_Fix.bin"
 	},
-	"FBZ1_Palette": {
-		"File": "FBZ1_Outdoors_Palette.bin"
+	"FBZ_Palette": {
+		"File": "FBZ_Outdoors_Palette.bin"
 	},
-	"FBZ2_Palette_1": {
-		"File": "FBZ2_Outdoors_Palette_1.bin"
+	"FBZ_Palette_Alt": {
+		"File": "FBZ_Outdoors_Palette_Alt.bin"
 	},
-	"FBZ2_Palette_2": {
-		"File": "FBZ2_Outdoors_Palette_2.bin"
+	"FBZ_Palette_Boss": {
+		"File": "FBZ_Outdoors_Palette_Boss.bin"
 	},
-	"FBZ2_Palette_1_Released": {
-		"File": "FBZ2_Outdoors_Palette_1_Released.bin"
+	"FBZ_Palette_Released": {
+		"File": "FBZ_Outdoors_Palette_Released.bin"
 	},
-	"FBZ2_Palette_2_Released": {
-		"File": "FBZ2_Outdoors_Palette_2_Released.bin"
+	"FBZ_Palette_Boss_Released": {
+		"File": "FBZ_Outdoors_Palette_Boss_Released.bin"
 	},
 	"LBZ1_Palette": {
 		"File": "LBZ1_Palette.bin"
@@ -102,6 +102,10 @@
 	"SSZ_Zone_Card_Sonic":
 	{
 		"File": "SSZ_Zone_Card_Sonic.bin"
+	},
+	"SSZ_Zone_Card_Sonic_Dawn":
+	{
+		"File": "SSZ_Zone_Card_Sonic_Dawn.bin"
 	},
 	"SSZ_Zone_Card_Sonic_Compat":
 	{

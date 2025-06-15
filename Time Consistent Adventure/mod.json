@@ -184,6 +184,18 @@
 				}
 			},
 			{
+				"InternalName": "tca.fbz_bg",
+				"DisplayName": "FBZ2 Outdoor Palette",
+				"Variable": "tca.fbz_bg",
+				"Category": "Extra Settings",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Darker",
+					"1": "Lighter"
+				}
+			},
+			{
 				"InternalName": "tca.bg_stars",
 				"DisplayName": "Enable Starry Skies",
 				"Variable": "tca.bg_stars",
@@ -191,8 +203,8 @@
 				"DefaultValue": "1",
 				"Options":
 				{
-					"0": "Off",
-					"1": "On"
+					"0": "Disabled",
+					"1": "Enabled"
 				}
 			},
 			{
@@ -203,20 +215,46 @@
 				"DefaultValue": "1",
 				"Options":
 				{
-					"0": "Off",
-					"1": "On"
+					"0": "Disabled",
+					"1": "Enabled"
 				}
 			},
 			{
 				"InternalName": "tca.fbz_explosions",
-				"DisplayName": "Explosions in FBZ",
+				"DisplayName": "FBZ2 Ending Explosions",
 				"Variable": "tca.fbz_explosions",
 				"Category": "Extra Settings",	
 				"DefaultValue": "1",
 				"Options":
 				{
-					"0": "Off",
-					"1": "On"
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "tca.ssz_trans_point",
+				"DisplayName": "SSZ Sonic Tansition Point",
+				"Variable": "tca.ssz_trans_point",
+				"Category": "Extra Settings",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Zone Start",
+					"1": "Knuckles Switch",
+					"2": "First Vertical Spring",
+					"3": "Egg Wrecker Teleport"
+				}
+			},
+			{
+				"InternalName": "tca.ssz_icon",
+				"DisplayName": "SSZ Dawn Icon",
+				"Variable": "tca.ssz_icon",
+				"Category": "Extra Settings",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
 				}
 			},
 			{
@@ -227,8 +265,36 @@
 				"DefaultValue": "1",
 				"Options":
 				{
-					"0": "Off",
-					"1": "On"
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "tca.ssz_knux_emerald",
+				"DisplayName": "SSZ Master Emerald Palette",
+				"Variable": "tca.ssz_knux_emerald",
+				"Category": "Extra Settings",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Stage Palette",
+					"1": "Extended Palette"
+				}
+			},
+			{
+				"InternalName": "tca.bmpline",
+				"DisplayName": "Master Emerald Palette Line",
+				"Variable": "tca.bmpline",
+				"Category": "Extra Settings",	
+				"DefaultValue": "5",
+				"Options":
+				{
+					"0": "10",
+					"1": "11",
+					"2": "12",
+					"3": "13",
+					"4": "14",
+					"5": "15"
 				}
 			},
 			{

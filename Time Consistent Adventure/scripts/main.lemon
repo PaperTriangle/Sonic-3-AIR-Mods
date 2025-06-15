@@ -12,11 +12,16 @@ global bool tca.intended
 global bool tca.fadetype
 global bool tca.mgz2boss
 global bool tca.leftescape
+global bool tca.fbz_bg
 global bool tca.fbz_explosions
+global u8 tca.ssz_trans_point
 global bool tca.ssz_knux_csfix
 global bool tca.ssz_knux_fade
+global bool tca.ssz_knux_emerald
+global u8 tca.bmpline
 global bool tca.bg_stars
 global bool tca.zone_icons
+global bool tca.ssz_icon
 
 global u8 transition_state = 0
 global u16 transition_time = 0
@@ -28,13 +33,13 @@ constant array<u16> NEW_MGZ_PALETTE = {0x4ae, 0x26c, 0x24a, 0x026, 0x004, 0x000,
 constant array<u16> NEW_TRANSITION = {0x422, 0x402, 0x202, 0x200, 0x000, 0x682, 0x480, 0x460, 0x440, 0x220, 0x624, 0x624, 0x624, 0x422, 0x200}
 
 constant array<u16> FBZ_TRANSITION = {0xeec, 0xeea, 0xec8, 0xea6, 0xe82, 0xe60, 0xeee, 0xeea}
-constant array<u16> NEW_FBZ_PALETTE = {0xeac, 0xe8a, 0xe68, 0xe48, 0xe46, 0xe26, 0xece, 0xeae}
+constant array<u16> NEW_FBZ_PALETTE = {0xeee, 0xece, 0xeac, 0xe8a, 0xe68, 0xe48, 0xeae, 0xeac}
 
 constant array<u16> NEW_ICZ_PALETTE = {0xeee, 0xeea, 0xec8, 0xea4, 0xc82, 0xc60, 0xc40, 0xe20, 0xa00, 0xe00, 0x000, 0xec0, 0xa80, 0xc60, 0xea4}
-constant array<u16> OLD_ICZ_PALETTE = {0xeec, 0xcc6, 0xc80, 0xc60, 0xc40, 0xa40, 0x820, 0x620, 0x200, 0x600, 0x600, 0xec0, 0xa80, 0xc60, 0xea4}
+constant array<u16> OLD_ICZ_PALETTE = {0xcee, 0xcca, 0xc86, 0xc64, 0xc44, 0xa44, 0x824, 0x624, 0x200, 0x604, 0x202, 0xec0, 0xa80, 0xc64, 0xea8}
 
 constant array<u16> SSZ_SKY = {0xeee, 0xeea, 0xec8, 0xea6, 0xe84, 0xe42, 0xe60}
-constant array<u16> SSZ_SKY_MORNING = {0xeac, 0xe8a, 0xe68, 0xe48, 0xe46, 0xe26, 0xe48}
+constant array<u16> SSZ_SKY_MORNING = {0xeee, 0xaee, 0x8ce, 0x8ae, 0x6ae, 0xa8e, 0x88e}
 constant array<u16> SSZ_KNUX_END = {0xeee, 0xaee, 0x68e, 0x66a, 0x646, 0x622, 0x424, 0xee0, 0x4c2, 0x482, 0x460, 0x408, 0x40c, 0x0042, 0x6a0, 0x000, 0xeee, 0xeea, 0xec8, 0xea6, 0xe84, 0xe42, 0xe60, 0xcee, 0xaee, 0x2cc, 0x0c4, 0x080, 0x0a6, 0x064, 0x220}
 
 
@@ -58,7 +63,7 @@ function void yieldExecution()
 		if (tca.soz)
 			System.loadExternalRawData("SOZ_Day_Fix", 0x1AA36A)
 		
-		if (tca.hpz)
+		if (tca.hpz && global.zone_act == 0x1601)
 		{
 			System.loadExternalRawData("HPZ_Roof_Fix_1", 0x1BEE58)
 			System.loadExternalRawData("HPZ_Roof_Fix_2", 0x1C3F2C)
@@ -82,7 +87,9 @@ function void yieldExecution()
 			if (tca.soz)
 				System.loadExternalRawData("SOZ_Zone_Card_Sonic", 0x00CC18)
 
-			if (tca.ssz_sonic && Mods.isModActive("Moar Transparency") && System.getGlobalVariableValueByName("mt.teleframe"))
+			if (tca.ssz_icon && tca.ssz_sonic)
+				System.loadExternalRawData("SSZ_Zone_Card_Sonic_Dawn", 0x00CC78)
+			else if (tca.ssz_sonic && Mods.isModActive("Moar Transparency") && System.getGlobalVariableValueByName("mt.teleframe"))
 				System.loadExternalRawData("SSZ_Zone_Card_Sonic_Compat", 0x00CC78)
 			else if (tca.ssz_sonic || tca.ssz_knux)
 				System.loadExternalRawData("SSZ_Zone_Card_Sonic", 0x00CC78)
@@ -164,7 +171,7 @@ function void yieldExecution()
 	}
 	else if (tca.fbz && global.zone_act == 0x0400 && tca.intended) // FBZ Act 1
 	{
-		System.loadExternalRawData("FBZ1_Palette", 0x052dd0)
+		System.loadExternalRawData("FBZ_Palette", 0x052dd0)
 		
 		// I am checking a palette pixel here to decide if I am inside or not.
 		// I thought this may break with Hyper Sonic's dash... But it seems fine?
@@ -181,9 +188,9 @@ function void yieldExecution()
 	{
 
 		if (camera.position.x.u16 >= 0x2980)
-			System.loadExternalRawData("FBZ2_Palette_2", 0x052dd0)
+			System.loadExternalRawData("FBZ_Palette_Boss", 0x052dd0)
 		else
-			System.loadExternalRawData("FBZ2_Palette_1", 0x052dd0)
+			System.loadExternalRawData(tca.fbz_bg ? "FBZ_Palette_Alt" : "FBZ_Palette", 0x052dd0)
 		
 		if (transition_state >= 1 && transition_time <= 0x78)
 		{	
@@ -202,9 +209,9 @@ function void yieldExecution()
 	{
 
 		if (camera.position.x.u16 >= 0x2980)
-			System.loadExternalRawData("FBZ2_Palette_2_Released", 0x052dd0)
+			System.loadExternalRawData("FBZ_Palette_Boss_Released", 0x052dd0)
 		else
-			System.loadExternalRawData("FBZ2_Palette_1_Released", 0x052dd0)
+			System.loadExternalRawData("FBZ_Palette_Released", 0x052dd0)
 
 	}
 	else if (tca.icz && global.zone == 0x05) // ICZ Act 1 & 2
@@ -245,12 +252,16 @@ function void yieldExecution()
 	}
 	else if (tca.ssz_sonic && global.zone_act == 0x0a00 && tca.intended) // SSZ Sonic
 	{
-		if (checkpoint.number == 0)
+		if (checkpoint.number < (tca.ssz_trans_point < 2 ? 1 : 2) )
 			System.loadExternalRawData("SSZ1_Palette_Morning", 0x0A973C)
 		else
 			System.loadExternalRawData("SSZ1_Palette_Original", 0x0A973C)
 
-		if (camera.position.y.u16 > 0xce0 && checkpoint.number == 0)
+		if (tca.ssz_trans_point == 0 && camera.position.y.u16 < 0xc80 && checkpoint.number < 1 )
+			transition_state = 1
+		else if (tca.ssz_trans_point == 2 && camera.position.y.u16 < 0xa80 && checkpoint.number < 2 )
+			transition_state = 1
+		else if (tca.ssz_trans_point == 3 && camera.position.y.u16 < 0x700 && checkpoint.number < 2 )
 			transition_state = 1
 		
 		if (transition_state == 1 && transition_time <= 0x78)
@@ -260,7 +271,7 @@ function void yieldExecution()
 			{
 				for (u8 i = 0; i < SSZ_SKY.length(); i++)
 				{
-					u16[0xfffffc00 + (0x31 + i)*2] = blendColorsPacked(u16[0x0A971C + (0x31 + i)*2], SSZ_SKY[i], min(256, transition_time * 2 + transition_time / 8 + 1))
+					u16[0xfffffc00 + (0x31 + i)*2] = blendColorsPacked(u16[0x0A971C + (0x31 + i)*2], SSZ_SKY[i], min(0xff, transition_time * 2 + transition_time / 8 + 1))
 				}
 			}
 		}	
@@ -309,8 +320,11 @@ function void yieldExecution()
 				{
 					for (u8 i = 0; i < SSZ_KNUX_END.length(); i++)
 					{
-						u16[0xfffffc00 + (0x21 + i)*2] = blendColorsPacked(u16[0x0A977C + (0x21 + i)*2], SSZ_KNUX_END[i], min(256, transition_time * 2 + transition_time / 8 + 1))
-						u16[0xfffffc00 + 0x80 + (0x21 + i)*2] = blendColorsPacked(u16[0x0A977C + (0x21 + i)*2], SSZ_KNUX_END[i], min(256, transition_time * 2 + transition_time / 8 + 1))
+						if (i != 13 && i != 14)
+						{
+							u16[0xfffffc00 + (0x21 + i)*2] = blendColorsPacked(u16[0x0A977C + (0x21 + i)*2], SSZ_KNUX_END[i], min(256, transition_time * 2 + transition_time / 8 + 1))
+							u16[0xfffffc00 + 0x80 + (0x21 + i)*2] = blendColorsPacked(u16[0x0A977C + (0x21 + i)*2], SSZ_KNUX_END[i], min(256, transition_time * 2 + transition_time / 8 + 1))
+						}
 					}
 				}
 
@@ -330,8 +344,11 @@ function void yieldExecution()
 			{
 				for (u8 i = 0; i < SSZ_KNUX_END.length(); i++)
 				{
-					u16[0xfffffc00 + (0x21 + i)*2] = blendColorsPacked(u16[0x0A977C + (0x21 + i)*2], SSZ_KNUX_END[i], min(256, transition_time * 2 + transition_time / 8 + 1))
-					u16[0xfffffc00 + 0x80 + (0x21 + i)*2] = blendColorsPacked(u16[0x0A977C + (0x21 + i)*2], SSZ_KNUX_END[i], min(256, transition_time * 2 + transition_time / 8 + 1))
+					if (i != 13 && i != 14)
+					{
+						u16[0xfffffc00 + (0x21 + i)*2] = blendColorsPacked(u16[0x0A977C + (0x21 + i)*2], SSZ_KNUX_END[i], min(256, transition_time * 2 + transition_time / 8 + 1))
+						u16[0xfffffc00 + 0x80 + (0x21 + i)*2] = blendColorsPacked(u16[0x0A977C + (0x21 + i)*2], SSZ_KNUX_END[i], min(256, transition_time * 2 + transition_time / 8 + 1))
+					}
 				}
 			}
 			
@@ -383,6 +400,11 @@ function void fn00d96a()
 				SpriteHandle dataselpreview = Renderer.addSpriteHandle("ssz_icon_knux", (objA0.position.x.u16 + getScreenExtend() - 208) - getScreenExtend() + 40, 16, 0x9ff9)
 				dataselpreview.setFlags(0x40)
 			}
+			else if (tca.ssz_icon && tca.ssz_sonic)
+			{
+				SpriteHandle dataselpreview = Renderer.addSpriteHandle("ssz_icon_dawn", (objA0.position.x.u16 + getScreenExtend() - 208) - getScreenExtend() + 40, 16, 0x9ff9)
+				dataselpreview.setFlags(0x40)
+			}
 			else if (tca.ssz_sonic && Mods.isModActive("Moar Transparency") && System.getGlobalVariableValueByName("mt.teleframe"))
 			{
 				SpriteHandle dataselpreview = Renderer.addSpriteHandle("ssz_icon_compat", (objA0.position.x.u16 + getScreenExtend() - 208) - getScreenExtend() + 40, 16, 0x9ff9)
@@ -432,16 +454,43 @@ function void fn00d96a()
 
 function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 index, u16 renderQueue, u8 spriteCounter)
 {
-		// New Save Slot Arrows
-		if (objA0.update_address == 0x00d42c && (index == 0x93bd || index == 0x83bd))
-		{
-			Renderer.drawVdpSprite(px, py, size, index, 0x9ffa)
-			return true
-		}
+	// New Save Slot Arrows
+	if (objA0.update_address == 0x00d42c && (index == 0x93bd || index == 0x83bd))
+	{
+		Renderer.drawVdpSprite(px, py, size, index, 0x9ffa)
+		return true
+	}
 
 	return base.Standalone.onDrawVdpSpriteCompound(px, py, size, index, renderQueue, spriteCounter)
 }
 
+function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
+{
+	// Extended palette version of the Master Emerald
+	if (tca.ssz_knux_emerald && global.zone_act == 0x0a01)
+	{
+		if (objA0.update_address == 0x07c856 || objA0.update_address == 0x07c864)
+		{
+			Renderer.drawSprite("ssz_rubble", px, py, 0x30, SPRITE_FLAG_PRIO, renderQueue, 0, 0xff)
+			
+			if (objA0.animation.sprite == 0)
+				Renderer.drawSprite("master_emerald", px, py, 0xa0 + tca.bmpline * 0x10, SPRITE_FLAG_PRIO, renderQueue - 1, 0, 0xff)
+			else
+				Renderer.drawSprite("master_emerald_flash", px, py, 0xa0 + tca.bmpline * 0x10, SPRITE_FLAG_PRIO, renderQueue - 1, 0, 0xff)
+			
+			return true
+		}
+		
+		if (objA0.update_address == 0x05ebe4)
+		{
+			Renderer.drawSprite("master_emerald", px, py, 0xa0 + tca.bmpline * 0x10, SPRITE_FLAG_PRIO, renderQueue, 0, 0xff)
+			
+			return true
+		}
+	}
+	
+	return base.Standalone.onWriteToSpriteTable(px, py, renderQueue)
+}
 
 //-----------------------
 // MGZ Specific Functions
@@ -462,6 +511,7 @@ function void fn0511c8()
 	transition_time = 0
 }
 
+// Start transition to night
 //# address-hook(0x06d104) end(0x06d138)
 function void fn06d104()
 {
@@ -488,7 +538,6 @@ function void fn06d104()
 }
 
 // Spawn MGZ2 boss closer to the edge
-
 //# address-hook(0x01c96e) end(0x01c9c6)
 function void fn01c96e()
 {
@@ -535,6 +584,7 @@ function void fn01c96e()
 // CNZ Specific Functions
 //-----------------------
 
+// Make Eggman escape in the direction of FBZ
 //# address-hook(0x067f1e) end(0x067f38)
 function void fn067f1e()
 {
@@ -735,7 +785,7 @@ function void fn23e1aa()
 	}
 }
 
-// Force knux onto dawn palette and sonic onto day
+// Force knux onto the new dawn palette and sonic onto day
 //# address-hook(0x23e20e) end(0x23e23c)
 function void fn23e20e()
 {
@@ -750,21 +800,21 @@ function void fn23e20e()
 		if ((global.game_mode & 0x80) == 0)
 		{
 			A1 = 0xfffffc62
-			u32[(A1+=4)-4] = 0x0eec0cc6
-			u32[(A1+=4)-4] = 0x0c800c60
-			u32[(A1+=4)-4] = 0x0c400a40
-			u32[(A1+=4)-4] = 0x08200620
-			u32[0xfffffc7c] = 0x0c600ea4	// New line, corrects original S3&K glitch with brightest two colors in background reflections on water
-			objA1.update_address = 0x02000600
+			u32[(A1+=4)-4] = 0x0cee0cca
+			u32[(A1+=4)-4] = 0x0c860c64
+			u32[(A1+=4)-4] = 0x0c440a44
+			u32[(A1+=4)-4] = 0x08240624
+			u32[0xfffffc7c] = 0x0c640ea8	// New line, corrects original S3&K glitch with brightest two colors in background reflections on water
+			objA1.update_address = 0x02020604
 		}
 
 		A1 = 0xfffffce2
-		u32[(A1+=4)-4] = 0x0eec0cc6
-		u32[(A1+=4)-4] = 0x0c800c60
-		u32[(A1+=4)-4] = 0x0c400a40
-		u32[(A1+=4)-4] = 0x08200620
-		u32[0xfffffc7c] = 0x0c600ea4	// New line, corrects original S3&K glitch with brightest two colors in background reflections on water
-		objA1.update_address = 0x02000600
+		u32[(A1+=4)-4] = 0x0cee0cca
+		u32[(A1+=4)-4] = 0x0c860c64
+		u32[(A1+=4)-4] = 0x0c440a44
+		u32[(A1+=4)-4] = 0x08240624
+		u32[0xfffffc7c] = 0x0c640ea8	// New line, corrects original S3&K glitch with brightest two colors in background reflections on water
+		objA1.update_address = 0x02020604
 	}
 	else
 	{
@@ -773,10 +823,98 @@ function void fn23e20e()
 	}
 }
 
+//-----------------------
+// SOZ Specific Functions
+//-----------------------
+
+// Fix for allowing stage to go too far at boss
+//# address-hook(0x055a7a) end(0x055a7e)
+function void UpdateLevelScrolling.SOZ1()
+{
+	move_area.right = 0x4438 - 0x128
+	move_area.right.target = 0x4438 - 0x128
+	base.UpdateLevelScrolling.SOZ1()
+}
+
+// Allow camera to focus on player in SOZ1 intro.
+//# address-hook(0x044a26) end(0x044a62)
+function void fn044a26()
+{
+	player1.control_override = 1
+	control.player1 = 0x0800		// CONTROL_RIGHT, 0
+
+	if (global.zone_act != 0x0800)
+	{
+		camera.use_forced_target = true			// Forces camera to a certain position
+		camera.forced_target.x = u16[A0 + 0x30]
+		camera.forced_target.y = objA0.value32
+	}
+
+	D0.u16 = u16[0xffffb000 + 0x10] + 0x10
+	if (D0.u16 < u16[A0 + 0x30])
+		return
+
+	player1.control_override = 0
+	player2.control_override = 0
+	UnloadObject()
+}
+
 //--------------------------------
 // SSZ / Ending Specific Functions
 //--------------------------------
 
+// Prevent palette shenanigans near the act start
+//# address-hook(0x0659cc) end(0x065a2c)
+function void fn0659cc()
+{
+	setupObjectAttributesFull(0x0664aa)
+	objA0.update_address = 0x065a30
+
+	objA0.position.x.u16 = 0x0200
+	objA0.position.y.u16 = 0x0c68
+	objA0.velocity.y = 0x0c68
+	u16[A0 + 0x40] = 0xffc0
+	objA0.countdown_value = 0x0100
+	global.random.seed = global.framecounter
+
+	// "spawnChildObjects(0x0665c4)" replaced by:
+	spawnChildObject(0x065b0e, 0x00, 0, 0)
+	spawnChildObject(0x065a8c, 0x02, 0, -51)
+	spawnChildObject(0x065b42, 0x04, -32, 29)
+	spawnChildObject(0x065b42, 0x06, -16, 29)
+	spawnChildObject(0x065b42, 0x08, 8, 29)
+	spawnChildObject(0x065b42, 0x0a, 16, 29)
+	spawnChildObject(0x065b42, 0x0c, 40, 29)
+
+	copyMemory(0xfffffce0, 0xfffffc60, 0x20)
+
+	A1 = 0x0669b2 + 0x10
+	A2 = 0xfffffc70 
+	D0 = 0x07 
+	while (D0.s16 >= 0)
+	{
+		D1.u16 = u16[(A1+=2)-2]
+		if (D1.u16 != 0)
+		{
+			u16[A2] = D1.u16
+		}
+		A2 += 2
+		--D0.s16
+	}
+
+	fn065a30()
+}
+
+// Transition at switch
+//# address-hook(0x0658f2) end(0x065944)
+function void fn0658f2()
+{
+	base.fn0658f2()
+	if (tca.ssz_trans_point == 1)
+		transition_state = 1
+}
+
+// Knux Ending transition
 //# address-hook(0x05e80a) end(0x05e830)
 function void fn05e80a()
 {
@@ -796,6 +934,7 @@ function void fn05e80a()
 	}
 }	
 
+// Disable Knuckles' Stars during screen flash
 //# address-hook(0x085ee6) end(0x085ef2)
 function void fn085ee6()
 {
@@ -822,6 +961,48 @@ function void fn07ccb0()
 	objA1.animation.sprite = 0xcb
 	
 	UnloadObject()
+}
+
+// Write Master Emerald palette to extended palette line.
+//# address-hook(0x07c818) end(0x07c854)
+function void fn07c818()
+{
+	base.fn07c818()
+	
+	if (tca.ssz_knux_emerald && global.zone_act == 0x0a01)
+	{
+		u16 offset = 3 * 0x40 + tca.bmpline * 0x20
+		
+		u16[0x802002 + offset] = 0xeee
+		u16[0x802004 + offset] = 0xee0
+		u16[0x802006 + offset] = 0x6a0
+		u16[0x802008 + offset] = 0x482
+		u16[0x80200a + offset] = 0x460
+		u16[0x80200c + offset] = 0x622
+		
+		u16[0x802182 + offset] = 0xeee
+		u16[0x802184 + offset] = 0xee0
+		u16[0x802186 + offset] = 0x6a0
+		u16[0x802188 + offset] = 0x482
+		u16[0x80218a + offset] = 0x460
+		u16[0x80218c + offset] = 0x622
+	}
+	
+}
+
+// Place Master Emerald glow cycle on extended palette line
+//# address-hook(0x085a1a) end(0x085a58)
+function void fn085a1a()
+{
+	base.fn085a1a()
+	
+	if (tca.ssz_knux_emerald && global.zone_act == 0x0a01)
+	{
+		u16 offset = 3 * 0x40 + tca.bmpline * 0x20
+		
+		u16[0x802006 + offset] = u16[0xfffffc5e]
+		u16[0x802008 + offset] = u16[0xfffffc5c]
+	}
 }
 
 //------------------
