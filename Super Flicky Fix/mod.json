@@ -5,12 +5,23 @@
 		"UniqueID": "super-flicky-fix",
 		"Author": "PaperTriangle",
 		"Description": "Fixes handling of the super flicky to use Sonic's extended palette.",
-		"ModVersion": "1.1"
+		"ModVersion": "1.2"
 	},
 	"Settings":
 	{
 		"List":
 		[
+			{
+				"InternalName": "sff.behind_tiles",
+				"DisplayName": "Flicks Go Behind Tiles",
+				"Variable": "sff.behind_tiles",
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
 			{
 				"InternalName": "sff.green_eyes",
 				"DisplayName": "Super Flicky Eye Colour",
