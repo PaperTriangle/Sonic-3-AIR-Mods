@@ -4,7 +4,8 @@ global bool bb.ribit
 global bool bb.skorp
 global bool bb.dragonfly
 global bool bb.spikebonker
-global bool bb.cutsceneadjust
+global u8 bb.cutsceneadjust
+global bool bb.cutsceneadjust2
 global bool bb.firebreath
 global bool bb.twinhammer
 global bool bb.lbztriggers
@@ -537,6 +538,68 @@ function void fn068508()
 	// Move to the right for widescreen
 	objA0.position.x.u16 += getScreenExtend() * bb.cutsceneadjust			// 0x02 is the conifg option for closer to wall.
 #endif
+}
+
+// Add some more offset to the explosions for widescreen
+//# address-hook(0x068ee4)
+function void fn068ee4()
+{
+	if (!bb.cutsceneadjust2 || global.zone_act != 0x0000)
+	{
+		base.fn068ee4()
+		return
+	}
+	
+	D0.u16 >>= 1
+	D1.u8 = u8[A1 + 0x39] + 4
+	u8[A1 + 0x39] = D1.u8
+	D1.u16 &= 0x0c
+	D0.u16 += D1.u16
+
+	if (objA1.render_flags & render_flag.FLIP_X)
+	{
+		A2 = 0x068f3e
+		A3 = 0x068f58
+	}
+	else
+	{
+		A2 = 0x068f2e
+		A3 = 0x068f4e
+	}
+
+	// Determine where the rocket comes down
+	//  -> Note that this is used for both the transition cutscene and the boss fight (where rockets appear only for Knuckles)
+	D0.u8 = u8[A2 + D0.u16]
+	u16 offset = u16[A3 + D0.u16 * 2]
+#if STANDALONE
+	u32 extraOffset = min(getRandomNumber() >> 25, getScreenExtend() * 4 - 1)
+	offset = u32(offset) * getScreenWidth() / 320 + ((extraOffset & 1) ? extraOffset : 0)
+#endif
+	objA0.position.x.u16 = camera.position.x.u16 + offset
+	objA0.velocity.y = 0x400
+}
+
+// Make explosions appear over more of screen width
+//# address-hook(0x083e90)
+function void fn083e90()
+{
+	if (!bb.cutsceneadjust2 || global.zone_act != 0x0000)
+	{
+		base.fn083e90()
+		return
+	}
+
+	GetRandomNumber()
+	D1 = objA0.value3a
+	D2 = D1.u16 * 2 - 1
+	D0.u16 = (D0.u16 & D2.u16) - D1.u16
+	objA1.position.x.u16 += D0.u16 + ( (D0.u16 % 8 < 4) ? getScreenExtend() * 4 : -getScreenExtend() * 2)
+
+	D0 = (D0 << 16) + (D0 >> 16)
+	D1 = objA0.value3b
+	D2.u16 = D1.u16 * 2 - 1
+	D0.u16 = (D0.u16 & D2.u16) - D1.u16
+	objA1.position.y.u16 += D0.u16
 }
 
 // Fix bug where signpost can appear behind trees in AIZ1.

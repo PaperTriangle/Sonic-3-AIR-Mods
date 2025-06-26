@@ -5,7 +5,7 @@
 		"UniqueID": "broken-badniks",
 		"Author": "PaperTriangle",
 		"Description": "Adds some breaking bits to certain badniks.",
-		"ModVersion": "1.3"
+		"ModVersion": "1.4"
 	},
 	"OtherMods":
 	{
@@ -90,6 +90,18 @@
 				{
 					"1": "Default A.I.R.",
 					"2": "Closer to the Edge"
+				}
+			},
+			{
+				"InternalName": "bb.cutsceneadjust2",
+				"DisplayName": "AIZ Cutscene Effects",
+				"Variable": "bb.cutsceneadjust2",
+				"Category": "Mini-Boss Adjustments",
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Default A.I.R.",
+					"1": "Updated Positions"
 				}
 			},
 			{
