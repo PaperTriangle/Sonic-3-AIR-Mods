@@ -14,14 +14,19 @@ global bool tca.mgz2boss
 global bool tca.leftescape
 global bool tca.fbz_bg
 global bool tca.fbz_explosions
+global bool tca.icz_trans_point
+global bool tca.icz_trans_fade
 global u8 tca.ssz_trans_point
 global bool tca.ssz_knux_csfix
 global bool tca.ssz_knux_fade
+global bool tca.ssz_knux_longdawn
 global bool tca.ssz_knux_emerald
 global u8 tca.bmpline
 global bool tca.bg_stars
 global bool tca.zone_icons
 global bool tca.ssz_icon
+
+global bool tca.pal_ssz_dawn
 
 global u8 transition_state = 0
 global u16 transition_time = 0
@@ -36,10 +41,12 @@ constant array<u16> FBZ_TRANSITION = {0xeec, 0xeea, 0xec8, 0xea6, 0xe82, 0xe60, 
 constant array<u16> NEW_FBZ_PALETTE = {0xeee, 0xece, 0xeac, 0xe8a, 0xe68, 0xe48, 0xeae, 0xeac}
 
 constant array<u16> NEW_ICZ_PALETTE = {0xeee, 0xeea, 0xec8, 0xea4, 0xc82, 0xc60, 0xc40, 0xe20, 0xa00, 0xe00, 0x000, 0xec0, 0xa80, 0xc60, 0xea4}
+constant array<u16> MID_ICZ_PALETTE = {0xeee, 0xecc, 0xeaa, 0xe88, 0xc66, 0xc44, 0xc24, 0xe24, 0xa24, 0xc04, 0x000, 0xeca, 0xa86, 0xc64, 0xea8}
 constant array<u16> OLD_ICZ_PALETTE = {0xcee, 0xcca, 0xc86, 0xc64, 0xc44, 0xa44, 0x824, 0x624, 0x200, 0x604, 0x202, 0xec0, 0xa80, 0xc64, 0xea8}
 
 constant array<u16> SSZ_SKY = {0xeee, 0xeea, 0xec8, 0xea6, 0xe84, 0xe42, 0xe60}
-constant array<u16> SSZ_SKY_MORNING = {0xeee, 0xaee, 0x8ce, 0x8ae, 0x6ae, 0xa8e, 0x88e}
+constant array<u16> SSZ_SKY_MORNING = {0xeee, 0xaee, 0x68e, 0x66a, 0x646, 0x622, 0x424, 0xee0, 0x4c2, 0x482, 0x460, 0x408, 0x40c, 0x0042, 0x6a0, 0x000, 0xeee, 0xecc, 0xeaa, 0xe88, 0xe68, 0xc46, 0xe46}
+constant array<u16> SSZ_SKY_MORNING_PINK = {0xeee, 0xaee, 0x68e, 0x66a, 0x646, 0x622, 0x424, 0xee0, 0x4c2, 0x482, 0x460, 0x408, 0x40c, 0x0042, 0x6a0, 0x000, 0xeee, 0xaee, 0x8ce, 0x8ae, 0x6ae, 0xa8e, 0x88e}
 constant array<u16> SSZ_KNUX_END = {0xeee, 0xaee, 0x68e, 0x66a, 0x646, 0x622, 0x424, 0xee0, 0x4c2, 0x482, 0x460, 0x408, 0x40c, 0x0042, 0x6a0, 0x000, 0xeee, 0xeea, 0xec8, 0xea6, 0xe84, 0xe42, 0xe60, 0xcee, 0xaee, 0x2cc, 0x0c4, 0x080, 0x0a6, 0x064, 0x220}
 
 
@@ -88,7 +95,7 @@ function void yieldExecution()
 				System.loadExternalRawData("SOZ_Zone_Card_Sonic", 0x00CC18)
 
 			if (tca.ssz_icon && tca.ssz_sonic)
-				System.loadExternalRawData("SSZ_Zone_Card_Sonic_Dawn", 0x00CC78)
+				System.loadExternalRawData(tca.pal_ssz_dawn ? "SSZ_Zone_Card_Sonic_Dawn_Pink" : "SSZ_Zone_Card_Sonic_Dawn", 0x00CC78)
 			else if (tca.ssz_sonic && Mods.isModActive("Moar Transparency") && System.getGlobalVariableValueByName("mt.teleframe"))
 				System.loadExternalRawData("SSZ_Zone_Card_Sonic_Compat", 0x00CC78)
 			else if (tca.ssz_sonic || tca.ssz_knux)
@@ -223,9 +230,43 @@ function void yieldExecution()
 			{
 				for (u8 i = 0; i < NEW_ICZ_PALETTE.length(); i++)
 				{
-					u16[0xfffffc00 + (0x31 + i)*2] = blendColorsPacked(OLD_ICZ_PALETTE[i], NEW_ICZ_PALETTE[i], min(256, transition_time * 2 + transition_time / 8 + 1))
+					u16[0xfffffc00 + (0x31 + i)*2] = blendColorsPacked(OLD_ICZ_PALETTE[i], MID_ICZ_PALETTE[i], min(0xff, transition_time * 2 + transition_time / 8 + 1))
 				}
 			}
+		}
+		else if (tca.icz_trans_fade && transition_state == 2 && transition_time <= 0x78 && camera.position.y.u16 < 0x800)
+		{	
+			transition_time += (tca.fadetype) ? 1 : 2
+			if (transition_time % 24 == 0 || !tca.fadetype)
+			{
+				for (u8 i = 0; i < NEW_ICZ_PALETTE.length(); i++)
+				{
+					u16[0xfffffc00 + (0x31 + i)*2] = blendColorsPacked(MID_ICZ_PALETTE[i], NEW_ICZ_PALETTE[i], min(0xff, transition_time * 2 + transition_time / 8 + 1))
+				}
+			}
+		}
+		else if (!tca.icz_trans_fade && transition_state == 2 && transition_time <= 0x78 && camera.position.y.u16 < 0x800)
+		{	
+			transition_time += (tca.fadetype) ? 1 : 2
+			if (transition_time % 24 == 0 || !tca.fadetype)
+			{
+				for (u8 i = 0; i < NEW_ICZ_PALETTE.length(); i++)
+				{
+					u16[0xfffffc00 + (0x31 + i)*2] = blendColorsPacked(OLD_ICZ_PALETTE[i], NEW_ICZ_PALETTE[i], min(0xff, transition_time * 2 + transition_time / 8 + 1))
+				}
+			}
+		}
+		
+		if (!tca.icz_trans_point && transition_state == 1 && transition_time >= 0x78)
+		{
+			transition_state = 2
+			transition_time = 1
+		}
+		
+		if (tca.icz_trans_point && global.zone_act == 0x0501 && transition_state == 0 && camera.position.x.u16 > 0x3ab0)
+		{
+			transition_state = tca.icz_trans_fade ? 1 : 2
+			transition_time = 1
 		}
 	}
 	else if (tca.lbz && global.zone == 0x06) // LBZ Act 1 & 2
@@ -253,15 +294,15 @@ function void yieldExecution()
 	else if (tca.ssz_sonic && global.zone_act == 0x0a00 && tca.intended) // SSZ Sonic
 	{
 		if (checkpoint.number < (tca.ssz_trans_point < 2 ? 1 : 2) )
-			System.loadExternalRawData("SSZ1_Palette_Morning", 0x0A973C)
+			System.loadExternalRawData(tca.pal_ssz_dawn ? "SSZ1_Palette_Morning_Pink" : "SSZ1_Palette_Morning", 0x0A973C)
 		else
 			System.loadExternalRawData("SSZ1_Palette_Original", 0x0A973C)
 
-		if (tca.ssz_trans_point == 0 && camera.position.y.u16 < 0xc80 && checkpoint.number < 1 )
+		if (transition_state == 0 && tca.ssz_trans_point == 0 && camera.position.y.u16 < 0xc80 && checkpoint.number < 1 )
 			transition_state = 1
-		else if (tca.ssz_trans_point == 2 && camera.position.y.u16 < 0xa80 && checkpoint.number < 2 )
+		else if (transition_state == 0 && tca.ssz_trans_point == 2 && camera.position.y.u16 < 0xa80 && checkpoint.number < 2 )
 			transition_state = 1
-		else if (tca.ssz_trans_point == 3 && camera.position.y.u16 < 0x700 && checkpoint.number < 2 )
+		else if (transition_state == 0 && tca.ssz_trans_point == 3 && camera.position.y.u16 < 0x700 && checkpoint.number < 2 )
 			transition_state = 1
 		
 		if (transition_state == 1 && transition_time <= 0x78)
@@ -294,7 +335,7 @@ function void yieldExecution()
 		
 		if (transition_state == 1 && transition_time <= 0x78)
 		{	
-			
+			System.loadExternalRawData("SSZK_Palette_Pre_Dawn", 0x0A979C)
 			transition_time += (tca.fadetype) ? 1 : 2
 			if (tca.ssz_knux_fade)
 			{
@@ -302,15 +343,21 @@ function void yieldExecution()
 				{
 					for (u8 i = 0; i < SSZ_SKY_MORNING.length(); i++)
 					{
-						u16[0xfffffc00 + (0x31 + i)*2] = blendColorsPacked(u16[0x0A977C + (0x31 + i)*2], SSZ_SKY_MORNING[i], min(256, transition_time * 2 + transition_time / 8 + 1))
-						u16[0xfffffc00 + 0x80 + (0x31 + i)*2] = blendColorsPacked(u16[0x0A977C + (0x31 + i)*2], SSZ_SKY_MORNING[i], min(256, transition_time * 2 + transition_time / 8 + 1))
+						if (i != 13 && i != 14)
+						{
+							u16[0xfffffc00 + (0x21 + i)*2] = blendColorsPacked(u16[0x0A977C + (0x21 + i)*2], tca.pal_ssz_dawn ? SSZ_SKY_MORNING_PINK[i] : SSZ_SKY_MORNING[i], min(0xff, transition_time * 2 + transition_time / 8 + 1))
+							u16[0xfffffc00 + 0x80 + (0x21 + i)*2] = blendColorsPacked(u16[0x0A977C + (0x21 + i)*2], tca.pal_ssz_dawn ? SSZ_SKY_MORNING_PINK[i] : SSZ_SKY_MORNING[i], min(0xff, transition_time * 2 + transition_time / 8 + 1))
+						}
 					}
 				}
 
 				if (transition_time >= 0x79)
 				{
-					transition_state = 2
-					transition_time = 1
+					if (!tca.ssz_knux_longdawn)
+					{
+						transition_state = 2
+						transition_time = 1
+					}
 					System.loadExternalRawData("SSZK_Palette_Original", 0x0A979C)
 				}
 			}
@@ -322,15 +369,15 @@ function void yieldExecution()
 					{
 						if (i != 13 && i != 14)
 						{
-							u16[0xfffffc00 + (0x21 + i)*2] = blendColorsPacked(u16[0x0A977C + (0x21 + i)*2], SSZ_KNUX_END[i], min(256, transition_time * 2 + transition_time / 8 + 1))
-							u16[0xfffffc00 + 0x80 + (0x21 + i)*2] = blendColorsPacked(u16[0x0A977C + (0x21 + i)*2], SSZ_KNUX_END[i], min(256, transition_time * 2 + transition_time / 8 + 1))
+							u16[0xfffffc00 + (0x21 + i)*2] = blendColorsPacked(u16[0x0A977C + (0x21 + i)*2], SSZ_KNUX_END[i], min(0xff, transition_time * 2 + transition_time / 8 + 1))
+							u16[0xfffffc00 + 0x80 + (0x21 + i)*2] = blendColorsPacked(u16[0x0A977C + (0x21 + i)*2], SSZ_KNUX_END[i], min(0xff, transition_time * 2 + transition_time / 8 + 1))
 						}
 					}
 				}
 
 				if (transition_time >= 0x79)
 				{
-					transition_state = 2
+					transition_state = 3
 					System.loadExternalRawData("SSZK_Palette_Original", 0x0A979C)
 				}
 			}
@@ -338,7 +385,7 @@ function void yieldExecution()
 		}
 		else if (transition_state == 2 && transition_time <= 0x78)
 		{
-			System.loadExternalRawData("SSZK_Palette_Morning", 0x0A979C)
+			System.loadExternalRawData(tca.pal_ssz_dawn ? "SSZK_Palette_Morning_Pink" : "SSZK_Palette_Morning", 0x0A979C)
 			transition_time += (tca.fadetype) ? 1 : 2
 			if (transition_time % 24 == 0 || !tca.fadetype)
 			{
@@ -675,7 +722,7 @@ function void fn07092a()
 //# address-hook(0x0713e8) end(0x07141a)
 function void fn0713e8()
 {
-	if (!tca.icz)
+	if (!tca.icz || !tca.intended)
 	{
 		base.fn0713e8()
 		return
@@ -689,13 +736,13 @@ function void fn0713e8()
 		u8[A1 + 0x38] |= 0x20
 	}
 	
-	if (!tca.intended)
-	{
-		transition_state = 1
-		
-		if transition_time == 0
-			transition_time = 1
-	}
+	//if (!tca.intended)
+	//{
+	//	transition_state = 1
+	//	
+	//	if transition_time == 0
+	//		transition_time = 1
+	//}
 
 	// Spawn boss giblets
 	// "spawnChildObjects(0x0719b0)" replaced by:
@@ -715,9 +762,14 @@ function void fn071de2()
 		return
 	}
 	
-	if ((isMainCharacter(CHARACTER_KNUCKLES)) && transition_state == 0)
+	if (tca.icz_trans_point && isMainCharacter(CHARACTER_KNUCKLES) && transition_state == 1)
 	{
-		transition_state = 1
+		transition_state = 2
+		transition_time = 1
+	}
+	else if (!tca.icz_trans_point && isMainCharacter(CHARACTER_KNUCKLES) && transition_state == 0)
+	{
+		transition_state = tca.icz_trans_fade ? 1 : 2
 		
 		if transition_time == 0
 			transition_time = 1
@@ -797,24 +849,73 @@ function void fn23e20e()
 	
 	if (isMainCharacter(CHARACTER_KNUCKLES))
 	{
-		if ((global.game_mode & 0x80) == 0)
+		if (tca.icz_trans_point && camera.position.x.u16 > 0x3ab0)
 		{
-			A1 = 0xfffffc62
+			if (tca.icz_trans_fade)
+			{
+				if ((global.game_mode & 0x80) == 0)
+				{
+					A1 = 0xfffffc62
+					u32[(A1+=4)-4] = 0x0eee0ecc
+					u32[(A1+=4)-4] = 0x0eaa0e88
+					u32[(A1+=4)-4] = 0x0c660c44
+					u32[(A1+=4)-4] = 0x0c240e24
+					u32[0xfffffc7c] = 0x0c640ea8	// New line, corrects original S3&K glitch with brightest two colors in background reflections on water
+					objA1.update_address = 0x06240c04
+				}
+
+				A1 = 0xfffffce2
+				u32[(A1+=4)-4] = 0x0eee0ecc
+				u32[(A1+=4)-4] = 0x0eaa0e88
+				u32[(A1+=4)-4] = 0x0c660c44
+				u32[(A1+=4)-4] = 0x0c240e24
+				u32[0xfffffcfc] = 0x0c640ea8	// New line, corrects original S3&K glitch with brightest two colors in background reflections on water
+				objA1.update_address = 0x0a240c04
+			}
+			else
+			{
+				if ((global.game_mode & 0x80) == 0)
+				{
+					A1 = 0xfffffc62
+					u32[(A1+=4)-4] = 0x0eec0cc6
+					u32[(A1+=4)-4] = 0x0c800c60
+					u32[(A1+=4)-4] = 0x0c400a40
+					u32[(A1+=4)-4] = 0x08200620
+					u32[0xfffffc7c] = 0x0c600ea4	// New line, corrects original S3&K glitch with brightest two colors in background reflections on water
+					objA1.update_address = 0x02000600
+				}
+
+				A1 = 0xfffffce2
+				u32[(A1+=4)-4] = 0x0eec0cc6
+				u32[(A1+=4)-4] = 0x0c800c60
+				u32[(A1+=4)-4] = 0x0c400a40
+				u32[(A1+=4)-4] = 0x08200620
+				u32[0xfffffcfc] = 0x0c600ea4	// New line, corrects original S3&K glitch with brightest two colors in background reflections on water
+				objA1.update_address = 0x02000600
+				
+			}
+		}
+		else
+		{
+			if ((global.game_mode & 0x80) == 0)
+			{
+				A1 = 0xfffffc62
+				u32[(A1+=4)-4] = 0x0cee0cca
+				u32[(A1+=4)-4] = 0x0c860c64
+				u32[(A1+=4)-4] = 0x0c440a44
+				u32[(A1+=4)-4] = 0x08240624
+				u32[0xfffffc7c] = 0x0c640ea8	// New line, corrects original S3&K glitch with brightest two colors in background reflections on water
+				objA1.update_address = 0x02020604
+			}
+
+			A1 = 0xfffffce2
 			u32[(A1+=4)-4] = 0x0cee0cca
 			u32[(A1+=4)-4] = 0x0c860c64
 			u32[(A1+=4)-4] = 0x0c440a44
 			u32[(A1+=4)-4] = 0x08240624
-			u32[0xfffffc7c] = 0x0c640ea8	// New line, corrects original S3&K glitch with brightest two colors in background reflections on water
+			u32[0xfffffcfc] = 0x0c640ea8	// New line, corrects original S3&K glitch with brightest two colors in background reflections on water
 			objA1.update_address = 0x02020604
 		}
-
-		A1 = 0xfffffce2
-		u32[(A1+=4)-4] = 0x0cee0cca
-		u32[(A1+=4)-4] = 0x0c860c64
-		u32[(A1+=4)-4] = 0x0c440a44
-		u32[(A1+=4)-4] = 0x08240624
-		u32[0xfffffc7c] = 0x0c640ea8	// New line, corrects original S3&K glitch with brightest two colors in background reflections on water
-		objA1.update_address = 0x02020604
 	}
 	else
 	{
@@ -914,6 +1015,16 @@ function void fn0658f2()
 		transition_state = 1
 }
 
+// Transition after Egg Wrecker.
+//# address-hook(0x07a3e6) end(0x07a422)
+function void fn07a3e6()
+{
+	base.fn07a3e6()
+	
+	if (objA0.countdown_value == 0 && transition_state == 0 && tca.ssz_trans_point == 3)
+		transition_state = 1
+}
+
 // Knux Ending transition
 //# address-hook(0x05e80a) end(0x05e830)
 function void fn05e80a()
@@ -938,7 +1049,19 @@ function void fn05e80a()
 //# address-hook(0x085ee6) end(0x085ef2)
 function void fn085ee6()
 {
-	tca.knux_stars_off = 1
+	if (tca.intended && global.zone_act == 0x0a01)
+	{
+		tca.knux_stars_off = 1
+		System.loadExternalRawData("SSZK_Palette_Pre_Dawn", 0x0A979C)
+		for (u8 i = 0; i < 0x20; i++)
+		{
+			if (i != 13 && i != 14)
+			{
+				u16[0xfffffc00 + 0x80 + (0x21 + i)*2] = u16[0x0A977C + (0x21 + i)*2]
+			}
+		}
+	}
+	
 	base.fn085ee6()
 }
 
@@ -961,6 +1084,29 @@ function void fn07ccb0()
 	objA1.animation.sprite = 0xcb
 	
 	UnloadObject()
+}
+
+// Make Dawn fade to day when sonic exits the screen.
+////# address-hook(0x05e9e2) end(0x05ea18)
+//function void fn05e9e2()
+//{
+//	base.fn05e9e2()
+//	if (tca.intended && tca.ssz_knux_fade && tca.ssz_knux_longdawn)
+//	{
+//		transition_state = 2
+//		transition_time = 1
+//	}
+//}
+
+//# address-hook(0x05e9c2) end(0x05e9e0)
+function void fn05e9c2()
+{
+	base.fn05e9c2()
+	if (tca.intended && tca.ssz_knux_fade && tca.ssz_knux_longdawn)
+	{
+		transition_state = 2
+		transition_time = 1
+	}
 }
 
 // Write Master Emerald palette to extended palette line.
@@ -1020,6 +1166,12 @@ function void TitleCard.Show()
 		tca.infbz1forreal = 1
 	else
 		tca.infbz1forreal = 0
+		
+	if (tca.icz_trans_point && isMainCharacter(CHARACTER_KNUCKLES) && global.zone_act == 0x0501 && camera.position.x.u16 > 0x3ab0)
+	{
+		transition_state = 1
+		transition_time = 0xff
+	}
 	
 	if (tca.mgz && global.zone_act == 0x0200 && checkpoint.number != 3)
 		System.loadExternalRawData("MGZ_Palette_Original", 0x0A8F5C)

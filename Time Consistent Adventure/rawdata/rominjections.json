@@ -71,6 +71,10 @@
 	{
 		"File": "SSZ1_Palette_Morning.bin"
 	},
+	"SSZ1_Palette_Morning_Pink":
+	{
+		"File": "SSZ1_Palette_Morning_Pink.bin"
+	},
 	"SSZK_Palette_Original":
 	{
 		"File": "SSZK_Palette_Original.bin"
@@ -78,6 +82,14 @@
 	"SSZK_Palette_Morning":
 	{
 		"File": "SSZK_Palette_Morning.bin"
+	},
+	"SSZK_Palette_Morning_Pink":
+	{
+		"File": "SSZK_Palette_Morning_Pink.bin"
+	},
+	"SSZK_Palette_Pre_Dawn":
+	{
+		"File": "SSZK_Palette_Pre_Dawn.bin"
 	},
 	"SSZK_Palette_Night":
 	{
@@ -106,6 +118,10 @@
 	"SSZ_Zone_Card_Sonic_Dawn":
 	{
 		"File": "SSZ_Zone_Card_Sonic_Dawn.bin"
+	},
+	"SSZ_Zone_Card_Sonic_Dawn_Pink":
+	{
+		"File": "SSZ_Zone_Card_Sonic_Dawn_Pink.bin"
 	},
 	"SSZ_Zone_Card_Sonic_Compat":
 	{
