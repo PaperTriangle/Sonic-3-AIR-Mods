@@ -8,6 +8,18 @@
 		"ModVersion": "1.4"
 	},
 	"OtherMods": {
+		"time-consistent-adventure":
+		{
+			"DisplayName": "Time Consistent Adventure",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		},
+		"no-transparency":
+		{
+			"DisplayName": "No Transparency",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		},
 		"extra-slot-project-amy": {
 			"DisplayName": "Extra Slot Amy",
 			"IsRequired": "0",
@@ -163,9 +175,33 @@
 				}
 			},
 			{
+				"InternalName": "mt.watersurface",
+				"DisplayName": "Water Surface",
+				"Variable": "mt.watersurface",
+				"Category": "Effects",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
 				"InternalName": "mt.snowfall",
 				"DisplayName": "Snowfall",
 				"Variable": "mt.snowfall",
+				"Category": "Effects",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "mt.clouds",
+				"DisplayName": "Foreground Clouds",
+				"Variable": "mt.clouds",
 				"Category": "Effects",	
 				"DefaultValue": "1",
 				"Options":
@@ -190,6 +226,18 @@
 				"InternalName": "mt.energyballs",
 				"DisplayName": "Energy Balls",
 				"Variable": "mt.energyballs",
+				"Category": "Effects",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "mt.lighttunnel",
+				"DisplayName": "Light Tunnels",
+				"Variable": "mt.lighttunnel",
 				"Category": "Effects",	
 				"DefaultValue": "1",
 				"Options":

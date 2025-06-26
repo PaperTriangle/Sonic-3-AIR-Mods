@@ -5,7 +5,9 @@ global bool mt.bubbleshield
 global bool mt.lightningshield
 global bool mt.stars
 
+global bool mt.watersurface
 global bool mt.snowfall
+global bool mt.clouds
 
 global bool mt.dither
 global bool mt.electricity
@@ -13,6 +15,7 @@ global bool mt.bubbles
 
 global bool mt.lasers
 global bool mt.energyballs
+global bool mt.lighttunnel
 global bool mt.fbzlaser
 global bool mt.sszs2laser
 global bool mt.dez1laser
@@ -48,7 +51,10 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 
 	u8 gameMode = global.game_mode & 0x7f
 	bool prioFlag = (objA0.sprite_attributes & sprite_attribute.PRIORITY) != 0
-
+	
+	if (Mods.isModActive("No Transparency"))
+		System.setGlobalVariableValueByName("renderTransparentPlz", true)
+	
 	if (gameMode == 0x0c || gameMode == 0x08)
 	{
 		// Direct object rendering = replacement with custom sprites initialized from the ROM data, but independent from patterns in VRAM
@@ -157,7 +163,7 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 			else if (mt.amytrail && objA0.subtype2c == 0x03) // Hammer swing
 			{
 				if (level.framecounter & 0x02)
-					Renderer.drawCustomSprite(stringformat("amyhammerswing_0%d", objA0.value26), px, py, 0, flags | u8[A0 + 0x2b], renderQueue, 0, 0xffffffff, 0x10000 - 0x1000)
+					Renderer.drawSprite(stringformat("amyhammerswing_0%d", objA0.value26), px, py, 0, flags | u8[A0 + 0x2b], renderQueue, 0, 0xff)
 				return true
 			}
 		}
@@ -175,12 +181,17 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 			}
 		}
 	
+	if (Mods.isModActive("No Transparency"))
+		System.setGlobalVariableValueByName("renderTransparentPlz", false)
 	
 	return base.Standalone.onWriteToSpriteTable(px, py, renderQueue)
 }
 
 function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16 renderQueue)
 {
+
+	if (Mods.isModActive("No Transparency"))
+		System.setGlobalVariableValueByName("renderTransparentPlz", true)
 
 	// Dithered Plume Effects
 	if (mt.dither)
@@ -444,7 +455,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		// CNZ Electricity
 		if (objA0.update_address == 0x089256 || objA0.update_address == 0x0892a0)
 		{
-			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 208)
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 224)
 			
 			return true
 		}
@@ -460,8 +471,29 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		// CNZ2 Boss Electricity
 		if (objA0.update_address == 0x06eb16 || objA0.update_address == 0x06eb0c)
 		{
-			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 208)
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 224)
 			
+			return true
+		}
+		
+		// FBZ electricity effects
+		if (objA0.update_address == 0x03b1fc || objA0.update_address == 0x03b238)
+		{
+			u8 alpha = u8[0xfffff7c1]
+			if (Game.getSetting(SETTING_GFX_ANTIFLICKER) == 2)
+			{
+				if (objA0.update_address == 0x03b1fc)
+				{
+					// Main lightning effect: Weaken the effect a bit (tried out other things, but they all did not work well...)
+					alpha -= alpha / 3
+				}
+				else
+				{
+					// Small lights: Smooth fading over time
+					alpha = (u16(alpha) * (abs(s8(level.framecounter & 0x1f) - 0x10) * 0x0f)) >> 8
+				}
+			}
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, alpha)
 			return true
 		}
 		
@@ -519,6 +551,13 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		
 	}
 	
+	if (mt.lighttunnel && objA0.update_address == 0x0488a4)
+	{
+		Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
+		
+		return true
+	}
+	
 	if (mt.fbzlaser)
 	{
 		// FBZ2 Laser
@@ -532,9 +571,24 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		// FBZ2 Barrier
 		if (objA0.update_address == 0x070152)
 		{
+			if (u8[0xffff0000 + u16[A0 + 0x46] + 0x38] & 0x08 && objA0.position.x.u16 < 0x2bd0)
+				px++
+
 			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
 			
 			return true
+		}
+		
+		// FBZ2 Barrier - Extra Pixels
+		if (laser_on && (objA0.update_address == 0x06ff70 || objA0.update_address == 0x06ffb8 || objA0.update_address == 0x01b588) && (index == 0xa537 || index == 0xb537))
+		{
+			u8 flags = SPRITE_FLAG_PRIO
+			if (objA0.render_flags & render_flag.FLIP_Y)
+			{
+				flags |= render_flag.FLIP_Y
+				py += 0x10
+			}
+			Renderer.drawSprite("barrier_edge", px, py, 0x00, flags, renderQueue, 0, 192)
 		}
 	}
 	
@@ -781,12 +835,18 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 			}
 		}
 	}
+	
+	if (Mods.isModActive("No Transparency"))
+		System.setGlobalVariableValueByName("renderTransparentPlz", false)
 
 	return base.Standalone.onDrawVdpSprite(px, py, size, index, renderQueue)
 }
 
 function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 index, u16 renderQueue, u8 spriteCounter)
 {
+	if (Mods.isModActive("No Transparency"))
+		System.setGlobalVariableValueByName("renderTransparentPlz", true)
+	
 	if (mt.telebeam || mt.teleframe)
 	{
 		// Teleporter
@@ -854,10 +914,49 @@ function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 in
 	{
 		if (objA0.update_address == 0x0188e8)
 		{
-			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 0xff - u8[A0 + 0x36] * 0x30)
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 0xff - u8[A0 + 0x36] * 0x20)
 			return true
 		}
 	}
+	
+	if (mt.watersurface)
+	{
+		// HCZ water waves effect
+		if (objA0.update_address == 0x01f244)
+		{
+			if (A0 == 0xffffcf82 && D4.u16 == 0)		// Only for one sprite of the main object
+			{
+				Renderer.clearSpriteTag()
+				px = (camera.position.x.u16 & 0xffe0) - camera.position.x.u16 - 0x10	// Extend a bit more to the left just for sprite interpolation
+				for (; px < s16(getScreenWidth()); px += 0x20)
+				{
+					Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 160)
+				}
+			}
+			return true
+		}
+	}
+	
+	if (mt.clouds)
+	{
+		// SSZ clouds effect
+		if (objA0.update_address == 0x057bf6)
+		{
+			Renderer.drawVdpSpriteWithAlpha(px,   py, size, index, 0xd000, 140)
+			Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, 0xd000, 144)
+
+			if (getScreenWidth() > 400)
+			{
+				// Draw an additional copy of the cloud one loop further to the right
+				Renderer.drawVdpSpriteWithAlpha(px+512, py, size, index, 0xd000, 140)
+				Renderer.drawVdpSpriteWithAlpha(px+513, py, size, index, 0xd000, 144)
+			}
+			return true
+		}
+	}
+	
+	if (Mods.isModActive("No Transparency"))
+		System.setGlobalVariableValueByName("renderTransparentPlz", false)
 	
 	return base.Standalone.onDrawVdpSpriteCompound(px, py, size, index, renderQueue, spriteCounter)
 }
@@ -1118,6 +1217,8 @@ function void fn057c1e()
 	u8[A1 + 0x2e] = (control_flag.DISABLE_ANIMATION | control_flag.DISABLE_UPDATE)
 }
 
+global bool laser_on
+
 // FBZ2 mid-boss
 //# address-hook(0x070152) end(0x07018c)
 function void fn070152()
@@ -1141,6 +1242,8 @@ function void fn070152()
 		D4.u16 = backup_px
 		fn01dc56()
 
+		laser_on = true
+
 		//if ((global.framecounter.low & 0x01) == 0)
 		{
 			DrawObject()
@@ -1148,6 +1251,7 @@ function void fn070152()
 	}
 	else
 	{
+		laser_on = false
 		UnloadObject()
 	}
 }
@@ -1209,11 +1313,17 @@ function void fn08086c()
 		D0.u8 = objA0.animation.sprite
 		dez_laser_val = D0.u8
 	}
-	
+
 	if (dez_laser_val > 0)
 	{
+		if (Mods.isModActive("No Transparency"))
+			System.setGlobalVariableValueByName("renderTransparentPlz", true)
+		
 		for (u8 i = 0; i < getScreenWidth() / 2; i++)
 			Renderer.drawSprite(stringformat("dez_%d", dez_laser_val), u32(0x48 + getScreenExtend() + i*2), u32(objA0.position.y.u16 - camera.position.y.u16), 0x00, 0, 0x9e00, 0, 192)
+	
+		if (Mods.isModActive("No Transparency"))
+			System.setGlobalVariableValueByName("renderTransparentPlz", false)
 	}
 	
 	fn080fa6()
@@ -1524,17 +1634,12 @@ function void fn08b73a()
 	}
 }
 
-function void yieldExecution()
-{
-	
-	
-	base.yieldExecution()
-}
-
 // Load extra palette detail for HPZ / SSZ
 //# address-hook(0x02d856) end(0x02d8dc)
 function void TitleCard.Show()
 {
+	laser_on = false		// Turn off lasers if player died.
+	
 	base.TitleCard.Show()
 	
 	if (mt.teleframe && mt.bmpframe)

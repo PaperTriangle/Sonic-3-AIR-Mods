@@ -154,6 +154,8 @@
 	
 	"amyheart_02t":  { "File": "amy_heart.bmp", "Rect": "0,0,11,9", "Center": "5,3" },
 	
+	"barrier_edge":  { "File": "barrier_edge.bmp", "Rect": "0,0,16,16"},
+	
 	"lrz_boss_rocks":  { "File": "lrz_boss_rocks.bmp", "Rect": "0,0,64,32", "Center": "0,0" },
 	"lrz_boss_shadow_1":  { "File": "lrz_boss_shadow_1.bmp", "Rect": "0,0,64,32", "Center": "0,16" },
 	"lrz_boss_shadow_2":  { "File": "lrz_boss_shadow_2.bmp", "Rect": "0,0,64,32", "Center": "0,16" },
