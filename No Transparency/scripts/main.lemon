@@ -1,0 +1,213 @@
+global bool nt.novdp
+global bool nt.nosprite
+global bool nt.ringmonitorfade
+
+function bool NT.RenderSolid(u64 key)
+{
+	for (u8 i = 0; i < 8; i++)
+	{
+		if (i < 6 && key == stringformat("shadow_boost_start_%d", i))
+			return true
+
+		if (key == stringformat("shadow_airdash_%d", i))
+			return true
+	}
+	
+	if (!nt.ringmonitorfade)
+	{
+		if (key == Monitor.getIconSpriteKey(objA0.state))
+			return true
+		
+		if ((objA0.update_address == 0x01a64a || objA0.update_address == 0x01a662) && objA0.base_state == 0x02)
+			return true
+	}
+
+	return false
+}
+
+function bool NT.NotCharacter(u64 key)
+{
+	for (u8 i = 0; i < 8; i++)
+	{
+		if (i < 6 && key == stringformat("shadow_boost_start_%d", i))
+			return true
+		
+		if (i < 4 && key == stringformat("shadow_boost_%d", i))
+			return true
+			
+		if (i < 4 && key == stringformat("shadow_drop_%d", i))
+			return true
+
+		if (key == stringformat("shadow_airdash_%d", i))
+			return true
+	}
+
+	return false
+}
+
+function bool NT.RenderTransparent()
+{
+	return NT.RenderTransparent(0)
+}
+
+function bool NT.RenderTransparent(u64 key)
+{
+	if (nt.ringmonitorfade)
+	{
+		if (key == Monitor.getIconSpriteKey(objA0.state))
+			return true
+		
+		if ((objA0.update_address == 0x01a64a || objA0.update_address == 0x01a662) && objA0.base_state == 0x02)
+			return true
+	}
+	
+	if (key == "@input_icon_button_Y"|| renderTransparentPlz || global.game_mode != 0x0c)
+		return true
+
+	return false
+}
+
+function bool NT.PreventRendering(u64 key)
+{
+	return noRenderPlz
+}
+
+function bool NT.AfterImages()
+{
+	if (Mods.isModActive("Extra Slot 3D in 2D Shadow"))
+		if (System.getGlobalVariableValueByName("shadow.isBoosting") || System.getGlobalVariableValueByName("shadow.Homing") == 2 || System.getGlobalVariableValueByName("shadow.DropDown"))
+			return true
+		
+	if (Mods.isModActive("Extra Slot Mighty") || Mods.isModActive("Extra Slot Mighty SHC"))
+		if (u8[0xffffb000 + 0x0d] & 0x02 || System.getGlobalVariableValueByName("BubbleDrop"))
+			return true
+	
+	if (Mods.isModActive("Extra Slot Amy") || Mods.isModActive("Extra Slot Amy SHC"))
+		if (System.getGlobalVariableValueByName("Amy_HammerSlamLongFall"))
+			return true
+		
+	return false
+}
+
+global u16 lastIndex
+global u8 lastAlpha
+global s16 lastPx
+global u64 lastKey
+global u8 lastAtex
+global u8 lastFlags
+global u16 lastRenderQueue
+global u8 lastAngle
+global u32 lastTintColor
+global s32 lastScale
+
+global bool renderTransparentPlz
+global bool noRenderPlz
+
+function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 index, u16 renderQueue, u8 spriteCounter)
+{
+	// HCZ water waves effect
+	if (nt.novdp && objA0.update_address == 0x01f244)
+	{
+		if (A0 == 0xffffcf82 && D4.u16 == 0)		// Only for one sprite of the main object
+		{
+			Renderer.clearSpriteTag()
+			px = (camera.position.x.u16 & 0xffe0) - camera.position.x.u16 - 0x10	// Extend a bit more to the left just for sprite interpolation
+			if (level.framecounter.low & 0x01)
+				px += 0x20
+			for (; px < s16(getScreenWidth()); px += 0x40)
+			{
+				Renderer.drawVdpSprite(px, py, size, index, renderQueue)
+			}
+		}
+		return true
+	}
+	
+	return base.Standalone.onDrawVdpSpriteCompound(px, py, size, index, renderQueue, spriteCounter)
+}
+
+function void Renderer.drawVdpSpriteWithAlpha(s16 px, s16 py, u8 encodedSize, u16 patternIndex, u16 renderQueue, u8 alpha)
+{
+	if (!nt.novdp || NT.RenderTransparent())
+	{
+		base.Renderer.drawVdpSpriteWithAlpha(px, py, encodedSize, patternIndex, renderQueue, alpha)
+		return
+	}
+
+	if (lastIndex == patternIndex && lastPx+1 == px)
+		return
+	
+	Renderer.drawVdpSprite(px, py, encodedSize, patternIndex, renderQueue)
+	
+	lastIndex = patternIndex
+	lastPx = px
+}
+
+function void Renderer.drawSprite(u64 key, s16 px, s16 py, u16 atex, u8 flags, u16 renderQueue, u8 angle, u8 alpha)
+{
+	if (!nt.nosprite || NT.RenderTransparent(key))
+	{
+		base.Renderer.drawSprite(key, px, py, atex, flags, renderQueue, angle, alpha)
+		return
+	}
+	
+	if (NT.PreventRendering(key) && alpha < 0xff && !NT.NotCharacter(key))
+	{
+		lastKey = key
+		lastAtex = atex
+		lastFlags = flags
+		lastRenderQueue = renderQueue
+		lastAngle = angle
+		
+		return
+	}
+	
+	if (alpha < 0xff && !NT.RenderSolid(key))
+		if level.framecounter + renderQueue & 1
+			return
+
+	base.Renderer.drawSprite(key, px, py, atex, flags, renderQueue, angle, 0xff)
+
+	lastKey = key
+
+}
+
+function void Renderer.drawSpriteTinted(u64 key, s16 px, s16 py, u16 atex, u8 flags, u16 renderQueue, u8 angle, u32 tintColor, s32 scale)
+{
+	if (!nt.nosprite || NT.RenderTransparent(key))
+	{
+		base.Renderer.drawSpriteTinted(key, px, py, atex, flags, renderQueue, angle, tintColor, scale)
+		return
+	}
+	
+	u8 alpha = tintColor
+
+	if (NT.PreventRendering(key) && alpha < 0xff && !NT.NotCharacter(key))
+	{
+		lastKey = key
+		lastAtex = atex
+		lastFlags = flags
+		lastRenderQueue = renderQueue
+		lastAngle = angle
+		lastTintColor = tintColor
+		lastScale = scale
+		return
+	}
+
+	if (alpha < 0xff && !NT.RenderSolid(key))
+	{
+		if level.framecounter + renderQueue & 1
+			return
+
+		tintColor += 0xff - alpha
+	}
+
+	base.Renderer.drawSpriteTinted(key, px, py, atex, flags, renderQueue, angle, tintColor, scale)
+
+	lastKey = key
+}
+
+function void yieldExecution()
+{
+	base.yieldExecution()
+	lastKey = 0
+}

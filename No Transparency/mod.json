@@ -1,0 +1,57 @@
+{
+	"Metadata":
+	{
+		"Name": "No Transparency",
+		"UniqueID": "no-transparency",
+		"Author": "PaperTriangle",
+		"Description": "Disables most transparency effects.",
+		"ModVersion": "1.0"
+	},
+	"OtherMods": {
+		"moar-transparency":
+		{
+			"DisplayName": "Moar Transparency",
+			"IsRequired": "0",
+			"Priority": "Higher"
+		}
+	},
+	"Settings":
+	{
+		"List":
+		[
+			{
+				"InternalName": "nt.novdp",
+				"DisplayName": "Prevent VDP Transparency",
+				"Variable": "nt.novdp",
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "nt.nosprite",
+				"DisplayName": "Prevent Sprite Transparency",
+				"Variable": "nt.nosprite",
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "nt.ringmonitorfade",
+				"DisplayName": "Ring & Monitor Fading",
+				"Variable": "nt.ringmonitorfade",
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Stay Solid",
+					"1": "Allow Fading"
+				}
+			}
+		]
+	}
+}
