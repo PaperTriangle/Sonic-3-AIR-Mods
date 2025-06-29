@@ -5,7 +5,7 @@
 		"UniqueID": "do-not-stop-my-glide",
 		"Author": "PaperTriangle",
 		"Description": "Allows Knuckles to glide straight through walls.",
-		"ModVersion": "1.0"
+		"ModVersion": "1.2"
 	},
 	"OtherMods":
 	{
@@ -15,5 +15,22 @@
 			"IsRequired": "0",
 			"Priority": "Higher"
 		}
+	},
+	"Settings":
+	{
+		"List":
+		[
+			{
+				"InternalName": "dsmg.slide_setting",
+				"DisplayName": "Landing Slide On Objects",
+				"Variable": "dsmg.slide_setting",
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			}
+		]
 	}
 }

@@ -1,5 +1,13 @@
 define u8 global.xtrachar	= u8[0xffffe654]
 
+global bool dsmg.slide_setting
+
+global u8 dsmg.backup_state
+global bool dsmg.knux_slide
+global bool dsmg.knux_fall
+global bool dsmg.barber
+
+
 //---------------
 // Knuckles Walls
 //---------------
@@ -173,3 +181,295 @@ function void AIZ1a.checkPreBossArea()
 	}
 }
 #endif
+
+//-----------------
+// Knuckles Sliding
+//-----------------
+
+// The main glide function, we only change two states.
+//# address-hook(0x016890) end(0x016c78)
+//# translated(0x016f6c) end(0x016fa6)
+function void UpdateKnucklesGlideCollision()
+{
+	if (!dsmg.slide_setting)
+	{
+		base.UpdateKnucklesGlideCollision()
+		return
+	}
+	
+	if (char.double_jump_state == 0)
+		return
+
+	if (char.double_jump_state != 3)
+	{
+		base.UpdateKnucklesGlideCollision()
+		return
+	}
+
+	// Touched ground while gliding
+	bool goto016b64 = false
+	if (control.player1.state & CONTROL_ABC)
+	{
+		if (char.velocity.x < 0)
+		{
+			char.velocity.x += 0x20
+			goto016b64 = (char.velocity.x < 0)
+		}
+		else
+		{
+			char.velocity.x -= 0x20
+			goto016b64 = (char.velocity.x >= 0)
+		}
+	}
+
+	if (goto016b64 && !dsmg.knux_fall)
+	{
+		fn01793e()
+		if (!(char.flags & char.flag.ON_OBJECT))
+			Character.CheckFloorCollision()
+			
+		if (D1.s16 < 0x0e)
+		{
+			char.position.y.u16 += global.inv_gravity ? -D1.s16 : D1.s16
+			char.rotation = D3.u8
+			if ((level.framecounter.low & 0x07) == 0)
+			{
+				playSound(0x7e)
+			}
+		#if STANDALONE
+			Input.setControllerRumbleByAddress(A0, 0.2f, 0.2f, 100)
+		#endif
+		}
+		else if !(char.flags & char.flag.ON_OBJECT)
+		{
+			char.double_jump_state = 2		// Knuckles glide drop state
+			char.state = char.state.KNUX_FALLING
+			dsmg.knux_fall = 1
+			char.hitbox_extends.x = char.hitbox.default.x
+			char.hitbox_extends.y = char.hitbox.default.y
+			knuckles.glideclimbstate |= 0x02
+		}
+	}
+	else
+	{
+		char.groundspeed = 0
+		char.velocity.x = 0
+		char.velocity.y = 0
+		s16 dy = s8(char.hitbox_extends.y - char.hitbox.default.y)
+		char.position.y.u16 += global.inv_gravity ? -dy : dy
+		Character.LandingOnGroundNoSpindash()
+		char.hlock_countdown = 15
+		char.state = dsmg.knux_fall ? char.state.KNUX_STANDUP2 : char.state.KNUX_STANDUP
+		if (dsmg.knux_fall)
+			playSound(0x4c)
+			
+		dsmg.knux_slide = 0
+		dsmg.knux_fall = 0
+		dy = s8(0x0a - char.hitbox.default.y)
+		char.position.y.u16 -= global.inv_gravity ? -dy : dy
+	}
+
+}
+
+// Yield Execution section handles detected the state before an object impact.
+function void yieldExecution()
+{
+	if (dsmg.slide_setting)
+	{
+		if (isMainCharacter(CHARACTER_KNUCKLES) && (dsmg.backup_state == 1 || dsmg.backup_state == 2 || dsmg.backup_state == 3) && u8[0xffffb000 + 0x2a] & char.flag.ON_OBJECT)
+		{
+			dsmg.knux_slide = 1
+			
+			if (dsmg.backup_state == 2)
+				dsmg.knux_fall = 1
+		}
+		
+		if (dsmg.knux_slide)
+		{
+			if (s16[0xffffb000 + 0x1a] < 0) // We remove this if we have upward velocity, such as hurt or death.
+			{
+				dsmg.knux_slide = 0
+				dsmg.knux_fall = 0
+			}
+		}
+		
+		dsmg.backup_state = u8[0xffffb000 + 0x2f]
+	}
+
+	base.yieldExecution()
+
+}
+
+// New logic here to force some glide related logic here.
+//# address-hook(0x0167f4) end(0x01684a)
+function void Character.UpdateKnucklesUprightOnGround()
+{
+	if (dsmg.slide_setting && dsmg.knux_slide)
+	{
+		u8[0xffffb000 + 0x2f] = 3
+		UpdateMovementStraight()
+		UpdateKnucklesGlideCollision()
+		
+		if (u8[0xffffb000 + 0x2f] == 3 && u8[0xffffb000 + 0x2a] & char.flag.ON_OBJECT)
+		{
+			char.animation.sprite = 0xcc
+			char.animation.timer = 0x7f
+			char.animation.frame = 0
+			if (!dsmg.barber)
+				char.hitbox_extends.y = 0xa		// pushes the character down a bit.
+			
+			if (char.drown_countdown >= 12)
+			{
+				u8[A6 + 0x05] = 0x06		// Base update for braking dust
+				u8[A6 + 0x22] = 0x15		// First frame of dust animation
+			}
+		}
+					
+		if ((level.framecounter.low & 0x07) == 0)
+		{
+			playSound(0x7e)
+		}
+	}
+	else
+	{
+		Character.updateUprightOnGround()
+	}
+	
+	dsmg.barber = 0
+}
+
+// Force setting the slide state here as well otherwise Knuckles flickers between falling and walking.
+function bool Standalone.drawCharacterSprite(u8 character, u8 variant, s16 px, s16 py, bool asSmallGhost)
+{
+	if (dsmg.slide_setting && isMainCharacter(CHARACTER_KNUCKLES) && dsmg.knux_slide)
+	{
+		if (u8[0xffffb000 + 0x2f] == 3)
+		{
+			char.animation.sprite = 0xcc
+		}
+	}
+	
+	return base.Standalone.drawCharacterSprite(character, variant, px, py, asSmallGhost)
+}
+
+// Fix for LBZ Cylinder
+
+	//dsmg.barber = 1			// set this flag to prevent adjusting hitbox 
+	//if (A1 == 0xffffb000 && dsmg.knux_slide && u8[0xffffb000 + 0x2a] & char.flag.ON_OBJECT)
+	//{
+	//	dsmg.knux_slide = 0
+	//	dsmg.knux_fall = 0
+	//	u8[0xffffb000 + 0x2f] = 0
+	//}
+	
+//# address-hook(0x02c3e8) end(0x02c516)
+function void fn02c3e8()
+{
+	u8 bit = (1 << D6.u8)
+
+	if (A1 == 0xffffb000 && (objA0.flags2a & bit) != 0)
+	{
+		dsmg.knux_slide = 0
+		dsmg.knux_fall = 0
+		u8[0xffffb000 + 0x2f] = 0
+	}
+	
+	base.fn02c3e8()
+}
+
+// Fix for CNZ Cylinder
+// I dunno how the fuck these things work so I just disable the feature entirely.
+
+//# address-hook(0x033392) end(0x0335a6)
+function void fn033392()
+{
+	dsmg.barber = 1			// set this flag to prevent adjusting hitbox 
+	if (dsmg.knux_slide && u8[0xffffb000 + 0x2a] & char.flag.ON_OBJECT)
+	{
+		dsmg.knux_slide = 0
+		dsmg.knux_fall = 0
+		u8[0xffffb000 + 0x2f] = 0
+	}
+
+	base.fn033392()
+}
+
+//# address-hook(0x0335c4) end(0x0337d6)
+function void fn0335c4()
+{
+	dsmg.barber = 1			// set this flag to prevent adjusting hitbox 
+	if (dsmg.knux_slide && u8[0xffffb000 + 0x2a] & char.flag.ON_OBJECT)
+	{
+		dsmg.knux_slide = 0
+		dsmg.knux_fall = 0
+		u8[0xffffb000 + 0x2f] = 0
+	}
+	
+	base.fn0335c4()
+}
+
+// Fix for SOZ Sandflows
+
+//# address-hook(0x03fd4e) end(0x03fe42)
+function void fn03fd4e()
+{
+	u8 bit = (1 << D6.u8)
+
+	if (A1 == 0xffffb000 && (objA0.flags2a & bit) != 0)
+	{
+		dsmg.knux_slide = 0
+		dsmg.knux_fall = 0
+		u8[0xffffb000 + 0x2f] = 0
+	}
+	
+	base.fn03fd4e()
+}
+
+//# address-hook(0x03ff9e) end(0x0400c8)
+function void fn03ff9e()
+{
+	u8 bit = (1 << D6.u8)
+	if (A1 == 0xffffb000 && (objA0.flags2a & bit) != 0)
+	{
+		dsmg.knux_slide = 0
+		dsmg.knux_fall = 0
+		u8[0xffffb000 + 0x2f] = 0
+	}
+	
+	base.fn03ff9e()
+}
+
+//# address-hook(0x03fe70) end(0x03ff7e)
+function void fn03fe70()
+{
+	u8 bit = (1 << D6.u8)
+
+	if (u8[A2] != 0)
+	{
+		--u8[A2]
+		return
+	}
+
+	if (A1 == 0xffffb000 && (objA0.flags2a & bit) != 0)
+	{
+		dsmg.knux_slide = 0
+		dsmg.knux_fall = 0
+		u8[0xffffb000 + 0x2f] = 0
+	}
+	
+	base.fn03fe70()
+}
+
+//# address-hook(0x0400f0) end(0x040274)
+function void fn0400f0()
+{
+	u8 bit = (1 << D6.u8)
+	if (A1 == 0xffffb000 && (objA0.flags2a & bit) != 0)
+	{
+		dsmg.knux_slide = 0
+		dsmg.knux_fall = 0
+		u8[0xffffb000 + 0x2f] = 0
+	}
+	
+	base.fn0400f0()
+}
