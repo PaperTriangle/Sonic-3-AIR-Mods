@@ -210,4 +210,7 @@
 	"cons_hpz_biimu_0":   { "File": "biimu_hpz_cons.bmp", "Rect": "0,576,48,32", "Center": "0,0" },
 	
 	"cons_biimu_small":  { "File": "biimu_small.bmp", "Rect": "0,0,1,32", "Center": "0,0" },
+	
+	"biimu_special":  { "File": "biimu_special.bmp", "Rect": "0,0,32,16", "Center": "0,-16" },
+	"master_emerald_cave": { "File": "master_emerald.bmp", "Rect": "0,0,64,48", "Center": "0,0"},
 }

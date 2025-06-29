@@ -367,18 +367,6 @@
 				}
 			},
 			{
-				"InternalName": "mt.bmpframe",
-				"DisplayName": "Sprite Type",
-				"Variable": "mt.bmpframe",
-				"Category": "Consistent Teleporters",	
-				"DefaultValue": "1",
-				"Options":
-				{
-					"0": "PNG",
-					"1": "BMP"
-				}
-			},
-			{
 				"InternalName": "mt.bmpline",
 				"DisplayName": "BMP Palette Line",
 				"Variable": "mt.bmpline",

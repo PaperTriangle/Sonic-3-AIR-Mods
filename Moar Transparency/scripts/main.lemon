@@ -31,7 +31,6 @@ global bool mt.telebeam
 global bool mt.teleframe
 global bool mt.beamstyle1
 global bool mt.beamstyle2
-global bool mt.bmpframe
 global u8 mt.bmpline
 global bool mt.cnzpalette
 global bool mt.hpzpalette
@@ -763,76 +762,68 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		}
 	}
 	
+	//HPZ Special Stage Beam
+	if (global.zone_act == 0x1701 && objA0.mapping_offset == 0x091006)
+	{
+		if (mt.telebeam)
+		{
+			if (index == 0x8423)
+			{
+				Renderer.drawSprite("biimu_special", px, py, 0x00, SPRITE_FLAG_PRIO, renderQueue, 0, 192)
+			
+				return true
+			}
+			else if (index == 0x8c23)
+			{
+				return true
+			}
+		}
+		
+		if (mt.teleframe && index == 0x6430)
+		{
+			Renderer.drawSprite("master_emerald_cave", px, py, 0xa0 + mt.bmpline * 0x10, 0x00, renderQueue, 0, 0xff)
+		
+			return true
+		}
+	}
 	
 	// Other
 	if (mt.teleframe)
 	{
-		if (mt.bmpframe)
+		// HPZ Teleporter Frame
+		if (objA0.mapping_offset == 0x046b3c)
 		{
-			// HPZ Teleporter Frame
-			if (objA0.mapping_offset == 0x046b3c)
+			if (index == 0x4537 || index == 0x6365 || index == 0xe365 || index == 0x4491)
 			{
-				if (index == 0x4537 || index == 0x6365 || index == 0xe365)
-				{
-					Renderer.drawSprite("teleporter_frame_bmp", px, py, 0xa0 + mt.bmpline * 0x10, (index == 0xe365) ? SPRITE_FLAG_PRIO : 0x00, renderQueue, 0, 0xff)
-					
-					return true
-				}
-				else if (index == 0x652e || index == 0x435c || index == 0xc35c)
-				{
-					Renderer.drawSprite("teleporter_sphere_bmp", px, py, 0xa0 + mt.bmpline * 0x10, (index == 0xc35c) ? SPRITE_FLAG_PRIO : 0x00, renderQueue, 0, 0xff)
-					
-					return true
-				}
-				else if (index == 0x4d37 || index == 0x6b65 || index == 0xeb65)
-				{
-					return true
-				}
-			}
-			
-			// ICZ Teleporter Frame
-			if (objA0.update_address == 0x053bd4 || objA0.update_address == 0x053ba2)
-			{
-				if (index == 0x234d)
-				{
-					Renderer.drawSprite("teleporter_cnz_1_bmp", px, py, 0x30, SPRITE_FLAG_PRIO, renderQueue, 0, 0xff)
-				}
-				else if (index == 0x2347 || index == 0x2349 || index == 0x2b47)
-				{
-					Renderer.drawSprite("teleporter_cnz_2_bmp", (index == 0x2349) ? px + 5 : px, py, 0x30, (index == 0x2349) ? SPRITE_FLAG_PRIO : 0x00, (index == 0x2349) ? renderQueue : renderQueue - 0x1000, 0, 0xff)
-				}
+				Renderer.drawSprite("teleporter_frame_bmp", px, py, 0xa0 + mt.bmpline * 0x10, (index == 0xe365) ? SPRITE_FLAG_PRIO : 0x00, renderQueue, 0, 0xff)
 				
+				return true
+			}
+			else if (index == 0x652e || index == 0x435c || index == 0xc35c || index == 0x6488)
+			{
+				Renderer.drawSprite("teleporter_sphere_bmp", px, py, 0xa0 + mt.bmpline * 0x10, (index == 0xc35c) ? SPRITE_FLAG_PRIO : 0x00, renderQueue, 0, 0xff)
+				
+				return true
+			}
+			else if (index == 0x4d37 || index == 0x6b65 || index == 0xeb65 || index == 0x4c91)
+			{
 				return true
 			}
 		}
-		else
+		
+		// ICZ Teleporter Frame
+		if (objA0.update_address == 0x053bd4 || objA0.update_address == 0x053ba2)
 		{
-			// HPZ Teleporter Frame
-			if (objA0.mapping_offset == 0x046b3c && (index == 0x4537 || index == 0x6365 || index == 0xe365))
+			if (index == 0x234d)
 			{
-				Renderer.drawSprite("teleporter_frame", px, py, 0x00, (index == 0xe365) ? SPRITE_FLAG_PRIO : 0x00, renderQueue, 0, 0xff)
-				
-				return true
+				Renderer.drawSprite("teleporter_cnz_1_bmp", px, py, 0x30, SPRITE_FLAG_PRIO, renderQueue, 0, 0xff)
 			}
-			else if (objA0.mapping_offset == 0x046b3c && (index == 0x4d37 || index == 0x6b65 || index == 0xeb65))
+			else if (index == 0x2347 || index == 0x2349 || index == 0x2b47)
 			{
-				return true
+				Renderer.drawSprite("teleporter_cnz_2_bmp", (index == 0x2349) ? px + 5 : px, py, 0x30, (index == 0x2349) ? SPRITE_FLAG_PRIO : 0x00, (index == 0x2349) ? renderQueue : renderQueue - 0x1000, 0, 0xff)
 			}
 			
-			// ICZ Teleporter Frame
-			if (objA0.update_address == 0x053bd4 || objA0.update_address == 0x053ba2)
-			{
-				if (index == 0x234d)
-				{
-					Renderer.drawSprite("teleporter_cnz_1", px, py, 0x00, SPRITE_FLAG_PRIO, renderQueue, 0, 0xff)
-				}
-				else if (index == 0x2347 || index == 0x2349 || index == 0x2b47)
-				{
-					Renderer.drawSprite("teleporter_cnz_2", (index == 0x2349) ? px + 5 : px, py, 0x00, (index == 0x2349) ? SPRITE_FLAG_PRIO : 0x00, (index == 0x2349) ? renderQueue : renderQueue - 0x1000, 0, 0xff)
-				}
-				
-				return true
-			}
+			return true
 		}
 	}
 	
@@ -856,9 +847,9 @@ function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 in
 			if (mt.teleframe)
 			{
 				if ((global.zone == 0x03 || global.zone == 0x05))
-					key = mt.beamstyle2 ? "cons_ssz_biimu_%d" : "png_hpz_biimu_%d"
+					key = mt.beamstyle2 ? "cons_ssz_biimu_%d" : "cons_hpz_biimu_%d"
 				else
-					key = mt.beamstyle1 ? "cons_ssz_biimu_%d" : "png_hpz_biimu_%d"
+					key = mt.beamstyle1 ? "cons_ssz_biimu_%d" : "cons_hpz_biimu_%d"
 			}
 			else if (global.zone == 0x03 || global.zone == 0x05)
 				key = "bmp_biimu_%d"
@@ -867,7 +858,7 @@ function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 in
 			
 			u8 atex = 0x00
 			
-			if (mt.teleframe && mt.bmpframe)
+			if (mt.teleframe)
 			{
 				if (global.zone == 0x05)
 					atex = 0x30
@@ -886,19 +877,13 @@ function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 in
 			if (mt.teleframe)
 			{
 				u8 atex = 0x00
-				if (mt.bmpframe)
-				{
-					if (global.zone == 0x05)
-						atex = 0x30
-					else
-						atex = 0xa0 + mt.bmpline * 0x10
-						
-					Renderer.drawSprite("cons_biimu_small", px, py, atex, (global.zone == 0x0a) ? SPRITE_FLAG_PRIO : 0x00, renderQueue, 0, mt.telebeam ? 160: 0xff)
-				}
+				
+				if (global.zone == 0x05)
+					atex = 0x30
 				else
-				{
-					Renderer.drawSprite("png_biimu_small", px, py, atex, (global.zone == 0x0a) ? SPRITE_FLAG_PRIO : 0x00, renderQueue, 0, mt.telebeam ? 160: 0xff)
-				}
+					atex = 0xa0 + mt.bmpline * 0x10
+					
+				Renderer.drawSprite("cons_biimu_small", px, py, atex, (global.zone == 0x0a) ? SPRITE_FLAG_PRIO : 0x00, renderQueue, 0, mt.telebeam ? 160: 0xff)
 			}
 			else
 			{
@@ -1215,6 +1200,73 @@ function void fn057c1e()
 	objA1.state = char.state.RUNNING
 	u8[A1 + 0x22] = 0
 	u8[A1 + 0x2e] = (control_flag.DISABLE_ANIMATION | control_flag.DISABLE_UPDATE)
+}
+
+//Special Stage HPZ Teleporter
+
+//# address-hook(0x090d30) end(0x090d50)
+function void fn090d30()
+{
+	if (!mt.telebeam)
+	{
+		base.fn090d30()
+		return
+	}
+	
+	--objA0.countdown_value
+	if (objA0.countdown_value >= 0)
+	{
+		if (objA0.countdown_value != 0x20)
+		{
+			fn090d20()
+			return
+		}
+
+		fn090e9a()
+	}
+
+	// We use this flags38 for animation.
+	objA0.flags38 = 0x1f
+	
+	objA0.update_address = 0x090d52
+	objA0.countdown_callback = 0x090d5e
+	fn090d20()
+}
+
+//# address-hook(0x090d52) end(0x090d5c)
+function void fn090d52()
+{
+	if (!mt.telebeam)
+	{
+		base.fn090d52()
+		return
+	}
+	Object.animationProgress(0x090ff6) // Keeping this to restore movement.
+	
+	// Custom Animation Logic
+	if (objA0.flags38 < 0x25)
+	{
+		objA0.animation.sprite = objA0.flags38
+		objA0.flags38++
+	}
+	else
+	{
+		objA0.animation.sprite = 0x1d
+	}
+
+	fn090d20()
+}
+
+//# address-hook(0x090d20) end(0x090d2a)
+function void fn090d20()
+{
+	if (!mt.telebeam)
+	{
+		base.fn090d20()
+		return
+	}
+
+	DrawObject()
 }
 
 global bool laser_on
@@ -1642,7 +1694,7 @@ function void TitleCard.Show()
 	
 	base.TitleCard.Show()
 	
-	if (mt.teleframe && mt.bmpframe)
+	if (mt.teleframe)
 	{
 		if (global.zone == 0x0a || global.zone_act == 0x1601)
 		{
@@ -1666,7 +1718,7 @@ function void fn23de96()
 {
 	base.fn23de96()
 	
-	if (mt.teleframe && mt.bmpframe)
+	if (mt.teleframe)
 	{
 		if (camera.position.x.u16 < 0x3800 && camera.position.y.u16 > 0x0590)
 		{
@@ -1699,7 +1751,7 @@ function void MT.LoadBeamPalette()
 	{
 		u16 offset = 3 * 0x40 + mt.bmpline * 0x20
 		
-		if (global.zone == 0x0a || global.zone_act == 0x1601)
+		if (global.zone == 0x0a || global.zone_act == 0x1601 || global.zone_act == 0x1701)
 		{
 			PaletteAD = mt.hpzpalette ? 0x0a977e : 0x066a14
 			TargetAD = 0x802196 + offset
@@ -1727,6 +1779,15 @@ function void MT.LoadBeamPalette()
 			u16[TargetAD + 2*k] = mt.palettesource ? BEAM_SSZ[k] : u16[PaletteAD + 0x02 * k]
 		}
 	}
+	
+	if (global.zone_act == 0x1701)
+	{
+		u16[TargetAD] = 		u16[0x00066a20]
+		u16[TargetAD + 2] = 	0x6a0
+		u16[TargetAD + 2*2] = 	0x660
+		u16[TargetAD + 2*3] = 	u16[0x00066a28]
+		u16[TargetAD + 2*4] = 	u16[0x00066a26]
+	}
 }
 
 // Load CNZ Teleporter Beam Palette
@@ -1735,7 +1796,7 @@ function void fn0522a0()
 {
 	base.fn0522a0()
 	
-	if (mt.teleframe && mt.bmpframe)
+	if (mt.teleframe)
 		MT.LoadBeamPalette()
 }
 
@@ -1743,7 +1804,7 @@ function void fn0522a0()
 //# address-hook(0x045866) end(0x0458b2)
 function void fn045866()
 {
-	if (!mt.teleframe || !mt.bmpframe)
+	if (!mt.teleframe)
 	{
 		base.fn045866()
 		return
@@ -1767,7 +1828,154 @@ function void fn045866()
 
 		A1 = 0x04670c
 		u16 offset = 3 * 0x40 + mt.bmpline * 0x20
-		u16[0x802002 + offset + 0x0a] = u16[A1 + D0.u16 + 2]
-		u16[0x802002 + offset + 0x0c] = u16[A1 + D0.u16]
+		if (global.zone_act != 0x1701)
+		{
+			u16[0x802002 + offset + 0x0a] = u16[A1 + D0.u16 + 2]
+			u16[0x802002 + offset + 0x0c] = u16[A1 + D0.u16]
+		}
+	}
+}
+
+// HPZ Cave Rotating Palettes?
+
+//# address-hook(0x090964) end(0x090a70)
+function void fn090964()
+{
+	base.fn090964()
+	
+	if (mt.teleframe)
+	{
+		u16 offset = 3 * 0x40 + mt.bmpline * 0x20
+		for (u8 k = 0; k < 7; k += 1)
+		{
+			if (k < 5)
+				u16[0x802182 + offset + 2*k] = u16[0x000669f4 + 0x02 * k]
+			else
+				u16[0x802182 + offset + 2*k] = u16[0x00066a14 + 0x02 * (k - 5)]
+		}
+		
+		u32[0xfffffce2] = 0x040c0408
+		
+		MT.LoadBeamPalette()
+	}
+	
+}
+
+//# address-hook(0x0906a0) end(0x0906fa)
+function void fn0906a0()
+{
+	setupObjectAttributesFull(0x090fac)
+
+	objA0.update_address = 0x090700
+	u16[0xfffffaba] = A0.u16
+	u8[0xfffffabc] = 0xf0
+	u8[0xfffffabd] = 0xe8
+
+	A2 = 0xfffffade
+	copyMemory(A2, 0x0914ce, 8)
+	u16[A2+8] = 0
+
+	objA0.position.x.u16 = 0x1640
+	objA0.position.y.u16 = 0x0340
+	//level.palettefx.timer_1 = global.zone_act != 0x1701 ? 7999 : 0
+
+	A1 = 0xffffffb2		// Start of emerald collection states
+	D0 = 0x03			// Super Emerald collected state
+	D1 = 6				// Number of emeralds
+	while (true)
+	{
+		if (D0.u8 != u8[(A1+=1)-1])
+			break
+
+		--D1.s16
+		if (D1.s16 < 0)
+		{
+			objA0.value26 = 0xff
+
+			// "spawnSimpleChildObjects(0x090fe4)" replaced by:
+			spawnSimpleChildObjects(0x090734, 1)
+			break
+		}
+	}
+
+	fn090700()
+}
+
+//# address-hook(0x090700) end(0x09072e)
+function void fn090700()
+{
+	if (!mt.teleframe)
+	{
+		base.fn090700()
+		return
+	}
+	
+	if (objA0.render_flags & render_flag.VISIBLE)
+	{
+		if (global.zone_act == 0x1601)
+			level.palettefx.timer_1 = 7999
+							
+		if (objA0.value26 == 0)
+		{
+			if (global.zone_act != 0x1701)
+			{
+				u32[0xfffffc62] = 0x06a00660
+			}
+		}
+		else if (u8[0xfffffac1] == 0)
+		{
+			A1 = 0x0914ce
+			A2 = 0xfffffc62
+			fn085a1a()
+		}
+	}
+	Enemy.DrawOrUnload()
+}
+
+//# address-hook(0x0455cc) end(0x0456ee)
+function void fn0455cc()
+{
+	if (!mt.teleframe)
+	{
+		base.fn0455cc()
+		return
+	}
+	
+	D0.u16 = u16[A0 + 0x16] + objA0.velocity.y
+	objA0.position.y.u16 = D0.u16
+	fn045866()
+
+	fn0455cc_sub()
+
+	DrawOrUnloadObject()
+}
+
+//# address-hook(0x085a1a) end(0x085a58)
+function void fn085a1a()
+{
+	u16 offset
+	u16 b1
+	u16 b2
+	
+	if (mt.teleframe && global.zone_act == 0x1701)
+	{
+		offset = 3 * 0x40 + tca.bmpline * 0x20
+		
+		b1 = u16[0xfffffc62]
+		b2 = u16[0xfffffc64]
+		
+		u16[0xfffffc62] = u16[0x802016 + offset + 2]
+		u16[0xfffffc64] = u16[0x802016 + offset + 4]
+	}
+	
+	base.fn085a1a()
+	
+	if (mt.teleframe && global.zone_act == 0x1701)
+	{
+		u16[0x802016 + offset + 2] = u16[0xfffffc62]
+		u16[0x802016 + offset + 4] = u16[0xfffffc64]
+		
+		u16[0xfffffc62] = b1
+		u16[0xfffffc64] = b2
 	}
 }
