@@ -1,0 +1,106 @@
+global u16 giant_ring_1
+global u16 giant_ring_2
+global u16 giant_ring_3
+
+global u16 giant_ring_1_c
+global u16 giant_ring_2_c
+global u16 giant_ring_3_c
+
+global u8 giant_ring_palette_line
+global bool override_giant_ring
+
+function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
+{
+	// Giant Ring
+	if (objA0.update_address == 0x061682)
+	{
+		bool prioFlag = (objA0.sprite_attributes & 0x8000) != 0
+		
+		u64 key = stringformat("specialring_0x%02x", objA0.animation.sprite)
+		
+		if (!Renderer.hasCustomSprite(key))
+			key = stringformat("giant_ring_0x%02x", objA0.animation.sprite)
+
+		Renderer.drawCustomSprite(key, px, py, (objA0.subtype2c & 0x80 || GiantRing.isSuperEmeraldStage() || override_giant_ring) ? 0x90 + giant_ring_palette_line * 0x10 : 0x00, objA0.render_flags | (prioFlag ? SPRITE_FLAG_PRIO : 0), renderQueue)
+			
+		return true
+	}
+	
+	return base.Standalone.onWriteToSpriteTable(px, py, renderQueue)
+}
+
+//# address-hook(0x08598a) end(0x0859cc)
+function void fn08598a()
+{
+	if (override_giant_ring || (objA0.subtype2c & 0x80) || GiantRing.isSuperEmeraldStage())
+	{
+		giant_ring_1 = u16[0xfffffc2a]
+		giant_ring_2 = u16[0xfffffc2c]
+		giant_ring_3 = u16[0xfffffc3e]
+				
+		u16[0xfffffc2a] = giant_ring_1_c == 0 ? u16[0xfffffc2a] : giant_ring_1_c
+		u16[0xfffffc2c] = giant_ring_2_c == 0 ? u16[0xfffffc2c] : giant_ring_2_c
+		u16[0xfffffc3e] = giant_ring_3_c == 0 ? u16[0xfffffc3e] : giant_ring_3_c
+	}
+	
+	base.fn08598a()
+	
+	if (override_giant_ring || (objA0.subtype2c & 0x80) || GiantRing.isSuperEmeraldStage())
+	{
+		u16 offset = 3 * 0x40 + giant_ring_palette_line * 0x20
+		u16[0x802000 + offset + 0x02] = u16[0xfffffc22]
+		u16[0x802000 + offset + 0x0a] = u16[0xfffffc2a]
+		u16[0x802000 + offset + 0x0c] = u16[0xfffffc2c]
+		u16[0x802000 + offset + 0x1e] = u16[0xfffffc3e]
+		
+		u16[0x802000 + offset + 0x02 + 0x300] = u16[0xfffffc22 - 0xb80]
+		u16[0x802000 + offset + 0x0a + 0x300] = u16[0xfffffc2a]
+		u16[0x802000 + offset + 0x0c + 0x300] = u16[0xfffffc2c]
+		u16[0x802000 + offset + 0x1e + 0x300] = u16[0xfffffc3e]
+		
+		giant_ring_1_c = u16[0xfffffc2a]
+		giant_ring_2_c = u16[0xfffffc2c]
+		giant_ring_3_c = u16[0xfffffc3e]
+		
+		u16[0xfffffc2a] = giant_ring_1
+		u16[0xfffffc2c] = giant_ring_2
+        u16[0xfffffc3e] = giant_ring_3
+	}
+}
+
+//# address-hook(0x06169a) end(0x0616e4)
+function void fn06169a()
+{
+	if (override_giant_ring)
+	{
+		giant_ring_1 = u16[0xfffffc2a]
+		giant_ring_2 = u16[0xfffffc2c]
+		giant_ring_3 = u16[0xfffffc3e]
+		
+		u16 offset = 3 * 0x40 + giant_ring_palette_line * 0x20
+		u16[0x802000 + offset + 0x02] = u16[0xfffffc22]
+		u16[0x802000 + offset + 0x0a] = u16[0xfffffc2a]
+		u16[0x802000 + offset + 0x0c] = u16[0xfffffc2c]
+		u16[0x802000 + offset + 0x1e] = u16[0xfffffc3e]
+		
+		u16[0x802000 + offset + 0x02 + 0x300] = u16[0xfffffc22 - 0xb80]
+		u16[0x802000 + offset + 0x0a + 0x300] = u16[0xfffffc2a]
+		u16[0x802000 + offset + 0x0c + 0x300] = u16[0xfffffc2c]
+		u16[0x802000 + offset + 0x1e + 0x300] = u16[0xfffffc3e]
+	}
+	
+	base.fn06169a()
+}
+
+//# address-hook(0x0618fc) end(0x061988)
+function void fn0618fc()
+{
+	base.fn0618fc()
+	
+	if (override_giant_ring || (objA0.subtype2c & 0x80) || GiantRing.isSuperEmeraldStage())
+	{
+		u16[0xfffffc2a] = giant_ring_1
+		u16[0xfffffc2c] = giant_ring_2
+		u16[0xfffffc3e] = giant_ring_3
+	}
+}

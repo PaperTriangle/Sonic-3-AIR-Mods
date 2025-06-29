@@ -1,0 +1,57 @@
+{
+	"Metadata": 
+	{
+		"Name": "Extended Palette For Giant Ring",
+		"UniqueID": "extended-origins-special-ring",
+		"Author": "PaperTriangle",
+		"Description": "Changes handling of the giant ring palette to use an extended palette line when it is the Super Giant Ring. Has compatibility Sonic Origins Special Ring Animation mod and Super Ring Glow mod if they are loaded below this mod.",
+		"ModVersion": "1.1"
+	},
+	"OtherMods":
+	{
+		"Sonic Origins Special Ring Animation":
+		{
+			"DisplayName": "Sonic Origins Special Ring Animation",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		},
+		"vee-super-ring-glow":
+		{
+			"DisplayName": "Super Ring Glow",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		}
+	},
+	"Settings":
+	{
+		"List":
+		[
+			{
+				"InternalName": "override_giant_ring",
+				"DisplayName": "Use Extended Palette For",
+				"Variable": "override_giant_ring",
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Only Super Giant Ring",
+					"1": "All Giant Rings"
+				}
+			},
+			{
+				"InternalName": "giant_ring_palette_line",
+				"DisplayName": "Giant Ring's Palette Line",
+				"Variable": "giant_ring_palette_line",
+				"DefaultValue": "4",
+				"Options":
+				{
+					"0": "10",
+					"1": "11",
+					"2": "12",
+					"3": "13",
+					"4": "14",
+					"5": "15"
+				}
+			}
+		]
+	}
+}

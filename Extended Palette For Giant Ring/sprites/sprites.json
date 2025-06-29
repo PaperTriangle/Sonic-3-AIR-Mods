@@ -1,0 +1,21 @@
+{
+	"giant_ring_0x00":  { "File": "giant_ring.bmp", "Rect": "1,1,64,64", "Center": "32,32" },
+	"giant_ring_0x01":  { "File": "giant_ring.bmp", "Rect": "67,1,64,64", "Center": "32,32" },
+	"giant_ring_0x02":  { "File": "giant_ring.bmp", "Rect": "133,1,64,64", "Center": "32,32" },
+	"giant_ring_0x03":  { "File": "giant_ring.bmp", "Rect": "199,1,64,64", "Center": "32,32" },
+	"giant_ring_0x04":  { "File": "giant_ring.bmp", "Rect": "1,67,64,64", "Center": "32,32" },
+	"giant_ring_0x05":  { "File": "giant_ring.bmp", "Rect": "67,67,64,64", "Center": "32,32" },
+	"giant_ring_0x06":  { "File": "giant_ring.bmp", "Rect": "133,67,64,64", "Center": "32,32" },
+	"giant_ring_0x07":  { "File": "giant_ring.bmp", "Rect": "199,67,64,64", "Center": "32,32" },
+	"giant_ring_0x08":  { "File": "giant_ring.bmp", "Rect": "1,133,64,64", "Center": "32,32" },
+	"giant_ring_0x09":  { "File": "giant_ring.bmp", "Rect": "67,133,64,64", "Center": "32,32" },
+	"giant_ring_0x0a":  { "File": "giant_ring.bmp", "Rect": "133,133,64,64", "Center": "32,32" },
+	"giant_ring_0x0b":  { "File": "giant_ring.bmp", "Rect": "199,133,64,64", "Center": "32,32" },
+	"giant_ring_0x0c":  { "File": "giant_ring.bmp", "Rect": "1,199,64,64", "Center": "32,32" },
+	"giant_ring_0x0d":  { "File": "giant_ring.bmp", "Rect": "67,199,64,64", "Center": "32,32" },
+	"giant_ring_0x0e":  { "File": "giant_ring.bmp", "Rect": "133,199,64,64", "Center": "32,32" },
+	"giant_ring_0x0f":  { "File": "giant_ring.bmp", "Rect": "199,199,64,64", "Center": "32,32" },
+	"giant_ring_0x10":  { "File": "giant_ring.bmp", "Rect": "1,265,64,64", "Center": "32,32" },
+	"giant_ring_0x11":  { "File": "giant_ring.bmp", "Rect": "67,265,64,64", "Center": "32,32" },
+	"giant_ring_0x12":  { "File": "giant_ring.bmp", "Rect": "133,265,64,64", "Center": "32,32" }
+}
