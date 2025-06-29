@@ -6,6 +6,7 @@ global bool phud.livesborder
 global bool phud.transform
 global u8 phud.transformstyle
 global s8 phud.offset
+global u8 phud.bmpline
 
 define u8 global.xtrachar = u8[0xffffe654]
 
@@ -315,7 +316,10 @@ function bool PHUD.RenderLives(u16 px, u16 py, u16 renderQueue)
 	if (characterName == "character_tails" && !(global.region_code & 0x80))
 		characterName = "character_miles"
 	
-	HUD.drawSprite(stringformat("%s_lives_icon", characterSprite), px, py, renderQueue)
+	if (phud.bmpline == 0)
+		HUD.drawSprite(stringformat("%s_lives_icon", characterSprite), px, py, renderQueue)
+	else
+		Renderer.drawCustomSprite(stringformat("%s_lives_icon", characterSprite), px, py, 0x00 + (phud.bmpline + 2 * (3 - getMainCharacter()) - 1) * 0x10, SPRITE_FLAG_PRIO, renderQueue)
 	++renderQueue
 	
 	u64 livesborderstring = (phud.livesborder) ? stringformat("ring_%s", compatName) : stringformat("border_%s", compatName) 
@@ -373,4 +377,29 @@ function void Character.Initialization.shared(u8 character)
 	phud.offset = 0x70
 
 	base.Character.Initialization.shared(character)
+}
+
+function void yieldExecution()
+{
+	if (phud.bmpline > 0 && global.game_mode == 0x0c && PHUD.AllowCloning())
+	{
+		u16 offset = 3 * 0x40 + (phud.bmpline - 1) * 0x20
+		u32 PaletteAD = 0x802000 + getMainCharacter() * 0x40
+		for (u8 k = 0; k < 0x20; k += 1)
+		{
+			u16[0x802000 + offset + 2*k] = u16[PaletteAD + 0x02 * k]
+			u16[0x802300 + offset + 2*k] = u16[PaletteAD + 0x02 * k]
+		}
+	}
+
+	base.yieldExecution()
+}
+
+function bool PHUD.AllowCloning()
+{
+	if (Mods.isModActive("Extra Slot 3D in 2D Shadow"))
+		if (!super.active && (System.getGlobalVariableValueByName("shadow.isBoosting") || System.getGlobalVariableValueByName("shadow.Homing") == 2 || System.getGlobalVariableValueByName("shadow.DropDown")))
+			return false
+
+	return true
 }

@@ -109,6 +109,22 @@
 					"0": "No",
 					"1": "Yes"
 				}
+			},
+			{
+				"InternalName": "phud.bmpline",
+				"DisplayName": "BMP Palette Line Cloning",
+				"Variable": "phud.bmpline",
+				"Category": "Lives Settings",	
+				"DefaultValue": "2",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "10 & 11",
+					"2": "11 & 12",
+					"3": "12 & 13",
+					"4": "13 & 14",
+					"5": "14 & 15"
+				}
 			}
 		]
 	}
