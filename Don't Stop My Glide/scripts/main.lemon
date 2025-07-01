@@ -203,6 +203,7 @@ function void UpdateKnucklesGlideCollision()
 	if (char.double_jump_state != 3)
 	{
 		base.UpdateKnucklesGlideCollision()
+		dsmg.backup_state = u8[0xffffb000 + 0x2f]
 		return
 	}
 
@@ -230,7 +231,8 @@ function void UpdateKnucklesGlideCollision()
 			
 		if (D1.s16 < 0x0e)
 		{
-			char.position.y.u16 += global.inv_gravity ? -D1.s16 : D1.s16
+			if (!dsmg.knux_slide)
+				char.position.y.u16 += global.inv_gravity ? -D1.s16 : D1.s16
 			char.rotation = D3.u8
 			if ((level.framecounter.low & 0x07) == 0)
 			{
@@ -255,18 +257,23 @@ function void UpdateKnucklesGlideCollision()
 		char.groundspeed = 0
 		char.velocity.x = 0
 		char.velocity.y = 0
-		s16 dy = s8(char.hitbox_extends.y - char.hitbox.default.y)
-		char.position.y.u16 += global.inv_gravity ? -dy : dy
+		if (!dsmg.knux_slide)
+		{
+			s16 dy = s8(char.hitbox_extends.y - char.hitbox.default.y)
+			char.position.y.u16 += global.inv_gravity ? -dy : dy
+		}
+		else
+		{
+			char.position.y.u16 += global.inv_gravity ? -2 : 2
+		}
 		Character.LandingOnGroundNoSpindash()
 		char.hlock_countdown = 15
 		char.state = dsmg.knux_fall ? char.state.KNUX_STANDUP2 : char.state.KNUX_STANDUP
 		if (dsmg.knux_fall)
 			playSound(0x4c)
-			
+		
 		dsmg.knux_slide = 0
 		dsmg.knux_fall = 0
-		dy = s8(0x0a - char.hitbox.default.y)
-		char.position.y.u16 -= global.inv_gravity ? -dy : dy
 	}
 
 }
@@ -274,6 +281,7 @@ function void UpdateKnucklesGlideCollision()
 // Yield Execution section handles detected the state before an object impact.
 function void yieldExecution()
 {
+
 	if (dsmg.slide_setting)
 	{
 		if (isMainCharacter(CHARACTER_KNUCKLES) && (dsmg.backup_state == 1 || dsmg.backup_state == 2 || dsmg.backup_state == 3) && u8[0xffffb000 + 0x2a] & char.flag.ON_OBJECT)
@@ -291,14 +299,21 @@ function void yieldExecution()
 				dsmg.knux_slide = 0
 				dsmg.knux_fall = 0
 			}
+				
+		}
+		else
+		{
+			dsmg.knux_fall = 0
 		}
 		
 		dsmg.backup_state = u8[0xffffb000 + 0x2f]
 	}
-
+	
 	base.yieldExecution()
 
 }
+
+
 
 // New logic here to force some glide related logic here.
 //# address-hook(0x0167f4) end(0x01684a)
@@ -306,6 +321,7 @@ function void Character.UpdateKnucklesUprightOnGround()
 {
 	if (dsmg.slide_setting && dsmg.knux_slide)
 	{
+		s16[0xffffee2c] = 0x60
 		u8[0xffffb000 + 0x2f] = 3
 		UpdateMovementStraight()
 		UpdateKnucklesGlideCollision()
@@ -316,7 +332,10 @@ function void Character.UpdateKnucklesUprightOnGround()
 			char.animation.timer = 0x7f
 			char.animation.frame = 0
 			if (!dsmg.barber)
+			{				
 				char.hitbox_extends.y = 0xa		// pushes the character down a bit.
+				
+			}
 			
 			if (char.drown_countdown >= 12)
 			{
@@ -352,16 +371,10 @@ function bool Standalone.drawCharacterSprite(u8 character, u8 variant, s16 px, s
 	return base.Standalone.drawCharacterSprite(character, variant, px, py, asSmallGhost)
 }
 
-// Fix for LBZ Cylinder
+//---------------------
+// Fix for LBZ Cylinder	
+//---------------------
 
-	//dsmg.barber = 1			// set this flag to prevent adjusting hitbox 
-	//if (A1 == 0xffffb000 && dsmg.knux_slide && u8[0xffffb000 + 0x2a] & char.flag.ON_OBJECT)
-	//{
-	//	dsmg.knux_slide = 0
-	//	dsmg.knux_fall = 0
-	//	u8[0xffffb000 + 0x2f] = 0
-	//}
-	
 //# address-hook(0x02c3e8) end(0x02c516)
 function void fn02c3e8()
 {
@@ -376,8 +389,25 @@ function void fn02c3e8()
 	
 	base.fn02c3e8()
 }
+//-------------
+// LBZ Tube Fix
+//-------------
 
+//# address-hook(0x029d6a) end(0x029de6)
+function void fn029d6a()
+{
+	if ((objA1.flags2a & char.flag.ON_OBJECT) && (u8[0xffffb000 + 0x2e] != 0))
+	{
+		dsmg.knux_slide = 0
+		dsmg.knux_fall = 0
+	}
+	
+	base.fn029d6a()
+}
+
+//---------------------
 // Fix for CNZ Cylinder
+//---------------------
 // I dunno how the fuck these things work so I just disable the feature entirely.
 
 //# address-hook(0x033392) end(0x0335a6)
@@ -408,7 +438,9 @@ function void fn0335c4()
 	base.fn0335c4()
 }
 
+//----------------------
 // Fix for SOZ Sandflows
+//----------------------
 
 //# address-hook(0x03fd4e) end(0x03fe42)
 function void fn03fd4e()
@@ -472,4 +504,26 @@ function void fn0400f0()
 	}
 	
 	base.fn0400f0()
+}
+
+//------------------------
+// Fix for camera position
+//------------------------
+
+//# address-hook(0x01c11e) end(0x01c236)
+function void UpdateCameraPositionY()
+{
+	u8 flags_backup = char.flags
+	
+	if (dsmg.knux_slide || dsmg.backup_state == 3)
+	{
+		char.flags |= char.flag.IN_AIR
+	}
+	
+	base.UpdateCameraPositionY()
+	
+	if (dsmg.knux_slide || dsmg.backup_state == 3)
+	{
+		char.flags = flags_backup
+	}
 }
