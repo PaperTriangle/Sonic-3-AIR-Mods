@@ -231,7 +231,7 @@ function void UpdateKnucklesGlideCollision()
 			
 		if (D1.s16 < 0x0e)
 		{
-			if (!dsmg.knux_slide)
+			if !(char.flags & char.flag.ON_OBJECT)
 				char.position.y.u16 += global.inv_gravity ? -D1.s16 : D1.s16
 			char.rotation = D3.u8
 			if ((level.framecounter.low & 0x07) == 0)
@@ -299,21 +299,18 @@ function void yieldExecution()
 				dsmg.knux_slide = 0
 				dsmg.knux_fall = 0
 			}
-				
 		}
 		else
 		{
 			dsmg.knux_fall = 0
 		}
-		
+
 		dsmg.backup_state = u8[0xffffb000 + 0x2f]
 	}
 	
 	base.yieldExecution()
 
 }
-
-
 
 // New logic here to force some glide related logic here.
 //# address-hook(0x0167f4) end(0x01684a)
@@ -342,6 +339,7 @@ function void Character.UpdateKnucklesUprightOnGround()
 				u8[A6 + 0x05] = 0x06		// Base update for braking dust
 				u8[A6 + 0x22] = 0x15		// First frame of dust animation
 			}
+			
 		}
 					
 		if ((level.framecounter.low & 0x07) == 0)
@@ -408,34 +406,20 @@ function void fn029d6a()
 //---------------------
 // Fix for CNZ Cylinder
 //---------------------
-// I dunno how the fuck these things work so I just disable the feature entirely.
+// These things are the fucking worst objects in the game...
 
-//# address-hook(0x033392) end(0x0335a6)
-function void fn033392()
+//# address-hook(0x0337d8) end(0x033834)
+function void fn0337d8()
 {
-	dsmg.barber = 1			// set this flag to prevent adjusting hitbox 
-	if (dsmg.knux_slide && u8[0xffffb000 + 0x2a] & char.flag.ON_OBJECT)
+	if (dsmg.slide_setting && A1 == 0xffffb000)
 	{
 		dsmg.knux_slide = 0
 		dsmg.knux_fall = 0
 		u8[0xffffb000 + 0x2f] = 0
-	}
-
-	base.fn033392()
-}
-
-//# address-hook(0x0335c4) end(0x0337d6)
-function void fn0335c4()
-{
-	dsmg.barber = 1			// set this flag to prevent adjusting hitbox 
-	if (dsmg.knux_slide && u8[0xffffb000 + 0x2a] & char.flag.ON_OBJECT)
-	{
-		dsmg.knux_slide = 0
-		dsmg.knux_fall = 0
-		u8[0xffffb000 + 0x2f] = 0
+		dsmg.backup_state = 0
 	}
 	
-	base.fn0335c4()
+	base.fn0337d8()
 }
 
 //----------------------
