@@ -5,7 +5,6 @@ global bool dsmg.slide_setting
 global u8 dsmg.backup_state
 global bool dsmg.knux_slide
 global bool dsmg.knux_fall
-global bool dsmg.barber
 
 
 //---------------
@@ -327,12 +326,9 @@ function void Character.UpdateKnucklesUprightOnGround()
 		{
 			char.animation.sprite = 0xcc
 			char.animation.timer = 0x7f
-			char.animation.frame = 0
-			if (!dsmg.barber)
-			{				
-				char.hitbox_extends.y = 0xa		// pushes the character down a bit.
-				
-			}
+			char.animation.frame = 0			
+			char.hitbox_extends.y = 0xa		// pushes the character down a bit.
+
 			
 			if (char.drown_countdown >= 12)
 			{
@@ -351,18 +347,21 @@ function void Character.UpdateKnucklesUprightOnGround()
 	{
 		Character.updateUprightOnGround()
 	}
-	
-	dsmg.barber = 0
 }
 
 // Force setting the slide state here as well otherwise Knuckles flickers between falling and walking.
 function bool Standalone.drawCharacterSprite(u8 character, u8 variant, s16 px, s16 py, bool asSmallGhost)
 {
-	if (dsmg.slide_setting && isMainCharacter(CHARACTER_KNUCKLES) && dsmg.knux_slide)
+	if (dsmg.slide_setting && isMainCharacter(CHARACTER_KNUCKLES))
 	{
-		if (u8[0xffffb000 + 0x2f] == 3)
+		if (u8[0xffffb000 + 0x2f] == 3 && dsmg.knux_slide)
 		{
 			char.animation.sprite = 0xcc
+		}
+		
+		if (dsmg.backup_state == 1 && (u8[0xffffb000 + 0x2a] & char.flag.ON_OBJECT)) // Fix for one glide frame that gets pushed higher
+		{
+			py += 0x08
 		}
 	}
 	
