@@ -1,0 +1,113 @@
+global bool rotate_enable
+global u8 oldRotationPlayer1_backup
+global u8 oldRotationPlayer2_backup
+
+function bool Standalone.drawCharacterSprite(u8 character, u8 variant, s16 px, s16 py, bool asSmallGhost)
+{
+	if (variant < 2)
+	{
+		rotate_enable = rotateValid()
+		
+		oldRotationPlayer1_backup = oldRotationPlayer1
+		oldRotationPlayer2_backup = oldRotationPlayer2
+	}
+	
+	bool returnVal = base.Standalone.drawCharacterSprite(character, variant, px, py, asSmallGhost)
+	
+	return returnVal
+
+}
+
+
+function u8 recalcRotate(u8 angleIn)
+{
+
+	u8 variant = (A0 == 0xffffb04a) ? 1 : 0
+	bool isPlayer1 = (variant == 0)
+	s8 oldRotation = isPlayer1 ? oldRotationPlayer1_backup : oldRotationPlayer2_backup
+	u8 angle = 0
+	u8 flags = char.flags & char.flag.FACING_LEFT		// This really has to be "char.flags", not "char.render_flags"
+
+	angle = char.rotation
+	
+	if (abs(s8(char.rotation)) <= 0x04 && abs(oldRotation) <= 0x04)
+	{
+		angle = 0
+	}
+
+	if (angle != char.rotation)
+	{
+		s8 diff = angle - oldRotation
+		angle = oldRotation + clamp(diff, -3, 3)
+	}
+	
+	if (isPlayer1)
+		oldRotationPlayer1 = angle
+	else
+		oldRotationPlayer2 = angle
+	
+	if (global.inv_gravity)
+	{
+		// Correction for inverse gravity
+		angle = 128 - angle
+	}
+	
+	return rotate_enable ? angle : angleIn
+}
+
+function bool rotateValid()
+{
+	// Character
+	if (char.animation.sprite >= 0x01 && char.animation.sprite <= 0x20)
+	{
+		// Walking animation
+		return true
+	}
+	else if (char.animation.sprite >= 0x21 && char.animation.sprite <= 0x30)
+	{
+		// Running animation
+		return true
+	}
+	else if (char.animation.sprite >= 0x78 && char.animation.sprite <= 0x7f)
+	{
+		// Swinging animation
+		return true
+	}
+	else if (u8[A0 + 0x38] == CHARACTER_TAILS && char.animation.sprite >= 0xc3 && char.animation.sprite <= 0xca)
+	{
+		// Tails' fastest run animation
+		return true
+	}
+	else if (u8[A0 + 0x38] == CHARACTER_KNUCKLES && char.animation.sprite == 0xc0)
+	{
+		// Only for DDZ
+		return true
+	}
+	
+	return false
+}
+
+function void Renderer.drawSprite(u64 key, s16 px, s16 py, u16 atex, u8 flags, u16 renderQueue, u8 angle, u8 alpha)
+{
+	if (A0 == 0xffffb04a || A0 == 0xffffb000)
+		angle = recalcRotate(angle)
+		
+	base.Renderer.drawSprite(key, px, py, atex, flags, renderQueue, angle, alpha)
+}
+
+
+function void Renderer.drawCustomSprite(u64 key, s16 px, s16 py, u16 atex, u8 flags, u16 renderQueue, u8 angle, u32 tintColor, s32 scale)
+{
+	if (A0 == 0xffffb04a || A0 == 0xffffb000)
+		angle = recalcRotate(angle)
+		
+	base.Renderer.drawCustomSprite(key, px, py, atex, flags, renderQueue, angle, tintColor, scale)
+}
+
+function void Renderer.drawSpriteTinted(u64 key, s16 px, s16 py, u16 atex, u8 flags, u16 renderQueue, u8 angle, u32 tintColor, s32 scale)
+{
+	if (A0 == 0xffffb04a || A0 == 0xffffb000)
+		angle = recalcRotate(angle)
+		
+	base.Renderer.drawSpriteTinted(key, px, py, atex, flags, renderQueue, angle, tintColor, scale)
+}
