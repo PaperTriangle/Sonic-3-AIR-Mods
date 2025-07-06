@@ -215,7 +215,6 @@ function void BB.BreakBall()
 // Ribbit
 //-------
 
-
 // Variant: Swinging its weight in a circle around him
 
 //# address-hook(0x08c370) end(0x08c388)
@@ -608,7 +607,7 @@ function void SignPost.BaseUpdate()
 {
 	if (global.zone == 0x00)
 	{
-		objA0.sprite_priority = 0x180
+		objA0.sprite_priority = 0x300
 		objA0.sprite_attributes |= sprite_attribute.PRIORITY
 	}
 	
