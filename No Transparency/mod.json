@@ -51,6 +51,17 @@
 					"0": "Stay Solid",
 					"1": "Allow Fading"
 				}
+			},
+			{
+				"InternalName": "nt.shadoweffects",
+				"DisplayName": "Shadow's Effects",
+				"Variable": "nt.shadoweffects",
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Stay Solid",
+					"1": "Allow Transparency"
+				}
 			}
 		]
 	}

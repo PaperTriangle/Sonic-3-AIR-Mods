@@ -1,6 +1,7 @@
 global bool nt.novdp
 global bool nt.nosprite
 global bool nt.ringmonitorfade
+global bool nt.shadoweffects
 
 function bool NT.RenderSolid(u64 key)
 {
@@ -59,6 +60,18 @@ function bool NT.RenderTransparent(u64 key)
 		
 		if ((objA0.update_address == 0x01a64a || objA0.update_address == 0x01a662) && objA0.base_state == 0x02)
 			return true
+	}
+	
+	if (nt.shadoweffects)
+	{
+		for (u8 i = 0; i < 8; i++)
+		{
+			if (i < 6 && key == stringformat("shadow_boost_start_%d", i))
+				return true
+
+			if (key == stringformat("shadow_airdash_%d", i))
+				return true
+		}
 	}
 	
 	if (key == "@input_icon_button_Y"|| renderTransparentPlz || global.game_mode != 0x0c)
@@ -146,6 +159,18 @@ function void Renderer.drawSprite(u64 key, s16 px, s16 py, u16 atex, u8 flags, u
 {
 	if (!nt.nosprite || NT.RenderTransparent(key))
 	{
+		
+		if (NT.PreventRendering(key) && alpha < 0xff && !NT.NotCharacter(key))
+		{
+			lastKey = key
+			lastAtex = atex
+			lastFlags = flags
+			lastRenderQueue = renderQueue
+			lastAngle = angle
+
+			return
+		}
+		
 		base.Renderer.drawSprite(key, px, py, atex, flags, renderQueue, angle, alpha)
 		return
 	}
@@ -175,6 +200,19 @@ function void Renderer.drawSpriteTinted(u64 key, s16 px, s16 py, u16 atex, u8 fl
 {
 	if (!nt.nosprite || NT.RenderTransparent(key))
 	{
+		u8 alpha = tintColor
+		
+		if (NT.PreventRendering(key) && alpha < 0xff && !NT.NotCharacter(key))
+		{
+			lastKey = key
+			lastAtex = atex
+			lastFlags = flags
+			lastRenderQueue = renderQueue
+			lastAngle = angle
+			
+			return
+		}
+		
 		base.Renderer.drawSpriteTinted(key, px, py, atex, flags, renderQueue, angle, tintColor, scale)
 		return
 	}
