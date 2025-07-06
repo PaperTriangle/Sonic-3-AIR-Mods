@@ -30,6 +30,17 @@
 					"0": "Disabled",
 					"1": "Enabled"
 				}
+			},
+			{
+				"InternalName": "dsmg.wall_setting",
+				"DisplayName": "Hyper Wall-Hit Flash & Sparks",
+				"Variable": "dsmg.wall_setting",
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
 			}
 		]
 	}

@@ -1,10 +1,12 @@
 define u8 global.xtrachar	= u8[0xffffe654]
 
 global bool dsmg.slide_setting
+global bool dsmg.wall_setting
 
 global u8 dsmg.backup_state
 global bool dsmg.knux_slide
 global bool dsmg.knux_fall
+global bool dsmg.no_land
 
 
 //---------------
@@ -266,11 +268,17 @@ function void UpdateKnucklesGlideCollision()
 			char.position.y.u16 += global.inv_gravity ? -2 : 2
 		}
 		Character.LandingOnGroundNoSpindash()
-		char.hlock_countdown = 15
-		char.state = dsmg.knux_fall ? char.state.KNUX_STANDUP2 : char.state.KNUX_STANDUP
+		
+		D0.u8 = (char.rotation + 0x20) & 0xc0
+		if (D0.u8 == 0 && !dsmg.no_land)
+		{
+			char.hlock_countdown = 15
+			char.state = dsmg.knux_fall ? char.state.KNUX_STANDUP2 : char.state.KNUX_STANDUP
+		}
 		if (dsmg.knux_fall)
 			playSound(0x4c)
 		
+		dsmg.no_land = 0
 		dsmg.knux_slide = 0
 		dsmg.knux_fall = 0
 	}
@@ -283,6 +291,7 @@ function void yieldExecution()
 
 	if (dsmg.slide_setting)
 	{
+	
 		if (isMainCharacter(CHARACTER_KNUCKLES) && (dsmg.backup_state == 1 || dsmg.backup_state == 2 || dsmg.backup_state == 3) && u8[0xffffb000 + 0x2a] & char.flag.ON_OBJECT)
 		{
 			dsmg.knux_slide = 1
@@ -291,9 +300,9 @@ function void yieldExecution()
 				dsmg.knux_fall = 1
 		}
 		
-		if (dsmg.knux_slide)
+		if (isMainCharacter(CHARACTER_KNUCKLES) && dsmg.knux_slide)
 		{
-			if (s16[0xffffb000 + 0x1a] < 0) // We remove this if we have upward velocity, such as hurt or death.
+			if (s16[0xffffb000 + 0x1a] < 0 || u8[0xffffb000 + 0x20] & char.state.LIFTED) // We remove this if we have upward velocity, such as hurt or death.
 			{
 				dsmg.knux_slide = 0
 				dsmg.knux_fall = 0
@@ -303,9 +312,18 @@ function void yieldExecution()
 		{
 			dsmg.knux_fall = 0
 		}
-
+		
+		if (debug_mode.state)
+		{
+			dsmg.knux_slide = 0
+			dsmg.knux_fall = 0
+			u8[0xffffb000 + 0x2f] = 0
+		}		
+		
 		dsmg.backup_state = u8[0xffffb000 + 0x2f]
 	}
+	
+	//System.writeDisplayLine(stringformat("Values: 0x%02x, 0x%02x, 0x%02x, 0x%02x", dsmg.backup_state, dsmg.knux_slide, dsmg.knux_fall, u8[0xffffb000 + 0x1e]))
 	
 	base.yieldExecution()
 
@@ -377,10 +395,11 @@ function void fn02c3e8()
 {
 	u8 bit = (1 << D6.u8)
 
-	if (A1 == 0xffffb000 && (objA0.flags2a & bit) != 0)
+	if (dsmg.slide_setting && A1 == 0xffffb000 && (objA0.flags2a & bit) != 0)
 	{
 		dsmg.knux_slide = 0
 		dsmg.knux_fall = 0
+		dsmg.no_land = 1
 		u8[0xffffb000 + 0x2f] = 0
 	}
 	
@@ -393,10 +412,11 @@ function void fn02c3e8()
 //# address-hook(0x029d6a) end(0x029de6)
 function void fn029d6a()
 {
-	if ((objA1.flags2a & char.flag.ON_OBJECT) && (u8[0xffffb000 + 0x2e] != 0))
+	if (dsmg.slide_setting && (objA1.flags2a & char.flag.ON_OBJECT) && (u8[0xffffb000 + 0x2e] != 0))
 	{
 		dsmg.knux_slide = 0
 		dsmg.knux_fall = 0
+		u8[0xffffb000 + 0x2f] = 0
 	}
 	
 	base.fn029d6a()
@@ -421,6 +441,37 @@ function void fn0337d8()
 	base.fn0337d8()
 }
 
+//-------------------
+// Fix for CNZ Barrel
+//-------------------
+//# address-hook(0x0324c0) end(0x032608)
+function void fn0324c0()
+{
+#if STANDALONE
+	if (debug_mode.state)
+		return
+#endif
+	if (dsmg.slide_setting && dsmg.slide_setting && A1 == 0xffffb000)
+	{
+		u8 bit = (1 << D6.u8)
+
+		D0.u8 = u8[A2]
+		if (D0.u8 == 0)
+		{
+			if (objA0.flags2a & bit)
+			{
+				dsmg.knux_slide = 0
+				dsmg.knux_fall = 0
+				u8[0xffffb000 + 0x2f] = 0
+				dsmg.backup_state = 0
+			}
+		}
+	}
+	
+	base.fn0324c0()
+}
+			
+
 //----------------------
 // Fix for SOZ Sandflows
 //----------------------
@@ -430,7 +481,7 @@ function void fn03fd4e()
 {
 	u8 bit = (1 << D6.u8)
 
-	if (A1 == 0xffffb000 && (objA0.flags2a & bit) != 0)
+	if (dsmg.slide_setting && A1 == 0xffffb000 && (objA0.flags2a & bit) != 0)
 	{
 		dsmg.knux_slide = 0
 		dsmg.knux_fall = 0
@@ -444,7 +495,7 @@ function void fn03fd4e()
 function void fn03ff9e()
 {
 	u8 bit = (1 << D6.u8)
-	if (A1 == 0xffffb000 && (objA0.flags2a & bit) != 0)
+	if (dsmg.slide_setting && A1 == 0xffffb000 && (objA0.flags2a & bit) != 0)
 	{
 		dsmg.knux_slide = 0
 		dsmg.knux_fall = 0
@@ -465,7 +516,7 @@ function void fn03fe70()
 		return
 	}
 
-	if (A1 == 0xffffb000 && (objA0.flags2a & bit) != 0)
+	if (dsmg.slide_setting && A1 == 0xffffb000 && (objA0.flags2a & bit) != 0)
 	{
 		dsmg.knux_slide = 0
 		dsmg.knux_fall = 0
@@ -479,7 +530,7 @@ function void fn03fe70()
 function void fn0400f0()
 {
 	u8 bit = (1 << D6.u8)
-	if (A1 == 0xffffb000 && (objA0.flags2a & bit) != 0)
+	if (dsmg.slide_setting && A1 == 0xffffb000 && (objA0.flags2a & bit) != 0)
 	{
 		dsmg.knux_slide = 0
 		dsmg.knux_fall = 0
@@ -489,6 +540,27 @@ function void fn0400f0()
 	base.fn0400f0()
 }
 
+//----------------
+// Fix for MGZ Tar
+//----------------
+
+//# address-hook(0x032aae) end(0x032b8a)
+function void fn032aae()
+{
+	if (dsmg.slide_setting && debug_mode.state == 0)
+	{
+		if ((objA0.flags2a & object.flag.P1_ON_OBJECT) != 0)
+		{
+			dsmg.knux_slide = 0
+			dsmg.knux_fall = 0
+			u8[0xffffb000 + 0x2f] = 0
+			dsmg.no_land = 1
+		}
+	}
+
+	base.fn032aae()
+}
+
 //------------------------
 // Fix for camera position
 //------------------------
@@ -496,6 +568,12 @@ function void fn0400f0()
 //# address-hook(0x01c11e) end(0x01c236)
 function void UpdateCameraPositionY()
 {
+	if !(dsmg.slide_setting && isMainCharacter(CHARACTER_KNUCKLES))
+	{
+		base.UpdateCameraPositionY()
+		return
+	}
+	
 	u8 flags_backup = char.flags
 	
 	if (dsmg.knux_slide || dsmg.backup_state == 3)
@@ -509,4 +587,23 @@ function void UpdateCameraPositionY()
 	{
 		char.flags = flags_backup
 	}
+}
+
+//-----------------------------------
+// Add sparks to hyper glide wall hit
+//-----------------------------------
+
+//# address-hook(0x0104ea) end(0x01050a)
+function void Character.ClearEnemiesOnScreen()
+{
+	if (dsmg.wall_setting && isMainCharacter(CHARACTER_KNUCKLES))
+	{
+			D2 = 2
+			Effects.CreateSparks()
+
+			// Create a short flash
+			global.whiteflash_timeout = 4
+	}
+	
+	Character.clearEnemiesOnScreen(0)
 }
