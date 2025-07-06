@@ -422,7 +422,7 @@
 				"InternalName": "mt.amyheart",
 				"DisplayName": "ES Amy Heart",
 				"Variable": "mt.amyheart",
-				"Category": "Extras",	
+				"Category": "Extra Slot Extras",	
 				"DefaultValue": "1",
 				"Options":
 				{
@@ -434,7 +434,19 @@
 				"InternalName": "mt.amytrail",
 				"DisplayName": "ES Amy Hammer Trail Flash",
 				"Variable": "mt.amytrail",
-				"Category": "Extras",	
+				"Category": "Extra Slot Extras",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "mt.esustars",
+				"DisplayName": "ES Hyper Stars for Sonic",
+				"Variable": "mt.esustars",
+				"Category": "Extra Slot Extras",	
 				"DefaultValue": "1",
 				"Options":
 				{

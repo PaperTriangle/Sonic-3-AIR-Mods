@@ -38,6 +38,7 @@ global bool mt.palettesource
 
 global bool mt.amyheart
 global bool mt.amytrail
+global bool mt.esustars
 
 global u8 dez_laser_val
 global bool ssz_s2_laser
@@ -174,8 +175,20 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 			{
 				u8 flags = ((objA0.render_flags & 0x01) ? SPRITE_FLAG_FLIP_X : 0) | ((objA0.render_flags & 0x02) ? SPRITE_FLAG_FLIP_Y : 0) | ((objA0.sprite_attributes & 0x8000) ? SPRITE_FLAG_PRIO : 0)
 				
-				Renderer.drawCustomSprite(stringformat("esu_smallhyper_%d", objA0.value26), px, py, 0, flags | u8[A0 + 0x2b], renderQueue, 0, 0xff - objA0.value26 * 0x40)
+				Renderer.drawCustomSprite(stringformat("esu_smallhyper_%d", objA0.value26), px, py, 0, flags | u8[A0 + 0x2b], renderQueue, 0, 0xff - objA0.value26 * 0x30)
 
+				return true
+			}
+		}
+		
+		// Hyper Dash Stars
+		if (objA0.update_address == 0x019874 && mt.esustars)
+		{
+			u64 key = stringformat("esu_smallhyper_%d", objA0.animation.sprite)
+			if (Renderer.hasCustomSprite(key))
+			{
+				Renderer.drawCustomSprite(key, px, py, 0, objA0.render_flags, renderQueue, 0, 0xff - (mt.stars ? objA0.animation.sprite * 0x30 : 0))
+				
 				return true
 			}
 		}
@@ -198,16 +211,20 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		// Explosions from AIZ2 Green Bomber Bombs
 		if (objA0.mapping_offset == 0x23c1b2)
 		{
-			
-			if (objA0.animation.frame == 0x05)
+			if (objA0.animation.frame == 0x04)
 			{
-				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 64)
-				Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 64)
+				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
+			}
+			else if (objA0.animation.frame == 0x05)
+			{
+				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 160)
+				if (index != 0x0577)
+					Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 160)
 			}
 			else if (objA0.animation.frame == 0x06)
 			{
-				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 112)
-				Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 112)
+				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 144)
+				Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 144)
 			}
 			else
 			{
@@ -221,18 +238,24 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		{
 			if (objA0.animation.sprite == 0x04)
 			{
-				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 127)
-				Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 127)
+				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 144)
+				Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 144)
 				
 				return true
 			}
 		}
 		else if (objA0.mapping_offset == 0x83ffc)
 		{
-			if (objA0.animation.sprite >= 0x04)
+			if (objA0.animation.sprite == 0x04)
 			{
-				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 112)
-				Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 112)
+				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 160)
+				
+				return true
+			}
+			else if (objA0.animation.sprite == 0x05)
+			{
+				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 144)
+				Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 144)
 				
 				return true
 			}
@@ -388,17 +411,10 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		// Hyper Dash Stars
 		if (objA0.update_address == 0x019874)
 		{
+			if (mt.esustars && Renderer.hasCustomSprite(stringformat("esu_smallhyper_%d", objA0.animation.sprite)))
+				return true
+				
 			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 0xff - 0x30 * objA0.animation.sprite)
-			
-			return true
-		}
-	}
-	else
-	{
-		// Hyper Sonic stars
-		if (objA0.update_address == 0x0193ec || objA0.update_address == 0x0193ca)
-		{
-			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 0xff)
 			
 			return true
 		}
@@ -918,6 +934,14 @@ function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 in
 					Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 160)
 				}
 			}
+			return true
+		}
+		
+		// HCZ water waves effect
+		if (objA0.update_address == 0x0384b2)
+		{
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 0x80)
+			
 			return true
 		}
 	}
