@@ -1,7 +1,9 @@
+global bool cht.transparent
+
 function bool Standalone.drawCharacterSprite(u8 character, u8 variant, s16 px, s16 py, bool asSmallGhost)
 {
-	if (!System.getGlobalVariableValueByName("nt.nosprite"))
-		return base.Standalone.drawCharacterSprite(character, variant, px, py, asSmallGhost)
+	//if (!System.getGlobalVariableValueByName("nt.nosprite"))
+	//	return base.Standalone.drawCharacterSprite(character, variant, px, py, asSmallGhost)
 
 	System.setGlobalVariableValueByName("noRenderPlz", true)
 	System.setGlobalVariableValueByName("renderTransparentPlz", asSmallGhost)
@@ -36,7 +38,10 @@ function bool Standalone.drawCharacterSprite(u8 character, u8 variant, s16 px, s
 			}
 		}
 	}
-
+	
+	if (cht.transparent)
+		System.setGlobalVariableValueByName("renderTransparentPlz", true)
+	
 	if (useAfterImages)
 	{
 		// Additional offset for Sonic charging a Super Peel-Out (either Hyper Sonic or with Speed Shoes)
@@ -58,6 +63,9 @@ function bool Standalone.drawCharacterSprite(u8 character, u8 variant, s16 px, s
 			Renderer.drawCustomSprite(lastKey, px0, py0, lastAtex, lastFlags, lastRenderQueue - i, lastAngle, 192 - i * 32)
 		}
 	}
+	
+	if (cht.transparent)
+		System.setGlobalVariableValueByName("renderTransparentPlz", false)
 	
 	return returnVal
 }
