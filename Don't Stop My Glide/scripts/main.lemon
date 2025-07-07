@@ -554,7 +554,6 @@ function void fn032aae()
 			dsmg.knux_slide = 0
 			dsmg.knux_fall = 0
 			u8[0xffffb000 + 0x2f] = 0
-			dsmg.no_land = 1
 		}
 	}
 
