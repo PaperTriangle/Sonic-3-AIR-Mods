@@ -2,6 +2,7 @@ define u8 global.xtrachar	= u8[0xffffe654]
 
 global bool dsmg.slide_setting
 global bool dsmg.wall_setting
+global bool dsmg.smooth_landing_setting
 
 global u8 dsmg.backup_state
 global bool dsmg.knux_slide
@@ -481,14 +482,15 @@ function void fn03fd4e()
 {
 	u8 bit = (1 << D6.u8)
 
-	if (dsmg.slide_setting && A1 == 0xffffb000 && (objA0.flags2a & bit) != 0)
+	if (dsmg.slide_setting && A1 == 0xffffb000 && (objA0.flags2a & bit) != 0 && u8[0xffffb000 + 0x2f] != 3)
 	{
 		dsmg.knux_slide = 0
 		dsmg.knux_fall = 0
 		u8[0xffffb000 + 0x2f] = 0
 	}
 	
-	base.fn03fd4e()
+	if !(A1 == 0xffffb000 && u8[0xffffb000 + 0x2f] == 3)
+		base.fn03fd4e()
 }
 
 //# address-hook(0x03ff9e) end(0x0400c8)
@@ -502,7 +504,8 @@ function void fn03ff9e()
 		u8[0xffffb000 + 0x2f] = 0
 	}
 	
-	base.fn03ff9e()
+	if !(A1 == 0xffffb000 && u8[0xffffb000 + 0x2f] == 3 && !(objA0.flags2a & 0x02))
+		base.fn03ff9e()
 }
 
 //# address-hook(0x03fe70) end(0x03ff7e)
@@ -554,10 +557,34 @@ function void fn032aae()
 			dsmg.knux_slide = 0
 			dsmg.knux_fall = 0
 			u8[0xffffb000 + 0x2f] = 0
+			dsmg.backup_state = 0
+			if (u8[0xffffb000 + 0x20] == char.state.KNUX_STANDUP2) // Remove horizontal lock
+				u16[0xffffb000 + 0x32] = 0
+
 		}
 	}
 
 	base.fn032aae()
+}
+
+//---------------------
+// Fix for MVZ Mushroom
+//---------------------
+
+//# address-hook(0x03e172) end(0x03e1d8)
+function void fn03e172()
+{
+	u8 bit = (1 << D6.u8)
+
+	if (dsmg.slide_setting && A1 == 0xffffb000 && (objA0.flags2a & bit) != 0)
+	{
+		dsmg.knux_slide = 0
+		dsmg.knux_fall = 0
+		u8[0xffffb000 + 0x2f] = 0
+		dsmg.backup_state = 0
+	}
+	
+	base.fn03e172()
 }
 
 //------------------------
@@ -569,7 +596,10 @@ function void UpdateCameraPositionY()
 {
 	if !(dsmg.slide_setting && isMainCharacter(CHARACTER_KNUCKLES))
 	{
-		base.UpdateCameraPositionY()
+		if (dsmg.smooth_landing_setting && (char.state == char.state.KNUX_STANDUP))
+			UpdateCameraPositionY_Glide()
+		else
+			base.UpdateCameraPositionY()
 		return
 	}
 	
@@ -580,7 +610,10 @@ function void UpdateCameraPositionY()
 		char.flags |= char.flag.IN_AIR
 	}
 	
-	base.UpdateCameraPositionY()
+	if (dsmg.smooth_landing_setting && (char.state == char.state.KNUX_STANDUP))
+		UpdateCameraPositionY_Glide()
+	else
+		base.UpdateCameraPositionY()
 	
 	if (dsmg.knux_slide || dsmg.backup_state == 3)
 	{
@@ -605,4 +638,155 @@ function void Character.ClearEnemiesOnScreen()
 	}
 	
 	Character.clearEnemiesOnScreen(0)
+}
+
+
+//-----------------------
+//	Smooth landing camera
+//-----------------------
+
+//# address-hook(0x01c11e) end(0x01c236)
+function void UpdateCameraPositionY_Glide()
+{
+	D0.s16 = char.position.y.u16 - u16[A1]
+	if (level.vertical_wrap == 0xff00)
+	{
+		D0.s16 &= level.height.bitmask
+	}
+	if (char.flags & char.flag.ROLLING)
+	{
+	#if STANDALONE
+		// Accounting for Tails` smaller rolling box. see: https://s3unlocked.blogspot.com/2017/12/roll-height-bugs-part-1.html
+		D0.s16 -= (char.character == CHARACTER_TAILS) ? 1 : 5
+	#else
+		D0.s16 -= 5
+	#endif
+	}
+
+#if STANDALONE
+	// Prevent the infamous level wrap glitch
+	if (Game.getSetting(SETTING_FIX_GLITCHES) && level.vertical_wrap == 0xff00)
+	{
+		if (D0.s16 > level.height.bitmask / 2)
+		{
+			D0.s16 -= level.height.bitmask
+		}
+	}
+#endif
+
+	D1 = D3.u16
+	if (competition_mode.active)
+		D1.u16 >>= 1
+
+	if (char.flags & char.flag.IN_AIR)
+	{
+		D0.s16 += 0x20 - D1.u16
+		if (D0.s16 < 0)
+		{
+			D1.u16 = 0x1800
+		}
+		else
+		{
+			D0.u16 -= 0x40
+			if (D0.s16 >= 0)
+			{
+				D1.u16 = 0x1800
+			}
+			else if (u8[0xffffee32] != 0)
+			{
+				u8[0xffffee32] = 0
+				D0 = 0
+			}
+			else
+			{
+				u16[A4] = 0
+				return
+			}
+		}
+	}
+	else
+	{
+		D0.s16 -= D1.u16
+		if (D0.s16 == 0)
+		{
+			if (u8[0xffffee32] != 0)
+			{
+				u8[0xffffee32] = 0
+				D0 = 0
+			}
+			else
+			{
+				u16[A4] = 0
+				return
+			}
+		}
+		else
+		{
+			D1.u16 = 0x200
+		}
+	}
+
+	s16 threshold = (D1.u16 >> 8)
+	if (D0.s16 > threshold)
+	{
+		D1.s32 = D1.s16 << 8
+		D1 += u32[A1]
+		D1 = (D1 << 16) + (D1 >> 16)
+	}
+	else if (D0.s16 < -threshold)
+	{
+		D1.s32 = (-D1.s16) << 8
+		D1 += u32[A1]
+		D1 = (D1 << 16) + (D1 >> 16)
+	}
+	else
+	{
+		D1 = D0.u16
+		D1.u16 += u16[A1]
+	}
+
+	if (D0.s16 < 0)
+	{
+		if (D1.s16 <= s16[A2 + 4])
+		{
+			if (D1.s16 <= -0x100)
+			{
+				D1.u16 &= level.height.bitmask
+			}
+			else
+			{
+				D1.u16 = u16[A2 + 4]
+			}
+		}
+	}
+	else
+	{
+		if (D1.s16 >= s16[A2 + 6])
+		{
+			u16 levelHeight = level.height.bitmask + 1
+			D1.u16 -= levelHeight
+			if (D1.s16 >= 0)
+			{
+				u16[A1] -= levelHeight
+			}
+			else
+			{
+				D1.u16 = u16[A2 + 6]
+			}
+		}
+	}
+
+	D4.u16 = u16[A1]
+	D1 = (D1 << 16) + (D1 >> 16)
+	D3 = D1 - u32[A1]
+	D3 = (D3 >> 8) + (D3 << 24)
+	u16[A4] = D3.u16
+	u32[A1] = D1
+
+	if (competition_mode.active)
+	{
+		D1 = (D1 << 16) + (D1 >> 16)
+		D1.u16 &= level.height.bitmask
+		u16[A1] = D1.u16
+	}
 }
