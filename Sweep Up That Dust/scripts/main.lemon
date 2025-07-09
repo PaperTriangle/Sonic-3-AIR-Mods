@@ -52,3 +52,17 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 	return base.Standalone.onWriteToSpriteTable(px, py, renderQueue)
 }
 
+
+//-------------------------------------------
+// Fix for dropdash firing after getting hurt
+//-------------------------------------------
+
+function void yieldExecution()
+{
+	base.yieldExecution()
+	
+	if (isMainCharacter(CHARACTER_SONIC) && (u8[0xffffb000 + 0x2a] & char.flag.IN_AIR) != 0 && (u8[0xffffb000 + 0x20] != char.state.SONIC_DROPDASH) && u8[0xffffb000 + 0x25] == DROPDASH_FULLCHARGE)
+	{
+		u8[0xffffb000 + 0x25] = 0
+	}
+}
