@@ -3,6 +3,7 @@ define u8 global.xtrachar	= u8[0xffffe654]
 global bool dsmg.slide_setting
 global bool dsmg.wall_setting
 global bool dsmg.smooth_landing_setting
+global bool dsmg.2013_water_setting
 
 global u8 dsmg.backup_state
 global bool dsmg.knux_slide
@@ -630,16 +631,24 @@ function void Character.ClearEnemiesOnScreen()
 {
 	if (dsmg.wall_setting && isMainCharacter(CHARACTER_KNUCKLES))
 	{
+			
+			Kosinski.addToDMAQueue(0x14c652, Shield.targetInVRAM)
+			
+			objA0.mapping_offset = 0x01948c
+
 			D2 = 2
 			Effects.CreateSparks()
-
+			
+			A0 = 0xffffb000
+			
+			//objA0.sprite_priority = sp
+			
 			// Create a short flash
 			global.whiteflash_timeout = 4
 	}
 	
 	Character.clearEnemiesOnScreen(0)
 }
-
 
 //-----------------------
 //	Smooth landing camera
@@ -789,4 +798,29 @@ function void UpdateCameraPositionY_Glide()
 		D1.u16 &= level.height.bitmask
 		u16[A1] = D1.u16
 	}
+}
+
+function void Character.checkForWaterSurface()
+{
+	if (dsmg.2013_water_setting && isMainCharacter(CHARACTER_KNUCKLES))
+	{
+		if (!level.water_present)
+			return
+
+		bool wasUnderwaterBefore = (char.flags & char.flag.UNDERWATER) != 0
+		bool isUnderwaterNow = (s16(char.position.y.u16) > s16(water.height.current))
+		if (isUnderwaterNow == wasUnderwaterBefore)
+			return
+			
+		if (char.double_jump_state == 1)	// Last check is probably not needed, just added for full compatibility
+		{
+			// Gliding/Climbing state
+			if (knuckles.glideclimbstate & 0x02)	// Gliding?
+			{
+				char.groundspeed = char.groundspeed >> 3
+			}
+		}
+	}
+		
+	base.Character.checkForWaterSurface()
 }

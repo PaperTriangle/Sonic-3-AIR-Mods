@@ -5,7 +5,7 @@
 		"UniqueID": "do-not-stop-my-glide",
 		"Author": "PaperTriangle",
 		"Description": "Allows Knuckles to glide straight through walls.",
-		"ModVersion": "1.3"
+		"ModVersion": "1.4"
 	},
 	"OtherMods":
 	{
@@ -46,6 +46,17 @@
 				"InternalName": "dsmg.wall_setting",
 				"DisplayName": "Hyper Wall-Hit Flash & Sparks",
 				"Variable": "dsmg.wall_setting",
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "dsmg.2013_water_setting",
+				"DisplayName": "2013-esc Water Glide Collision",
+				"Variable": "dsmg.2013_water_setting",
 				"DefaultValue": "0",
 				"Options":
 				{
