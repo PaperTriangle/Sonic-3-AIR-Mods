@@ -5,7 +5,7 @@
 		"UniqueID": "extended-origins-special-ring",
 		"Author": "PaperTriangle",
 		"Description": "Changes handling of the giant ring palette to use an extended palette line when it is the Super Giant Ring. Has compatibility Sonic Origins Special Ring Animation mod and Super Ring Glow mod if they are loaded below this mod.",
-		"ModVersion": "1.1"
+		"ModVersion": "1.2"
 	},
 	"OtherMods":
 	{
