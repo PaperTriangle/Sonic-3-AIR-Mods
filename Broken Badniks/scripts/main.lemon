@@ -9,6 +9,7 @@ global bool bb.cutsceneadjust2
 global bool bb.firebreath
 global bool bb.twinhammer
 global bool bb.lbztriggers
+global bool bb.hyper
 
 //----------------
 // Generic Methods
@@ -709,4 +710,128 @@ function bool BB.canBreak(u8 state.in)
 		return (state.in == char.state.ROLLING) || (state.in == char.state.HAMMERJUMP) || (state.in == char.state.HAMMERSWING) || (state.in == char.state.HAMMERGLIDE) || (state.in == char.state.NOROLLJUMP && AmyMISC.NoRollDmg == 0x01)
 #endif
 	return (u8[A1 + 0x38] == CHARACTER_SONIC && state.in == char.state.SONIC_DROPDASH) || (u8[A1 + 0x38] == CHARACTER_TAILS && s16(objA0.position.y.u16) < s16(objA1.position.y.u16)) && (state.in == char.state.TAILS_FLYDOWN || state.in == char.state.TAILS_FLYUP || state.in == char.state.TAILS_CARRYDOWN || state.in == char.state.TAILS_CARRYUP) || (u8[A1 + 0x38] == CHARACTER_KNUCKLES && (u8[A1 + 0x2f] == 1 || u8[A0 + 0x2f] == 3))
+}
+
+
+//# address-hook(0x01050c) end(0x01059a)
+function void fn01050c()
+{
+	if (!bb.hyper)
+	{
+		base.fn01050c()
+		return
+	}
+
+	if ((objA1.render_flags & render_flag.VISIBLE) == 0)
+		return
+	
+	D0.u8 &= collision_attributes.flags
+	if (D0.u8 == 0 || objA1.update_address == 0x087f5c || objA1.update_address == 0x088282 || objA1.update_address == 0x08833c || objA1.update_address == 0x08eda6)
+	{
+		if (u8[A1 + 0x29] == 0 || objA1.update_address == 0x087f5c || objA1.update_address == 0x088282 || objA1.update_address == 0x08833c || objA1.update_address == 0x08eda6)
+		{
+			if (u32[0xffff0000 + char.object_standing_on] == 0x08faec || u32[0xffff0000 + char.object_standing_on] == 0x08eda6) //make the character in the air after destroying rockn or iwamodoki if they standin' on 'em
+			{
+				u8[A0 + 0x2a] |= char.flag.IN_AIR
+				u8[A0 + 0x2a] &= ~char.flag.ON_OBJECT
+			}
+			fn01052e()
+		}
+	}
+	else if (D0.u8 == collision.flag.SPECIAL)
+	{
+		fn01059c()
+	}
+	else if ((D0.u8 & collision.flag.THREAT) && (u8[A1 + 0x2b] & char.bonus.DEFLECTABLE))
+	{
+		deflectProjectile()
+	}
+}
+
+function void Character.clearEnemiesOnScreen(u16 minY)
+{
+	if (!bb.hyper)
+	{
+		base.Character.clearEnemiesOnScreen(minY)
+		return
+	}
+
+	push(A4)
+	push(A3)
+	push(A2)
+
+	// Go through all the badniks to destroy
+	D6.u16 = global.dynamic_objects.size
+	A4 = addressof(global.dynamic_objects.size) + 2		// Resulting address: 0xffffe382
+	while (D6.u16 != 0)
+	{
+		// Get address of dynamic object
+		A1 = 0xffff0000 + u16[A4]
+		A4 += 2
+
+		D0 = objA1.collision_attributes
+		if (D0.u8 != 0 || objA1.update_address == 0x08faec || objA1.update_address == 0x087f5c || objA1.update_address == 0x088282 || objA1.update_address == 0x08833c || objA1.update_address == 0x08eda6)
+		{
+		#if STANDALONE
+			// Assuming minY is only set for lightning shield touching water
+			if (minY > 0)
+			{
+				if (objA1.position.y.u16 >= minY)
+				{
+					fn01050c()
+				}
+			}
+			else
+		#endif
+			{
+				fn01050c()
+			}
+		}
+		D6.u16 -= 2
+	}
+
+	A2 = pop()
+	A3 = pop()
+	A4 = pop()
+}
+
+//# address-hook(0x08faec) end(0x08fb36)
+//# alias(fn08faec) deprecated
+function void Iwamodoki.BaseUpdate()
+{
+	if (!bb.hyper)
+	{
+		base.Iwamodoki.BaseUpdate()
+		return
+	}
+
+	// Targets:
+	//  - 0x08fb42	-> objA0.base_state = 0x00
+	//  - 0x08fb4c	-> objA0.base_state = 0x02
+	//  - 0x08fb70	-> objA0.base_state = 0x04
+	call tableLookupAddress(0x08fb3c, objA0.base_state)
+
+	D0.u16 = (objA0.position.x.u16 & 0xff80) - level.despawn_position.x
+	if (D0.u16 <= 0x0280)
+	{
+		if (objA0.flags2a & 0x80)
+		{
+			fn08594e()
+			return
+		}
+
+		D1 = 0x17
+		D2 = 0x0c
+		D3 = 0x0b
+		D4.u16 = objA0.position.x.u16
+		fn01dc56()
+
+		AddAsDynamicObject()
+		DrawObject()
+	}
+	else
+	{
+		fn08594e()
+		Enemy.UnloadDelayed()
+	}
 }
