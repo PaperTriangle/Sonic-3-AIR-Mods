@@ -1866,8 +1866,11 @@ function void fn045866()
 	}
 }
 
-// HPZ Cave Rotating Palettes?
+//------------------------------------
+// Special Cave Stage Palette Rotation
+//------------------------------------
 
+// Move the Master Emerald's Palettes
 //# address-hook(0x090964) end(0x090a70)
 function void fn090964()
 {
@@ -1891,9 +1894,40 @@ function void fn090964()
 	
 }
 
+// Results
+//# address-hook(0x02e3b8) end(0x02e3c2)
+function void fn02e3b8()
+{
+	base.fn02e3b8()
+	
+	if (mt.teleframe && objA0.base_state >= 0x0e)
+	{
+		if (level.palettefx.state == 0)
+		{
+			--level.palettefx.timer_1
+			if (s16(level.palettefx.timer_1) < 0)
+			{
+				level.palettefx.timer_1 = 7
+
+				u32[0xfffffc62] = u32[0x003728 + level.palettefx.frame_1]
+				
+				level.palettefx.frame_1 += 4
+				if (level.palettefx.frame_1 >= 40)
+					level.palettefx.frame_1 = 0
+			}
+		}
+	}
+}
+
 //# address-hook(0x0906a0) end(0x0906fa)
 function void fn0906a0()
 {
+	if (!mt.teleframe)
+	{
+		base.fn0906a0()
+		return
+	}
+	
 	setupObjectAttributesFull(0x090fac)
 
 	objA0.update_address = 0x090700
@@ -1989,7 +2023,7 @@ function void fn085a1a()
 	
 	if (mt.teleframe && global.zone_act == 0x1701)
 	{
-		offset = 3 * 0x40 + tca.bmpline * 0x20
+		offset = 3 * 0x40 + mt.bmpline * 0x20
 		
 		b1 = u16[0xfffffc62]
 		b2 = u16[0xfffffc64]
