@@ -1,5 +1,6 @@
 global bool sff.green_eyes
 global bool sff.behind_tiles
+global bool sff.super_sonic_palette
 
 // Render the new sprites
 function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
@@ -33,22 +34,37 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 // Use Sonic's extended palette to blend (incase someone is using more pixels in Tails' palette)
 function void UpdatePaletteEffects.SuperForm.blendFlicky(u32 source1, u32 source2, u16 blendFactor, bool underwater)
 {
-	string characterKey = getCharacterPaletteKey(CHARACTER_SONIC)
-	bool isNormalPaletteModded = System.hasExternalPaletteData(characterKey, 0)		// Check line index 0, for the normal form palette
-	bool isSuperPaletteModded = System.hasExternalPaletteData(characterKey, 5)		// Check line index 5, for Super/Hyper form palette
-	
-	global.characters = CHARS_SONIC_ALONE
-	super.active.tails = 0
-	
-	if (isSuperPaletteModded)
+	if (sff.super_sonic_palette)
 	{
-		// Modded super palettes (possible using different super colors) need a special handling
-		UpdatePaletteEffects.SuperForm.moddingVersion(1)
-	}
-	else if (Game.getSetting(SETTING_GFX_ANTIFLICKER) != 0 || isNormalPaletteModded)
-	{
-		// Smoothed version of effects -- also used when normal character palette is modded, but super palette is not
-		UpdatePaletteEffects.SuperForm.smoothedVersion(1)
+		string characterKey = getCharacterPaletteKey(CHARACTER_SONIC)
+		bool isNormalPaletteModded = System.hasExternalPaletteData(characterKey, 0)		// Check line index 0, for the normal form palette
+		bool isSuperPaletteModded = System.hasExternalPaletteData(characterKey, 5)		// Check line index 5, for Super/Hyper form palette
+		
+		global.characters = CHARS_SONIC_ALONE
+		u8 super = super.active.tails
+		super.active.tails = 0
+		
+		if (isSuperPaletteModded)
+		{
+			// Modded super palettes (possible using different super colors) need a special handling
+			UpdatePaletteEffects.SuperForm.moddingVersion(1)
+		}
+		else if (Game.getSetting(SETTING_GFX_ANTIFLICKER) != 0 || isNormalPaletteModded)
+		{
+			// Smoothed version of effects -- also used when normal character palette is modded, but super palette is not
+			UpdatePaletteEffects.SuperForm.smoothedVersion(1)
+		}
+		else
+		{
+			u16 offset = CHARACTER_SONIC * 0x40 + (underwater ? 0x300 : 0)
+			for (u8 k = 0; k < 6; k += 2)
+			{
+				u16[0x802004 + offset + k] = blendColorsPacked(u16[source1 + k], u16[source2 + k], blendFactor)
+			}
+		}
+		
+		global.characters = CHARS_TAILS_ALONE
+		super.active.tails = super
 	}
 	else
 	{
@@ -58,9 +74,6 @@ function void UpdatePaletteEffects.SuperForm.blendFlicky(u32 source1, u32 source
 			u16[0x802004 + offset + k] = blendColorsPacked(u16[source1 + k], u16[source2 + k], blendFactor)
 		}
 	}
-	
-	global.characters = CHARS_TAILS_ALONE
-	super.active.tails = 0xff
 }
 
 
