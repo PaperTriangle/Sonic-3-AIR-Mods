@@ -46,6 +46,11 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 					System.setGlobalVariableValueByName("maniadustanimtimer", 0)
 				}
 			}
+			else if (objA0.update_address == 0x018b3e && objA0.state == 0x01 && objA0.animation.sprite > 0)
+			{
+				System.setGlobalVariableValueByName("maniadustframe", 0)
+				System.setGlobalVariableValueByName("maniadustanimtimer", 0)
+			}
 		}
 	}
 	
