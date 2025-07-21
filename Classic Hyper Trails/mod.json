@@ -51,7 +51,7 @@
 		[
 			{
 				"InternalName": "cht.transparent",
-				"DisplayName": "Hyper Trail Transparency",
+				"DisplayName": "Sprite Transparency Bypass",
 				"Variable": "cht.transparent",	
 				"DefaultValue": "0",
 				"Options":
