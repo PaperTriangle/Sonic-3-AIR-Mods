@@ -635,13 +635,13 @@ function void Character.ClearEnemiesOnScreen()
 			Kosinski.addToDMAQueue(0x14c652, Shield.targetInVRAM)
 			
 			objA0.mapping_offset = 0x01948c
+			objA0.sprite_attributes = (Shield.targetInVRAM >> 5)
+			objA0.animation.sprite = 0x06
 
 			D2 = 2
 			Effects.CreateSparks()
 			
 			A0 = 0xffffb000
-			
-			//objA0.sprite_priority = sp
 			
 			// Create a short flash
 			global.whiteflash_timeout = 4
