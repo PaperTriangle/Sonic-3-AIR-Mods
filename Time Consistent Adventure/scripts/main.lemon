@@ -10,6 +10,7 @@ global bool tca.ssz_knux
 
 global bool tca.intended
 global bool tca.fadetype
+global bool tca.fadespeed
 global bool tca.mgz2boss
 global bool tca.leftescape
 global bool tca.fbz_bg
@@ -141,15 +142,15 @@ function void yieldExecution()
 		if (transition_state == 2)
 			System.loadExternalRawData("MGZ2_Palette", 0x0A8F5C)
 		
-		if ((camera.position.x.u16 > 0x27c0 && camera.position.y.u16 > 0x0cc0) && transition_state == 0)
+		if ((camera.position.x.u16 > (!tca.fadespeed ? 0x27c0 : 0x2890) && camera.position.y.u16 > 0x0cc0) && transition_state == 0)
 		{
 			transition_state = 1
-			transition_time = 1
+			transition_time = 0
 		}
 		
 		if (transition_state == 1 && transition_time <= 0x78)
 		{	
-			transition_time += (tca.fadetype) ? 1 : 2
+			transition_time += !tca.fadespeed ? 1 : 2
 			if (transition_time % 24 == 0 || !tca.fadetype)
 			{
 				for (u8 i = 0; i < NEW_MGZ_PALETTE.length(); i++)
@@ -166,7 +167,7 @@ function void yieldExecution()
 		
 		if (transition_state == 1 && transition_time <= 0x78)
 		{	
-			transition_time += (tca.fadetype) ? 1 : 2
+			transition_time++
 			if (transition_time % 24 == 0 || !tca.fadetype)
 			{
 				for (u8 i = 0; i < NEW_TRANSITION.length(); i++)
@@ -203,7 +204,7 @@ function void yieldExecution()
 		if (transition_state >= 1 && transition_time <= 0x78)
 		{	
 			
-			transition_time += (tca.fadetype) ? 1 : 2
+			transition_time += !tca.fadespeed ? 1 : 2
 			if (transition_time % 24 == 0 || !tca.fadetype)
 			{
 				for (u8 i = 0; i < FBZ_TRANSITION.length(); i++)
@@ -226,7 +227,7 @@ function void yieldExecution()
 	{
 		if (transition_state == 1 && transition_time <= 0x78 && camera.position.y.u16 < 0x700)
 		{	
-			transition_time += (tca.fadetype) ? 1 : 2
+			transition_time += !tca.fadespeed ? 1 : 2
 			if (transition_time % 24 == 0 || !tca.fadetype)
 			{
 				for (u8 i = 0; i < NEW_ICZ_PALETTE.length(); i++)
@@ -237,7 +238,7 @@ function void yieldExecution()
 		}
 		else if (tca.icz_trans_fade && transition_state == 2 && transition_time <= 0x78 && camera.position.y.u16 < 0x700)
 		{	
-			transition_time += (tca.fadetype) ? 1 : 2
+			transition_time += !tca.fadespeed ? 1 : 2
 			if (transition_time % 24 == 0 || !tca.fadetype)
 			{
 				for (u8 i = 0; i < NEW_ICZ_PALETTE.length(); i++)
@@ -248,7 +249,7 @@ function void yieldExecution()
 		}
 		else if (!tca.icz_trans_fade && transition_state == 2 && transition_time <= 0x78 && camera.position.y.u16 < 0x700)
 		{	
-			transition_time += (tca.fadetype) ? 1 : 2
+			transition_time += !tca.fadespeed ? 1 : 2
 			if (transition_time % 24 == 0 || !tca.fadetype)
 			{
 				for (u8 i = 0; i < NEW_ICZ_PALETTE.length(); i++)
@@ -263,13 +264,13 @@ function void yieldExecution()
 			if (!tca.icz_trans_point && transition_state == 1 && transition_time >= 0x78)
 			{
 				transition_state = 2
-				transition_time = 1
+				transition_time = 0
 			}
 			
 			if (tca.icz_trans_point && global.zone_act == 0x0501 && transition_state == 0 && camera.position.x.u16 > 0x3ab0)
 			{
 				transition_state = tca.icz_trans_fade ? 1 : 2
-				transition_time = 1
+				transition_time = 0
 			}
 		}
 	}
@@ -277,7 +278,7 @@ function void yieldExecution()
 	{
 		if (transition_state == 1 && transition_time <= 0x78)
 		{	
-			transition_time += (tca.fadetype) ? 1 : 2
+			transition_time += !tca.fadespeed ? 1 : 2
 			if (transition_time % 24 == 0 || !tca.fadetype)
 			{
 				for (u8 i = 0; i < NEW_ICZ_PALETTE.length(); i++)
@@ -325,7 +326,7 @@ function void yieldExecution()
 		
 		if (transition_state == 1 && transition_time <= 0x78)
 		{	
-			transition_time += (tca.fadetype) ? 1 : 2
+			transition_time += !tca.fadespeed ? 1 : 2
 			if (transition_time % 24 == 0 || !tca.fadetype)
 			{
 				for (u8 i = 0; i < SSZ_SKY.length(); i++)
@@ -354,7 +355,7 @@ function void yieldExecution()
 		if (transition_state == 1 && transition_time <= 0x78)
 		{	
 			System.loadExternalRawData("SSZK_Palette_Pre_Dawn", 0x0A979C)
-			transition_time += (tca.fadetype) ? 1 : 2
+			transition_time += !tca.fadespeed ? 1 : 2
 			if (tca.ssz_knux_fade)
 			{
 				if (transition_time % 24 == 0 || !tca.fadetype)
@@ -374,7 +375,7 @@ function void yieldExecution()
 					if (!tca.ssz_knux_longdawn)
 					{
 						transition_state = 2
-						transition_time = 1
+						transition_time = 0
 					}
 					System.loadExternalRawData("SSZK_Palette_Original", 0x0A979C)
 				}
@@ -404,7 +405,7 @@ function void yieldExecution()
 		else if (transition_state == 2 && transition_time <= 0x78)
 		{
 			System.loadExternalRawData(tca.pal_ssz_dawn ? "SSZK_Palette_Morning_Pink" : "SSZK_Palette_Morning", 0x0A979C)
-			transition_time += (tca.fadetype) ? 1 : 2
+			transition_time += !tca.fadespeed ? 1 : 2
 			if (transition_time % 24 == 0 || !tca.fadetype)
 			{
 				for (u8 i = 0; i < SSZ_KNUX_END.length(); i++)
@@ -587,8 +588,6 @@ function void fn06d104()
 	}
 	
 	transition_state = 1
-	if transition_time == 0
-		transition_time = 1
 	
 	--objA0.countdown_value
 	if (objA0.countdown_value >= 0)
@@ -694,8 +693,6 @@ function void fn0708aa()
 	
 	base.fn0708aa()
 	transition_state = 1
-	if transition_time == 0
-		transition_time = 1
 }
 
 // Explosions method... Just reusing routine from AIZ Act 1...
@@ -757,9 +754,6 @@ function void fn0713e8()
 	if (!tca.intended && camera.position.y.u16 < 0x0700)
 	{
 		transition_state = 1
-		
-		if transition_time == 0
-			transition_time = 1
 	}
 
 	// Spawn boss giblets
@@ -783,14 +777,11 @@ function void fn071de2()
 	if (tca.icz_trans_point && isMainCharacter(CHARACTER_KNUCKLES) && transition_state == 1)
 	{
 		transition_state = 2
-		transition_time = 1
+		transition_time = 0
 	}
 	else if (!tca.icz_trans_point && isMainCharacter(CHARACTER_KNUCKLES) && transition_state == 0)
 	{
 		transition_state = tca.icz_trans_fade ? 1 : 2
-		
-		if transition_time == 0
-			transition_time = 1
 	}
 	
 	base.fn071de2()
@@ -1057,9 +1048,6 @@ function void fn05e80a()
 	if (objA0.countdown_value < 0)
 	{
 		transition_state = 1
-		
-		if transition_time == 0
-			transition_time = 1
 	}
 }	
 
@@ -1112,7 +1100,7 @@ function void fn07ccb0()
 //	if (tca.intended && tca.ssz_knux_fade && tca.ssz_knux_longdawn)
 //	{
 //		transition_state = 2
-//		transition_time = 1
+//		transition_time = 0
 //	}
 //}
 
@@ -1123,7 +1111,7 @@ function void fn05e9c2()
 	if (tca.intended && tca.ssz_knux_fade && tca.ssz_knux_longdawn)
 	{
 		transition_state = 2
-		transition_time = 1
+		transition_time = 0
 	}
 }
 

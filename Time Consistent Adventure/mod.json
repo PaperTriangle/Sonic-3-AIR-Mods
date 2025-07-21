@@ -166,6 +166,18 @@
 				}
 			},
 			{
+				"InternalName": "tca.fadespeed",
+				"DisplayName": "Fade Speed",
+				"Variable": "tca.fadespeed",
+				"Category": "Extra Settings",	
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Regular",
+					"1": "Fast"
+				}
+			},
+			{
 				"InternalName": "tca.mgz2boss",
 				"DisplayName": "MGZ Eggman Boss Cutscene",
 				"Variable": "tca.mgz2boss",
