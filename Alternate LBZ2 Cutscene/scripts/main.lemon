@@ -1,4 +1,4 @@
-global bool altlbz2cs.gameclear
+global u8 altlbz2cs.gameclear
 global bool altlbz2cs.restoremusic
 global u8 altlbz2cs.removewalls
 global bool altlbz2cs.fadeadjust
@@ -820,7 +820,7 @@ function void fn02dae6()
 {
 	base.fn02dae6()
 	
-	if (altlbz2cs.gameclear && camera.position.y.u16 > 0x0500 && global.zone_act == 0x0601)
+	if (altlbz2cs.gameclear > 0 && camera.position.y.u16 > 0x0500 && global.zone_act == 0x0601)
 		objA0.countdown_value = 670
 }
 
@@ -830,7 +830,7 @@ function void fn02dae6()
 function void LevelResults.UpdateBonusCounting()
 {
 	// Only play game clear sound given these conditions
-	if (altlbz2cs.gameclear && camera.position.y.u16 > 0x0500 && global.zone_act == 0x0601) 
+	if (altlbz2cs.gameclear > 0 && camera.position.y.u16 > 0x0500 && global.zone_act == 0x0601) 
 	{
 		if (objA0.countdown_value != 0)
 		{
@@ -924,4 +924,18 @@ function void LevelResults.UpdateBonusCounting()
 		objA0.base_state += 2
 		LevelResults.AdvanceToNextAct()
 	}
+}
+
+// Use Sonic 3's gameclear if enabled
+function u64 Standalone.getModdedSoundKey(u64 soundKey, u8 sfxId, u8 soundRegType)
+{
+	if (altlbz2cs.gameclear == 2 && camera.position.y.u16 > 0x0500 && global.zone_act == 0x0601)
+	{
+		if (soundKey == MUSIC_GAMECLEAR)
+		{
+			return soundKey = "32_sonic3"
+		}
+	}
+	
+    return base.Standalone.getModdedSoundKey(soundKey, sfxId, soundRegType)
 }
