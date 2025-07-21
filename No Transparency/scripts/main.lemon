@@ -41,6 +41,12 @@ function bool NT.NotCharacter(u64 key)
 
 		if (key == stringformat("shadow_airdash_%d", i))
 			return true
+			
+		if (key == stringformat("metal_discharge_%d", i))
+			return true
+			
+		if (key == stringformat("metal_discharge_end_%d", i))
+			return true
 	}
 
 	return false
