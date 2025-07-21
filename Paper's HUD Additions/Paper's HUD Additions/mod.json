@@ -71,7 +71,8 @@
 				"Options":
 				{
 					"0": "Regular Border",
-					"1": "Ring Border"
+					"1": "Ring Border",
+					"2": "Original Background"
 				}
 			},
 			{

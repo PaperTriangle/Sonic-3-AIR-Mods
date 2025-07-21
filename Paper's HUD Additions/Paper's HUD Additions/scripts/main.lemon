@@ -2,7 +2,7 @@ global bool phud.allowsuper
 global bool phud.allowsuperesu
 global bool phud.name
 global bool phud.lives
-global bool phud.livesborder
+global u8 phud.livesborder
 global bool phud.transform
 global u8 phud.transformstyle
 global s8 phud.offset
@@ -316,17 +316,37 @@ function bool PHUD.RenderLives(u16 px, u16 py, u16 renderQueue)
 	if (characterName == "character_tails" && !(global.region_code & 0x80))
 		characterName = "character_miles"
 	
-	if (phud.bmpline == 0)
-		HUD.drawSprite(stringformat("%s_lives_icon", characterSprite), px, py, renderQueue)
+	
+	if (phud.livesborder < 2)
+	{
+		u64 livesborderstring = (phud.livesborder) ? stringformat("ring_%s", compatName) : stringformat("border_%s", compatName) 
+		
+		HUD.drawSprite(stringformat("%s_lives_icon_%s", characterSprite, livesborderstring), px, py, renderQueue)
+	}
 	else
-		Renderer.drawCustomSprite(stringformat("%s_lives_icon", characterSprite), px, py, 0x00 + (phud.bmpline + 2 * (3 - getMainCharacter()) - 1) * 0x10, SPRITE_FLAG_PRIO, renderQueue)
+	{
+		HUD.drawSprite("original_lives_background", px - 1, py, renderQueue - 1)
+	
+		if (Renderer.hasCustomSprite(stringformat("%s_original_extra", characterSprite)))
+		{
+			if (phud.bmpline == 0)
+				HUD.drawSprite(stringformat("%s_original_extra", characterSprite), px - 1, py, renderQueue)
+			else
+				Renderer.drawCustomSprite(stringformat("%s_original_extra", characterSprite), px - 1, py, 0x00 + (phud.bmpline + 2 * (3 - getMainCharacter()) - 1) * 0x10, SPRITE_FLAG_PRIO, renderQueue)
+		}
+	}
 	++renderQueue
 	
-	u64 livesborderstring = (phud.livesborder) ? stringformat("ring_%s", compatName) : stringformat("border_%s", compatName) 
-	
-	HUD.drawSprite(stringformat("%s_lives_icon_%s", characterSprite, livesborderstring), px, py, renderQueue)
+	if (phud.livesborder < 2 || !Renderer.hasCustomSprite(stringformat("%s_original_extra", characterSprite)))
+	{
+		if (phud.bmpline == 0)
+			HUD.drawSprite(stringformat("%s_lives_icon", characterSprite), px, py, renderQueue)
+		else
+			Renderer.drawCustomSprite(stringformat("%s_lives_icon", characterSprite), px, py, 0x00 + (phud.bmpline + 2 * (3 - getMainCharacter()) - 1) * 0x10, SPRITE_FLAG_PRIO, renderQueue)
+	}
 	++renderQueue
 	
+	px++
 	
 	if (phud.name)
 	{
@@ -340,12 +360,12 @@ function bool PHUD.RenderLives(u16 px, u16 py, u16 renderQueue)
 
 	if (lives_counter >= 10)
 	{
-		HUD.drawSmallDigit(u16((lives_counter / 10) % 10), px + 0x18, py + 8, renderQueue)
-		HUD.drawSmallDigit(u16(lives_counter % 10), px + 0x20, py + 8, renderQueue)
+		HUD.drawSmallDigit(u16((lives_counter / 10) % 10), px + 0x19, py + 8, renderQueue)
+		HUD.drawSmallDigit(u16(lives_counter % 10), px + 0x21, py + 8, renderQueue)
 	}
 	else
 	{
-		HUD.drawSmallDigit(u16(lives_counter % 10), px + 0x18, py + 8, renderQueue)
+		HUD.drawSmallDigit(u16(lives_counter % 10), px + 0x19, py + 8, renderQueue)
 	}
 	++renderQueue
 	
