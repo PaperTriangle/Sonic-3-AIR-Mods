@@ -1,0 +1,208 @@
+global bool frame_on
+global u8 colour_shift
+
+#if GAMEAPP < 0x25021500
+global u8 BlendMode.MULTIPLICATIVE = 0x05
+global u8 BlendMode.MINIMUM = 0x06
+#endif
+
+//# post-update-hook
+function void PostFrameUpdate()
+{
+	base.PostFrameUpdate()
+	
+#if GAMEAPP >= 0x25021500
+	Renderer.resetLifetimeContext(2)
+	Renderer.setLifetimeContext(2)
+	
+	Renderer.resetViewport(0xfffe)
+#else
+	if (!frame_on)
+#endif
+	{
+		SpriteHandle max = Renderer.addSpriteHandle("white_pixel", 0, 0, 0xfffe)
+		max.setScale(getScreenWidth(), getScreenHeight())
+		max.setFlags(SPRITE_FLAG_PRIO | SPRITE_FLAG_NO_GLOBAL_TINT)
+		max.setBlendMode(BlendMode.MINIMUM)
+		
+		if (colour_shift > 0)
+		{
+			SpriteHandle multiply = Renderer.addSpriteHandle("white_pixel", 0, 0, 0xffff)
+			multiply.setScale(getScreenWidth(), getScreenHeight())
+			multiply.setFlags(SPRITE_FLAG_PRIO | SPRITE_FLAG_NO_GLOBAL_TINT)
+			float tint = colour_shift == 2 ? 0.957 : 0.903f
+			multiply.setTintColor(tint, tint, tint, 1.0f)
+			multiply.setBlendMode(BlendMode.MULTIPLICATIVE)
+		}
+#if GAMEAPP < 0x25021500
+		frame_on = true
+#endif
+	}
+}
+
+#if GAMEAPP < 0x25021500
+function void Renderer.resetSprites()
+{
+	frame_on = false
+	
+	base.Renderer.resetSprites()
+}
+#endif
+
+function void VDP.Config.setActiveDisplay(u8 enable)
+{
+	if (enable == false && colour_shift)
+		if (global.game_mode == 0x04)
+			return
+		else if (enable == false && global.game_mode == 0x48)
+		{
+			globalComponentTintColorR = 0
+			globalComponentTintColorG = 0
+			globalComponentTintColorB = 0
+			globalComponentAddedColorR = 0xfc
+			globalComponentAddedColorG = 0xfc
+			globalComponentAddedColorB = 0xd8
+			
+			SpriteHandle white = Renderer.addSpriteHandle("white_pixel", 0, 0, 0xfffe)
+			white.setScale(getScreenWidth(), getScreenHeight())
+			
+			return
+		}
+	
+	base.VDP.Config.setActiveDisplay(enable)
+}
+
+//-------------------------------------------------------//
+// Fade Colors in from and out of white screen           //
+//-------------------------------------------------------//
+
+//# address-hook(0x003c62) end(0x003c80)
+function void SetPaletteToWhite()
+{
+	fillMemory_u16(0xfffffc00 + u32(palette_fade.offset), (palette_fade.count + 1) * 2, 0x0eee)
+	global.fadein_countdown = 0
+
+#if STANDALONE
+	globalComponentTintColorR = 0
+	globalComponentTintColorG = 0
+	globalComponentTintColorB = 0
+	globalComponentAddedColorR = 0xfc
+	globalComponentAddedColorG = 0xfc
+	globalComponentAddedColorB = 0xfc
+#endif
+}
+
+
+//# address-hook(0x003ca4) end(0x003cee)
+function void FadeInFromWhite()
+{
+	// Fading from a white screen to the target palette
+
+	--global.fadein_countdown
+	if (s16(global.fadein_countdown) >= 0)
+		return
+
+	global.fadein_countdown = 2
+
+	// Go through primary (k==0), and possibly secondary (k==1) palette
+	u8 numPalettes = (level.water_present != 0) ? 2 : 1
+	for (u8 k = 0; k < numPalettes; ++k)
+	{
+		A0 = ((k == 0) ? 0xfffffc00 : 0xfffff080) + palette_fade.offset
+		A1 = ((k == 0) ? 0xfffffc80 : 0xfffff000) + palette_fade.offset
+		for (u8 i = 0; i <= palette_fade.count; ++i)
+		{
+			FadeColorTowardsTarget()
+		}
+	}
+
+#if STANDALONE
+	if (EXTENDED_CHARACTER_PALETTES && palette_fade.offset == 0)
+	{
+		for (u8 k = 0; k < numPalettes; ++k)
+		{
+			A0 = ((k == 0) ? 0x802000 : 0x802300)
+			A1 = ((k == 0) ? 0x802180 : 0x802480)
+			for (u16 i = 0; i < 0xc0; ++i)
+			{
+				FadeColorTowardsTarget()
+			}
+		}
+	}
+
+	globalComponentTintColorB = min(globalComponentTintColorB + 0x24, 0xfc)
+	globalComponentTintColorG = min(globalComponentTintColorG + 0x24, 0xfc)
+	globalComponentTintColorR = min(globalComponentTintColorR + 0x24, 0xfc)
+	globalComponentAddedColorR = max(globalComponentAddedColorR - 0x24, 0)
+	globalComponentAddedColorG = max(globalComponentAddedColorG - 0x24, 0)
+	globalComponentAddedColorB = max(globalComponentAddedColorB - 0x24, 0)
+#endif
+}
+
+//# address-hook(0x003d50) end(0x003d7c)
+function void FadePaletteToWhite()
+{
+	// Go through primary (k==0) and secondary (k==1) palette
+	for (u8 k = 0; k < 2; ++k)
+	{
+		A0 = ((k == 0) ? 0xfffffc00 : 0xfffff080) + palette_fade.offset
+		for (u8 i = 0; i <= palette_fade.count; ++i)
+		{
+			FadeColorToWhite()
+		}
+	}
+
+#if STANDALONE
+	if (EXTENDED_CHARACTER_PALETTES)
+	{
+		for (u8 k = 0; k < 2; ++k)
+		{
+			A0 = ((k == 0) ? 0x802000 : 0x802300)
+			A1 = ((k == 0) ? 0x802180 : 0x802480)
+			for (u16 i = 0; i < 0xc0; ++i)
+			{
+				FadeColorToWhite()
+			}
+		}
+	}
+
+	if (globalComponentTintColorR > 0)
+		globalComponentTintColorR = max(globalComponentTintColorR - 0x24, 0)
+	else if (globalComponentTintColorG > 0)
+		globalComponentTintColorG = max(globalComponentTintColorG - 0x24, 0)
+	else if (globalComponentTintColorB > 0)
+		globalComponentTintColorB = max(globalComponentTintColorB - 0x24, 0)
+
+	if (globalComponentAddedColorR < 0xfc)
+		globalComponentAddedColorR = min(globalComponentAddedColorR + 0x24, 0xfc)
+	else if (globalComponentAddedColorG < 0xfc)
+		globalComponentAddedColorG = min(globalComponentAddedColorG + 0x24, 0xfc)
+	else if (globalComponentAddedColorB < 0xfc)
+		globalComponentAddedColorB = min(globalComponentAddedColorB + 0x24, 0xfc)
+#endif
+}
+
+function void yieldInWhiteScreen()
+{
+	Renderer.setGlobalComponentTint(0, 0, 0, 0xfc, 0xfc, 0xfc)	// Needed so the HUD won't briefly flash for one frame now
+	yieldExecution()
+}
+
+function void fadePaletteToWhiteUniform()
+{
+	fadeColorsToWhiteUniform(0xfffffc00, 0x40)
+
+#if STANDALONE
+	if (EXTENDED_CHARACTER_PALETTES)
+	{
+		fadeColorsToWhiteUniform(0x802000, 0xc0)
+	}
+
+	globalComponentTintColorR = max(globalComponentTintColorR - 0x24, 0)
+	globalComponentTintColorG = max(globalComponentTintColorG - 0x24, 0)
+	globalComponentTintColorB = max(globalComponentTintColorB - 0x24, 0)
+	globalComponentAddedColorR = min(globalComponentAddedColorR + 0x24, 0xfc)
+	globalComponentAddedColorG = min(globalComponentAddedColorG + 0x24, 0xfc)
+	globalComponentAddedColorB = min(globalComponentAddedColorB + 0x24, 0xfc)
+#endif
+}

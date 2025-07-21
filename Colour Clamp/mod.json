@@ -1,0 +1,27 @@
+{
+	"Metadata":
+	{
+		"Name": "Colour Clamp",
+		"UniqueID": "colour-clamp",
+		"Author": "PaperTriangle",
+		"Description": "Maxes the brightness level to be consistent with the emulated values. Also has options to attempt enforcing the RSDK or PC Port colour profile.",
+	},
+	"Settings":
+	{
+		"Uncategorized":
+		[
+			{
+				"InternalName": "colour_shift",
+				"DisplayName": "Colour Profile",
+				"Variable": "colour_shift",
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "A.I.R. (0xfc Maximum)",
+					"1": "Retro Engine (0xe0 Maximum)",
+					"2": "1997 PC Port (0xee Maximum)"
+				}
+			}
+		]
+	}
+}
