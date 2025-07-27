@@ -110,7 +110,7 @@ function bool Standalone.drawCharacterSprite(u8 character, u8 variant, s16 px, s
 	}
 	else if (global.xtrachar == 5 && character == CHARACTER_SONIC && animationSpriteEx == animationSprite && super.active && animationSprite >= 0x21 && animationSprite <= 0x30 && (abs(char.groundspeed) < superspeed) && ggf.esu.supershadow)
 	{
-		if (System.getGlobalVariableValueByName("shadow.isBoosting") && char.flags & char.flag.IN_AIR)
+		if (System.getGlobalVariableValueByName("shadow.airBoost") && !System.getGlobalVariableValueByName("shadow.waterRun") && char.flags & char.flag.IN_AIR)
 			return base.Standalone.drawCharacterSprite(character, variant, px, py, asSmallGhost)
 			
 		animationSpriteEx = 0x21 + (animationSprite - 0x21) % 4
