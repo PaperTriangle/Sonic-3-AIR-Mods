@@ -97,6 +97,7 @@ function void LevelResults.AdvanceToNextAct()
 	// Sandopolis, Death Egg use a small cutscene before showing the title card
 	if (global.zone == 0x08 || global.zone == 0x0b)
 	{
+		knuckles.preventclimbing &= ~0x80
 		UnloadObject()
 		return
 	}
