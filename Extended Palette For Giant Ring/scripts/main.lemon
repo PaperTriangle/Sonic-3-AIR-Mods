@@ -21,7 +21,7 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 		if (!Renderer.hasCustomSprite(key))
 			key = stringformat("giant_ring_0x%02x", objA0.animation.sprite)
 
-		Renderer.drawCustomSprite(key, px, py, !(level.water_present && objA0.position.y.u16 >= water.height.current - 10) && (objA0.subtype2c & 0x80 || GiantRing.isSuperEmeraldStage() || override_giant_ring) ? 0x90 + giant_ring_palette_line * 0x10 : 0x00, objA0.render_flags | (prioFlag ? SPRITE_FLAG_PRIO : 0), renderQueue)
+		Renderer.drawCustomSprite(key, px, py, !(level.water_present && objA0.position.y.u16 >= water.height.current - 10 && !GiantRing.isSuperEmeraldStage()) && (objA0.subtype2c & 0x80 || GiantRing.isSuperEmeraldStage() || override_giant_ring) ? 0x90 + giant_ring_palette_line * 0x10 : 0x00, objA0.render_flags | (prioFlag ? SPRITE_FLAG_PRIO : 0), renderQueue)
 			
 		return true
 	}
