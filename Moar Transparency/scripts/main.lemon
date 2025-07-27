@@ -926,6 +926,14 @@ function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 in
 		}
 	}
 	
+	//FBZ Flames
+	if (mt.dither && objA0.update_address == 0x03cf90)
+	{
+		Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, min(0xff, u16(objA0.animation.sprite * 0x18)))
+		
+		return true
+	}
+	
 	if (mt.watersurface)
 	{
 		// HCZ water waves effect
