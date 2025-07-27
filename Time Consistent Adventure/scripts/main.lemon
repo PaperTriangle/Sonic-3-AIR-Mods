@@ -151,7 +151,7 @@ function void yieldExecution()
 		if (transition_state == 1 && transition_time <= 0x78)
 		{	
 			transition_time += !tca.fadespeed ? 1 : 2
-			if (transition_time % 24 == 0 || !tca.fadetype)
+			if (transition_time % (tca.fadespeed ? 30 : 24) == 0 || !tca.fadetype)
 			{
 				for (u8 i = 0; i < NEW_MGZ_PALETTE.length(); i++)
 				{
@@ -168,7 +168,7 @@ function void yieldExecution()
 		if (transition_state == 1 && transition_time <= 0x78)
 		{	
 			transition_time++
-			if (transition_time % 24 == 0 || !tca.fadetype)
+			if (transition_time % 20 == 0 || !tca.fadetype)
 			{
 				for (u8 i = 0; i < NEW_TRANSITION.length(); i++)
 				{
@@ -205,7 +205,7 @@ function void yieldExecution()
 		{	
 			
 			transition_time += !tca.fadespeed ? 1 : 2
-			if (transition_time % 24 == 0 || !tca.fadetype)
+			if (transition_time % (tca.fadespeed ? 30 : 24) == 0 || !tca.fadetype)
 			{
 				for (u8 i = 0; i < FBZ_TRANSITION.length(); i++)
 				{
@@ -228,7 +228,7 @@ function void yieldExecution()
 		if (transition_state == 1 && transition_time <= 0x78 && camera.position.y.u16 < 0x700)
 		{	
 			transition_time += !tca.fadespeed ? 1 : 2
-			if (transition_time % 24 == 0 || !tca.fadetype)
+			if (transition_time % (tca.fadespeed ? 30 : 24) == 0 || !tca.fadetype)
 			{
 				for (u8 i = 0; i < NEW_ICZ_PALETTE.length(); i++)
 				{
@@ -239,7 +239,7 @@ function void yieldExecution()
 		else if (tca.icz_trans_fade && transition_state == 2 && transition_time <= 0x78 && camera.position.y.u16 < 0x700)
 		{	
 			transition_time += !tca.fadespeed ? 1 : 2
-			if (transition_time % 24 == 0 || !tca.fadetype)
+			if (transition_time % (tca.fadespeed ? 30 : 24) == 0 || !tca.fadetype)
 			{
 				for (u8 i = 0; i < NEW_ICZ_PALETTE.length(); i++)
 				{
@@ -250,7 +250,7 @@ function void yieldExecution()
 		else if (!tca.icz_trans_fade && transition_state == 2 && transition_time <= 0x78 && camera.position.y.u16 < 0x700)
 		{	
 			transition_time += !tca.fadespeed ? 1 : 2
-			if (transition_time % 24 == 0 || !tca.fadetype)
+			if (transition_time % (tca.fadespeed ? 30 : 24) == 0 || !tca.fadetype)
 			{
 				for (u8 i = 0; i < NEW_ICZ_PALETTE.length(); i++)
 				{
@@ -279,7 +279,7 @@ function void yieldExecution()
 		if (transition_state == 1 && transition_time <= 0x78)
 		{	
 			transition_time += !tca.fadespeed ? 1 : 2
-			if (transition_time % 24 == 0 || !tca.fadetype)
+			if (transition_time % (tca.fadespeed ? 30 : 24) == 0 || !tca.fadetype)
 			{
 				for (u8 i = 0; i < NEW_ICZ_PALETTE.length(); i++)
 				{
@@ -327,7 +327,7 @@ function void yieldExecution()
 		if (transition_state == 1 && transition_time <= 0x78)
 		{	
 			transition_time += !tca.fadespeed ? 1 : 2
-			if (transition_time % 24 == 0 || !tca.fadetype)
+			if (transition_time % (tca.fadespeed ? 30 : 24) == 0 || !tca.fadetype)
 			{
 				for (u8 i = 0; i < SSZ_SKY.length(); i++)
 				{
@@ -358,7 +358,7 @@ function void yieldExecution()
 			transition_time += !tca.fadespeed ? 1 : 2
 			if (tca.ssz_knux_fade)
 			{
-				if (transition_time % 24 == 0 || !tca.fadetype)
+				if (transition_time % (tca.fadespeed ? 30 : 24) == 0 || !tca.fadetype)
 				{
 					for (u8 i = 0; i < SSZ_SKY_MORNING.length(); i++)
 					{
@@ -382,7 +382,7 @@ function void yieldExecution()
 			}
 			else
 			{
-				if (transition_time % 24 == 0 || !tca.fadetype)
+				if (transition_time % (tca.fadespeed ? 30 : 24) == 0 || !tca.fadetype)
 				{
 					for (u8 i = 0; i < SSZ_KNUX_END.length(); i++)
 					{
@@ -406,7 +406,7 @@ function void yieldExecution()
 		{
 			System.loadExternalRawData(tca.pal_ssz_dawn ? "SSZK_Palette_Morning_Pink" : "SSZK_Palette_Morning", 0x0A979C)
 			transition_time += !tca.fadespeed ? 1 : 2
-			if (transition_time % 24 == 0 || !tca.fadetype)
+			if (transition_time % (tca.fadespeed ? 30 : 24) == 0 || !tca.fadetype)
 			{
 				for (u8 i = 0; i < SSZ_KNUX_END.length(); i++)
 				{
