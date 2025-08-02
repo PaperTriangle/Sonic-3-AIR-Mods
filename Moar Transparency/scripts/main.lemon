@@ -657,6 +657,57 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		return true
 	}
 	
+	if (mt.watersurface)
+	{
+		if (objA0.update_address == 0x018b3e && objA0.state == 0x01 && objA0.animation.sprite > 0)
+		{
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
+			
+			return true
+		}
+		else if (objA0.update_address == 0x01f244)
+		{
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
+			
+			return true
+		}
+			
+		
+		if (global.zone_act == 0x0101)
+		{
+			// HCZ Boss water surface
+			if (objA0.update_address == 0x06b47a || objA0.update_address == 0x0856c4)
+			{
+				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
+				
+				return true
+			}
+			else if (objA0.update_address == 0x06b26e && !(objA0.animation.sprite == 0x15 || objA0.animation.sprite == 0x20))
+			{
+				System.writeDisplayLine(stringformat("ZoneAct: 0x%04x", objA0.animation.sprite))
+				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
+				
+				return true
+			}
+			
+			// HCZ Boss Explosion Drops
+			if ((objA0.update_address == 0x06b502 || objA0.update_address == 0x01abb6) && (index == 0x837b || index == 0x8b7b))
+			{
+				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 144)
+				
+				return true
+			}
+			
+			// HCZ Boss Twister
+			if (objA0.update_address == 0x06b3de)
+			{
+				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 224)
+				
+				return true
+			}
+		}
+	}
+	
 	// Bubbles!
 	if (mt.bubbles)
 	{
@@ -929,7 +980,7 @@ function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 in
 	//FBZ Flames
 	if (mt.dither && objA0.update_address == 0x03cf90)
 	{
-		Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, min(0xff, u16(objA0.animation.sprite * 0x18)))
+		Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, min(0xff, u16(objA0.animation.sprite * 0x20)))
 		
 		return true
 	}
