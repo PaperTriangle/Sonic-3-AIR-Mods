@@ -631,7 +631,9 @@ function void Character.ClearEnemiesOnScreen()
 {
 	if (dsmg.wall_setting && isMainCharacter(CHARACTER_KNUCKLES))
 	{
-			
+	#if EXTRA_CHARACTERS_UNLIMITED
+			ExtraChar.spawnSmallHyperSpark(0x200)
+	#else
 			Kosinski.addToDMAQueue(0x14c652, Shield.targetInVRAM)
 			
 			objA0.mapping_offset = 0x01948c
@@ -642,9 +644,13 @@ function void Character.ClearEnemiesOnScreen()
 			Effects.CreateSparks()
 			
 			A0 = 0xffffb000
-			
+	#endif		
 			// Create a short flash
-			global.whiteflash_timeout = 4
+			
+			if Mods.isModActive("Origins Hyper Effects") && System.getGlobalVariableValueByName("OriginsHyperS.Flash")
+				System.callFunctionByName("OriginsHyper.doFlash")
+			else
+				global.whiteflash_timeout = 4
 	}
 	
 	Character.clearEnemiesOnScreen(0)
