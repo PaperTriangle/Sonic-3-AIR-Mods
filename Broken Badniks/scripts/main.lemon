@@ -590,10 +590,10 @@ function void fn083e90()
 	}
 
 	GetRandomNumber()
-	D1 = objA0.value3a + ((getRandomNumber() % 8 < 4) ? getScreenExtend() : 0)
+	D1 = objA0.value3a + Math.roundToInt( (D0 % 10) / 10.0f * getScreenExtend())
 	D2 = D1.u16 * 2 - 1
 	D0.u16 = (D0.u16 & D2.u16) - D1.u16
-	objA1.position.x.u16 += D0.u16
+	objA1.position.x.u16 += D0.u16 
 
 	D0 = (D0 << 16) + (D0 >> 16)
 	D1 = objA0.value3b
