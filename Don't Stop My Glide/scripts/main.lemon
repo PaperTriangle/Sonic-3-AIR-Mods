@@ -216,11 +216,13 @@ function void UpdateKnucklesGlideCollision()
 	{
 		if (char.velocity.x < 0)
 		{
+			char.flags |= char.flag.FACING_LEFT
 			char.velocity.x += 0x20
 			goto016b64 = (char.velocity.x < 0)
 		}
 		else
 		{
+			char.flags &= ~char.flag.FACING_LEFT
 			char.velocity.x -= 0x20
 			goto016b64 = (char.velocity.x >= 0)
 		}
@@ -586,6 +588,24 @@ function void fn03e172()
 	}
 	
 	base.fn03e172()
+}
+
+//--------------------
+// Fix for SSZ Eggrobo
+//--------------------
+
+//# address-hook(0x07cd82) end(0x07ce18)
+function void fn07cd82()
+{
+	base.fn07cd82()
+	
+	if (u8[0xffffb000 + 0x22] == 0xcb)
+	{
+		dsmg.knux_slide = 0
+		dsmg.knux_fall = 0
+		u8[0xffffb000 + 0x2f] = 0
+		dsmg.backup_state = 0
+	}
 }
 
 //------------------------
