@@ -52,10 +52,11 @@ function void Renderer.resetSprites()
 function void VDP.Config.setActiveDisplay(u8 enable)
 {
 	if (enable == false && colour_shift)
-		if (global.game_mode == 0x04)
+		if (global.game_mode == 0x04) // Game Intro
 			return
-		else if (enable == false && global.game_mode == 0x48)
+		else if (enable == false && global.game_mode == 0x48) // Special Stage Clear
 		{
+			// We set this global tint and stretch the white pixel over the screen to simulate the expected visual
 			globalComponentTintColorR = 0
 			globalComponentTintColorG = 0
 			globalComponentTintColorB = 0
@@ -74,6 +75,9 @@ function void VDP.Config.setActiveDisplay(u8 enable)
 
 //-------------------------------------------------------//
 // Fade Colors in from and out of white screen           //
+//-------------------------------------------------------//
+// These functions have been altered so the max colour   //
+// is 252 (0xfc) instead of 255 (0xff).                  //
 //-------------------------------------------------------//
 
 //# address-hook(0x003c62) end(0x003c80)
