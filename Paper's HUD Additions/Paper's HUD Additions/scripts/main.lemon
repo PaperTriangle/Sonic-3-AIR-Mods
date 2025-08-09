@@ -254,7 +254,10 @@ function bool PHUD.CanTransform()
 		}
 	}
 
+	u8 super_count = 50
 	u8 hyper_count = 0
+	bool transform_compat = Mods.isModActive("Characters Go Super Then Hyper") || (Mods.isModActive("Easy Super") && System.getGlobalVariableValueByName("progressive_forms"))
+	
 	if (Mods.isModActive("Characters Go Super Then Hyper"))
 	{
 		if (System.getGlobalVariableValueByName("HyperRingCost") == 0)
@@ -265,7 +268,16 @@ function bool PHUD.CanTransform()
 			hyper_count = 100
 	}
 	
-	if (((ring_counter < 50 && (super.active == 0 && super.active.tails == 0)) || (Mods.isModActive("Characters Go Super Then Hyper") && (super.active == 1 || super.active.tails == 1) && (ring_counter < hyper_count))) || !hud.dirty.timer)
+	if (Mods.isModActive("Easy Super"))
+	{
+		super_count = 100 - System.getGlobalVariableValueByName("ring_req_super.setting")
+		hyper_count = 100 - System.getGlobalVariableValueByName("ring_req_hyper.setting")
+		
+		if (possibleSuperForm == 2 && !System.getGlobalVariableValueByName("progressive_forms"))
+			super_count = hyper_count
+	}
+	
+	if (((ring_counter < super_count && (super.active == 0 && super.active.tails == 0)) || (transform_compat && (super.active == 1 || super.active.tails == 1) && (ring_counter < hyper_count))) || !hud.dirty.timer)
 		return 0
 
 	return possibleSuperForm
@@ -279,7 +291,8 @@ function bool PHUD.ButtonIsValid()
 function u64 PHUD.GetTransformIcon(bool style)
 {
 	u64 returnIcon
-	if (global.super_emeralds >= 7 && (super.active == 1  || super.active.tails == 1 || !Mods.isModActive("Characters Go Super Then Hyper")) && !(global.xtrachar == 0 && isMainCharacter(CHARACTER_TAILS) && !Game.getSetting(SETTING_HYPER_TAILS)))
+	bool transform_compat = Mods.isModActive("Characters Go Super Then Hyper") || (Mods.isModActive("Easy Super") && System.getGlobalVariableValueByName("progressive_forms"))
+	if (global.super_emeralds >= 7 && (super.active == 1  || super.active.tails == 1 || !transform_compat) && !(global.xtrachar == 0 && isMainCharacter(CHARACTER_TAILS) && !Game.getSetting(SETTING_HYPER_TAILS)))
 		returnIcon = "hyper_icon"
 	else
 		returnIcon = "super_icon"
@@ -295,6 +308,7 @@ function bool PHUD.RenderLives(u16 px, u16 py, u16 renderQueue)
 	u64 compatName = (Mods.isModActive("Haru's Forever-esque HUD")) ? "haru" : "s3"
 	u64 characterSprite = PHUD.getCharacterSprite()
 	u64 characterName = PHUD.getCharacterName()
+	px++
 	
 	if (((phud.allowsuper && global.xtrachar == 0) || (phud.allowsuperesu && global.xtrachar > 0)) && !Renderer.hasCustomSprite(stringformat("%s_lives_icon", characterSprite)))
 		characterSprite = getCharacterSpriteKey(u8[0xffffb000 + 0x38], false)
@@ -346,7 +360,8 @@ function bool PHUD.RenderLives(u16 px, u16 py, u16 renderQueue)
 	}
 	++renderQueue
 	
-	px++
+	if (phud.livesborder < 2)
+		px += 1
 	
 	if (phud.name)
 	{
@@ -401,7 +416,7 @@ function void Character.Initialization.shared(u8 character)
 
 function void yieldExecution()
 {
-	if (phud.bmpline > 0 && (global.game_mode == 0x0c || global.game_mode == 0x08) && PHUD.AllowCloning())
+	if (phud.lives && phud.bmpline > 0 && (global.game_mode == 0x0c || global.game_mode == 0x08) && PHUD.AllowCloning())
 	{
 		u16 offset = 3 * 0x40 + (phud.bmpline - 1) * 0x20
 		u32 PaletteAD = 0x802000 + getMainCharacter() * 0x40
