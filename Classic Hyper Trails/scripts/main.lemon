@@ -1,4 +1,5 @@
 global bool cht.transparent
+global u8 cht.number
 
 function bool Standalone.drawCharacterSprite(u8 character, u8 variant, s16 px, s16 py, bool asSmallGhost)
 {
@@ -41,7 +42,7 @@ function bool Standalone.drawCharacterSprite(u8 character, u8 variant, s16 px, s
 	
 	if (useAfterImages && lastKey != "")
 	{
-		for (s8 i = 2; i > 0; --i)
+		for (s8 i = cht.number; i > 0; --i)
 		{
 			A1 = 0xffffe500 + u8(posbackup.offset.player1 - (i * 8 + 4))
 			s16 px0 = u16[A1] - camera.foreground.x.u16
@@ -50,7 +51,7 @@ function bool Standalone.drawCharacterSprite(u8 character, u8 variant, s16 px, s
 				py0 &= level.height.bitmask
 			
 			Renderer.setSpriteTagWithPosition(characterAddress + 0x10 + i, px0, py0)
-			Renderer.drawCustomSprite(lastKey, px0, py0, lastAtex, lastFlags, lastRenderQueue - i, lastAngle, 0xf0 - i * 0x30)
+			Renderer.drawCustomSprite(lastKey, px0, py0, lastAtex, lastFlags, lastRenderQueue - i, lastAngle, 0xd0 - i * 0x20)
 		}
 	}
 	
