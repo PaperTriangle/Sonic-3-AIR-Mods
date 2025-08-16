@@ -9,7 +9,8 @@ global bool mt.watersurface
 global bool mt.snowfall
 global bool mt.clouds
 
-global bool mt.dither
+global bool mt.flames
+global bool mt.dust
 global bool mt.electricity
 global bool mt.bubbles
 
@@ -17,6 +18,8 @@ global bool mt.lasers
 global bool mt.energyballs
 global bool mt.lighttunnel
 global bool mt.fbzlaser
+global bool mt.icz2boss
+global bool mt.lrz2boss
 global bool mt.sszs2laser
 global bool mt.dez1laser
 global bool mt.dez2laser
@@ -157,7 +160,7 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 			py -= 2
 			if (mt.amyheart && objA0.subtype2c == 0x02 && objA0.value26 == 0x02) // Heart
 			{
-				Renderer.drawSprite("amyheart_02t", px, py, 0, flags | u8[A0 + 0x2b], renderQueue, 0, 127)
+				Renderer.drawSprite("amyheart_02t", px, py, 0, flags | u8[A0 + 0x2b], renderQueue, 0, 144)
 				return true
 			}
 			else if (mt.amytrail && objA0.subtype2c == 0x03) // Hammer swing
@@ -187,7 +190,7 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 			u64 key = stringformat("esu_smallhyper_%d", objA0.animation.sprite)
 			if (Renderer.hasCustomSprite(key))
 			{
-				Renderer.drawCustomSprite(key, px, py, 0, objA0.render_flags, renderQueue, 0, 0xff - (mt.stars ? objA0.animation.sprite * 0x30 : 0))
+				Renderer.drawCustomSprite(key, px, py, 0, objA0.render_flags, renderQueue, 0, 0xff - (mt.stars ? objA0.animation.sprite * 0x10 : 0))
 				
 				return true
 			}
@@ -206,7 +209,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		System.setGlobalVariableValueByName("renderTransparentPlz", true)
 
 	// Dithered Plume Effects
-	if (mt.dither)
+	if (mt.flames)
 	{
 		// Explosions from AIZ2 Green Bomber Bombs
 		if (objA0.mapping_offset == 0x23c1b2)
@@ -268,24 +271,6 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 			
 			return true
 		}
-		
-		// ICZ2 Boss Cloud
-		if (objA0.mapping_offset == 0x362cb4)
-		{
-			if (objA0.animation.sprite == 0x0f || objA0.animation.sprite == 0x0a || objA0.animation.sprite == 0x15)
-			{
-				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 144)
-				Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 144)
-				
-				return true
-			}
-			else if (objA0.animation.sprite == 0x09)
-			{
-				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 160)
-				
-				return true
-			}
-		}
 
 		// LBZ Flame Spurts
 		if (objA0.update_address == 0x026460 && objA0.animation.frame >= 0x08)
@@ -302,38 +287,56 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 			
 			return true
 		}
-		
+
+		// DEZ2 Huge Eggman Robot Flame Thrower
+		if (objA0.mapping_offset == 0x187888)
+		{
+			if (objA0.animation.sprite == 0x12)
+			{
+				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 160)
+				Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 160)
+				
+				return true
+			}
+			else if (objA0.animation.sprite == 0x11 || objA0.animation.sprite == 0x0b)
+			{
+				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 144)
+				
+				return true
+			}
+		}
+	}
+	
+	if (mt.dust)
+	{
 		// LRZ Boss Missile
 		if (global.zone_act == 0x1600 && (objA0.update_address == 0x0793c6 || objA0.update_address == 0x01abb6) && index == 0x2472)
 		{
-			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 127)
-			Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 127)
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 144)
+			Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 144)
+			
+			return true
+		}
+		else if (global.zone_act == 0x1600 && objA0.update_address == 0x0793c6 && index == 0x246e)
+		{
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
 			
 			return true
 		}
 		
-		// LRZ Boss Lava Flow (Or is this supposed to be shadows?)
-		if (objA0.update_address == 0x079d08)
+		// LRZ Boss Shots
+		if (global.zone_act == 0x1600 && (objA0.update_address == 0x079b96 || objA0.update_address == 0x01abb6 || objA0.update_address == 0x079bca) && (index == 0x245a || index == 0x2473))
 		{
-			if (index == 0x4027)
-			{
-				Renderer.drawSprite("lrz_boss_rocks", px, py, 0x00, SPRITE_FLAG_PRIO, renderQueue)
-				return true
-			}
-			else if (index == 0x402f)
-			{
-				Renderer.drawSprite("lrz_boss_shadow_1", px, py, 0x00, SPRITE_FLAG_PRIO, renderQueue, 0, 127)
-				return true
-			}
-			else if (index == 0x4837)
-			{
-				Renderer.drawSprite("lrz_boss_shadow_2", px, py, 0x00, SPRITE_FLAG_PRIO, renderQueue, 0, 127)
-				return true
-			}
-			else if (index == 0x4837 || index == 0x482f || index == 0x4827 || index == 0x402f || index == 0x4037)
-			{
-				return true
-			}
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 144)
+			Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 144)
+			
+			return true
+		}
+		else if (global.zone_act == 0x1600 && (objA0.update_address == 0x079bca && index == 0x246f))
+		{
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
+			
+			return true
 		}
 		
 		// HPZ Dust
@@ -341,27 +344,8 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		{
 			if (objA0.animation.sprite == 0x16 || objA0.animation.sprite == 0x17)
 			{
-				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 127)
-				Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 127)
-				return true
-			}
-		}
-
-		// DEZ2 Huge Eggman Robot Flame Thrower
-		if (objA0.mapping_offset == 0x187888)
-		{
-			if (objA0.animation.sprite == 0x12)
-			{
-				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 127)
-				Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 127)
-				
-				return true
-			}
-			else if (objA0.animation.sprite == 0x11 || objA0.animation.sprite == 0x0b)
-			{
-				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 63)
-				Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 63)
-				
+				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 160)
+				Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 160)
 				return true
 			}
 		}
@@ -371,15 +355,58 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		{
 			if (index == 0xc42f || index == 0x442f)
 			{
-				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 127)
-				Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 127)
+				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 144)
+				Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 144)
 				return true
 			}
 			else if (index == 0xc433 || index == 0x4433)
 			{
-				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 127)
+				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
 				return true
 			}
+		}
+	}
+	
+	
+	// ICZ2 Boss Cloud
+	if (mt.icz2boss && objA0.mapping_offset == 0x362cb4)
+	{
+		if (objA0.animation.sprite == 0x0f || objA0.animation.sprite == 0x0a || objA0.animation.sprite == 0x15)
+		{
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 144)
+			Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 144)
+			
+			return true
+		}
+		else if (objA0.animation.sprite == 0x09)
+		{
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 160)
+			
+			return true
+		}
+	}
+	
+	// LRZ Boss Lava Flow (Or is this supposed to be shadows?)
+	if (mt.lrz2boss && objA0.update_address == 0x079d08)
+	{
+		if (index == 0x4027)
+		{
+			Renderer.drawSprite("lrz_boss_rocks", px, py, 0x00, SPRITE_FLAG_PRIO, renderQueue)
+			return true
+		}
+		else if (index == 0x402f)
+		{
+			Renderer.drawSprite("lrz_boss_shadow_1", px, py, 0x00, SPRITE_FLAG_PRIO, renderQueue, 0, 128)
+			return true
+		}
+		else if (index == 0x4837)
+		{
+			Renderer.drawSprite("lrz_boss_shadow_2", px, py, 0x00, SPRITE_FLAG_PRIO, renderQueue, 0, 128)
+			return true
+		}
+		else if (index == 0x4837 || index == 0x482f || index == 0x4827 || index == 0x402f || index == 0x4037)
+		{
+			return true
 		}
 	}
 	
@@ -399,7 +426,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		// Super Stars
 		if (objA0.update_address == 0x0191a4)
 		{
-			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 0xff - 0x30 * (objA0.animation.sprite - 1))
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 0xff - 0x18 * (objA0.animation.sprite - 1))
 			
 			return true
 		}
@@ -409,7 +436,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		{
 			u8 step = objA0.animation.sprite * 2 + (1 - objA0.animation.timer)	// Ranges from 0 to 5
 
-			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 0xe0 - step * 0x10)
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 0xff - step * 0x10)
 			
 			return true
 		}
@@ -420,7 +447,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 			if (mt.esustars && Renderer.hasCustomSprite(stringformat("esu_smallhyper_%d", objA0.animation.sprite)))
 				return true
 				
-			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 0xff - 0x30 * objA0.animation.sprite)
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 0xff - 0x10 * objA0.animation.sprite)
 			
 			return true
 		}
@@ -722,7 +749,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		// HCZ Fan Bubbles
 		if (objA0.update_address == 0x030834)
 		{
-			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 127)
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 128)
 			
 			return true
 		}
@@ -756,14 +783,14 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 	{
 		if (objA0.update_address == 0x087a2a && (index == 0xac52 || index == 0xa452 || index == 0xb452 || index == 0xbc52))
 		{
-			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 127)
-			Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 127)
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 128)
+			Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 128)
 			return true
 		}
 		else if (objA0.update_address == 0x087abc && (index == 0xa45a || index == 0xac5a || index == 0xb45a || index == 0xbc5a))
 		{
-			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 127)
-			Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 127)
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 128)
+			Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 128)
 			return true
 		}
 	}
@@ -772,8 +799,8 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 	// Dragonfly wing rendering code adapted from Raine's A.I.R. Freshener branch of Sonic 3 A.I.R. - Credit goes to Useott to Raine
 	if (mt.dragonfly && objA0.update_address == 0x08df52)
 	{
-		Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 127)
-		Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 127)
+		Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 128)
+		Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 128)
 		return true
 	}
 	
@@ -978,9 +1005,9 @@ function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 in
 	}
 	
 	//FBZ Flames
-	if (mt.dither && objA0.update_address == 0x03cf90)
+	if (mt.flames && objA0.update_address == 0x03cf90 && objA0.animation.sprite < 0x09)
 	{
-		Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, min(0xff, u16(objA0.animation.sprite * 0x20)))
+		Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
 		
 		return true
 	}

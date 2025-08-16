@@ -5,7 +5,7 @@
 		"UniqueID": "moar-transparency",
 		"Author": "PaperTriangle",
 		"Description": "Adds varying levels of transparency to more objects! Credit to Useott and Raine for some code that was adapted from A.I.R. Freshener.",
-		"ModVersion": "1.5"
+		"ModVersion": "1.6"
 	},
 	"OtherMods": {
 		"time-consistent-adventure":
@@ -139,9 +139,21 @@
 				}
 			},
 			{
-				"InternalName": "mt.dither",
-				"DisplayName": "Flames / Dust / Smoke",
-				"Variable": "mt.dither",
+				"InternalName": "mt.flames",
+				"DisplayName": "Flames",
+				"Variable": "mt.flames",
+				"Category": "Effects",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "mt.dust",
+				"DisplayName": "Dust / Smoke",
+				"Variable": "mt.dust",
 				"Category": "Effects",	
 				"DefaultValue": "1",
 				"Options":
@@ -274,6 +286,42 @@
 				"InternalName": "mt.fbzlaser",
 				"DisplayName": "FBZ2 Barrier Eggman",
 				"Variable": "mt.fbzlaser",
+				"Category": "Boss Effects",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "mt.icz2boss",
+				"DisplayName": "ICZ2 Freezer Mobile",
+				"Variable": "mt.icz2boss",
+				"Category": "Boss Effects",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "mt.icz2boss",
+				"DisplayName": "ICZ2 Freezer Mobile",
+				"Variable": "mt.icz2boss",
+				"Category": "Boss Effects",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "mt.lrz2boss",
+				"DisplayName": "LRZ2 Hot Mobile (Lava)",
+				"Variable": "mt.lrz2boss",
 				"Category": "Boss Effects",	
 				"DefaultValue": "1",
 				"Options":
