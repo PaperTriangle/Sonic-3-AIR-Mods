@@ -1,0 +1,216 @@
+define u8 global.xtrachar	= u8[0xffffe654]
+
+global u8 kr.backup_sprite
+global u8 kr.backup_timer
+
+global u8 kr.x
+global u8 kr.y
+
+global u8 kr.backup_flags
+global u8 kr.backup_flags2
+
+global u8 kr.wasRolling
+global u8 kr.wasOnObject
+global u8 kr.wasInAir
+
+global u8 kr.wasRolling2
+global u8 kr.wasOnObject2
+global u8 kr.wasInAir2
+
+
+global u8 kr.backup_sprite_p2
+global u8 kr.backup_timer_p2
+global u8 kr.backup_flags_p2
+global u8 kr.backup_flags2_p2
+
+global u8 kr.wasRolling_p2
+global u8 kr.wasOnObject_p2
+global u8 kr.wasInAir_p2
+
+global u8 kr.wasRolling2_p2
+global u8 kr.wasOnObject2_p2
+global u8 kr.wasInAir2_p2
+
+//--------
+// Rolling
+//--------
+
+// Yield Execution section handles detected the state before an object impact.
+function void yieldExecution()
+{
+	A0 = 0xffffb000
+
+	if !kr.wasInAir && u8[A0 + 0x2a] & char.flag.IN_AIR
+	{
+		kr.x++
+		if kr.x >= 4
+		{
+			kr.x = 0
+			kr.wasInAir = true
+		}
+	}
+	else
+	{
+		kr.wasRolling = kr.backup_flags & char.flag.ROLLING
+		kr.wasOnObject = kr.backup_flags & char.flag.ON_OBJECT
+		kr.wasInAir = kr.backup_flags & char.flag.IN_AIR
+
+		kr.wasRolling2 = kr.backup_flags2 & char.flag.ROLLING
+		kr.wasOnObject2 = kr.backup_flags2 & char.flag.ON_OBJECT
+		kr.wasInAir2 = kr.backup_flags2 & char.flag.IN_AIR
+
+		kr.backup_flags2 = kr.backup_flags
+		kr.backup_flags = u8[A0 + 0x2a]
+		
+		//System.writeDisplayLine(stringformat("Values: 0x%02x, 0x%02x, 0x%02x, 0x%02x", (kr.backup_flags & char.flag.ON_OBJECT), kr.wasOnObject, kr.wasOnObject2, char.state == char.state.ROLLING))
+		
+		if !(char.flags & char.flag.IN_AIR)
+		{
+			if ((!kr.wasInAir && kr.wasRolling) || (!kr.wasInAir2 && kr.wasRolling2))
+			{
+				if (kr.wasOnObject2 != (u8[A0 + 0x2a] & char.flag.ON_OBJECT)) || (u8[A0 + 0x2a] != (kr.backup_flags & char.flag.ON_OBJECT))
+				{
+					
+					char.flags |= char.flag.ROLLING
+					char.state = char.state.ROLLING
+					char.state.former = char.state.ROLLING
+					
+					if (char.hitbox_extends.y != char.hitbox.y.ROLLING)
+					{
+						char.hitbox_extends.x = char.hitbox.x.ROLLING
+						char.hitbox_extends.y = char.hitbox.y.ROLLING
+						s8 dy = (char.character == CHARACTER_TAILS) ? 1 : 5
+						char.position.y.u16 += (global.inv_gravity) ? -dy : dy
+					}
+				}
+					
+			}
+		}
+	}
+
+	kr.backup_sprite = char.animation.sprite
+	kr.backup_timer = char.animation.timer
+	
+	A0 = 0xffffb04a
+	
+	if !kr.wasInAir_p2 && u8[A0 + 0x2a] & char.flag.IN_AIR
+	{
+		kr.y++
+		if kr.y >= 4
+		{
+			kr.y = 0
+			kr.wasInAir_p2 = true
+		}
+	}
+	else
+	{
+		kr.wasRolling_p2 = kr.backup_flags_p2 & char.flag.ROLLING
+		kr.wasOnObject_p2 = kr.backup_flags_p2 & char.flag.ON_OBJECT
+		kr.wasInAir_p2 = kr.backup_flags_p2 & char.flag.IN_AIR
+
+		kr.wasRolling2_p2 = kr.backup_flags2_p2 & char.flag.ROLLING
+		kr.wasOnObject2_p2 = kr.backup_flags2_p2 & char.flag.ON_OBJECT
+		kr.wasInAir2_p2 = kr.backup_flags2_p2 & char.flag.IN_AIR
+
+		kr.backup_flags2_p2 = kr.backup_flags_p2
+		kr.backup_flags_p2 = u8[A0 + 0x2a]
+		
+		if ((!kr.wasInAir_p2 && kr.wasRolling_p2) || (!kr.wasInAir2_p2 && kr.wasRolling2_p2))
+		{
+			if (kr.wasOnObject2_p2 != (u8[A0 + 0x2a] & char.flag.ON_OBJECT)) || (kr.wasOnObject_p2 != (u8[A0 + 0x2a] & char.flag.ON_OBJECT))
+			{
+				char.flags |= char.flag.ROLLING
+				char.state = char.state.ROLLING
+				char.state.former = char.state.ROLLING
+
+				if (char.hitbox_extends.y != char.hitbox.y.ROLLING)
+				{
+					char.hitbox_extends.x = char.hitbox.x.ROLLING
+					char.hitbox_extends.y = char.hitbox.y.ROLLING
+					s8 dy = (char.character == CHARACTER_TAILS) ? 1 : 5
+					char.position.y.u16 += (global.inv_gravity) ? -dy : dy
+				}
+			}
+				
+		}
+	}
+	
+	kr.backup_sprite_p2 = char.animation.sprite
+	kr.backup_timer_p2 = char.animation.timer
+	
+	base.yieldExecution()
+
+}
+
+// Force setting the slide state here as well otherwise Knuckles flickers between falling and walking.
+function bool Standalone.drawCharacterSprite(u8 character, u8 variant, s16 px, s16 py, bool asSmallGhost)
+{
+	if (A0 == 0xffffb000) && (char.state != char.state.ROLLING && ((!kr.wasInAir && kr.wasRolling) || (!kr.wasInAir2 && kr.wasRolling2)))
+	{
+		if (kr.wasOnObject != (u8[A0 + 0x2a] & char.flag.ON_OBJECT) && !(char.flags & char.flag.ROLLING) && char.groundspeed != 0)
+		{
+			char.flags |= char.flag.ROLLING
+			char.state = char.state.ROLLING
+			char.state.former = char.state.ROLLING
+			char.hitbox_extends.x = char.hitbox.x.ROLLING
+			char.hitbox_extends.y = char.hitbox.y.ROLLING
+			
+			s8 dy = (char.character == CHARACTER_TAILS) ? 1 : 5
+			py += (global.inv_gravity) ? -dy : dy
+			
+			if !kr.wasOnObject
+				char.position.y.u16 += (global.inv_gravity) ? -dy : dy
+			
+			char.animation.sprite = kr.backup_sprite
+			char.animation.timer = kr.backup_timer
+		}
+	}
+	else if (A0 == 0xffffb04a) && (char.state != char.state.ROLLING && ((!kr.wasInAir_p2 && kr.wasRolling_p2) || (!kr.wasInAir2_p2 && kr.wasRolling2_p2)))
+	{
+		if (kr.wasOnObject_p2 != (u8[A0 + 0x2a] & char.flag.ON_OBJECT) && !(char.flags & char.flag.ROLLING) && char.groundspeed != 0)
+		{
+			char.flags |= char.flag.ROLLING
+			char.state = char.state.ROLLING
+			char.state.former = char.state.ROLLING
+			char.hitbox_extends.x = char.hitbox.x.ROLLING
+			char.hitbox_extends.y = char.hitbox.y.ROLLING
+			
+			s8 dy = (char.character == CHARACTER_TAILS) ? 1 : 5
+			py += (global.inv_gravity) ? -dy : dy
+			
+			if !kr.wasOnObject_p2
+				char.position.y.u16 += (global.inv_gravity) ? -dy : dy
+			
+			char.animation.sprite = kr.backup_sprite_p2
+			char.animation.timer = kr.backup_timer_p2
+		}
+	}
+	
+	return base.Standalone.drawCharacterSprite(character, variant, px, py, asSmallGhost)
+}
+
+// Fix for AIZ Hollow Tree
+
+function void fn01f7ce()
+{
+	base.fn01f7ce()
+	
+	if (objA1.state == char.state.RUNNING)
+	{
+		if (A1 == 0xffffb000)
+		{
+			kr.backup_flags = 0
+			kr.backup_flags2 = 0
+			kr.wasRolling = 0
+			kr.wasRolling2 = 0
+		}
+		else if (A1 == 0xffffb04a)
+		{
+			kr.backup_flags_p2 = 0
+			kr.backup_flags2_p2 = 0
+			kr.wasRolling_p2 = 0
+			kr.wasRolling2_p2 = 0
+		}
+	}
+
+}
