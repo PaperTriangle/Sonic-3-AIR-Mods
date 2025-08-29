@@ -174,7 +174,7 @@ function void yieldExecution()
 
 }
 
-// Force setting the slide state here as well otherwise Knuckles flickers between falling and walking.
+// Force rolling here as well... Otherwise we get an animation frame issue.
 function bool Standalone.drawCharacterSprite(u8 character, u8 variant, s16 px, s16 py, bool asSmallGhost)
 {
 	// Is Player 1, character is not rolling, and character was ground rolling in on of the last two frames.
@@ -256,6 +256,32 @@ function void fn01f7ce()
 
 }
 
+// Fix for CNZ Cylinder
+
+//# address-hook(0x0338c4) end(0x033abe)
+function void fn0338c4()
+{
+	base.fn0338c4()
+	
+	if !(u8[A1 + 0x2a] & char.flag.ROLLING)
+	{
+		if (A1 == 0xffffb000)
+		{
+			kr.backup_flags = 0
+			kr.backup_flags2 = 0
+			kr.wasRolling = 0
+			kr.wasRolling2 = 0
+		}
+		else if (A1 == 0xffffb04a)
+		{
+			kr.backup_flags_p2 = 0
+			kr.backup_flags2_p2 = 0
+			kr.wasRolling_p2 = 0
+			kr.wasRolling2_p2 = 0
+		}
+	}
+}
+
 // Fix for FBZ Cylinder
 
 //# address-hook(0x03a314) end(0x03a466)
@@ -282,3 +308,4 @@ function void fn03a314()
 	}
 
 }
+
