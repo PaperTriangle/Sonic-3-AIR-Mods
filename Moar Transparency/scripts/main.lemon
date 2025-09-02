@@ -280,6 +280,14 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 			return true
 		}
 		
+		// LRZ Flame Spurts
+		if (objA0.update_address == 0x044048)
+		{
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 255 - objA0.animation.sprite * 0x10)
+			
+			return true
+		}
+		
 		// LRZ Worm Flames
 		if (objA0.update_address == 0x08f95c)
 		{
