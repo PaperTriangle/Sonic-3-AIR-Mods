@@ -26,6 +26,12 @@
 			"DisplayName": "Data Select Options",
 			"IsRequired": "0",
 			"Priority": "Higher"
+		},
+		"alt-lbz2-cutscene":
+		{
+			"DisplayName": "Alternate LBZ2 Cutscene",
+			"IsRequired": "0",
+			"Priority": "Lower"
 		}
 	},
 	

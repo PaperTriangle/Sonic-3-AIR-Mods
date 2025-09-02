@@ -933,6 +933,137 @@ function void fn23e20e()
 	}
 }
 
+//----------------------
+// LBZ Specific Features
+//----------------------
+
+#if !BBAF_ACTIVE
+
+//# address-hook(0x072e30)
+function void fn072e30()
+{
+	if (!tca.lbz)
+	{
+		base.fn072e30()
+		return
+	}
+	
+	// Sky palette fade steps
+	if (u16[A0 + 0x48] == 16)
+	{
+		u16[0xfffffc00 + 0x3b * 2] = 0x0a66
+		u16[0xfffffc00 + 0x3c * 2] = 0x0842
+		u16[0xfffffc00 + 0x3d * 2] = 0x0820
+		u16[0xfffffc00 + 0x3e * 2] = 0x0600
+	}
+	else if (u16[A0 + 0x48] == 32)
+	{
+		u16[0xfffffc00 + 0x3b * 2] = 0x0caa
+		u16[0xfffffc00 + 0x3c * 2] = 0x0c62
+		u16[0xfffffc00 + 0x3d * 2] = 0x0c42
+		u16[0xfffffc00 + 0x3e * 2] = 0x0a20
+	}
+	else if (u16[A0 + 0x48] == 48)
+	{
+		u16[0xfffffc00 + 0x3b * 2] = 0x0eee
+		u16[0xfffffc00 + 0x3c * 2] = 0x0ea0
+		u16[0xfffffc00 + 0x3d * 2] = 0x0e64
+		u16[0xfffffc00 + 0x3e * 2] = 0x0e42
+		
+		if !Mods.isModActive("Alternate LBZ2 Cutscene")
+			Object.TriggerUnloading()
+	}
+	else if Mods.isModActive("Alternate LBZ2 Cutscene") && (u16[A0 + 0x48] == 68)
+	{
+		// We do the results here if we are change the fade point.
+		objA0.update_address = 0x072e2e
+		objA0.countdown_value = 0x003f
+		
+		level.wait_for_results = 0xff
+		control.player1 = 0
+		A1 = 0xffffb000
+		StartCharacterWinPose()
+		level.results_done = 0
+		
+		if (allocDynamicObjectStd())
+		{
+			// Level results
+			objA1.update_address = addressof(LevelResults.Update)
+		}
+		
+		if (allocDynamicObjectStd())
+		{
+			// Win pose for Tails
+			objA1.update_address = 0x072cfa
+		}
+		
+		Game.onZoneActCompleted(global.zone_act.apparent)
+		
+		fn072e2e()
+		return
+	}
+	
+	++u16[A0 + 0x48]
+}
+
+//# address-hook(0x07305a)
+function void fn07305a()
+{
+	if (!tca.lbz)
+	{
+		base.fn07305a()
+		return
+	}
+	
+	// Handling for Big Arms fight on Sonic's path:
+	//  Music change, fade to dark sky
+	if (u16[A0 + 0x48] == 0)
+	{
+		playMusic(MUSIC_CTRL_FADEOUT)
+	}
+	else if (u16[A0 + 0x48] == 120)
+	{
+		playMusic(MUSIC_BIGARMS)
+		level.boss_encounter = 2	// Usually only 0 or 1, but we're using a value of 2 here for "chooseFittingMusic"
+	}
+
+	// Sky palette fade steps
+	if (u16[A0 + 0x48] == 16)
+	{
+		u16[0xfffffc00 + 0x3b * 2] = 0x0caa
+		u16[0xfffffc00 + 0x3c * 2] = 0x0c62
+		u16[0xfffffc00 + 0x3d * 2] = 0x0c42
+		u16[0xfffffc00 + 0x3e * 2] = 0x0a20
+	}
+	else if (u16[A0 + 0x48] == 32)
+	{
+		u16[0xfffffc00 + 0x3b * 2] = 0x0a66
+		u16[0xfffffc00 + 0x3c * 2] = 0x0842
+		u16[0xfffffc00 + 0x3d * 2] = 0x0820
+		u16[0xfffffc00 + 0x3e * 2] = 0x0600
+	}
+	else if (u16[A0 + 0x48] == 48)
+	{
+		u16[0xfffffc00 + 0x3b * 2] = 0x0844
+		u16[0xfffffc00 + 0x3c * 2] = 0x0622
+		u16[0xfffffc00 + 0x3d * 2] = 0x0400
+		u16[0xfffffc00 + 0x3e * 2] = 0x0200
+	}
+
+	++u16[A0 + 0x48]
+	if (u16[A0 + 0x48] <= 120)
+		return
+
+	if (allocDynamicObjectStd())
+	{
+		// Spawn Big Arms
+		objA1.update_address = 0x074262
+	}
+	fn0852ae()
+}
+
+#endif
+
 //-----------------------
 // SOZ Specific Functions
 //-----------------------
