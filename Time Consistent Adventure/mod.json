@@ -32,6 +32,12 @@
 			"DisplayName": "Alternate LBZ2 Cutscene",
 			"IsRequired": "0",
 			"Priority": "Lower"
+		},
+		"big-arm-fade":
+		{
+			"DisplayName": "Better Big Arm Fade",
+			"IsRequired": "0",
+			"Priority": "Lower"
 		}
 	},
 	
