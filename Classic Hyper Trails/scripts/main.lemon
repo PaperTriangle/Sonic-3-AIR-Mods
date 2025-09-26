@@ -22,27 +22,29 @@ function bool Standalone.drawCharacterSprite(u8 character, u8 variant, s16 px, s
 	System.setGlobalVariableValueByName("renderTransparentPlz", false)
 
 	bool useAfterImages = NT.AfterImages()
+	bool useHyperImages = false
+	bool useAfterShoes = false
 	if (isPlayer1)
 	{
 		if ((super.active == 0xff) || (super.active.tails == 0xff))
 		{
-			useAfterImages = true
+			useHyperImages = true
 		}
-		else
+		
+		if (Game.getSetting(SETTING_SPEEDUP_AFTERIMGS))
 		{
-			if (Game.getSetting(SETTING_SPEEDUP_AFTERIMGS))
-			{
-				useAfterImages = ((u8[characterAddress + 0x2b] & char.bonus.SPEED_UP) != 0)
-			}
+			useAfterShoes = ((u8[characterAddress + 0x2b] & char.bonus.SPEED_UP) != 0)
 		}
 	}
 	
 	if (cht.transparent)
 		System.setGlobalVariableValueByName("renderTransparentPlz", true)
 	
-	if (useAfterImages && lastKey != "")
+	u8 imageNumber = (cht.number < 4) ? cht.number : (useAfterShoes + useHyperImages + useAfterImages) * 2
+	
+	if ( (useAfterImages || useHyperImages || useAfterShoes) && lastKey != "")
 	{
-		for (s8 i = cht.number; i > 0; --i)
+		for (s8 i = imageNumber; i > 0; --i)
 		{
 			A1 = 0xffffe500 + u8(posbackup.offset.player1 - (i * 8 + 4))
 			s16 px0 = u16[A1] - camera.foreground.x.u16
@@ -51,7 +53,7 @@ function bool Standalone.drawCharacterSprite(u8 character, u8 variant, s16 px, s
 				py0 &= level.height.bitmask
 			
 			Renderer.setSpriteTagWithPosition(characterAddress + 0x10 + i, px0, py0)
-			Renderer.drawCustomSprite(lastKey, px0, py0, lastAtex, lastFlags, lastRenderQueue - i, lastAngle, 0xd0 - i * 0x20)
+			Renderer.drawCustomSprite(lastKey, px0, py0, lastAtex, lastFlags, lastRenderQueue - i, lastAngle, 0xd0 - i * (0x28 - 0x08 * ( (cht.number > 3) ? useAfterShoes + useHyperImages + useAfterImages : 0)))
 		}
 	}
 	

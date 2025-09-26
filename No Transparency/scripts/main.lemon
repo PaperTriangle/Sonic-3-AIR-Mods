@@ -1,8 +1,10 @@
 global bool nt.novdp
 global bool nt.nosprite
 global bool nt.ringmonitorfade
+global bool nt.waterstyle
 global bool nt.shadoweffects
 
+// Use this function if a sprite should always rendering as solid instead of render with flashing transparency.
 function bool NT.RenderSolid(u64 key)
 {
 	for (u8 i = 0; i < 8; i++)
@@ -26,6 +28,7 @@ function bool NT.RenderSolid(u64 key)
 	return false
 }
 
+// Use this function to define sprites that render in the character rendering step that are not specifically the character themselves.
 function bool NT.NotCharacter(u64 key)
 {
 	for (u8 i = 0; i < 8; i++)
@@ -52,11 +55,13 @@ function bool NT.NotCharacter(u64 key)
 	return false
 }
 
+// Use this function if there is some specific condition where a VDP sprite should always rendering as transparent instead of render with flashing transparency.
 function bool NT.RenderTransparent()
 {
 	return NT.RenderTransparent(0)
 }
 
+// Use this function if a sprite should always rendering as transparent instead of render with flashing transparency.
 function bool NT.RenderTransparent(u64 key)
 {
 	if (nt.ringmonitorfade)
@@ -80,17 +85,23 @@ function bool NT.RenderTransparent(u64 key)
 		}
 	}
 	
+	// Origins Hyper Efects Support
+	if (key == "hud_flash_white" || key == "hud_flash_white2" || key == "hud_flash_red" || key == "hud_flash_yellow")
+		return true
+	
 	if (key == "@input_icon_button_Y"|| renderTransparentPlz || global.game_mode != 0x0c)
 		return true
 
 	return false
 }
 
+// Use this function if a sprite should skip rendering instead of render with flashing transparency.
 function bool NT.PreventRendering(u64 key)
 {
 	return noRenderPlz
 }
 
+// Use this function to check if character skill based after images are in effect.
 function bool NT.AfterImages()
 {
 	if (Mods.isModActive("Extra Slot 3D in 2D Shadow"))
@@ -119,14 +130,21 @@ global u8 lastAngle
 global u32 lastTintColor
 global s32 lastScale
 
+// You can alter the below values using System.setGlobalVariableValueByName() during your rendering step to bypass / force a desired effect.
 global bool renderTransparentPlz
 global bool noRenderPlz
 
 function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 index, u16 renderQueue, u8 spriteCounter)
 {
-	// HCZ water waves effect
+	// HCZ water waves effect - Render in similar style to the Mega Drive OR flash the full water surface.
 	if (nt.novdp && objA0.update_address == 0x01f244)
 	{
+		if (!nt.waterstyle)
+			if (level.framecounter.low & 0x01)
+				return base.Standalone.onDrawVdpSpriteCompound(px, py, size, index, renderQueue, spriteCounter)
+			else
+				return true
+		
 		if (A0 == 0xffffcf82 && D4.u16 == 0)		// Only for one sprite of the main object
 		{
 			Renderer.clearSpriteTag()
