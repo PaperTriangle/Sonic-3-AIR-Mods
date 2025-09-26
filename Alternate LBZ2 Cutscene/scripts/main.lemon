@@ -142,7 +142,10 @@ function void fn072e54()
 	objA0.position.x.u16 += getScreenExtend()
 	
 	if (level.framecounter & 1)
+	{
+		objA0.sprite_priority = 0x0080
 		objA0.sprite_attributes |= sprite_attribute.PRIORITY
+	}
 }
 
 // This is the function that handles the sky fading back
@@ -830,7 +833,7 @@ function void fn02dae6()
 function void LevelResults.UpdateBonusCounting()
 {
 	// Only play game clear sound given these conditions
-	if (altlbz2cs.gameclear > 0 && camera.position.y.u16 > 0x0500 && global.zone_act == 0x0601) 
+	if (altlbz2cs.gameclear > 0 && camera.position.y.u16 > 0x0500 && camera.position.x.u16 > 0x0400 && global.zone_act == 0x0601) 
 	{
 		if (objA0.countdown_value != 0)
 		{
