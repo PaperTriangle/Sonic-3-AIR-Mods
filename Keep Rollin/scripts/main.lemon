@@ -256,6 +256,33 @@ function void fn01f7ce()
 
 }
 
+// Fix for MGZ Spiral Run
+
+//# address-hook(0x033cac) end(0x033f64)
+function void fn033cac()
+{
+	base.fn033cac()
+	
+	if (objA1.state == char.state.RUNNING)
+	{
+		if (A1 == 0xffffb000)
+		{
+			kr.backup_flags = 0
+			kr.backup_flags2 = 0
+			kr.wasRolling = 0
+			kr.wasRolling2 = 0
+		}
+		else if (A1 == 0xffffb04a)
+		{
+			kr.backup_flags_p2 = 0
+			kr.backup_flags2_p2 = 0
+			kr.wasRolling_p2 = 0
+			kr.wasRolling2_p2 = 0
+		}
+	}
+
+}
+
 // Fix for CNZ Cylinder
 
 //# address-hook(0x0338c4) end(0x033abe)
