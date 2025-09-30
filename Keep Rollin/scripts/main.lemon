@@ -368,7 +368,7 @@ function void fn03f246()
 {
 	base.fn03f246()
 	
-	if !(u8[A1 + 0x2a] & char.flag.ROLLING)
+	if !(objA1.flags2a & char.flag.ROLLING)
 	{
 		if (A1 == 0xffffb000)
 		{
@@ -385,5 +385,32 @@ function void fn03f246()
 			kr.wasRolling2_p2 = 0
 		}
 	}
+}
+
+// Fix for LRZ Spiral Staircase
+
+//# address-hook(0x0423d0) end(0x042478)
+function void fn0423d0()
+{
+	base.fn0423d0()
 	
+	if (A1 == 0xffffb000)
+	{
+		objA1.flags2a &= ~char.flag.ROLLING
+		objA1.state = char.state.RUNNING
+		kr.backup_flags = 0
+		kr.backup_flags2 = 0
+		kr.wasRolling = 0
+		kr.wasRolling2 = 0
+	}
+	else if (A1 == 0xffffb04a)
+	{
+		objA1.flags2a &= ~char.flag.ROLLING
+		objA1.state = char.state.RUNNING
+		kr.backup_flags_p2 = 0
+		kr.backup_flags2_p2 = 0
+		kr.wasRolling_p2 = 0
+		kr.wasRolling2_p2 = 0
+	}
+
 }
