@@ -256,6 +256,31 @@ function void fn01f7ce()
 
 }
 
+// Fix for HCZ HAnd Launcher
+
+
+//# address-hook(0x030ce0) end(0x030dea)
+function void fn030ce0()
+{
+	base.fn030ce0()
+	
+	if (u8[0xffffb000 + 0x20] == char.state.RUNNING) // p1 char.state
+	{
+		kr.backup_flags = 0
+		kr.backup_flags2 = 0
+		kr.wasRolling = 0
+		kr.wasRolling2 = 0
+	}
+	
+	if (u8[0xffffb04a + 0x20] == char.state.RUNNING) // p2 char.state
+	{
+		kr.backup_flags_p2 = 0
+		kr.backup_flags2_p2 = 0
+		kr.wasRolling_p2 = 0
+		kr.wasRolling2_p2 = 0
+	}
+}
+
 // Fix for MGZ Spiral Run
 
 //# address-hook(0x033cac) end(0x033f64)
