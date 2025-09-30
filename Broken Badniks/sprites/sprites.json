@@ -8,5 +8,9 @@
 	"skorp_stinger":  { "File": "skorp_stinger.bmp", "Center": "8,8" },
 	"turbospiker_rocket":  { "File": "turbospiker_rocket.bmp", "Center": "12,22" },
 	"dragonfly_tail":  { "File": "dragonfly_tail.bmp", "Center": "8,3" },
-	"dragonfly_tip":  { "File": "dragonfly_tip.bmp", "Center": "3,4" }
+	"dragonfly_tip":  { "File": "dragonfly_tip.bmp", "Center": "3,4" },
+	"twinhammer_top_left":  { "File": "twinhammer_top_left.bmp", "Center": "8,8" },
+	"twinhammer_bottom_left":  { "File": "twinhammer_bottom_left.bmp", "Center": "8,8" },
+	"twinhammer_inside_left_1":  { "File": "twinhammer_inside_left_1.bmp", "Center": "12,12" },
+	"twinhammer_inside_left_2":  { "File": "twinhammer_inside_left_2.bmp", "Center": "14,12" }
 }
