@@ -5,7 +5,7 @@
 		"UniqueID": "super-flicky-fix",
 		"Author": "PaperTriangle",
 		"Description": "Fixes handling of the super flicky to use Sonic's extended palette.",
-		"ModVersion": "1.3"
+		"ModVersion": "1.4"
 	},
 	"Settings":
 	{
@@ -38,6 +38,17 @@
 				"DisplayName": "Use Sonic's Custom Palette",
 				"Variable": "sff.super_sonic_palette",
 				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "sff.super_stars",
+				"DisplayName": "Tails Has Super/Hyper Stars",
+				"Variable": "sff.super_stars",
+				"DefaultValue": "1",
 				"Options":
 				{
 					"0": "Disabled",

@@ -1,11 +1,12 @@
 global bool sff.green_eyes
 global bool sff.behind_tiles
 global bool sff.super_sonic_palette
+global bool sff.super_stars
 
 // Render the new sprites
 function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 {
-	bool prioFlag = (objA0.sprite_attributes & sprite_attribute.PRIORITY) && !sff.behind_tiles
+	bool prioFlag = sff.behind_tiles ? (u16[0xffffb000 + 0x0a] & sprite_attribute.PRIORITY) == sprite_attribute.PRIORITY : true
 	
     if(objA0.update_address == 0x01a1f4 && global.characters == CHARS_TAILS_ALONE) 
     {
@@ -83,4 +84,157 @@ function void UpdatePaletteEffects.SuperForm.applyGeneral(u8 characterVersion, u
 		characterVersion = 1
 		
 	base.UpdatePaletteEffects.SuperForm.applyGeneral(characterVersion, source)
+}
+
+
+// Super Tails Stars
+
+function bool Character.performSuperTransformation()
+{
+	bool transformResult = base.Character.performSuperTransformation()
+	
+	if (sff.super_stars && super.active.tails == 1)
+		u32[0xffffcbc0] = 0x019156
+		
+	return transformResult
+}
+
+//# address-hook(0x0191a4) end(0x019230)
+function void fn0191a4()
+{
+	if (!isMainCharacter(CHARACTER_TAILS))
+	{
+		base.fn0191a4()
+		return
+	}
+	
+	if (super.active.tails != 1)
+	{
+		UnloadObject()
+		return
+	}
+	
+	u8 backupSuper = super.active
+	super.active = super.active.tails
+
+	base.fn0191a4()
+
+	super.active = backupSuper
+}
+
+// Hyper Tails Stars
+
+//# address-hook(0x01a170) end(0x01a198)
+function void fn01a170()
+{
+
+
+	if (sff.super_stars && global.zone_act != 0x0d01)
+	{
+		Kosinski.addToDMAQueue(0x14c652, Shield.targetInVRAM)
+		
+		if (allocHyperStarObject())
+		{
+			for (u8 i = 0; i < 4; ++i)
+			{
+				objA1.update_address = 0x01937c
+				u8[A1 + 0x26] = i * 0x40
+				u8[A1 + 0x24] = i + 1
+				A1 += 0x4a
+			}
+			
+			fn01937c()
+		}
+	}
+	else
+	{
+		Kosinski.addToDMAQueue(0x14c7d4, Char.Player1.targetInVRAM)
+	}
+
+	A1 = 0xffffcd7c
+	for (u16 k = 0; k < 4; ++k)
+	{
+		objA1.update_address = 0x01a19c
+		u8[A1 + 0x34] = k * 0x40
+		A1 += 0x4a
+	}
+
+	fn01a19c()
+}
+
+function bool allocHyperStarObject()
+{
+	A1 = 0xffffb0de
+	D0.s16 = 0x59
+	while (D0.s16 >= 0)
+	{
+		A1 += 0x4a
+		if (u32[A1] == 0 && u32[A1 + 0x4a] == 0 && u32[A1 + 0x4a*2] == 0 && u32[A1 + 0x4a*3] == 0)
+		{
+			// Found a free place
+			_setZeroFlagByValue(0)
+			return true
+		}
+		--D0.s16
+	}
+
+	// Failed
+	_setZeroFlagByValue(1)
+	return false
+}
+
+//# address-hook(0x0193ec) end(0x019486)
+function void fn0193ec()
+{
+	if (!isMainCharacter(CHARACTER_TAILS))
+	{
+		base.fn0193ec()
+		return
+	}
+	
+	if (super.active.tails)
+	{
+		--objA0.animation.timer
+		if (s8(objA0.animation.timer) < 0)
+		{
+			objA0.animation.timer = 1
+			++objA0.animation.sprite
+			if (objA0.animation.sprite >= 3)
+			{
+				objA0.animation.sprite = 0
+				u16[A0 + 0x30] = 0
+				u16[A0 + 0x34] = 0
+			}
+		}
+
+		D0.u8 = objA0.value26
+		objA0.value26 -= 0x10
+		LookupSinCos()
+		D0.s16 <<= 3
+		D1.s16 <<= 3
+		objA0.velocity.x = D0.u16
+		objA0.velocity.y = D1.u16
+		u16[A0 + 0x30] += objA0.velocity.x
+		u16[A0 + 0x34] += objA0.velocity.y
+
+		D2.s16 = s8[A0 + 0x30]
+		if (u8[0xffffb000 + 0x2a] & char.flag.FACING_LEFT)
+			D2.s16 = -D2.s16
+		objA0.position.x.u16 = u16[0xffffb000 + 0x10] + D2.s16
+		objA0.position.y.u16 = u16[0xffffb000 + 0x14] + s8[A0 + 0x34]
+		objA0.sprite_attributes = (objA0.sprite_attributes & ~sprite_attribute.PRIORITY) | (u16[0xffffb000 + 0x0a] & sprite_attribute.PRIORITY)
+
+	#if STANDALONE
+		// Do not render stars if Sonic is outside the screen (e.g. MGZ 2 boss)
+		if (u8[0xffffb000 + 0x04] & render_flag.VISIBLE)
+	#endif
+		{
+			//System.writeDisplayLine(stringformat("Values: 0x%08x", A0))
+			DrawObject()
+		}
+	}
+	else
+	{
+		UnloadObject()
+	}
 }
