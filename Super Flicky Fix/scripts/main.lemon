@@ -124,12 +124,14 @@ function void fn0191a4()
 
 // Hyper Tails Stars
 
+// Used to prevent duplicate stars from debug monitors
+global bool alreadyHasStars
+
 //# address-hook(0x01a170) end(0x01a198)
 function void fn01a170()
 {
 
-
-	if (sff.super_stars && global.zone_act != 0x0d01)
+	if (sff.super_stars && !alreadyHasStars && global.zone_act != 0x0d01)
 	{
 		Kosinski.addToDMAQueue(0x14c652, Shield.targetInVRAM)
 		
@@ -143,6 +145,7 @@ function void fn01a170()
 				A1 += 0x4a
 			}
 			
+			alreadyHasStars = true
 			fn01937c()
 		}
 	}
@@ -235,6 +238,15 @@ function void fn0193ec()
 	}
 	else
 	{
+		alreadyHasStars = false
 		UnloadObject()
 	}
+}
+
+function void yieldExecution()
+{
+	base.yieldExecution()
+
+	if (sff.super_stars && alreadyHasStars && isMainCharacter(CHARACTER_TAILS) && super.active.tails != 0xff)
+		alreadyHasStars = false
 }
