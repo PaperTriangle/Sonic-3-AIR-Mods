@@ -1,6 +1,7 @@
 define u8 global.xtrachar	= u8[0xffffe654]
 
 global bool dsmg.slide_setting
+global bool dsmg.stars_setting
 global bool dsmg.wall_setting
 global bool dsmg.smooth_landing_setting
 global bool dsmg.2013_water_setting
@@ -676,6 +677,20 @@ function void Character.ClearEnemiesOnScreen()
 	Character.clearEnemiesOnScreen(0)
 }
 
+//----------------------------
+// Add stars to Hyper Knuckles
+//----------------------------
+
+function bool Character.performSuperTransformation()
+{
+	bool transformResult = base.Character.performSuperTransformation()
+	
+	if (dsmg.stars_setting && isMainCharacter(CHARACTER_KNUCKLES) && super.active == 0xff)
+		u32[0xffffcd7c] = 0x019348
+		
+	return transformResult
+}
+
 //-----------------------
 //	Smooth landing camera
 //-----------------------
@@ -849,4 +864,52 @@ function void Character.checkForWaterSurface()
 	}
 		
 	base.Character.checkForWaterSurface()
+}
+
+//---------------------
+// Fix hlock from glide
+//---------------------
+
+//# address-hook(0x011e2a) end(0x011e8a)
+function void Character.UpdateGroundContact()
+{
+	if !(dsmg.slide_setting && isMainCharacter(CHARACTER_KNUCKLES))
+	{
+		base.Character.UpdateGroundContact()
+		return
+	}
+
+	if (char.on_convex_surface == 0)		// Flag set when walking on a special object like spinning wheels in CNZ
+	{
+		if (char.hlock_countdown > 0)
+		{
+			if ((control.player1.state & CONTROL_DOWN) && char.state == char.state.KNUX_STANDUP2)
+				char.hlock_countdown = 0
+			else
+			--char.hlock_countdown
+		}
+		else
+		{
+			s8 signedRotation = char.rotation
+			if (signedRotation < -0x18 || signedRotation >= 0x18)
+			{
+				if (abs(char.groundspeed) < 0x280)
+				{
+					// Going too slow, losing contact to the ground
+					char.hlock_countdown = 30
+					if (signedRotation >= -0x30 && signedRotation < 0x30)
+					{
+						if (signedRotation > 0)
+							char.groundspeed += 0x80
+						else
+							char.groundspeed -= 0x80
+					}
+					else
+					{
+						char.flags |= char.flag.IN_AIR
+					}
+				}
+			}
+		}
+	}
 }
