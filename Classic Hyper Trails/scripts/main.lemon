@@ -26,7 +26,7 @@ function bool Standalone.drawCharacterSprite(u8 character, u8 variant, s16 px, s
 	bool useAfterShoes = false
 	if (isPlayer1)
 	{
-		if ((super.active == 0xff) || (super.active.tails == 0xff))
+		if ((super.active == 0xff) || (super.active.tails == 0xff && !(Mods.isModActive("Super Flicky Fix") && System.getGlobalVariableValueByName("sff.super_stars") && !Game.getSetting(SETTING_HYPER_TAILS))))
 		{
 			useHyperImages = true
 		}

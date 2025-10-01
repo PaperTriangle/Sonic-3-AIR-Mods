@@ -108,7 +108,7 @@ function void fn0191a4()
 		return
 	}
 	
-	if (super.active.tails != 1)
+	if (super.active.tails == 0 || (super.active.tails == 0xff && Game.getSetting(SETTING_HYPER_TAILS)))
 	{
 		UnloadObject()
 		return
@@ -133,20 +133,27 @@ function void fn01a170()
 
 	if (sff.super_stars && !alreadyHasStars && global.zone_act != 0x0d01)
 	{
-		Kosinski.addToDMAQueue(0x14c652, Shield.targetInVRAM)
-		
-		if (allocHyperStarObject())
+		if (Mods.isModActive("Classic Hyper Trails") && !Game.getSetting(SETTING_HYPER_TAILS))
 		{
-			for (u8 i = 0; i < 4; ++i)
-			{
-				objA1.update_address = 0x01937c
-				u8[A1 + 0x26] = i * 0x40
-				u8[A1 + 0x24] = i + 1
-				A1 += 0x4a
-			}
+			u32[0xffffcbc0] = 0x019156
+		}
+		else
+		{
+			Kosinski.addToDMAQueue(0x14c652, Shield.targetInVRAM)
 			
-			alreadyHasStars = true
-			fn01937c()
+			if (allocHyperStarObject())
+			{
+				for (u8 i = 0; i < 4; ++i)
+				{
+					objA1.update_address = 0x01937c
+					u8[A1 + 0x26] = i * 0x40
+					u8[A1 + 0x24] = i + 1
+					A1 += 0x4a
+				}
+				
+				alreadyHasStars = true
+				fn01937c()
+			}
 		}
 	}
 	else
