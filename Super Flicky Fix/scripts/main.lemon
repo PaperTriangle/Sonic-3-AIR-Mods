@@ -32,18 +32,29 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
     return base.Standalone.onWriteToSpriteTable(px, py, renderQueue)
 }
 
+global s8 superflicky.palettefx.timer
+global s8 superflicky.palettefx.frame
+
 // Use Sonic's extended palette to blend (incase someone is using more pixels in Tails' palette)
 function void UpdatePaletteEffects.SuperForm.blendFlicky(u32 source1, u32 source2, u16 blendFactor, bool underwater)
 {
 	if (sff.super_sonic_palette)
 	{
+		if (super.palettefx.state == 0)
+			return
+		
 		string characterKey = getCharacterPaletteKey(CHARACTER_SONIC)
 		bool isNormalPaletteModded = System.hasExternalPaletteData(characterKey, 0)		// Check line index 0, for the normal form palette
 		bool isSuperPaletteModded = System.hasExternalPaletteData(characterKey, 5)		// Check line index 5, for Super/Hyper form palette
 		
 		global.characters = CHARS_SONIC_ALONE
-		u8 super = super.active.tails
+		u8 superBackup = super.active.tails
+		s8 timerBackup = super.palettefx.timer
+		s8 frameBackup = super.palettefx.frame
+		
 		super.active.tails = 0
+		super.palettefx.timer  = superflicky.palettefx.timer
+		super.palettefx.frame  = superflicky.palettefx.frame
 		
 		if (isSuperPaletteModded)
 		{
@@ -64,8 +75,14 @@ function void UpdatePaletteEffects.SuperForm.blendFlicky(u32 source1, u32 source
 			}
 		}
 		
+		superflicky.palettefx.timer = super.palettefx.frame
+		superflicky.palettefx.frame = super.palettefx.timer
+		
 		global.characters = CHARS_TAILS_ALONE
-		super.active.tails = super
+		super.active.tails = superBackup
+		super.palettefx.timer = timerBackup
+		super.palettefx.frame = frameBackup
+		
 	}
 	else
 	{
@@ -175,7 +192,7 @@ function void fn01a170()
 function bool allocHyperStarObject()
 {
 	A1 = 0xffffb0de
-	D0.s16 = 0x59
+	D0.s16 = 0x59 - 0x04 // Smaller object pool since we are writing four objects, could probably use 0x03 but I am paranoid by that last A1 += 0x4a
 	while (D0.s16 >= 0)
 	{
 		A1 += 0x4a
