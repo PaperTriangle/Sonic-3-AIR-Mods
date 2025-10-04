@@ -33,38 +33,25 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 }
 
 global s8 superflicky.palettefx.timer
-global s8 superflicky.palettefx.frame
+global u16 superflicky.palettefx.frame
+global u8 superflicky.palettefx.state
 
 // Use Sonic's extended palette to blend (incase someone is using more pixels in Tails' palette)
 function void UpdatePaletteEffects.SuperForm.blendFlicky(u32 source1, u32 source2, u16 blendFactor, bool underwater)
 {
 	if (sff.super_sonic_palette)
 	{
-		if (super.palettefx.state == 0)
-			return
+		bool isSuperPaletteModded = System.hasExternalPaletteData(getCharacterPaletteKey(CHARACTER_SONIC), 5)		// Check line index 5, for Super/Hyper form palette
 		
-		string characterKey = getCharacterPaletteKey(CHARACTER_SONIC)
-		bool isNormalPaletteModded = System.hasExternalPaletteData(characterKey, 0)		// Check line index 0, for the normal form palette
-		bool isSuperPaletteModded = System.hasExternalPaletteData(characterKey, 5)		// Check line index 5, for Super/Hyper form palette
-		
-		global.characters = CHARS_SONIC_ALONE
-		u8 superBackup = super.active.tails
-		s8 timerBackup = super.palettefx.timer
-		s8 frameBackup = super.palettefx.frame
-		
-		super.active.tails = 0
-		super.palettefx.timer  = superflicky.palettefx.timer
-		super.palettefx.frame  = superflicky.palettefx.frame
+		if (super.palettefx.state == 2 && superflicky.palettefx.state != 2)
+		{
+			superflicky.palettefx.state = 2
+			superflicky.palettefx.frame = 30
+		}
 		
 		if (isSuperPaletteModded)
 		{
-			// Modded super palettes (possible using different super colors) need a special handling
-			UpdatePaletteEffects.SuperForm.moddingVersion(1)
-		}
-		else if (Game.getSetting(SETTING_GFX_ANTIFLICKER) != 0 || isNormalPaletteModded)
-		{
-			// Smoothed version of effects -- also used when normal character palette is modded, but super palette is not
-			UpdatePaletteEffects.SuperForm.smoothedVersion(1)
+			moddedFlickyPalette()			
 		}
 		else
 		{
@@ -74,14 +61,6 @@ function void UpdatePaletteEffects.SuperForm.blendFlicky(u32 source1, u32 source
 				u16[0x802004 + offset + k] = blendColorsPacked(u16[source1 + k], u16[source2 + k], blendFactor)
 			}
 		}
-		
-		superflicky.palettefx.timer = super.palettefx.frame
-		superflicky.palettefx.frame = super.palettefx.timer
-		
-		global.characters = CHARS_TAILS_ALONE
-		super.active.tails = superBackup
-		super.palettefx.timer = timerBackup
-		super.palettefx.frame = frameBackup
 		
 	}
 	else
@@ -94,6 +73,150 @@ function void UpdatePaletteEffects.SuperForm.blendFlicky(u32 source1, u32 source
 	}
 }
 
+function void moddedFlickyPalette()
+{
+	if (superflicky.palettefx.state & 0x80)
+	{
+		// Update ongoing palette effect
+		u16 nextFrame = (superflicky.palettefx.frame + 6) % 18
+		u16 blendFactor = superflicky.palettefx.timer * 0x100 / 0x0f
+		if (nextFrame % 18 == 0)
+			blendFactor = 0x100 - blendFactor
+		else if (nextFrame % 18 == 12)
+			blendFactor = 0
+
+		for (u8 underwater = 0; underwater < (level.water_present ? 2 : 1); ++underwater)
+		{
+			u32 offset = CHARACTER_SONIC * 0x40 + (underwater ? 0x300 : 0)
+			u32 source = 0x802180 + offset
+			u32 dest   = 0x802000 + offset
+
+			// Load modded Super palette
+			u8 line = getModdedPaletteLine(CHARACTER_SONIC, false, underwater)
+
+			zeroMemory(dest, 0x40)
+			u16 numColors = System.loadExternalPaletteData(getCharacterPaletteKey(CHARACTER_SONIC), line, 0x800000, 0x20)
+			for (u16 i = 0; i < numColors; ++i)
+			{
+				u32 rgba = u32[0x800000 + i * 4]
+				u16[dest + i * 2] = (rgba & 0xff000000) ? packColorExt(rgba) : 0
+			}
+
+			for (u8 k = 0; k < 0x40; k += 2)
+			{
+				if (u16[dest + k] == 0)
+				{
+					// Use original color as fallback
+					u16[dest + k] = u16[source + k]
+				}
+				else
+				{
+					// Apply flash effect
+					u16[dest + k] = blendColorsPacked(u16[dest + k], 0x0eee, blendFactor)
+				}
+			}
+		}
+
+		--superflicky.palettefx.timer
+		if (superflicky.palettefx.timer < 0)
+		{
+			superflicky.palettefx.timer = 0x0f
+			superflicky.palettefx.frame = nextFrame
+		}
+	}
+	else if (superflicky.palettefx.state == 1)
+	{
+		// Sonic
+		//  -> Fading #contributed by iCloudius
+		// Fade in effect
+		superflicky.palettefx.frame += 6
+		superflicky.palettefx.timer = 1
+
+		for (u8 underwater = 0; underwater < (level.water_present ? 2 : 1); ++underwater)
+		{
+			u16 blendFactor = clamp((superflicky.palettefx.frame + (1 - superflicky.palettefx.timer) * 6 / 2) * 0x100 / 0x24, 0, 0x100)
+		
+			u32 offset = CHARACTER_SONIC * 0x40 + (underwater ? 0x300 : 0)
+			u32 source = 0x802180 + offset
+			u32 dest   = 0x802000 + offset
+		
+			// Load modded Super palette
+			u8 line = getModdedPaletteLine(CHARACTER_SONIC, false, underwater)
+		
+			zeroMemory(dest, 0x40)
+			u16 numColors = System.loadExternalPaletteData(getCharacterPaletteKey(CHARACTER_SONIC), line, 0x800000, 0x20)
+			for (u16 i = 0; i < numColors; ++i)
+			{
+				u32 rgba = u32[0x800000 + i * 4]
+				u16[dest + i * 2] = (rgba & 0xff000000) ? packColorExt(rgba) : 0
+			}
+		
+			for (u8 k = 0; k < 0x40; k += 2)
+			{
+				if (u16[dest + k] == 0)
+				{
+					// Use original color as fallback
+					u16[dest + k] = u16[source + k]
+				}
+				else
+				{
+					// Apply flash effect
+					u16[dest + k] = blendColorsPacked(u16[source + k], u16[dest + k], blendFactor)
+				}
+			}
+		}
+
+
+		if (superflicky.palettefx.frame < 36)
+			return
+
+		// Fully faded in
+		superflicky.palettefx.state = 0xff
+		//u8[0xffffb000 + 0x2e] = 0		// Reset "char.control_flags"
+	}
+	else
+	{
+		// Fade out
+		if (superflicky.palettefx.frame >= 30)
+		{
+			// This is the first frame, set everything so that only the timer is used
+			superflicky.palettefx.frame = 0
+			superflicky.palettefx.timer = 0x11
+		}
+
+		u16 blendFactor = clamp(u16(superflicky.palettefx.timer) * 0x100 / 0x12, 0, 0x100)
+		for (u8 underwater = 0; underwater < (level.water_present ? 2 : 1); ++underwater)
+		{
+			u32 offset = CHARACTER_SONIC * 0x40 + (underwater ? 0x300 : 0)
+			u32 source = 0x802180 + offset
+			u32 dest   = 0x802000 + offset
+
+			for (u8 k = 0; k < 0x40; k += 2)
+			{
+				if (u16[dest + k] == 0)
+				{
+					// Use original color as fallback
+					u16[dest + k] = u16[source + k]
+				}
+				else
+				{
+					// Apply flash effect
+					u16[dest + k] = blendColorsPacked(u16[source + k], u16[dest + k], blendFactor)
+				}
+			}
+		}
+		System.writeDisplayLine(stringformat("Values: 0x%02x", superflicky.palettefx.timer))
+		if (superflicky.palettefx.timer == 0)
+		{
+			// Fully faded out
+			superflicky.palettefx.state = 0
+		}
+		else
+		{
+			--superflicky.palettefx.timer
+		}
+	}
+}
 
 function void UpdatePaletteEffects.SuperForm.applyGeneral(u8 characterVersion, u32 source)
 {
@@ -147,7 +270,10 @@ global bool alreadyHasStars
 //# address-hook(0x01a170) end(0x01a198)
 function void fn01a170()
 {
-
+	superflicky.palettefx.state = 1
+	superflicky.palettefx.timer = 0
+	superflicky.palettefx.frame = 0
+	
 	if (sff.super_stars && !alreadyHasStars && global.zone_act != 0x0d01)
 	{
 		if (Mods.isModActive("Classic Hyper Trails") && !Game.getSetting(SETTING_HYPER_TAILS))
