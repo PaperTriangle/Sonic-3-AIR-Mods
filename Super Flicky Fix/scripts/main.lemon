@@ -315,10 +315,12 @@ function void fn01a170()
 	fn01a19c()
 }
 
+// Function checks for four blank object spots in a row. Prevents spawning less that four stars if capacity is hit.
+// This could be done smarter probably... But I am lazy and it is pretty unlikely this situation would happen in normal gameplay.
 function bool allocHyperStarObject()
 {
 	A1 = 0xffffb0de
-	D0.s16 = 0x59 - 0x04 // Smaller object pool since we are writing four objects, could probably use 0x03 but I am paranoid by that last A1 += 0x4a
+	D0.s16 = 0x59 - 0x03 // Smaller object pool since we are writing four objects.
 	while (D0.s16 >= 0)
 	{
 		A1 += 0x4a
