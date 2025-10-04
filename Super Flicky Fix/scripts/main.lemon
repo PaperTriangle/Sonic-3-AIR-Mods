@@ -227,6 +227,41 @@ function void UpdatePaletteEffects.SuperForm.applyGeneral(u8 characterVersion, u
 }
 
 
+// Make Palette rotation slower for OG Super Tails with Classic Hyper Trails compat
+//# address-hook(0x003750) end(0x00398c)
+function void UpdatePaletteEffects.SuperForm()
+{
+	u8 backupSuper = super.active.tails
+	if (sff.super_stars && Mods.isModActive("Classic Hyper Trails"))
+	{
+		if (super.active.tails == 0xff && !Game.getSetting(SETTING_HYPER_TAILS))
+		{
+			super.active.tails = 0x01
+		}
+	}
+	
+	base.UpdatePaletteEffects.SuperForm()
+
+	if (backupSuper != super.active.tails)
+	{
+		super.active.tails = backupSuper		
+	}
+}
+
+// Make Super Flicky Palette still work with Classic Hyper Trails compat
+function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
+{
+	base.UpdatePaletteEffects.SuperForm.moddingVersion(characterVersion)
+	
+	if (sff.super_stars && Mods.isModActive("Classic Hyper Trails") && super.active.tails == 0x01 && !Game.getSetting(SETTING_HYPER_TAILS))
+		if (super.palettefx.state & 0x80)
+			if (characterVersion == 2)
+			{
+				UpdatePaletteEffects.UpdateSuperSonic.Smoothed(0xff)
+				return
+			}
+}
+
 // Super Tails Stars
 
 function bool Character.performSuperTransformation()
@@ -235,7 +270,7 @@ function bool Character.performSuperTransformation()
 	
 	if (sff.super_stars && super.active.tails == 1)
 		u32[0xffffcbc0] = 0x019156
-		
+
 	return transformResult
 }
 
