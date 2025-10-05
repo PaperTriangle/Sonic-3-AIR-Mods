@@ -52,7 +52,7 @@ function void yieldExecution()
 	if !kr.wasInAir && u8[A0 + 0x2a] & char.flag.IN_AIR
 	{
 		kr.x++
-		if kr.x >= 4
+		if kr.x >= 2
 		{
 			kr.x = 0
 			kr.wasInAir = true
@@ -119,7 +119,7 @@ function void yieldExecution()
 	if !kr.wasInAir_p2 && u8[A0 + 0x2a] & char.flag.IN_AIR
 	{
 		kr.y++
-		if kr.y >= 4
+		if kr.y >= 2
 		{
 			kr.y = 0
 			kr.wasInAir_p2 = true
@@ -358,7 +358,62 @@ function void fn03a314()
 			kr.wasRolling2_p2 = 0
 		}
 	}
+}
 
+//# address-hook(0x039f7e) end(0x03a0ae)
+function void fn039f7e()
+{
+	base.fn039f7e()
+	
+	if (objA1.state == char.state.RUNNING)
+	{
+		if (A1 == 0xffffb000)
+		{
+			objA1.flags2a &= ~char.flag.ROLLING
+			objA1.state = char.state.RUNNING
+			kr.backup_flags = 0
+			kr.backup_flags2 = 0
+			kr.wasRolling = 0
+			kr.wasRolling2 = 0
+		}
+		else if (A1 == 0xffffb04a)
+		{
+			objA1.flags2a &= ~char.flag.ROLLING
+			objA1.state = char.state.RUNNING
+			kr.backup_flags_p2 = 0
+			kr.backup_flags2_p2 = 0
+			kr.wasRolling_p2 = 0
+			kr.wasRolling2_p2 = 0
+		}
+	}
+}
+
+//# address-hook(0x03a0d6) end(0x03a21a)
+function void fn03a0d6()
+{
+	base.fn03a0d6()
+	
+	if (objA1.state == char.state.RUNNING)
+	{
+		if (A1 == 0xffffb000)
+		{
+			objA1.flags2a &= ~char.flag.ROLLING
+			objA1.state = char.state.RUNNING
+			kr.backup_flags = 0
+			kr.backup_flags2 = 0
+			kr.wasRolling = 0
+			kr.wasRolling2 = 0
+		}
+		else if (A1 == 0xffffb04a)
+		{
+			objA1.flags2a &= ~char.flag.ROLLING
+			objA1.state = char.state.RUNNING
+			kr.backup_flags_p2 = 0
+			kr.backup_flags2_p2 = 0
+			kr.wasRolling_p2 = 0
+			kr.wasRolling2_p2 = 0
+		}
+	}
 }
 
 // Fix for MVZ Vertical Pole
