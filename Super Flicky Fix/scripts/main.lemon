@@ -205,7 +205,7 @@ function void moddedFlickyPalette()
 				}
 			}
 		}
-		System.writeDisplayLine(stringformat("Values: 0x%02x", superflicky.palettefx.timer))
+		
 		if (superflicky.palettefx.timer == 0)
 		{
 			// Fully faded out
