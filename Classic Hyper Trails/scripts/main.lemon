@@ -42,6 +42,9 @@ function bool Standalone.drawCharacterSprite(u8 character, u8 variant, s16 px, s
 	
 	u8 imageNumber = (cht.number < 4) ? cht.number : (useAfterShoes + useHyperImages + useAfterImages) * 2
 	
+	if (cht.number == 5)
+		imageNumber = 1 + imageNumber / 2
+	
 	if ( (useAfterImages || useHyperImages || useAfterShoes) && lastKey != "")
 	{
 		for (s8 i = imageNumber; i > 0; --i)

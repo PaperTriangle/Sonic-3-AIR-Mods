@@ -5,7 +5,7 @@
 		"UniqueID": "classic-hyper-trails",
 		"Author": "PaperTriangle",
 		"Description": "Makes characters only have two hyper trail ghosts while the \"No Transparency\" mod is active.",
-		"ModVersion": "1.1"
+		"ModVersion": "1.2"
 	},
 	"OtherMods": {
 		"no-transparency":
@@ -69,7 +69,8 @@
 				{
 					"2": "2 (Mega Drive / Origins)",
 					"3": "3 (A.I.R.)",
-					"4": "2+ (Compounding)"
+					"4": "2* (Compounding 2*N)",
+					"5": "2+ (Compounding 1+N)"
 				}
 			}
 		]
