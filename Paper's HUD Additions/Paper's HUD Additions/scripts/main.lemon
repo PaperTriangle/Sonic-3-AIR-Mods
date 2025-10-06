@@ -417,7 +417,7 @@ function void Character.Initialization.shared(u8 character)
 
 function void yieldExecution()
 {
-	System.writeDisplayLine(stringformat("Values: 0x%02x", global.game_mode))
+	//System.writeDisplayLine(stringformat("Values: 0x%02x", global.game_mode))
 	if (phud.lives && phud.bmpline > 0 && (global.game_mode == 0x0c || global.game_mode == 0x08) && PHUD.AllowCloning())
 	{
 		u16 offset = 3 * 0x40 + (phud.bmpline - 1) * 0x20
