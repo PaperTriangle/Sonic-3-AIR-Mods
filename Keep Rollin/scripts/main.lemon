@@ -474,25 +474,50 @@ function void fn03ff9e()
 function void fn0423d0()
 {
 	base.fn0423d0()
-	
+
+	if (A1 == 0xffffb000)
 	{
-		if (A1 == 0xffffb000)
-		{
-			objA1.flags2a &= ~char.flag.ROLLING
-			objA1.state = char.state.RUNNING
-			kr.backup_flags = 0
-			kr.backup_flags2 = 0
-			kr.wasRolling = 0
-			kr.wasRolling2 = 0
-		}
-		else if (A1 == 0xffffb04a)
-		{
-			objA1.flags2a &= ~char.flag.ROLLING
-			objA1.state = char.state.RUNNING
-			kr.backup_flags_p2 = 0
-			kr.backup_flags2_p2 = 0
-			kr.wasRolling_p2 = 0
-			kr.wasRolling2_p2 = 0
-		}
+		objA1.flags2a &= ~char.flag.ROLLING
+		objA1.state = char.state.RUNNING
+		kr.backup_flags = 0
+		kr.backup_flags2 = 0
+		kr.wasRolling = 0
+		kr.wasRolling2 = 0
+	}
+	else if (A1 == 0xffffb04a)
+	{
+		objA1.flags2a &= ~char.flag.ROLLING
+		objA1.state = char.state.RUNNING
+		kr.backup_flags_p2 = 0
+		kr.backup_flags2_p2 = 0
+		kr.wasRolling_p2 = 0
+		kr.wasRolling2_p2 = 0
+	}
+}
+
+// Fix for LRZ Vertical Half Pipe
+
+//# address-hook(0x0426b0) end(0x04278c)
+function void fn0426b0()
+{
+	base.fn0426b0()
+	
+	if (A1 == 0xffffb000)
+	{
+		objA1.flags2a &= ~char.flag.ROLLING
+		objA1.state = char.state.RUNNING
+		kr.backup_flags = 0
+		kr.backup_flags2 = 0
+		kr.wasRolling = 0
+		kr.wasRolling2 = 0
+	}
+	else if (A1 == 0xffffb04a)
+	{
+		objA1.flags2a &= ~char.flag.ROLLING
+		objA1.state = char.state.RUNNING
+		kr.backup_flags_p2 = 0
+		kr.backup_flags2_p2 = 0
+		kr.wasRolling_p2 = 0
+		kr.wasRolling2_p2 = 0
 	}
 }
