@@ -9,6 +9,7 @@ global s8 phud.offset
 global u8 phud.bmpline
 
 define u8 global.xtrachar = u8[0xffffe654]
+global bool phud.extra_characters_on_screen
 
 #define PHUD_ACTIVE
 
@@ -416,6 +417,7 @@ function void Character.Initialization.shared(u8 character)
 
 function void yieldExecution()
 {
+	System.writeDisplayLine(stringformat("Values: 0x%02x", global.game_mode))
 	if (phud.lives && phud.bmpline > 0 && (global.game_mode == 0x0c || global.game_mode == 0x08) && PHUD.AllowCloning())
 	{
 		u16 offset = 3 * 0x40 + (phud.bmpline - 1) * 0x20
@@ -426,6 +428,9 @@ function void yieldExecution()
 			u16[0x802300 + offset + 2*k] = u16[PaletteAD + 0x02 * k]
 		}
 	}
+	
+	if (phud.extra_characters_on_screen = true && global.game_mode != 0x0c)
+		phud.extra_characters_on_screen = false
 
 	base.yieldExecution()
 }
@@ -435,6 +440,16 @@ function bool PHUD.AllowCloning()
 	if (Mods.isModActive("Extra Slot 3D in 2D Shadow"))
 		if (!super.active && (System.getGlobalVariableValueByName("shadow.isBoosting") || System.getGlobalVariableValueByName("shadow.Homing") == 2 || System.getGlobalVariableValueByName("shadow.DropDown")))
 			return false
+			
+	if (phud.extra_characters_on_screen)
+		return false
 
 	return true
+}
+
+//# address-hook(0x05f26c) end(0x05f2dc)
+function void fn05f26c()
+{
+	base.fn05f26c()
+	phud.extra_characters_on_screen = true
 }
