@@ -54,6 +54,18 @@
 					"0": "Disabled",
 					"1": "Enabled"
 				}
+			},
+			{
+				"InternalName": "sff.tails_flight",
+				"DisplayName": "Tails Flies Faster",
+				"Variable": "sff.tails_flight",
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "When Super & Hyper",
+					"2": "When Hyper"
+				}
 			}
 		]
 	}

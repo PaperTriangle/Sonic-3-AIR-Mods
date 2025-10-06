@@ -2,6 +2,7 @@ global bool sff.green_eyes
 global bool sff.behind_tiles
 global bool sff.super_sonic_palette
 global bool sff.super_stars
+global bool sff.tails_flight
 
 // Render the new sprites
 function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
@@ -232,7 +233,7 @@ function void UpdatePaletteEffects.SuperForm.applyGeneral(u8 characterVersion, u
 function void UpdatePaletteEffects.SuperForm()
 {
 	u8 backupSuper = super.active.tails
-	if (sff.super_stars && Mods.isModActive("Classic Hyper Trails"))
+	if (sff.super_stars && Mods.isModActive("Classic Hyper Trails") && System.hasExternalPaletteData(getCharacterPaletteKey(CHARACTER_SONIC), 5))
 	{
 		if (super.active.tails == 0xff && !Game.getSetting(SETTING_HYPER_TAILS))
 		{
@@ -244,7 +245,7 @@ function void UpdatePaletteEffects.SuperForm()
 
 	if (backupSuper != super.active.tails)
 	{
-		super.active.tails = backupSuper		
+		super.active.tails = backupSuper
 	}
 }
 
@@ -253,7 +254,7 @@ function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
 {
 	base.UpdatePaletteEffects.SuperForm.moddingVersion(characterVersion)
 	
-	if (sff.super_stars && Mods.isModActive("Classic Hyper Trails") && super.active.tails == 0x01 && !Game.getSetting(SETTING_HYPER_TAILS))
+	if (sff.super_stars && sff.super_sonic_palette && Mods.isModActive("Classic Hyper Trails") && super.active.tails == 0x01 && !Game.getSetting(SETTING_HYPER_TAILS))
 		if (super.palettefx.state & 0x80)
 			if (characterVersion == 2)
 			{
@@ -436,4 +437,84 @@ function void yieldExecution()
 
 	if (sff.super_stars && alreadyHasStars && isMainCharacter(CHARACTER_TAILS) && super.active.tails != 0xff)
 		alreadyHasStars = false
+}
+
+//--------------
+// Extra Flight!
+//--------------
+
+function bool UpdateTailsFlight_innerA()
+{
+	if (sff.tails_flight == 0) || (sff.tails_flight == 1 && super.active.tails == 0) || !(sff.tails_flight == 2 && super.active.tails == 0xff && Game.getSetting(SETTING_HYPER_TAILS))
+	{
+		return base.UpdateTailsFlight_innerA()
+	}
+	
+	// Flight countdown
+	if (level.framecounter.low & 0x01)
+	{
+		if (tails.flight_countdown > 0)
+			--tails.flight_countdown
+	}
+
+	bool canAscend = (char.velocity.y >= -0x200 && tails.flight_countdown > 0 && ((char.flags & char.flag.UNDERWATER) == 0 || !tails.carrying))
+
+#if STANDALONE
+	// Allow for holding [up] to gain height
+	if ((control.tails.state & CONTROL_UP) && canAscend && char.velocity.y >= -0xf8)
+	{
+		char.double_jump_state = 0x1f
+	}
+
+	// Cancel flight ("Tails Drop"): Stop flying and roll into a ball again
+	else if (Game.getSetting(SETTING_CANCEL_FLIGHT) && (control.tails.state & CONTROL_DOWN) && (control.tails.state & CONTROL_ABC))
+	{
+		char.double_jump_state = 0
+		char.state = char.state.ROLLING
+		char.jumping = 0			// Clear this flag to prevent a new flight while falling
+
+		Tails.CheckDropSonic()
+		updateTailsInAir_shared()
+		return false
+	}
+#endif
+
+	// For Tails' flight, char.double_jump_state is 1 or higher
+	//  -> If you don't do anything, it stays 1
+	//  -> Press jump to fly higher, and it starts counting up until 0x20, as a timer for the upwards flight effect
+	if (char.double_jump_state != 1)
+	{
+		if (char.velocity.y >= -0x200)
+		{
+			// Fly up
+			char.velocity.y -= 0x20
+
+			++char.double_jump_state
+			if (char.double_jump_state == 0x20)
+			{
+				char.double_jump_state = 1
+			}
+		}
+		else
+		{
+			char.double_jump_state = 1
+		}
+	}
+	else
+	{
+		if ((control.tails.pressed & CONTROL_ABC) && canAscend)
+		{
+			char.double_jump_state = 2
+		}
+
+		// Reduced gravity effect during flight (8 instead of 0x38)
+		char.velocity.y += 8
+	}
+
+	if (s16(char.position.y.u16) <= s16(level.vertical_wrap + 0x10))
+	{
+		if (char.velocity.y < 0)
+			char.velocity.y = 0
+	}
+	return true
 }
