@@ -1,3 +1,5 @@
+include original_zone_order
+
 global bool tca.mgz
 global bool tca.fbz
 global bool tca.icz

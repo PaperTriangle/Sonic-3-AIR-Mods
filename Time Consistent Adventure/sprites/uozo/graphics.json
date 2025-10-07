@@ -1,0 +1,10 @@
+{
+	"flyingbattery_transition":  { "File": "flyingbattery.png", "Rect": "0,0,1408,128", "Center": "1408,10" },
+	"flyingbattery_transition_1":  { "File": "flyingbattery_1.png", "Rect": "0,0,1408,128", "Center": "1408,10" },
+	"flyingbattery_transition_2":  { "File": "flyingbattery_2.png", "Rect": "0,0,1408,128", "Center": "1408,10" },
+	"flyingbattery_transition_3":  { "File": "flyingbattery_3.png", "Rect": "0,0,1408,128", "Center": "1408,10" },
+	
+	"mhz_tree1_1":  { "File": "tree1_1.bmp", "Rect": "0,0,128,256", "Center": "0,6" },
+	"mhz_tree1_2":  { "File": "tree1_2.bmp", "Rect": "0,0,128,256", "Center": "0,6" },
+	"mhz_tree2":  { "File": "tree2.bmp", "Rect": "0,0,128,256", "Center": "0,6" }
+}

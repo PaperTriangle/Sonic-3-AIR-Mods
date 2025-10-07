@@ -1,0 +1,713 @@
+// Original mod by Useott: https://codeberg.org/Useott/s3air-mods/releases/tag/useott-s-original-zone-order
+// Main functions of the mod are added here for my own personal use.
+// Publicly released versions remove this file, "include original_zone_order" line in main.lemon and the /sprites/uozo directory. 
+
+global u16 tca.flyingBatteryXPosition
+global s8 tca.flyingBatteryYPosition
+global s8 tca.flyingBatteryYPositionBasePos
+global u8 tca.flyingBatteryYPositionFlip
+global u8 tca.flyingBatteryPropellorFrame
+
+
+function void yieldExecution()
+{
+	// CNZ to FBZ
+	if (tca.intended && global.zone_act == 0x0301)
+	{
+		if !(camera.position.x.u16 > 0x4996 && player1.control_override)
+		{
+			tca.flyingBatteryXPosition = 0
+		}
+		
+		if (level.wait_for_results)
+		{
+			tca.flyingBatteryXPosition = 0
+		}
+		tca.flyingBatteryXPosition += 1
+		
+		if (camera.position.x.u16 > 0x489d && level.capsule_opened && !(level.wait_for_results))
+		{
+			if (getMainCharacter() != CHARACTER_KNUCKLES)
+				playSound(0xbd)
+		}
+		
+		if level.framecounter % 3 == 0
+			tca.flyingBatteryPropellorFrame += 1
+		if tca.flyingBatteryPropellorFrame > 2
+			tca.flyingBatteryPropellorFrame = 0
+		
+		
+		if tca.flyingBatteryYPosition >= 10
+			tca.flyingBatteryYPositionFlip = 1
+		else if tca.flyingBatteryYPosition <= -10
+			tca.flyingBatteryYPositionFlip = 0
+		
+		//thanks nabbup!
+		if (level.framecounter & 0x01)
+			tca.flyingBatteryYPositionBasePos++
+		float sin = (lookupSin(tca.flyingBatteryYPositionBasePos * (5/2)) / 255.0f) * 10.0f
+		s16 pos_to_add = Math.roundToInt(sin)
+		tca.flyingBatteryYPosition = pos_to_add
+	}
+	
+	base.yieldExecution()
+	
+	// MVZ to SOZ
+	if (tca.intended && global.zone_act == 0x0701 && camera.position.x.u16 > 0x4580 && !(level.wait_for_results))
+	{
+		if u16[0xffffb000 + 0x10] >= 0x4650
+		{
+			player1.control_override = 0xff
+			control.player1 = 0x0808		// CONTROL_RIGHT, CONTROL_RIGHT
+		}
+		else player1.control_override = 0
+		
+		if u16[0xffffb04a + 0x10] >= 0x4650
+		{
+			player2.control_override = 0xff
+			control.tails = 0x0808		// CONTROL_RIGHT, CONTROL_RIGHT
+		}
+		else player2.control_override = 0
+	}
+}
+
+//------------------
+// General Functions
+//------------------
+
+function bool isSonicAndKnucklesZone()
+{
+	if (!tca.intended)
+	{
+		u8 zone = global.zone
+		if (global.stage_type == 2)
+		{
+			// It's a bonus stage, get the stored actual zone
+			zone = checkpoint.zone_act >> 8
+		}
+		
+		if (zone == 4)
+		{
+			// FBZ is now in Sonic 3's half
+			return false
+		}
+	}
+	return base.isSonicAndKnucklesZone()
+}
+
+function bool fn00d458()
+{
+	bool originalScripts = base.fn00d458()
+	
+	if (tca.intended && objA0.value3b != 0) // complete save
+	{
+		if (control.pad1.pressed & CONTROL_UP)
+		{
+			if (u16[A0 + 0x34] < CHARS_KNUCKLES_ALONE)
+			{
+				if u16[A0 + 0x36] == 4 // going up from cnz
+					u16[A0 + 0x36] = 7 // takes you to fbz
+				else if u16[A0 + 0x36] == 8 // going up from fbz
+					u16[A0 + 0x36] = 4 // takes you to icz
+				else if u16[A0 + 0x36] == 7 // going up from mhz
+					u16[A0 + 0x36] = 8 // takes you to soz
+			}
+			else if u16[A0 + 0x36] == 7 // going up from mhz
+				u16[A0 + 0x36] = 8 // takes you to soz
+		}
+		else if (control.pad1.pressed & CONTROL_DOWN)
+		{
+			if (u16[A0 + 0x34] < CHARS_KNUCKLES_ALONE)
+			{
+				if u16[A0 + 0x36] == 7 // going down from soz
+					u16[A0 + 0x36] = 6 // takes you to mhz
+				else if u16[A0 + 0x36] == 3 // going down from icz
+					u16[A0 + 0x36] = 7 // takes you to fbz
+				else if u16[A0 + 0x36] == 6 // going down from fbz
+					u16[A0 + 0x36] = 3 // takes you to cnz
+			}
+			else if u16[A0 + 0x36] == 7 // going down from soz
+				u16[A0 + 0x36] = 6 // takes you to mhz
+		}
+	}
+	
+	return originalScripts
+}
+
+//# address-hook(0x00c890) end(0x00c95c)
+function void fn00c890()
+{
+    if (!tca.intended || Mods.isModActive("Extra Save Slots"))
+    {
+        base.fn00c890()
+        return
+    }
+	// Render "New" or static noise for the slots
+	D0.u16 = level.framecounter & 0x0c
+	A2 = 0x200000 + u32[0x3a216a + D0.u16]
+	D7.u16 = 0xc21a
+	A0 = 0xffffe6ac
+	for (u8 slot = 0; slot < 8; ++slot)
+	{
+		A1 = (s8[A0] >= 0) ? A2 : 0x3a20de
+		D0 = VDPHelper.getDirectVRAMWriteCode(D7.u16)
+		D1 = 9
+		D2 = 6
+		fn001506()
+
+		D7.u16 += 0x1a
+		A0 += 10
+	}
+
+	A3 = 0xffffb128
+	D7.u16 = 0xca20
+	A0 = 0xffffe6ac
+	for (u8 slot = 0; slot < 8; ++slot)
+	{
+		D0.u16 = D7.u16 - 2
+		VDP.setupVRAMWrite(D0)
+		VDP.writeData16(sprite_attribute.PRIORITY | 0x02b1)		// Render a small black bar to complete the save slot graphic
+
+		if (s8[A0] >= 0)
+		{
+			if (u8[A3 + 0x3a] == u8[A3 + 0x37] && u8[A3 + 0x3b] != 0)
+			{
+				// Render "CLEAR" label
+				A1 = 0x00db36
+				D0.u16 = D7.u16
+				fn00d9f4()
+			}
+			else
+			{
+				// Render "ZONE" label
+				A1 = 0x00db31
+				D0.u16 = D7.u16 - 2
+				fn00d9f4()
+
+				//This is the modified content, everything else should be untouched.
+				// Render zone number
+				D0.u16 = u16[A3 + 0x36] * 2
+				if (u16[A3 + 0x36] == 4 || u16[A3 + 0x36] == 5 || u16[A3 + 0x36] == 6) && (u16[A3 + 0x34] < CHARS_KNUCKLES_ALONE)
+					D0.u16 += 2
+				if u16[A3 + 0x36] == 7
+					D0.u16 -= 6
+				if (u16[A3 + 0x36] >= 8) && (u16[A3 + 0x34] >= CHARS_KNUCKLES_ALONE)
+					D0.u16 -= 2
+
+				// Second digit (10, 20, etc)
+				D1 = u8[0x00c95e + D0.s16]
+				if (D1.s8 < 0)
+				{
+					D1.u16 = (sprite_attribute.PRIORITY | 0)
+				}
+				else
+				{
+					D1.u16 += (sprite_attribute.PRIORITY | sprite_attribute.PALETTE.LINE1 | (DataSelect.TextTiles.targetInVRAM >> 5))
+				}
+				VDP.writeData16(D1.u16)
+
+				// First digit (1, 2, etc)
+				D1 = (sprite_attribute.PRIORITY | sprite_attribute.PALETTE.LINE1 | (DataSelect.TextTiles.targetInVRAM >> 5)) + u8[0x00c95f + D0.s16]
+				VDP.writeData16(D1.u16)
+			}
+		}
+		else
+		{
+			// Render empty tiles
+			A1 = 0x00db2b
+			D0.u16 = D7.u16
+			fn00d9f4()
+		}
+
+		D7.u16 += 0x1a
+		A0 += 10
+		A3 += 0x4a
+	}
+
+	fn00c97a()
+}
+
+//# address-hook(0x00c434) end(0x00c4d0)
+function void SaveGameOnLevelFinished()
+{
+	if (!tca.intended)
+	{
+		base.SaveGameOnLevelFinished()
+		return
+	}
+	
+	// Save game slot
+	if (global.lock_on_state == 0 && global.active_saveslot != 0)
+	{
+		A1 = global.active_saveslot
+
+		// Get the number of the next zone (using the usual internal zone numbering, see definition of global.zone.apparent)
+		u8 offset = global.zone * 2 + global.act
+		u8 nextZone = u8[0x00c404 + offset]
+		bool skipFBZ = isMainCharacter(CHARACTER_KNUCKLES)
+		if (nextZone == 4 && !skipFBZ) // leaving cnz, going to icz
+			nextZone = 7 // put the player's save on fbz because of new order
+		else if (nextZone == 8) // leaving fbz, going to soz
+			nextZone = 4 // put the player's save on icz
+		else if (nextZone == 7) // leaving mhz, going to fbz
+			nextZone = 8 // put the player's save on soz
+		bool gameCompleted = false
+		if (u8[A1] & 0x03)
+		{
+			// This gets entered only for already completed games
+			if (nextZone < u8[A1 + 0x03])
+			{
+				gameCompleted = true
+			}
+			else
+			{
+				// This is a weird case, supposedly needed for unlocking DDZ after collecting all Super Emeralds in an formerly complete game?
+				u8[A1] &= 0xfc
+			}
+		}
+
+		if (!gameCompleted)
+		{
+			u8[A1 + 0x03] = nextZone
+			if (isMainCharacter(CHARACTER_KNUCKLES))
+			{
+				gameCompleted = (nextZone >= 0x0c)
+			}
+			else if (isMainCharacter(CHARACTER_TAILS))
+			{
+				gameCompleted = (nextZone >= 0x0d)
+			}
+			else
+			{
+				gameCompleted = (nextZone >= 0x0e) || (nextZone == 0x0d && global.chaos_emeralds < 7)
+			}
+
+			if (gameCompleted)
+			{
+				u8[A1] = (global.chaos_emeralds < 7) ? 1 : (global.super_emeralds < 7) ? 2 : 3
+			}
+
+			u16[A1 + 0x04] = 0
+		}
+
+		lives_counter = min(lives_counter, 99)
+		u8[A1 + 0x08] = lives_counter
+
+	#if STANDALONE
+		// Store additional data
+		u32 slotIndex = (A1 - 0xffffe6ac) / 0x0a
+		u32 address = 0x801100 + slotIndex * 0x20
+		u32[address] = player.score
+	#endif
+
+		SaveGameSlot()
+	}
+
+	level.giantrings_clear = 0
+}
+
+//# address-hook(0x085e3a) end(0x085e50)
+function void TriggerNextZone()
+{
+	if (tca.intended)
+	{
+		if (getMainCharacter() != CHARACTER_KNUCKLES)
+		{
+			if global.zone == 0x03
+				D0.u16 = Game.onTriggerNextZone(0x0400)
+			else if global.zone == 0x04
+				D0.u16 = Game.onTriggerNextZone(0x0500)
+		}
+		else if global.zone == 0x07
+			D0.u16 = Game.onTriggerNextZone(0x0800)
+	}
+	
+	base.TriggerNextZone()
+}
+
+//-----------
+// CNZ to FBZ
+//-----------
+
+//# address-hook(0x06e7e4) end(0x06e80a)
+function void fn06e7e4()
+{
+	if (!tca.intended)
+	{
+		base.fn06e7e4()
+		return
+	}
+	// Fire the cannon when it's ready
+	if tca.flyingBatteryXPosition > 200
+		--objA0.countdown_value
+	if (objA0.countdown_value >= 0)
+		return
+
+	A1 = 0xffff0000 + u16[A0 + 0x44]
+	if (u8[A1 + 0x26] != 0x00)
+		return
+
+	objA0.update_address = 0x06e80c
+
+	control.player1 = 0x7070		// CONTROL_ABC, CONTROL_ABC
+	player1.control_override = 0xff
+
+#if STANDALONE
+	// Prevent that character gets stopped by right screen border after getting shot out of the cannon
+	player1.camera_lock = 1
+	move_area.right += 0x100
+#endif
+}
+
+//# address-hook(0x052224) end(0x052228)
+function void UpdateLevelScrolling.CNZ2()
+{
+	if (tca.intended)
+	{
+		string key = stringformat("flyingbattery_transition_%d", tca.flyingBatteryPropellorFrame + 1)
+		SpriteHandle flyingbattery.num = Renderer.addSpriteHandle(key, tca.flyingBatteryXPosition, tca.flyingBatteryYPosition, 0x4000)
+		SpriteHandle flyingbattery = Renderer.addSpriteHandle("flyingbattery_transition", tca.flyingBatteryXPosition, tca.flyingBatteryYPosition, 0x4000)
+	}
+	
+	base.UpdateLevelScrolling.CNZ2()
+}
+
+
+//-----------
+// MVZ to SOZ
+//-----------
+
+//# address-hook(0x076270) end(0x07630a)
+function void fn076270()
+{
+	if (!tca.intended)
+	{
+		base.fn076270()
+		return
+	}
+	
+	// Wait for level results
+	if (level.wait_for_results)
+		return
+
+	// Then trigger the next cutscene
+
+	objA0.update_address = 0x076310
+	u8[0xfffffaa9] = 0
+	stopCharacterWinPose(0xffffb000)
+
+	A1 = 0xffffb04a
+	u8[A1 + 0x0a] |= 0x80
+	stopCharacterWinPose(0xffffb04a)
+	PlayMusicAfterLevelResults()
+	
+	screenmover_target.right = 0x4650
+
+	spawnSimpleChildObjects(0x084a48, 1)		// Screen mover for the right border
+}
+
+//# address-hook(0x0551aa) end(0x0551c2)
+//# alias(fn0551aa) deprecated
+function void UpdateLevelScrolling.MHZ2()
+{
+	if (tca.intended)
+	{
+		SpriteHandle tree1.1 = Renderer.addSpriteHandle("mhz_tree1_1", 0x4740, 0x0286, 0x4000)
+		tree1.1.setFlags(0x20|0x40)
+		tree1.1.setPaletteOffset(0x30)
+		SpriteHandle tree1.2 = Renderer.addSpriteHandle("mhz_tree1_2", 0x4740, 0x0286, 0x4000)
+		tree1.2.setFlags(0x20|0x40)
+		tree1.2.setPaletteOffset(0x20)
+		SpriteHandle tree2 = Renderer.addSpriteHandle("mhz_tree2", 0x4740, 0x0286, 0xa000)
+		tree2.setFlags(0x20|0x40)
+		tree2.setPaletteOffset(0x30)
+		if u16[0xffffb000 + 0x10] >= 0x4770
+			TriggerNextZone(0x0800)
+	}
+	base.UpdateLevelScrolling.MHZ2()
+}
+
+//# address-hook(0x01be46) end(0x01bfae)
+function void SetupCharacterAtStartPosition()
+{
+	if tca.intended && global.zone_act == 0x0800 && (checkpoint.number == 0)
+	{
+		u16[0xffffb000 + 0x10] = 0x0000
+		u16[0xffffb000 + 0x14] = 0x066c
+		camera.position.x.u16 = 0x0000
+		camera.position.y.u16 = 0x060c
+		fn044a0c()
+	}
+	else base.SetupCharacterAtStartPosition()
+}
+
+//# address-hook(0x0067ee) end(0x0069b6)
+function void fn0067ee()
+{
+	base.fn0067ee()
+	
+	if (tca.intended)
+	{
+		if (global.zone_act != 0x0800 || global.rolling_demo != 0) // Sandopolis
+			return
+		if (checkpoint.number != 0 || global.stage_type != 0)
+			return
+		u32[0xffffb172] = 0x044a0c
+	}
+}
+
+//# address-hook(0x054e9c) end(0x054f62)
+function void fn054e9c()
+{
+	if (!tca.intended)
+	{
+		base.fn054e9c()
+		return
+	}
+	
+}
+
+
+//# address-hook(0x054f64) end(0x054f88)
+function void fn054f64()
+{
+	if (!tca.intended)
+	{
+		base.fn054f64()
+		return
+	}
+	
+}
+
+//# address-hook(0x054f8c) end(0x055006)
+function void fn054f8c()
+{
+	if (!tca.intended)
+	{
+		base.fn054f8c()
+		return
+	}
+	
+}
+
+
+function void fn054fec()
+{
+	if (!tca.intended)
+	{
+		base.fn054fec()
+		return
+	}
+	
+}
+
+//# address-hook(0x055814) end(0x055826)
+function void fn055814()
+{
+	if (!tca.intended)
+	{
+		base.fn055814()
+		return
+	}
+	
+}
+
+
+//# address-hook(0x05582e) end(0x055838)
+function void fn05582e()
+{
+	if (!tca.intended)
+	{
+		base.fn05582e()
+		return
+	}
+	
+}
+
+
+//# address-hook(0x05583e) end(0x0558c0)
+function void fn05583e()
+{
+	if (!tca.intended)
+	{
+		base.fn05583e()
+		return
+	}
+	
+}
+
+
+
+//# address-hook(0x076310) end(0x076350)
+function void fn076310()
+{
+	if (!tca.intended)
+	{
+		base.fn076310()
+		return
+	}
+	
+}
+
+
+//# address-hook(0x076356) end(0x0763ac)
+function void fn076356()
+{
+	if (!tca.intended)
+	{
+		base.fn076356()
+		return
+	}
+	
+}
+
+
+//# address-hook(0x0763b2) end(0x0763d2)
+function void fn0763b2()
+{
+	if (!tca.intended)
+	{
+		base.fn0763b2()
+		return
+	}
+	
+}
+
+
+//# address-hook(0x0763d8) end(0x076402)
+function void fn0763d8()
+{
+	if (!tca.intended)
+	{
+		base.fn0763d8()
+		return
+	}
+	
+}
+
+
+//# address-hook(0x076404) end(0x076450)
+function void fn076404()
+{
+	if (!tca.intended)
+	{
+		base.fn076404()
+		return
+	}
+	
+}
+
+
+//# address-hook(0x076456) end(0x076468)
+function void fn076456()
+{
+	if (!tca.intended)
+	{
+		base.fn076456()
+		return
+	}
+	
+}
+
+
+//# address-hook(0x07646e) end(0x076490)
+function void fn07646e()
+{
+	if (!tca.intended)
+	{
+		base.fn07646e()
+		return
+	}
+	
+}
+
+
+//# address-hook(0x076492) end(0x07649e)
+function void fn076492()
+{
+	if (!tca.intended)
+	{
+		base.fn076492()
+		return
+	}
+	
+}
+
+
+
+//# address-hook(0x041fee) end(0x042026)
+function void fn041fee()
+{
+	 if (global.rolling_demo || !tca.intended)
+		base.fn041fee()
+}
+
+
+//# address-hook(0x042028) end(0x042090)
+function void fn042028()
+{
+	if (global.rolling_demo || !tca.intended)
+		base.fn042028()
+}
+
+
+//# address-hook(0x042092) end(0x0420a4)
+function void fn042092()
+{
+	if (global.rolling_demo || !tca.intended)
+		base.fn042092()
+}
+
+
+//# address-hook(0x0420a6) end(0x0420fa)
+function void fn0420a6()
+{
+	if (global.rolling_demo || !tca.intended)
+		base.fn0420a6()
+}
+
+
+function void fn0420de()
+{
+	if (global.rolling_demo || !tca.intended)
+		base.fn0420de()
+}
+
+
+//# address-hook(0x0420fc) end(0x04217e)
+function void fn0420fc()
+{
+	if (global.rolling_demo || !tca.intended)
+		base.fn0420fc()
+}
+
+
+function void fn042160()
+{
+	if (global.rolling_demo || !tca.intended)
+		base.fn042160()
+}
+
+
+//# address-hook(0x042180) end(0x04219c)
+function void fn042180()
+{
+	if (global.rolling_demo || !tca.intended)
+		base.fn042180()
+}
+
+
+//# address-hook(0x04219e) end(0x0421f8)
+function void fn04219e()
+{
+	if (global.rolling_demo || !tca.intended)
+		base.fn04219e()
+}
+
+
+//# address-hook(0x0421fe) end(0x042248)
+function void fn0421fe()
+{
+	if (global.rolling_demo || !tca.intended)
+		base.fn0421fe()
+}
