@@ -42,7 +42,7 @@ function void yieldExecution()
 	A0 = 0xffffb000
 
 	// Remove backup flags if not rolling or running. Prevents issues like ICZ2 Slope.
-	if !((char.state == char.state.RUNNING) || (char.state == char.state.RUNNING2) || (char.state == char.state.ROLLING) || (char.state == char.state.ROLLING2))
+	if !((char.state == char.state.RUNNING) || (char.state == char.state.RUNNING2) || (char.state == char.state.ROLLING) || (char.state == char.state.ROLLING2)) || char.jumping != 0 
 	{
 		kr.backup_flags = 0
 		kr.backup_flags2 = 0
@@ -52,7 +52,7 @@ function void yieldExecution()
 	if !kr.wasInAir && u8[A0 + 0x2a] & char.flag.IN_AIR
 	{
 		kr.x++
-		if kr.x >= 2
+		if kr.x >= 4
 		{
 			kr.x = 0
 			kr.wasInAir = true
@@ -109,7 +109,7 @@ function void yieldExecution()
 	A0 = 0xffffb04a
 	
 	// Remove backup flags if not rolling or running. Prevents issues like ICZ2 Slope.
-	if !((char.state == char.state.RUNNING) || (char.state == char.state.RUNNING2) || (char.state == char.state.ROLLING) || (char.state == char.state.ROLLING2))
+	if !((char.state == char.state.RUNNING) || (char.state == char.state.RUNNING2) || (char.state == char.state.ROLLING) || (char.state == char.state.ROLLING2)) || char.jumping != 0 
 	{
 		kr.backup_flags_p2 = 0
 		kr.backup_flags2_p2 = 0
@@ -119,7 +119,7 @@ function void yieldExecution()
 	if !kr.wasInAir_p2 && u8[A0 + 0x2a] & char.flag.IN_AIR
 	{
 		kr.y++
-		if kr.y >= 2
+		if kr.y >= 4
 		{
 			kr.y = 0
 			kr.wasInAir_p2 = true
