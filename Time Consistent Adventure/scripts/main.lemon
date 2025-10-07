@@ -24,6 +24,7 @@ global bool tca.ssz_knux_longdawn
 global bool tca.ssz_knux_emerald
 global u8 tca.bmpline
 global bool tca.bg_stars
+global bool tca.bg_twinkle
 global bool tca.zone_icons
 global bool tca.ssz_icon
 
@@ -188,7 +189,7 @@ function void yieldExecution()
 		{
 			for (u16 fs = 0 ; fs*128 < getScreenWidth() + 128; fs++)
 			{
-				Renderer.drawSprite("fbz_stars_1", 128 + fs*128 - ((level.framecounter + camera.position.x.u16) % 1152) / 9, 128 - (camera.background.y >> 16) - camera.screenshake.offset, 0, SPRITE_FLAG_PRIO, 0x1001)
+				Renderer.drawSprite(stringformat("fbz_stars_%d", tca.bg_twinkle ? (level.framecounter >> 4) % 4 : 1), 128 + fs*128 - ((level.framecounter + camera.position.x.u16) % 1152) / 9, 128 - (camera.background.y >> 16) - camera.screenshake.offset, 0, SPRITE_FLAG_PRIO, 0x1001)
 			}
 		}
 		
@@ -345,7 +346,7 @@ function void yieldExecution()
 			
 				for (u16 fs = 0 ; fs*128 < getScreenWidth(); fs++)
 				{
-					Renderer.drawSprite("ssz_knux_bg", 128 + fs*128 - (camera.position.x.u16 % 1024) / 8, -1 * (camera.position.y.u16 - 0x400) - camera.screenshake.offset + 80, 0, SPRITE_FLAG_PRIO, 0x2001)
+					Renderer.drawSprite(stringformat("knux_stars_%d", tca.bg_twinkle ? (level.framecounter >> 4) % 4 : 1), 128 + fs*128 - (camera.position.x.u16 % 1024) / 8, -1 * (camera.position.y.u16 - 0x400) - camera.screenshake.offset + 80, 0, SPRITE_FLAG_PRIO, 0x2001)
 				}
 			}
 
