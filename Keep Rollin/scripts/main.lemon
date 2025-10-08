@@ -41,6 +41,8 @@ function void yieldExecution()
 	// Player 1
 	A0 = 0xffffb000
 
+	//System.writeDisplayLine(stringformat("Values: 0x%02x", char.jumping))
+
 	// Remove backup flags if not rolling or running. Prevents issues like ICZ2 Slope.
 	if !((char.state == char.state.RUNNING) || (char.state == char.state.RUNNING2) || (char.state == char.state.ROLLING) || (char.state == char.state.ROLLING2)) || char.jumping != 0 
 	{
