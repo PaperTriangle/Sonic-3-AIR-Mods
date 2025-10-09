@@ -345,7 +345,7 @@ function void BB.BreakFrog(bool dyn)
 	A1 = 0xffff0000 + u16[A0 + 0x46]
 	if (u8[A1 + 0x2a] & 0x80)
 	{
-		BB.SpawnPart((objA0.position.x.u16 - objA0.value3e != 0) ? (objA0.position.x.u16 - objA0.value3e) * 0x18 : (objA0.update_address == 0x08c370 ? -1 : 1) * ((objA0.subtype2c == 0) ? System.rand() % 0x200 + 0xa0 : -0xa0 - System.rand() % 0x300), (objA0.position.y.u16 - u16[A0 + 0x40] != 0) ? (objA0.position.y.u16 - u16[A0 + 0x40]) * 0x18 : -0x40 - System.rand() % 0x80, 0x02, objA0.update_address == 0x08c370 ? 1 : 0)
+		BB.SpawnPart((objA0.position.x.u16 - objA0.value3e != 0) ? (objA0.position.x.u16 - objA0.value3e) * 0x18 : (objA0.update_address == 0x08c370 ? -1 : 1) * ((objA0.subtype2c == 0) ? System.rand() % 0x200 + 0xa0 : -0xa0 - System.rand() % 0x300), (objA0.position.y.u16 - u16[A0 + 0x40] != 0 || objA0.update_address == 0x08c370) ? (objA0.position.y.u16 - u16[A0 + 0x40]) * 0x18 : -0x40 - System.rand() % 0x80, 0x02, objA0.update_address == 0x08c370 ? 1 : 0)
 		
 		// Old Method
 		//BB.SpawnPart((System.rand() & 1) ? System.rand() % 0x100 + 0x80 + 0x80 * (objA0.update_address == 0x08c370 ? 1 : 2) : System.rand() % 0x100 * -1 - 0x80 - 0x80 * (objA0.update_address == 0x08c370 ? 1 : 2), System.rand() % 0x100 * -1 - 0x100 * (objA0.update_address == 0x08c370 ? 1 : 2), 0x02, objA0.update_address == 0x08c370 ? 1 : 0)
