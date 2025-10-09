@@ -518,3 +518,32 @@ function bool UpdateTailsFlight_innerA()
 	}
 	return true
 }
+
+
+//-------------
+// AIZ Vine Fix
+//-------------
+
+//# address-hook(0x0221ec) end(0x022246)
+function void fn0221ec()
+{
+	if (u16[A0 + 0x30] != 0)
+	{
+		fn022258()
+		return
+	}
+
+	fn02219e()		// Check for cheat
+	objA1.position.x.u16 = objA0.position.x.u16
+	objA1.position.y.u16 = objA0.position.y.u16 + 0x14
+
+	A3 = 0xffff0000 + u16[A0 + 0x3c]
+	D0 = u8[A3 + 0x26]
+	if (u8[A1 + 0x2a] & char.flag.FACING_LEFT)
+		D0.s8 = -D0.s8
+
+	D0.u16 = u8(D0.u8 + 8) >> 4
+	objA1.animation.sprite = u8[0x022248 + D0.u16]		// Player characters' hanging sprites
+	objA1.state = char.state.HANGING
+	fn022224()
+}
