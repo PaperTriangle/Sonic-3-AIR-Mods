@@ -1,6 +1,7 @@
 global bool ggf.sonic
 global bool ggf.knux
 global bool ggf.supersonic
+global bool ggf.tails
 global bool ggf.superknux
 global bool ggf.intro
 global bool ggf.knuxddz
@@ -46,6 +47,7 @@ function bool Standalone.drawCharacterSprite(u8 character, u8 variant, s16 px, s
 	u16 regularspeed = ggf.speed ? 0xc00 : 0xa00
 	u16 superspeed =  ggf.speed ? 0xc00 : 0xb00
 
+	//System.writeDisplayLine(stringformat("ZoneAct: 0x%02x", animationSprite))
 
 	if (global.characters < 4 && global.xtrachar == 0 && character == CHARACTER_SONIC && animationSpriteEx == animationSprite && !super.active && animationSprite >= 0x21 && animationSprite <= 0x30 && abs(char.groundspeed) >= regularspeed && ggf.sonic)
 	{
@@ -56,6 +58,11 @@ function bool Standalone.drawCharacterSprite(u8 character, u8 variant, s16 px, s
 	{
 		animationSpriteEx = CHAR_ANIMSPRITE_SONIC_PEELOUT + (level.framecounter & 0x03)
 		key = stringformat("super_sonic_fast_run_%d", animationSpriteEx - CHAR_ANIMSPRITE_SONIC_PEELOUT)
+	}
+	else if (global.characters < 4 && global.xtrachar == 0 && character == CHARACTER_TAILS && animationSpriteEx == animationSprite && animationSprite >= 0xc3 && animationSprite <= 0xc4 && abs(char.groundspeed) >= (regularspeed - 0x100) && ggf.tails)
+	{
+		animationSpriteEx = CHAR_ANIMSPRITE_SONIC_PEELOUT + (level.framecounter & 0x03)
+		key = Mods.isModActive("Plush's Ariff Tails") ? stringformat("tails_ariff_fast_run_%d", animationSpriteEx - CHAR_ANIMSPRITE_SONIC_PEELOUT): stringformat("tails_fast_run_%d", animationSpriteEx - CHAR_ANIMSPRITE_SONIC_PEELOUT)
 	}
 	else if (global.characters < 4 && global.xtrachar == 0 && character == CHARACTER_KNUCKLES && animationSpriteEx == animationSprite && !super.active && animationSprite >= 0x21 && animationSprite <= 0x30 && abs(char.groundspeed) >= regularspeed && ggf.knux)
 	{

@@ -5,7 +5,7 @@
 		"UniqueID": "gotta-go-fast",
 		"Author": "PaperTriangle",
 		"Description": "Allows for a peelout / fast run animation for Sonic, Super Sonic, Knuckles and Super Knuckles!",
-		"ModVersion": "1.1"
+		"ModVersion": "1.2"
 	},
 	"OtherMods":
 	{
@@ -30,6 +30,12 @@
 		"es-3d2d-shadow":
 		{
 			"DisplayName": "Extra Slot 3D in 2D Shadow",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		},
+		"Plush's Ariff Tails":
+		{
+			"DisplayName": "Plush's Ariff Tails",
 			"IsRequired": "0",
 			"Priority": "Lower"
 		},
@@ -72,6 +78,18 @@
 				"InternalName": "ggf.supersonic",
 				"DisplayName": "Super Sonic Fast Run",
 				"Variable": "ggf.supersonic",
+				"Category": "Character Settings",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Off",
+					"1": "On"
+				}
+			},
+			{
+				"InternalName": "ggf.tails",
+				"DisplayName": "Tails Fast Run",
+				"Variable": "ggf.tails",
 				"Category": "Character Settings",	
 				"DefaultValue": "1",
 				"Options":
