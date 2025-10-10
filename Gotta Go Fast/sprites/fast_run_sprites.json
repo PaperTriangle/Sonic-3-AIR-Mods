@@ -19,6 +19,11 @@
 	"tails_ariff_fast_run_2":		{ "File": "tails_ariff_fast_run.bmp", "Rect": "81,1,39,33", "Center": "24,19" },
 	"tails_ariff_fast_run_3":		{ "File": "tails_ariff_fast_run.bmp", "Rect": "40,1,39,33", "Center": "24,19" },
 	
+	"tails_ariff_run_0":		{ "File": "tails_ariff_run.bmp", "Rect": "1,1,38,33", "Center": "23,19" },
+	"tails_ariff_run_1":		{ "File": "tails_ariff_run.bmp", "Rect": "122,1,38,33", "Center": "23,19" },
+	"tails_ariff_run_2":		{ "File": "tails_ariff_run.bmp", "Rect": "81,1,39,33", "Center": "24,19" },
+	"tails_ariff_run_3":		{ "File": "tails_ariff_run.bmp", "Rect": "40,1,39,33", "Center": "24,19" },
+	
 	"knuckles_fast_run_0":			{ "File": "knuckles_fast_run.bmp",			"Rect": "1,1,36,33",	"Center": "22,13" },
 	"knuckles_fast_run_1":			{ "File": "knuckles_fast_run.bmp",			"Rect": "38,1,34,33",	"Center": "20,13" },
 	"knuckles_fast_run_2":			{ "File": "knuckles_fast_run.bmp",			"Rect": "73,1,33,33",	"Center": "19,13" },

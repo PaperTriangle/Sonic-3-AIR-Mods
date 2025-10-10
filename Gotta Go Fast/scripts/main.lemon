@@ -59,10 +59,15 @@ function bool Standalone.drawCharacterSprite(u8 character, u8 variant, s16 px, s
 		animationSpriteEx = CHAR_ANIMSPRITE_SONIC_PEELOUT + (level.framecounter & 0x03)
 		key = stringformat("super_sonic_fast_run_%d", animationSpriteEx - CHAR_ANIMSPRITE_SONIC_PEELOUT)
 	}
-	else if (global.characters < 4 && global.xtrachar == 0 && character == CHARACTER_TAILS && animationSpriteEx == animationSprite && animationSprite >= 0xc3 && animationSprite <= 0xc4 && abs(char.groundspeed) >= (regularspeed - 0x100) && ggf.tails)
+	else if (global.characters < 4 && global.xtrachar == 0 && character == CHARACTER_TAILS && animationSpriteEx == animationSprite && animationSprite >= 0xc3 && animationSprite <= 0xca && abs(char.groundspeed) >= regularspeed && ggf.tails)
 	{
 		animationSpriteEx = CHAR_ANIMSPRITE_SONIC_PEELOUT + (level.framecounter & 0x03)
-		key = Mods.isModActive("Plush's Ariff Tails") ? stringformat("tails_ariff_fast_run_%d", animationSpriteEx - CHAR_ANIMSPRITE_SONIC_PEELOUT): stringformat("tails_fast_run_%d", animationSpriteEx - CHAR_ANIMSPRITE_SONIC_PEELOUT)
+		key = Mods.isModActive("Plush's Ariff Tails") ? stringformat("tails_ariff_fast_run_%d", animationSpriteEx - CHAR_ANIMSPRITE_SONIC_PEELOUT) : stringformat("tails_fast_run_%d", animationSpriteEx - CHAR_ANIMSPRITE_SONIC_PEELOUT)
+	}
+	else if (global.characters < 4 && global.xtrachar == 0 && character == CHARACTER_TAILS && animationSpriteEx == animationSprite && animationSprite >= 0xc3 && animationSprite <= 0xca && Mods.isModActive("Plush's Ariff Tails") && ggf.tails)
+	{
+		animationSpriteEx = CHAR_ANIMSPRITE_SONIC_PEELOUT + (level.framecounter & 0x03)
+		key = stringformat("tails_ariff_run_%d", animationSpriteEx - CHAR_ANIMSPRITE_SONIC_PEELOUT)
 	}
 	else if (global.characters < 4 && global.xtrachar == 0 && character == CHARACTER_KNUCKLES && animationSpriteEx == animationSprite && !super.active && animationSprite >= 0x21 && animationSprite <= 0x30 && abs(char.groundspeed) >= regularspeed && ggf.knux)
 	{
