@@ -100,6 +100,9 @@ There is also an option to clone the player palette to an extended palette line,
 
 Hud Elements have compatibility with **Haru's Forever-esque HUD**. Lives icon has compatibility with **Plush's Ariff Tails**, **Extra Sloy Mighty, Ray & Amy** and **Extra Slot 3D in 2D Shadow**. The transform button has compatibility with **Characters Go Super Then Hyper** and **Easy Super**.
 
+## Rotate
+Makes player rotation worse... Made this as a test— I do not recommend using...
+
 ## Stop Dropping My Dash
 Allows Sonic to hold a Drop Dash while bouncing off of more objects. Also allows characters to perform their double jump moves after interacting with these objects.
 
@@ -118,7 +121,10 @@ This mod adjusts the palettes and some stage art for many zones to provide a mor
 
 An option has been added to run this using the released zone order, however this does disable many features of the mod.
 
-**PLEASE NOTE:** The GitHub version of this mod comes with the related zone order code from **Useott's Original Zone Order** baked into the mod. 
+**PLEASE NOTE:** The GitHub version of this mod comes with the related zone order code from **Useott's Original Zone Order** baked into the mod.
+
+## Underwater Hyper
+Adds an underwater palette for Hyper Sonic.
 
 ## Where's Robo
 Simple rawdata mod to replace the object layout of SSZ so the first Eggrobo badnik jetpacks in a little earlier to actually show up in the stage at the wider resolution of Sonic 3 AIR.
