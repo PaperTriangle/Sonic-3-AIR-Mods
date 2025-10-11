@@ -439,6 +439,14 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 			return true
 		}
 		
+		// DDZ Super Stars
+		if (objA0.update_address == 0x082452)
+		{
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 0xff - 0x18 * (objA0.animation.sprite - 1))
+			
+			return true
+		}
+		
 		// Hyper Sonic stars
 		if (objA0.update_address == 0x0193ec || objA0.update_address == 0x0193ca)
 		{
