@@ -1,93 +1,126 @@
 # Sonic-3-AIR-Mods
 A collection of PaperTriangle's Sonic 3 A.I.R. Mods both in progress and released.
 
+## Alternate LBZ2 Cutscene
+Converts the LBZ2 Ending scene after beating Big Arm to me a bit more like Origins.
+
+I know this is not _exactly_ like Origins, but this is as close as I intend to get.
+
+I would recommend using this mod along with **LBZ Eggman Fleeing**, **Origins Parity Galore** and **Better Big Arm Fade**! You will need to load this mod over them.
+
 ## Battery Powered Intro
-Simple mod that adds in two intro styles for FBZ! I Would honestly not recommend using it as there are better options.
+Simple mod that adds in two intro styles for FBZ! I Would honestly not recommend using it as there are better options out there.
+
+## Better Big Arm Fade
+This mod makes the fade effect of the background at the start of the Big Arm fight use the Sonic 3 A.I.R. methods to blend the background palette colours. This allows the fade to work with custom palettes!
+
+There is a setting to decide how smooth the blend is.
+
+**PLEASE NOTE:** If you use **Ambient Mod** for the rain in the Big Arm fight, please place it above this mod or the rain will not end correctly!
+
+## Break That Pipe!
+This mod simply makes the LBZ2 pipes breakable by Knuckles and Super Sonic.
+
+## Broken Badniks
+Adds broken bits of certain badniks as particles that fall when the badnik dies. There are also has some adjustments for mini-bosses.
+
+## Classic Hyper Trails
+Allows some customisation of the Hyper trail effect to get closer to the Mega Drive original.
+
+**PLEASE NOTE:** This mod requires **No Transparency** to function and should be loaded above any extra character mods.
+
+## Colour Clamp
+Clamps the colours in the game to a maximum brightness of 252 in most places. Also has options to be more like the Retro Engine games or old PC port.
+
+Code was adapted from nabbup's **Basic Overlay Mod**.
+
+## Data Select Options
+Adds some options to the data select like adding semi-transparent shadows, removing the emerald glint and shifting everything to the left a bit for less wasted screen space.
+
+Also has an option to remove the lives and continues detail, shifting the player icons down. This has some hacky Extra Slot support that might not work for all characters...
+
+## Don't Stop My Glide
+Allows Knuckles' glide to land on dynamic objects and prevents the glide from stopping while gliding through certain objects.
+
+Also has some other options like Hyper Stars for Hyper Knuckles.
+
+## ESU Characters PNG Bonus Icons
+Replaces the act clear icons with a PNG version of the UI symbol to prevent water palettes interacting with the HUD.
+
+## Extended Palette For Giant Ring
+Makes the Giant Ring operate using an extended palette line. Preventing the Super Rings from messing with stage / HUD palettes.
+
+## Extra Knuckles Frames
+Adds in a couple of extra frames to Knuckles from Origins. Also removes LBZ2 cutscene falling+hurt animation for Knuckles.
+
+## Flying Hold Frame Fix
+Makes the animation while holding on to Tails less jumpy. Should be placed below other sprite mods. Should work with ESU if placed below it.
+
+## Gotta Go Fast!
+A mod that adds in a Fast Run to Sonic and Knuckles. Can also override some ESU characters for consistency.
+
+**PLEASE NOTE:** This mod is for my own personal use and it includes random sprites I have found. I have tried to provide a credit to the original creators for the ones I remember... But fuck idk where those Sonic ones came from...
+
+## HCZ & ICZ Alternate Title Cards
+Simple mod to put a space in "HYDROCITY" and "ICECAP" title cards, making them "HYDRO CITY" and "ICE CAP", respectively.
+
+**PLEASE NOTE:** This requires Veenee's **Title Card Elements and Results Screen Sprites** mod to work. Also comes with a version in the style of Trimint123's **Zone Japanese Text** mod.
+
+## Hydrocity Shake
+Adjusts some of the animations for the player characters in HCZ to be more like Origins and fixes the frozen foreground tiles. Also fixes a minor object layout issue in HCZ1.
+
+## Hyper Drop Dash
+Makes Hyper Sonic have a Drop Dash function simmer to the **Hyper Mania** mod for Sonic Mania.
+
+## Imma Let You Finish
+Forces the characters to stop fidgeting and let the act end.
+
+## Keep Rollin'
+Makes characters keep rolling when passing from dynamic object to ground object.
+
+**PLEASE NOTE:** This mod is pretty poorly coded and could be much more efficient...
+
+## Less White Super Forms
+Makes super flashes less white to be more consistent with the setting from the ESU mods.
+
+## Moar Transparency
+Adds transparency effects to more objects in the game. The effects can be *incredibly subtle* at some points and will bypass tranparency removal from **Moar Transparency**.
+
+There are also some options in here to make the teleporters within the game more consistent across the zones.
+
+## No Transparency
+Remove the transparency effects from Sonic 3 AIR. This can be used with **Moar Transparency** to fine tune exactly what you want to be transparent.
+
+**PLEASE NOTE:** This mod will not remove any transparency baked into a PNG file or render effects applied to a `SpriteHandle`.
+
+## Paper's HUD Additions
+Adds a new Sonic CD inspired life icon and a Transform button. Should work with regular and mobile views.
+
+There is also an option to clone the player palette to an extended palette line, allow the lives icon to render above water super palette rotations while below water.
+
+Hud Elements have compatibility with **Haru's Forever-esque HUD**. Lives icon has compatibility with **Plush's Ariff Tails**, **Extra Sloy Mighty, Ray & Amy** and **Extra Slot 3D in 2D Shadow**. The transform button has compatibility with **Characters Go Super Then Hyper** and **Easy Super**.
+
+## Stop Dropping My Dash
+Allows Sonic to hold a Drop Dash while bouncing off of more objects. Also allows characters to perform their double jump moves after interacting with these objects.
+
+Has some compatibility with **ES Mighty**, **ES Amy** and **ES 3D2D Shadow**.
+
+## Super Flicky Fix
+Makes the Super Flickies render using Sonic's player palette line. Meaning game objects should not flash yellow.
+
+Has some other options like Super/Hyper Stars for Super/Hyper Tails. Also has some compatibility with **Classic Hyper Trails** to make the OG Super Tails more "Super".
+
+## Sweep Up That Dust
+Removes the dust from the Spindash while the character is in the air and starts it again once they hit the ground. Also has an option for some more detailed spindash dust sprites.
+
+## Time Consistent Adventure
+This mod adjusts the palettes and some stage art for many zones to provide a more consistent passage of time with the Sonic & Tails and the Knuckles adventures.
+
+An option has been added to run this using the released zone order, however this does disable many features of the mod.
+
+**PLEASE NOTE:** The GitHub version of this mod comes with the related zone order code from **Useott's Original Zone Order** baked into the mod. 
 
 ## Where's Robo
 Simple rawdata mod to replace the object layout of SSZ so the first Eggrobo badnik jetpacks in a little earlier to actually show up in the stage at the wider resolution of Sonic 3 AIR.
 
 Will not work with another mod that replaces SSZ layouts.
-
-## Sweep Up That Dust
-Removes the dust from the Spindash while the character is in the air and starts it again once they hit the ground. Also has an option for some more detailed spindash dust sprites. *(This mod also fixes a display issue with dust from **Drop Dash +** after it goes off screen...)*
-
-## Stop Dropping My Dash
-A small mod that allows Sonic to hold a Drop Dash while bouncing off of more objects. Also allows other characters to perform their double jump moves after interacting with these objects.
-
-This mod now also includes a fix to keep Knuckles gliding while interacting with Rock walls and also makes the LBZ2 pipes breakable like walls.
-
-Has some compatibility with **ES Mighty**, **ES Amy** and **ES 3D2D Shadow**.
-
-## Imma Let You Finish
-Forces the characters to stop fidgeting and let the act end.
-
-## Hydrocity Shake
-Makes characters use their balance animation in the HCZ → MGZ stage transition, similar to Origins.
-
-Also fixes the animation lock when near the act 1 boss on the wobble spheres in the HCZ tiles.
-
-## Extra Knuckles Frames
-Adds in a couple of extra frames to Knuckles from Origins. Also removes custom LBZ2 falling animation for Knuckles.
-
-## Data Select Options
-A mod that adds some options to the data select like adding semi-transparent shadows, removing the emerald glint and shifting everything to the left a bit for less wasted screen space.
-
-Also has an option to remove the lives and continues detail, shifting the player icons down. This has some hacky Extra Slot support that might not work for all characters...
-
-## Better Big Arm Fade
-This mod makes the fade effect of the background at the start of the Big Arm fight use the Sonic 3 A.I.R. methods to blend the background colours.
-
-There is a setting to decide how smooth the blend is.
-
-In addition to this, the fade will take the palette from whatever is initially set! So, simple palette mods that change the sky like **Launch Base Zone blue sky** or **LBZ Relaxed Blue Sky + Better Death Egg** will also work with this mod. However more complicated mods that alter this transition likely will not be compatible.
-
-**PLEASE NOTE:** If you use **Ambient Mod** for the rain in the Big Arm fight, please place it above this mod or the rain will not end correctly!
-
-## Alternate LBZ2 Cutscene
-Converts the LBZ2 Ending scene after beating Big Arm to me a bit more like Origins. The platform catches fire and detaches, then the stage clear happens as the platform falls and finally the sky transitions as the Death Egg falls.
-
-I know this is not _exactly_ like Origins, but I do not mind and kind of like it more. That said, this mod also includes an option for the stage fanfare and to give the final arena the Origins-esc floating off the edge... Or you can disable the widescreen safety and fight Big Arm like a true blue hedgehog!
-
-There is a compatibility with **LBZ Eggman Fleeing**, **Origins Parity Galore** and **Better Big Arm Fade**! You will need to load this mod over them.
-
-## Time Consistent Adventure
-This mod adjusts the palettes and some stage art for many zones to provide a more consistent passage of time with the Sonic & Tails and the Knuckles adventures.
-
-There are a few configurations options, however it is mostly intended that you would run this for all possible zones.
-
-An option has been added to run this considering the released zone order, however this does disable many features of the mod.
-
-**PLEASE NOTE:** This is intended to be played alongside a mod that restores the original zone order, and stops Knuckles from visiting FBZ. Probably will not work right with other palette mods or any mods that alter the FBZ, SOZ, HPZ or SSZ backgrounds / tiles.
-
-## Moar Transparency
-Adds transparency effects to more objects in the game. The effects can be *incredibly subtle* at some points.
-
-I have probably missed a whole load of possible candidates for transparency because I am forgetful... However, before suggesting something please note that I avoided adding transparency to flashing exhaust flames or breaking objects and have no intention of adding transparency to them. 
-
-I have tried to avoid using PNG replacements as much as I can and just use the in game art, however I have had to use PNGs to re-draw the Teleportation Beam, the Flying Eggman's laser, Red Eye's laser, Huge Eggman Robot's laser and the Toxomister's mist... That last one was "fun"...
-
-I have also added a few extra options to add a consistent PNG replacement to the teleporter frames between HPZ and SSZ, make the Beam Rocket's exhaust flame flash, and add some transparency and flashing for ES Amy's hearts and hammer trail, respectively.
-
-## Broken Badniks
-Adds broken bits of certain badniks as particles that fall when the badnik dies.
-
-This mod also includes some fixes for the positioning of the AIZ and LBZ mini-bosses and a setting to make Monkey Dude slide along trees more smoothly.
-
-## Paper's HUD Additions
-Adds a new Sonic CD inspired life icon and a Transform button. Should work with regular and mobile views with compatibility with **Haru's Forever-esque HUD**, **Extra Sloy Mighty, Ray & Amy** and **Extra Slot 3D in 2D Shadow**. The transform button has compatibility with **Characters Go Super Then Hyper** and possibly **Super Post-Trade**.
-
-## Gotta Go Fast!
-A mod that adds in a Fast Dash to Sonic and Knuckles, providing configurations to make the way the Fast Run works configurable and consistent. Can also override some ESU characters for consistency.
-
-However, the 3D2D Shadow option might not work properly with the original mod as it references a value from my bugfixed version of the mod...
-
-*(Please note that I do not recall where the sprites came from and need to investigate / replace them.)*
-
-## Flying Hold Frame Fix
-Makes the animation while holding on to tails less jumpy. Should be placed below other sprite mods. Should work with ESU if placed below it.
-
-## HCZ & ICZ Alternate Title Cards
-Simple mod to put a space in "HYDROCITY" and "ICECAP" title cards, making them "HYDRO CITY" and "ICE CAP", respectively.
-
-Requires Veenee's **Title Card Elements and Results Screen Sprites** mod to work. Also comes with a version in the style of Trimint123's **Zone Japanese Text** mod.
