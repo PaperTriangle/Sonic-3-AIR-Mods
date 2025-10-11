@@ -4,7 +4,7 @@
 		"Name": "Colour Clamp",
 		"UniqueID": "colour-clamp",
 		"Author": "PaperTriangle",
-		"Description": "Maxes the brightness level to be consistent with the emulated values. Also has options to attempt enforcing the RSDK or PC Port colour profile.",
+		"Description": "Maxes the brightness level to be consistent with the emulated values. Also has options to attempt enforcing the RSDK or PC Port colour profile. Original Basic Overlay mod created by Ramona (nabbup).",
 	},
 	"Settings":
 	{
