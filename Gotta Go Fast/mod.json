@@ -147,10 +147,22 @@
 				}
 			},
 			{
+				"InternalName": "ggf.ariff_tails_run",
+				"DisplayName": "A.Riff Tails Alternate Run",
+				"Variable": "ggf.ariff_tails_run",
+				"Category": "Mod Compatibility",	
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Off",
+					"1": "On"
+				}
+			},
+			{
 				"InternalName": "ggf.esu.mighty",
-				"DisplayName": "Override Mighty Fast Run",
+				"DisplayName": "Override ES Mighty Fast Run",
 				"Variable": "ggf.esu.mighty",
-				"Category": "ESU Compatibility",	
+				"Category": "Mod Compatibility",	
 				"DefaultValue": "1",
 				"Options":
 				{
@@ -160,9 +172,9 @@
 			},
 			{
 				"InternalName": "ggf.esu.supermighty",
-				"DisplayName": "Mighty's Fast Run Nerf",
+				"DisplayName": "ESU Mighty's Super Run Nerf",
 				"Variable": "ggf.esu.supermighty",
-				"Category": "ESU Compatibility",	
+				"Category": "Mod Compatibility",	
 				"DefaultValue": "1",
 				"Options":
 				{
@@ -172,9 +184,9 @@
 			},
 			{
 				"InternalName": "ggf.esu.ray",
-				"DisplayName": "Override Ray's Fast Run",
+				"DisplayName": "Override ES Ray's Fast Run",
 				"Variable": "ggf.esu.ray",
-				"Category": "ESU Compatibility",	
+				"Category": "Mod Compatibility",	
 				"DefaultValue": "1",
 				"Options":
 				{
@@ -184,9 +196,9 @@
 			},
 			{
 				"InternalName": "ggf.esu.amy",
-				"DisplayName": "Override Amy's Fast Run",
+				"DisplayName": "Override ES Amy's Fast Run",
 				"Variable": "ggf.esu.amy",
-				"Category": "ESU Compatibility",	
+				"Category": "Mod Compatibility",	
 				"DefaultValue": "1",
 				"Options":
 				{
@@ -196,9 +208,9 @@
 			},
 			{
 				"InternalName": "ggf.esu.superamy",
-				"DisplayName": "Super Amy's Fast Run Nerf",
+				"DisplayName": "ES Amy's Super Run Nerf",
 				"Variable": "ggf.esu.superamy",
-				"Category": "ESU Compatibility",	
+				"Category": "Mod Compatibility",	
 				"DefaultValue": "1",
 				"Options":
 				{
@@ -208,9 +220,9 @@
 			},
 			{
 				"InternalName": "ggf.esu.shadow",
-				"DisplayName": "Shadow Fast Run",
+				"DisplayName": "ES Shadow Fast Run",
 				"Variable": "ggf.esu.shadow",
-				"Category": "ESU Compatibility",	
+				"Category": "Mod Compatibility",	
 				"DefaultValue": "0",
 				"Options":
 				{
@@ -220,9 +232,9 @@
 			},
 			{
 				"InternalName": "ggf.esu.supershadow",
-				"DisplayName": "Override Super Shadow's Fast Run",
+				"DisplayName": "Override ES Shadow's Super Fast Run",
 				"Variable": "ggf.esu.supershadow",
-				"Category": "ESU Compatibility",	
+				"Category": "Mod Compatibility",	
 				"DefaultValue": "0",
 				"Options":
 				{
@@ -234,7 +246,7 @@
 				"InternalName": "ggf.misc.amy_galore",
 				"DisplayName": "Amy Galore's Fast Run",
 				"Variable": "ggf.misc.amy_galore",
-				"Category": "MISC Compatibility",	
+				"Category": "Mod Compatibility",	
 				"DefaultValue": "1",
 				"Options":
 				{

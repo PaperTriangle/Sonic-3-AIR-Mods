@@ -6,6 +6,7 @@ global bool ggf.superknux
 global bool ggf.intro
 global bool ggf.knuxddz
 global bool ggf.speed
+global bool ggf.ariff_tails_run
 global bool ggf.esu.mighty
 global bool ggf.esu.supermighty
 global bool ggf.esu.ray
@@ -16,6 +17,8 @@ global bool ggf.esu.supershadow
 global bool ggf.misc.amy_galore
 
 define u8 global.xtrachar	= u8[0xffffe654]
+
+	global u8 extraFrameCounter
 
 function bool Standalone.drawCharacterSprite(u8 character, u8 variant, s16 px, s16 py, bool asSmallGhost)
 {
@@ -51,81 +54,83 @@ function bool Standalone.drawCharacterSprite(u8 character, u8 variant, s16 px, s
 
 	if (global.characters < 4 && global.xtrachar == 0 && character == CHARACTER_SONIC && animationSpriteEx == animationSprite && !super.active && animationSprite >= 0x21 && animationSprite <= 0x30 && abs(char.groundspeed) >= regularspeed && ggf.sonic)
 	{
-		animationSpriteEx = CHAR_ANIMSPRITE_SONIC_PEELOUT + (level.framecounter & 0x03)
-		key = stringformat("sonic_fast_run_%d", animationSpriteEx - CHAR_ANIMSPRITE_SONIC_PEELOUT)
+		key = stringformat("sonic_fast_run_%d", level.framecounter & 0x03)
 	}
 	else if (global.characters < 4 && global.xtrachar == 0 && character == CHARACTER_SONIC && animationSpriteEx == animationSprite && super.active && animationSprite >= 0x21 && animationSprite <= 0x30 && (abs(char.groundspeed) >= superspeed || (isSonicIntro() && ggf.intro)) && ggf.supersonic)
 	{
-		animationSpriteEx = CHAR_ANIMSPRITE_SONIC_PEELOUT + (level.framecounter & 0x03)
-		key = stringformat("super_sonic_fast_run_%d", animationSpriteEx - CHAR_ANIMSPRITE_SONIC_PEELOUT)
+		key = stringformat("super_sonic_fast_run_%d", level.framecounter & 0x03)
+	}
+	else if (global.characters < 4 && global.xtrachar == 0 && character == CHARACTER_TAILS && animationSpriteEx == animationSprite && animationSprite >= 0xc3 && animationSprite <= 0xca && ggf.ariff_tails_run && Mods.isModActive("Plush's Ariff Tails") && ggf.tails)
+	{
+		key = stringformat("tails_ariff_fast_run_%d", level.framecounter & 0x03)
+	}
+	else if (global.characters < 4 && global.xtrachar == 0 && character == CHARACTER_TAILS && animationSpriteEx == animationSprite && ((animationSprite >= 0x21 && animationSprite <= 0x30) || (animationSprite >= 0xc3 && animationSprite <= 0xca)) && Mods.isModActive("Plush's Ariff Tails") && ggf.tails)
+	{
+		if (abs(char.groundspeed) >= regularspeed)
+		{
+			key = stringformat("tails_ariff_run_%d", level.framecounter & 0x03)
+		}
+		else
+		{
+			if (animationSprite >= 0xc3) && ((level.framecounter % 2) == 0)
+				extraFrameCounter++
+			else if	(level.framecounter % 3) == 0
+				extraFrameCounter++
+
+			key = stringformat("character_tails_0x%02x", 0x21 + (extraFrameCounter & 0x03))
+		}
 	}
 	else if (global.characters < 4 && global.xtrachar == 0 && character == CHARACTER_TAILS && animationSpriteEx == animationSprite && animationSprite >= 0xc3 && animationSprite <= 0xca && abs(char.groundspeed) >= regularspeed && ggf.tails)
 	{
-		animationSpriteEx = CHAR_ANIMSPRITE_SONIC_PEELOUT + (level.framecounter & 0x03)
-		key = Mods.isModActive("Plush's Ariff Tails") ? stringformat("tails_ariff_fast_run_%d", animationSpriteEx - CHAR_ANIMSPRITE_SONIC_PEELOUT) : stringformat("tails_fast_run_%d", animationSpriteEx - CHAR_ANIMSPRITE_SONIC_PEELOUT)
-	}
-	else if (global.characters < 4 && global.xtrachar == 0 && character == CHARACTER_TAILS && animationSpriteEx == animationSprite && animationSprite >= 0xc3 && animationSprite <= 0xca && Mods.isModActive("Plush's Ariff Tails") && ggf.tails)
-	{
-		animationSpriteEx = CHAR_ANIMSPRITE_SONIC_PEELOUT + (level.framecounter & 0x03)
-		key = stringformat("tails_ariff_run_%d", animationSpriteEx - CHAR_ANIMSPRITE_SONIC_PEELOUT)
+		key = stringformat("tails_fast_run_%d", level.framecounter & 0x03)
 	}
 	else if (global.characters < 4 && global.xtrachar == 0 && character == CHARACTER_KNUCKLES && animationSpriteEx == animationSprite && !super.active && animationSprite >= 0x21 && animationSprite <= 0x30 && abs(char.groundspeed) >= regularspeed && ggf.knux)
 	{
-		animationSpriteEx = CHAR_ANIMSPRITE_SONIC_PEELOUT + (level.framecounter & 0x03)
-		key = stringformat("knuckles_fast_run_%d", animationSpriteEx - CHAR_ANIMSPRITE_SONIC_PEELOUT)
+		key = stringformat("knuckles_fast_run_%d", level.framecounter & 0x03)
 	}
 	else if (global.characters < 4 && global.xtrachar == 0 && character == CHARACTER_KNUCKLES && animationSpriteEx == animationSprite && super.active && animationSprite >= 0x21 && animationSprite <= 0x30 && (abs(char.groundspeed) >= superspeed) && ggf.superknux)
 	{
-		animationSpriteEx = CHAR_ANIMSPRITE_SONIC_PEELOUT + (level.framecounter & 0x03)
-		key = stringformat("super_knuckles_fast_run_%d", animationSpriteEx - CHAR_ANIMSPRITE_SONIC_PEELOUT)
+		key = stringformat("super_knuckles_fast_run_%d", level.framecounter & 0x03)
 	}
 	else if (global.xtrachar == 1 && character == CHARACTER_SONIC && animationSpriteEx == animationSprite && !super.active && animationSprite >= 0x21 && animationSprite <= 0x30 && abs(char.groundspeed) >= regularspeed && ggf.esu.mighty)
 	{
-		animationSpriteEx = CHAR_ANIMSPRITE_SONIC_PEELOUT + (level.framecounter & 0x03)
 		u64 Spritekey = (System.getGlobalVariableValueByName("Mighty_Sprite_type")) ? "S3_m" : "m"
 
-		key = stringformat("%sighty_fastrun_%d", Spritekey, animationSpriteEx - CHAR_ANIMSPRITE_SONIC_PEELOUT)
+		key = stringformat("%sighty_fastrun_%d", Spritekey, level.framecounter & 0x03)
 	}
-	else if (global.xtrachar == 1 && character == CHARACTER_SONIC && animationSpriteEx == animationSprite && super.active && animationSprite >= 0x21 && animationSprite <= 0x30 && (abs(char.groundspeed) < superspeed) && ggf.esu.supermighty)
+	else if (global.xtrachar == 1 && character == CHARACTER_SONIC && animationSpriteEx == animationSprite && super.active && animationSprite >= 0x21 && animationSprite <= 0x30 && abs(char.groundspeed) < superspeed && ggf.esu.supermighty)
 	{
-		animationSpriteEx = 0x21 + (level.framecounter & 0x03)
-		key = (System.getGlobalVariableValueByName("Mighty_Sprite_type")) ? "character_slot1_S3_0x%02x" : "character_slot1_0x%02x"
-
-		key = stringformat(key, animationSpriteEx)
+	
+		if (abs(char.groundspeed) > superspeed - 0x150) && ((level.framecounter % 1) == 0)
+			extraFrameCounter++
+		else if	(level.framecounter % 2) == 0
+			extraFrameCounter++
+	
+		key = stringformat(System.getGlobalVariableValueByName("Mighty_Sprite_type") ? "character_slot1_S3_0x%02x" : "character_slot1_0x%02x", 0x21 + (extraFrameCounter & 0x03))
 	}
 	else if (global.xtrachar == 2 && character == CHARACTER_TAILS && animationSpriteEx == animationSprite && animationSprite >= 0x21 && animationSprite <= 0x30 && (abs(char.groundspeed) >= regularspeed) && ggf.esu.ray)
 	{
-		animationSpriteEx = 0xda + (level.framecounter & 0x03)
-		key = (System.getGlobalVariableValueByName("Ray_Sprite_type")) ? "character_slot2_0x%02x" : "Mania_Ray_0x%02x"
-
-		key = stringformat(key, animationSpriteEx)
+		key = stringformat(System.getGlobalVariableValueByName("Ray_Sprite_type") ? "character_slot2_0x%02x" : "Mania_Ray_0x%02x", 0xda + (level.framecounter & 0x03))
 	}
 	else if (global.xtrachar == 3 && character == CHARACTER_TAILS && animationSpriteEx == animationSprite && !super.active.tails && animationSprite >= 0x21 && animationSprite <= 0x30 && abs(char.groundspeed) >= regularspeed && ggf.esu.amy)
 	{
-		animationSpriteEx = 0xbd + (level.framecounter & 0x03)
-
-		key = stringformat("character_amy_0x%02x", animationSpriteEx)
+		key = stringformat("character_amy_0x%02x", 0xbd + (level.framecounter & 0x03))
 	}
-	else if (global.xtrachar == 3 && character == CHARACTER_TAILS && animationSpriteEx == animationSprite && super.active.tails && animationSprite >= 0x21 && animationSprite <= 0x30 && (abs(char.groundspeed) < superspeed) && ggf.esu.superamy)
+	else if (global.xtrachar == 3 && character == CHARACTER_TAILS && animationSpriteEx == animationSprite && super.active.tails && animationSprite >= 0x21 && animationSprite <= 0x30 && abs(char.groundspeed) < superspeed && ggf.esu.superamy)
 	{	
-		animationSpriteEx = 0x21 + (animationSprite & 3)
-		key = stringformat("character_amy_0x%02x", animationSpriteEx)
+		key = stringformat("character_amy_0x%02x", 0x21 + (animationSprite & 3))
 	}
 	else if (global.xtrachar == 5 && character == CHARACTER_SONIC && animationSpriteEx == animationSprite && !super.active && animationSprite >= 0x21 && animationSprite <= 0x30 && abs(char.groundspeed) >= regularspeed && ggf.esu.shadow)
 	{
 		if (System.getGlobalVariableValueByName("shadow.airBoost") && !System.getGlobalVariableValueByName("shadow.waterRun"))
 			return base.Standalone.drawCharacterSprite(character, variant, px, py, asSmallGhost)
-			
-		animationSpriteEx = CHAR_ANIMSPRITE_SONIC_PEELOUT + (level.framecounter & 0x03)
 
-		key = stringformat("shadow_fast_run_%d", animationSpriteEx - CHAR_ANIMSPRITE_SONIC_PEELOUT)
+		key = stringformat("shadow_fast_run_%d", level.framecounter & 0x03)
 	}
 	else if (global.xtrachar == 5 && character == CHARACTER_SONIC && animationSpriteEx == animationSprite && super.active && animationSprite >= 0x21 && animationSprite <= 0x30 && (abs(char.groundspeed) < superspeed) && ggf.esu.supershadow)
 	{
 		if (System.getGlobalVariableValueByName("shadow.airBoost") && !System.getGlobalVariableValueByName("shadow.waterRun") && char.flags & char.flag.IN_AIR)
 			return base.Standalone.drawCharacterSprite(character, variant, px, py, asSmallGhost)
-			
-		animationSpriteEx = 0x21 + (animationSprite - 0x21) % 4
 
 		if (System.getGlobalVariableValueByName("shadow.FrameCounter") == 0)
 		{
@@ -144,17 +149,15 @@ function bool Standalone.drawCharacterSprite(u8 character, u8 variant, s16 px, s
 			}
 		}
 		key = (System.getGlobalVariableValueByName("ESShadow.shadowsprites") == 0) ? stringformat("shadow_run_%d", System.getGlobalVariableValueByName("shadow.FrameCounter")/3) : stringformat("shadow_run_old_%d", System.getGlobalVariableValueByName("shadow.FrameCounter")/3)
-		System.setGlobalVariableValueByName("shadow.RunFrameOld", animationSprite)
+		System.setGlobalVariableValueByName("shadow.RunFrameOld", 0x21 + (animationSprite - 0x21) % 4)
 	}
 	else if ((global.characters == 4 || global.characters == 5) && global.xtrachar == 0 && character == CHARACTER_SONIC && animationSpriteEx == animationSprite && !super.active && animationSprite >= 0x21 && animationSprite <= 0x30 && abs(char.groundspeed) >= regularspeed && ggf.misc.amy_galore && !System.getGlobalVariableValueByName("AmyMISC.HammerRushing"))
 	{
-		animationSpriteEx = CHAR_ANIMSPRITE_SONIC_PEELOUT + (level.framecounter & 0x03)
-		key = stringformat("amy_galore_fast_run_%d", animationSpriteEx - CHAR_ANIMSPRITE_SONIC_PEELOUT)
+		key = stringformat("amy_galore_fast_run_%d", level.framecounter & 0x03)
 	}
 	else if ((global.characters == 4 || global.characters == 5) && global.xtrachar == 0 && character == CHARACTER_SONIC  && super.active && animationSprite >= 0x21 && animationSprite <= 0x30 && (abs(char.groundspeed) >= superspeed || (isSonicIntro() && ggf.intro)) && ggf.misc.amy_galore && !System.getGlobalVariableValueByName("AmyMISC.HammerRushing"))
 	{
-		animationSpriteEx = CHAR_ANIMSPRITE_SONIC_PEELOUT + (level.framecounter & 0x03)
-		key = stringformat("super_amy_galore_fast_run_%d", animationSpriteEx - CHAR_ANIMSPRITE_SONIC_PEELOUT)
+		key = stringformat("super_amy_galore_fast_run_%d", level.framecounter & 0x03)
 	}
 	else
 	{
