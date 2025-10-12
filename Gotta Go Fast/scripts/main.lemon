@@ -65,7 +65,7 @@ function bool Standalone.drawCharacterSprite(u8 character, u8 variant, s16 px, s
 	}
 	else if (global.characters < 4 && global.xtrachar == 0 && character == CHARACTER_TAILS && animationSpriteEx == animationSprite && ((animationSprite >= 0x21 && animationSprite <= 0x30) || (animationSprite >= 0xc3 && animationSprite <= 0xca)) && Mods.isModActive("Plush's Ariff Tails") && ggf.tails)
 	{
-		if (abs(char.groundspeed) >= regularspeed)
+		if (abs(char.groundspeed) >= 0xa00)
 		{
 			key = stringformat("tails_ariff_run_%d", level.framecounter & 0x03)
 		}
