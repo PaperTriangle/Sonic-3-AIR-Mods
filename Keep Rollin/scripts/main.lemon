@@ -234,12 +234,16 @@ function bool Standalone.drawCharacterSprite(u8 character, u8 variant, s16 px, s
 
 // Fix for AIZ Hollow Tree
 
-function void fn01f7ce()
+//# address-hook(0x01e490)
+function void LetSonicClimbOnObject()
 {
-	base.fn01f7ce()
-	
-	if (objA1.state == char.state.RUNNING)
+	base.LetSonicClimbOnObject()
+
+	if (global.zone_act == 0x0000)
 	{
+		objA1.flags2a &= ~char.flag.ROLLING
+		objA1.state = char.state.RUNNING
+
 		if (A1 == 0xffffb000)
 		{
 			kr.backup_flags = 0
@@ -255,11 +259,9 @@ function void fn01f7ce()
 			kr.wasRolling2_p2 = 0
 		}
 	}
-
 }
 
-// Fix for HCZ HAnd Launcher
-
+// Fix for HCZ Hand Launcher
 
 //# address-hook(0x030ce0) end(0x030dea)
 function void fn030ce0()
