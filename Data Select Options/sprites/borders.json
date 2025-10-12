@@ -1,4 +1,7 @@
 {
-	"large_border":  { "File": "large_border.png", "Center": "48,128" },
-	"small_border":  { "File": "small_border.png", "Center": "40,64" }
+	"large_border_frame":  { "File": "large_border_frame.bmp", "Center": "48,128" },
+	"large_border_shadow":  { "File": "large_border_shadow.bmp", "Center": "48,128" },
+	
+	"small_border_frame":  { "File": "small_border_frame.bmp", "Center": "40,64" },
+	"small_border_shadow":  { "File": "small_border_shadow.bmp", "Center": "40,64" },
 }

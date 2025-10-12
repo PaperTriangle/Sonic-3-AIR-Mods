@@ -240,18 +240,20 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 	{
 		if (lsds.alphashadow && (objA0.mapping_offset == 0x00ce0e || objA0.mapping_offset == 0x20bd68))
 		{
-			
 			if (objA0.update_address == 0x00d42c)
 			{
-				Renderer.drawCustomSprite("large_border", px, (lsds.nodetail) ? py - 0x10 : py, 0x00, 0, renderQueue - 100)
+				Renderer.drawCustomSprite("large_border_frame", px, (lsds.nodetail) ? py - 0x10 : py, 0x00, 0, renderQueue - 100)
+				Renderer.drawCustomSprite("large_border_shadow", px, (lsds.nodetail) ? py - 0x10 : py, 0x00, 0, renderQueue - 100, 0, 0x80)
 			}
 			else if (objA0.update_address == 0x00d30c)
 			{
-				Renderer.drawCustomSprite("small_border", px, py, 0x00, 0, renderQueue - 100)
+				Renderer.drawCustomSprite("small_border_frame", px, py, 0x00, 0, renderQueue - 100)
+				Renderer.drawCustomSprite("small_border_shadow", px, py, 0x00, 0, renderQueue - 100, 0, 0x80)
 			}
 			else if (objA0.update_address == 0x00d782)
 			{
-				Renderer.drawCustomSprite("small_border", 0x3c8 - camera.foreground.x.u16, py - 16, 0x00, 0, renderQueue - 100)
+				Renderer.drawCustomSprite("small_border_frame", 0x3c8 - camera.foreground.x.u16, py - 16, 0x00, 0, renderQueue - 100)
+				Renderer.drawCustomSprite("small_border_shadow", 0x3c8 - camera.foreground.x.u16, py - 16, 0x00, 0, renderQueue - 100, 0, 0x80)
 			}
 		}
 		
