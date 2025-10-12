@@ -234,6 +234,29 @@ function bool Standalone.drawCharacterSprite(u8 character, u8 variant, s16 px, s
 
 // Fix for AIZ Hollow Tree
 
+function void fn01f7ce()
+{
+	base.fn01f7ce()
+	
+	if (objA1.state == char.state.RUNNING)
+	{
+		if (A1 == 0xffffb000)
+		{
+			kr.backup_flags = 0
+			kr.backup_flags2 = 0
+			kr.wasRolling = 0
+			kr.wasRolling2 = 0
+		}
+		else if (A1 == 0xffffb04a)
+		{
+			kr.backup_flags_p2 = 0
+			kr.backup_flags2_p2 = 0
+			kr.wasRolling_p2 = 0
+			kr.wasRolling2_p2 = 0
+		}
+	}
+}
+
 //# address-hook(0x01e490)
 function void LetSonicClimbOnObject()
 {
@@ -259,6 +282,39 @@ function void LetSonicClimbOnObject()
 			kr.wasRolling2_p2 = 0
 		}
 	}
+}
+
+//# address-hook(0x01f914) end(0x01f994)
+function void fn01f914()
+{
+	base.fn01f914()
+	objA1.state = char.state.RUNNING
+
+}
+
+// Collapsing cliff AIZ.
+
+//# address-hook(0x0204fe) end(0x02058e)
+function void CollapsingCliff.Init()
+{
+	base.CollapsingCliff.Init()
+	
+	if (global.zone_act == 0x0001)
+		objA0.position.y.u16 += 0x03
+}
+
+function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16 renderQueue)
+{
+	if (global.zone_act == 0x0001)
+	{
+		if (objA0.update_address == 0x020594 || objA0.update_address == 0x0205de || objA0.update_address == 0x0205ce || objA0.update_address == 0x020620)
+		{
+			Renderer.drawVdpSprite(px, py - 0x03, size, index, renderQueue)
+			return true
+		}
+	}
+	
+	return base.Standalone.onDrawVdpSprite(px, py, size, index, renderQueue)
 }
 
 // Fix for HCZ Hand Launcher
