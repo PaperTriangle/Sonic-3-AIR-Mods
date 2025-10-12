@@ -394,6 +394,36 @@ function void fn033c34()
 	}
 }
 
+//# address-hook(0x0338c4) end(0x033abe)
+function void fn0338c4()
+{
+	u8 bit = (1 << D6.u8)
+	if (((objA0.flags2a & bit) != 0) && (debug_mode.state == 0) && (u8[A2 + 0x01] == 0))
+	{
+		if !(u8[A1 + 0x2a] & char.flag.IN_AIR) && (abs(objA1.groundspeed) >= 0x300)
+		{
+			if (A1 == 0xffffb000)
+			{
+				objA1.state = char.state.RUNNING
+				kr.backup_flags = 0
+				kr.backup_flags2 = 0
+				kr.wasRolling = 0
+				kr.wasRolling2 = 0
+			}
+			else if (A1 == 0xffffb04a)
+			{
+				objA1.state = char.state.RUNNING
+				kr.backup_flags_p2 = 0
+				kr.backup_flags2_p2 = 0
+				kr.wasRolling_p2 = 0
+				kr.wasRolling2_p2 = 0
+			}
+		}
+	}
+
+	base.fn0338c4()
+}
+
 // Fix for FBZ Cylinder
 
 //# address-hook(0x03a314) end(0x03a466)
