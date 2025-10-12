@@ -300,7 +300,7 @@ function void CollapsingCliff.Init()
 	base.CollapsingCliff.Init()
 	
 	if (global.zone_act == 0x0001)
-		objA0.position.y.u16 += 0x03
+		objA0.position.y.u16 += 0x04
 }
 
 function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16 renderQueue)
@@ -309,7 +309,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 	{
 		if (objA0.update_address == 0x020594 || objA0.update_address == 0x0205de || objA0.update_address == 0x0205ce || objA0.update_address == 0x020620)
 		{
-			Renderer.drawVdpSprite(px, py - 0x03, size, index, renderQueue)
+			Renderer.drawVdpSprite(px, py - 0x04, size, index, renderQueue)
 			return true
 		}
 	}
@@ -370,27 +370,27 @@ function void fn033cac()
 
 // Fix for CNZ Cylinder
 
-//# address-hook(0x0338c4) end(0x033abe)
-function void fn0338c4()
+//# address-hook(0x033c34) end(0x033c72)
+function void fn033c34()
 {
-	base.fn0338c4()
+	base.fn033c34()
 	
-	if !(u8[A1 + 0x2a] & char.flag.ROLLING)
+	objA1.flags2a &= ~char.flag.ROLLING
+	objA1.state = char.state.RUNNING
+	
+	if (A1 == 0xffffb000)
 	{
-		if (A1 == 0xffffb000)
-		{
-			kr.backup_flags = 0
-			kr.backup_flags2 = 0
-			kr.wasRolling = 0
-			kr.wasRolling2 = 0
-		}
-		else if (A1 == 0xffffb04a)
-		{
-			kr.backup_flags_p2 = 0
-			kr.backup_flags2_p2 = 0
-			kr.wasRolling_p2 = 0
-			kr.wasRolling2_p2 = 0
-		}
+		kr.backup_flags = 0
+		kr.backup_flags2 = 0
+		kr.wasRolling = 0
+		kr.wasRolling2 = 0
+	}
+	else if (A1 == 0xffffb04a)
+	{
+		kr.backup_flags_p2 = 0
+		kr.backup_flags2_p2 = 0
+		kr.wasRolling_p2 = 0
+		kr.wasRolling2_p2 = 0
 	}
 }
 
