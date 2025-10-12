@@ -37,15 +37,5 @@
 	"shadow_fast_run_0":	{ "File": "shadow_fast_run.bmp",	"Rect": "1,1,54,40",	"Center": "27,16" },
 	"shadow_fast_run_1":	{ "File": "shadow_fast_run.bmp",	"Rect": "56,1,55,40",	"Center": "28,16" },
 	"shadow_fast_run_2":	{ "File": "shadow_fast_run.bmp",	"Rect": "112,1,51,40",	"Center": "24,16" },
-	"shadow_fast_run_3":	{ "File": "shadow_fast_run.bmp",	"Rect": "164,1,60,40",	"Center": "33,17" },
-	
-	"amy_galore_fast_run_0":  { "File": "amy_galore_fast_run.bmp", "Rect": "1,1,40,40", "Center": "20,24" },
-	"amy_galore_fast_run_1":  { "File": "amy_galore_fast_run.bmp", "Rect": "42,1,40,40", "Center": "20,24" },
-	"amy_galore_fast_run_2":  { "File": "amy_galore_fast_run.bmp", "Rect": "83,1,40,40", "Center": "20,24" },
-	"amy_galore_fast_run_3":  { "File": "amy_galore_fast_run.bmp", "Rect": "124,1,40,40", "Center": "20,24" },
-	
-	"super_amy_galore_fast_run_0":  { "File": "super_amy_galore_fast_run.bmp", "Rect": "1,1,40,40", "Center": "20,24" },
-	"super_amy_galore_fast_run_1":  { "File": "super_amy_galore_fast_run.bmp", "Rect": "42,1,40,40", "Center": "20,24" },
-	"super_amy_galore_fast_run_2":  { "File": "super_amy_galore_fast_run.bmp", "Rect": "83,1,40,40", "Center": "20,24" },
-	"super_amy_galore_fast_run_3":  { "File": "super_amy_galore_fast_run.bmp", "Rect": "124,1,40,40", "Center": "20,24" },
+	"shadow_fast_run_3":	{ "File": "shadow_fast_run.bmp",	"Rect": "164,1,60,40",	"Center": "33,17" }
 }

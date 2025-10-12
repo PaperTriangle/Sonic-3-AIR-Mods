@@ -70,8 +70,8 @@
 				"DefaultValue": "1",
 				"Options":
 				{
-					"0": "Off",
-					"1": "On"
+					"0": "Disabled",
+					"1": "Enabled"
 				}
 			},
 			{
@@ -82,8 +82,8 @@
 				"DefaultValue": "1",
 				"Options":
 				{
-					"0": "Off",
-					"1": "On"
+					"0": "Disabled",
+					"1": "Enabled"
 				}
 			},
 			{
@@ -94,8 +94,8 @@
 				"DefaultValue": "1",
 				"Options":
 				{
-					"0": "Off",
-					"1": "On"
+					"0": "Disabled",
+					"1": "Enabled"
 				}
 			},
 			{
@@ -106,8 +106,8 @@
 				"DefaultValue": "1",
 				"Options":
 				{
-					"0": "Off",
-					"1": "On"
+					"0": "Disabled",
+					"1": "Enabled"
 				}
 			},
 			{
@@ -118,8 +118,8 @@
 				"DefaultValue": "1",
 				"Options":
 				{
-					"0": "Off",
-					"1": "On"
+					"0": "Disabled",
+					"1": "Enabled"
 				}
 			},
 			{
@@ -130,8 +130,8 @@
 				"DefaultValue": "1",
 				"Options":
 				{
-					"0": "Off",
-					"1": "On"
+					"0": "Disabled",
+					"1": "Enabled"
 				}
 			},
 			{
@@ -142,8 +142,8 @@
 				"DefaultValue": "1",
 				"Options":
 				{
-					"0": "Off",
-					"1": "On"
+					"0": "Disabled",
+					"1": "Enabled"
 				}
 			},
 			{
@@ -154,8 +154,8 @@
 				"DefaultValue": "0",
 				"Options":
 				{
-					"0": "Off",
-					"1": "On"
+					"0": "Disabled",
+					"1": "Enabled"
 				}
 			},
 			{
@@ -166,20 +166,20 @@
 				"DefaultValue": "1",
 				"Options":
 				{
-					"0": "Off",
-					"1": "On"
+					"0": "Disabled",
+					"1": "Enabled"
 				}
 			},
 			{
 				"InternalName": "ggf.esu.supermighty",
-				"DisplayName": "ESU Mighty's Super Run Nerf",
+				"DisplayName": "ES Mighty's Super Run Nerf",
 				"Variable": "ggf.esu.supermighty",
 				"Category": "Mod Compatibility",	
 				"DefaultValue": "1",
 				"Options":
 				{
-					"0": "Off",
-					"1": "On"
+					"0": "Disabled",
+					"1": "Enabled"
 				}
 			},
 			{
@@ -190,8 +190,8 @@
 				"DefaultValue": "1",
 				"Options":
 				{
-					"0": "Off",
-					"1": "On"
+					"0": "Disabled",
+					"1": "Enabled"
 				}
 			},
 			{
@@ -202,8 +202,8 @@
 				"DefaultValue": "1",
 				"Options":
 				{
-					"0": "Off",
-					"1": "On"
+					"0": "Disabled",
+					"1": "Enabled"
 				}
 			},
 			{
@@ -214,8 +214,8 @@
 				"DefaultValue": "1",
 				"Options":
 				{
-					"0": "Off",
-					"1": "On"
+					"0": "Disabled",
+					"1": "Enabled"
 				}
 			},
 			{
@@ -226,32 +226,20 @@
 				"DefaultValue": "0",
 				"Options":
 				{
-					"0": "Off",
-					"1": "On"
+					"0": "Disabled",
+					"1": "Enabled"
 				}
 			},
 			{
 				"InternalName": "ggf.esu.supershadow",
-				"DisplayName": "Override ES Shadow's Super Fast Run",
+				"DisplayName": "ES Shadow's Super Run Nerf",
 				"Variable": "ggf.esu.supershadow",
 				"Category": "Mod Compatibility",	
 				"DefaultValue": "0",
 				"Options":
 				{
-					"0": "Off",
-					"1": "On"
-				}
-			},
-			{
-				"InternalName": "ggf.misc.amy_galore",
-				"DisplayName": "Amy Galore's Fast Run",
-				"Variable": "ggf.misc.amy_galore",
-				"Category": "Mod Compatibility",	
-				"DefaultValue": "1",
-				"Options":
-				{
-					"0": "Off",
-					"1": "On"
+					"0": "Disabled",
+					"1": "Enabled"
 				}
 			}
 		]
