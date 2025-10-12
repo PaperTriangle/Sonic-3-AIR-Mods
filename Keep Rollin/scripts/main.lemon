@@ -558,24 +558,7 @@ function void fn0457be()
 {
 	base.fn0457be()
 
-	if (A1 == 0xffffb000)
-	{
-		objA1.flags2a &= ~char.flag.ROLLING
-		objA1.state = char.state.RUNNING
-		kr.backup_flags = 0
-		kr.backup_flags2 = 0
-		kr.wasRolling = 0
-		kr.wasRolling2 = 0
-	}
-	else if (A1 == 0xffffb04a)
-	{
-		objA1.flags2a &= ~char.flag.ROLLING
-		objA1.state = char.state.RUNNING
-		kr.backup_flags_p2 = 0
-		kr.backup_flags2_p2 = 0
-		kr.wasRolling_p2 = 0
-		kr.wasRolling2_p2 = 0
-	}
+	objA1.state = char.state.RUNNING
 }
 
 // Fix for LRZ Spiral Staircase
