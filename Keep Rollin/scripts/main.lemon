@@ -46,7 +46,7 @@ function void yieldExecution()
 	//System.writeDisplayLine(stringformat("Values: 0x%02x", char.jumping))
 
 	// Remove backup flags if not rolling or running. Prevents issues like ICZ2 Slope.
-	if !((char.state == char.state.RUNNING) || (char.state == char.state.RUNNING2) || (char.state == char.state.ROLLING) || (char.state == char.state.ROLLING2)) || char.jumping != 0 
+	if !((char.state == char.state.RUNNING) || (char.state == char.state.RUNNING2) || (char.state == char.state.ROLLING) || (char.state == char.state.ROLLING2)) || char.jumping != 0 || KR.stopRolling()
 	{
 		kr.backup_flags = 0
 		kr.backup_flags2 = 0
@@ -77,6 +77,8 @@ function void yieldExecution()
 		kr.backup_flags = u8[A0 + 0x2a]
 		
 		//System.writeDisplayLine(stringformat("Values: 0x%02x, 0x%02x, 0x%02x, 0x%02x", (kr.backup_flags & char.flag.ON_OBJECT), kr.wasOnObject, kr.wasOnObject2, char.state == char.state.ROLLING))
+		
+		//System.writeDisplayLine(stringformat("Values: 0x%02x, %d, %d", char.rotation, objA0.velocity.x , objA0.velocity.y))
 		
 		// Character is not in the air?
 		if !(char.flags & char.flag.IN_AIR)
@@ -113,7 +115,7 @@ function void yieldExecution()
 	A0 = 0xffffb04a
 	
 	// Remove backup flags if not rolling or running. Prevents issues like ICZ2 Slope.
-	if !((char.state == char.state.RUNNING) || (char.state == char.state.RUNNING2) || (char.state == char.state.ROLLING) || (char.state == char.state.ROLLING2)) || char.jumping != 0 
+	if !((char.state == char.state.RUNNING) || (char.state == char.state.RUNNING2) || (char.state == char.state.ROLLING) || (char.state == char.state.ROLLING2)) || char.jumping != 0 || KR.stopRollingP2()
 	{
 		kr.backup_flags_p2 = 0
 		kr.backup_flags2_p2 = 0
@@ -232,6 +234,21 @@ function bool Standalone.drawCharacterSprite(u8 character, u8 variant, s16 px, s
 	}
 	
 	return base.Standalone.drawCharacterSprite(character, variant, px, py, asSmallGhost)
+}
+
+// Mod Compat...
+
+function bool KR.stopRolling()
+{
+	if (Mods.isModActive("Extra Slot 3D in 2D Shadow") && System.getGlobalVariableValueByName("shadow.isBoosting"))
+		return true
+	
+	return false
+}
+
+function bool KR.stopRollingP2()
+{
+	return false
 }
 
 // Fix for AIZ Hollow Tree
