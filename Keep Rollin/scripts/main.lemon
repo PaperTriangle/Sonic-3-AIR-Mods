@@ -1,6 +1,6 @@
 define u8 global.xtrachar	= u8[0xffffe654]
 
-global bool kr.move_cliff_collision
+global u8 kr.move_cliff_collision
 
 global u8 kr.backup_sprite
 global u8 kr.backup_timer
@@ -40,6 +40,9 @@ global u8 kr.wasInAir2_p2
 // Yield Execution section handles detected the state before an object impact.
 function void yieldExecution()
 {
+	if (kr.move_cliff_collision == 1 && global.zone_act == 0x0001)
+		System.loadExternalRawData("AIZ2_Cliff_Collision", 0x020e9e)
+
 	// Player 1
 	A0 = 0xffffb000
 
@@ -318,13 +321,13 @@ function void CollapsingCliff.Init()
 {
 	base.CollapsingCliff.Init()
 	
-	if (kr.move_cliff_collision && global.zone_act == 0x0001)
+	if (kr.move_cliff_collision == 2 && global.zone_act == 0x0001)
 		objA0.position.y.u16 += 0x04
 }
 
 function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16 renderQueue)
 {
-	if (kr.move_cliff_collision && global.zone_act == 0x0001)
+	if (kr.move_cliff_collision == 2 && global.zone_act == 0x0001)
 	{
 		if (objA0.update_address == 0x020594 || objA0.update_address == 0x0205de || objA0.update_address == 0x0205ce || objA0.update_address == 0x020620)
 		{
