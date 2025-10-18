@@ -679,6 +679,16 @@ function void SignPost.BaseUpdate()
 	base.SignPost.BaseUpdate()
 }
 
+// Make sure flames are behind signpost...
+//# address-hook(0x02bf20) end(0x02bf54)
+function void GenericObject.Init()
+{
+	base.GenericObject.Init()
+	
+	if (objA0.mapping_offset == 0x02bfda && objA0.position.x.u16 > 0x1111 && objA0.position.x.u16 < 0x1234 && objA0.sprite_priority <= 0x300)
+		objA0.sprite_priority = 0x380
+}
+
 //-------------
 // Twin Hammers
 //-------------
