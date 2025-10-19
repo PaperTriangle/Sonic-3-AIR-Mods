@@ -892,7 +892,7 @@ function void Character.UpdateGroundContact()
 	{
 		if (char.hlock_countdown > 0)
 		{
-			if ((control.player1.state & CONTROL_DOWN) && char.state == char.state.KNUX_STANDUP2)
+			if ((control.player1.state & CONTROL_DOWN) && (char.state == char.state.KNUX_STANDUP2 || char.state == char.state.KNUX_STANDUP))
 				char.hlock_countdown = 0
 			else
 			--char.hlock_countdown
