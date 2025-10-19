@@ -161,8 +161,8 @@
 				"DefaultValue": "1",
 				"Options":
 				{
-					"0": "As Released (Less Changes)",
-					"1": "Intended"
+					"0": "As Released",
+					"1": "Original Design"
 				}
 			},
 			{
