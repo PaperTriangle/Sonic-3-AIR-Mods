@@ -12,5 +12,7 @@
 	"twinhammer_top_left":  { "File": "twinhammer_top_left.bmp", "Center": "8,8" },
 	"twinhammer_bottom_left":  { "File": "twinhammer_bottom_left.bmp", "Center": "8,8" },
 	"twinhammer_inside_left_1":  { "File": "twinhammer_inside_left_1.bmp", "Center": "12,12" },
-	"twinhammer_inside_left_2":  { "File": "twinhammer_inside_left_2.bmp", "Center": "14,12" }
+	"twinhammer_inside_left_2":  { "File": "twinhammer_inside_left_2.bmp", "Center": "14,12" },
+	"emerald_claw_1":  { "File": "emerald_claw.bmp", "Rect": "0,0,16,39", "Center": "14,14" },
+	"emerald_claw_2":  { "File": "emerald_claw.bmp", "Rect": "16,0,15,39", "Center": "-2,14" }
 }

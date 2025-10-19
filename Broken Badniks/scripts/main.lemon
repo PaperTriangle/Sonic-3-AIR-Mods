@@ -11,6 +11,7 @@ global bool bb.twinhammer
 global bool bb.twinhammer_breaks
 global bool bb.lbztriggers
 global bool bb.hyper
+global bool bb.claw
 
 //----------------
 // Generic Methods
@@ -166,6 +167,18 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 			{
 				flags |=  SPRITE_FLAG_FLIP_X
 				flags |=  SPRITE_FLAG_FLIP_Y
+			}
+		}
+		else if (objA0.state == 11)																	// Emerald Claw
+		{
+			key = objA0.animation.sprite ? "emerald_claw_1" : "emerald_claw_2"
+			if !(objA0.animation.sprite)
+				rq = 0x4000
+				
+			if objA0.animation.frame < 1
+			{
+				objA0.animation.frame++
+				return true
 			}
 		}
 		else
@@ -959,4 +972,32 @@ function void Iwamodoki.BaseUpdate()
 		fn08594e()
 		Enemy.UnloadDelayed()
 	}
+}
+
+//--------------
+// Eggman's Claw
+//--------------
+
+//# address-hook(0x0804d2) end(0x0804ee)
+function void fn0804d2()
+{
+	base.fn0804d2()
+	
+	if bb.claw && ((u8[0xfffffab8] & 0x08) != 0)
+	{
+		BB.SpawnPart(0x200, -0x100, 0x0b, false)
+		BB.SpawnPart(-0x200, -0x100, 0x0b, true)
+	}
+}
+
+//# address-hook(0x07cc26) end(0x07cc34)
+function void fn07cc26()
+{
+	if (bb.claw)
+	{
+		BB.SpawnPart(0x200, -0x100, 0x0b, false, 0, 0x24)
+		BB.SpawnPart(-0x200, -0x100, 0x0b, true, 0, 0x24)
+	}
+	
+	base.fn07cc26()
 }
