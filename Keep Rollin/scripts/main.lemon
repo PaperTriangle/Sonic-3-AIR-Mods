@@ -446,6 +446,31 @@ function void fn0338c4()
 	base.fn0338c4()
 }
 
+// Fix for CNZ Barrel
+
+//# address-hook(0x03260a) end(0x03260c)
+function void fn03260a()
+{
+	if (A1 == 0xffffb000)
+	{
+		objA1.state = char.state.RUNNING
+		kr.backup_flags = 0
+		kr.backup_flags2 = 0
+		kr.wasRolling = 0
+		kr.wasRolling2 = 0
+	}
+	else if (A1 == 0xffffb04a)
+	{
+		objA1.state = char.state.RUNNING
+		kr.backup_flags_p2 = 0
+		kr.backup_flags2_p2 = 0
+		kr.wasRolling_p2 = 0
+		kr.wasRolling2_p2 = 0
+	}
+
+	base.fn03260a()
+}
+
 // Fix for FBZ Cylinder
 
 //# address-hook(0x03a314) end(0x03a466)
