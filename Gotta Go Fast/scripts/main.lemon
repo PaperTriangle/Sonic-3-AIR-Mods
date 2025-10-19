@@ -55,7 +55,7 @@ function bool Standalone.drawCharacterSprite(u8 character, u8 variant, s16 px, s
 	{
 		key = stringformat("sonic_fast_run_%d", level.framecounter & 0x03)
 	}
-	else if (global.characters < 4 && global.xtrachar == 0 && character == CHARACTER_SONIC && animationSpriteEx == animationSprite && super.active && animationSprite >= 0x21 && animationSprite <= 0x30 && (abs(char.groundspeed) >= superspeed || (isSonicIntro() && ggf.intro)) && ggf.supersonic)
+	else if (global.characters < 4 && global.xtrachar == 0 && character == CHARACTER_SONIC && animationSpriteEx == animationSprite && super.active && animationSprite >= 0x21 && animationSprite <= 0x30 && (abs(char.groundspeed) >= superspeed || ((isSonicIntro() || global.zone_act == 0x0d01) && ggf.intro)) && ggf.supersonic)
 	{
 		key = stringformat("super_sonic_fast_run_%d", level.framecounter & 0x03)
 	}

@@ -124,7 +124,7 @@
 			},
 			{
 				"InternalName": "ggfintro",
-				"DisplayName": "Fast Run in AIZ Intro",
+				"DisplayName": "Fast Run in Intro / Outro",
 				"Variable": "ggf.intro",
 				"Category": "Specific Uses",	
 				"DefaultValue": "1",
