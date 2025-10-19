@@ -268,7 +268,7 @@ function void BB.BreakBall()
 		if (objA0.velocity.x == 0)
 			objA0.velocity.x = (System.rand() & 1) ? 4 : -4
 
-		BB.SpawnPart(objA0.velocity.x * 0x100, 0, 0x01, u8[0xffff0000 + u16[A0 + 0x44] + 0x22])
+		BB.SpawnPart(objA0.velocity.x * 0x140, 0, 0x01, u8[0xffff0000 + u16[A0 + 0x44] + 0x22])
 		Object.TriggerUnloading()
 	}
 }
