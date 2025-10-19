@@ -46,7 +46,7 @@ function void fn018b3e()
 {
 	base.fn018b3e()
 	
-	if (Mods.isModActive("Drop Dash +"))
+	if (A0 == 0xffffcc54 && Mods.isModActive("Drop Dash +"))
 	{
 		if (objA0.state == 0x00) && (System.getGlobalVariableValueByName("maniadustframe") > 0)
 		{
