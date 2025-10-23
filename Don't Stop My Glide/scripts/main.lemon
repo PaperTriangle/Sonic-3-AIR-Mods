@@ -217,15 +217,19 @@ function void UpdateKnucklesGlideCollision()
 	{
 		if (char.velocity.x < 0)
 		{
-			char.flags |= char.flag.FACING_LEFT
+			if (char.velocity.x < -0x20)
+				char.flags |= char.flag.FACING_LEFT
+			
 			char.velocity.x += 0x20
 			goto016b64 = (char.velocity.x < 0)
 		}
 		else
 		{
-			char.flags &= ~char.flag.FACING_LEFT
+			if (char.velocity.x > 0x20)
+				char.flags &= ~char.flag.FACING_LEFT
+			
 			char.velocity.x -= 0x20
-			goto016b64 = (char.velocity.x >= 0)
+			goto016b64 = (char.velocity.x > 0)
 		}
 	}
 
