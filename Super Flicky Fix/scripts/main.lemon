@@ -89,7 +89,7 @@ function void moddedFlickyPalette()
 		else if (nextFrame % 18 == 12)
 			blendFactor = 0
 
-		if (Mods.isModActive("Underwater Super/Hyper Palettes") && System.getGlobalVariableValueByName("uh.hyper.tails") == 0 && global.xtrachar == 0 && !isMainCharacter(CHARACTER_SONIC))
+		if compatCheck
 			blendFactor = flashStrength - blendFactor
 
 		for (u8 underwater = 0; underwater < (level.water_present ? 2 : 1); ++underwater)
