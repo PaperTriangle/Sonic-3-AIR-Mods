@@ -1,0 +1,304 @@
+{
+	"Metadata":
+	{
+		"Name": "Underwater Super/Hyper Palettes",
+		"UniqueID": "underwater-super-hyper-palettes",
+		"Author": "PaperTriangle",
+		"ModVersion": "1.0",
+		"Description": "Adds underwater version of the Hyper Sonic palette.",
+	},
+	"OtherMods":
+	{
+		"super-flicky-fix":
+		{
+			"DisplayName": "Super Flicky Fix",
+			"IsRequired": "0",
+			"Priority": "Higher"
+		},
+		"Plush's Ariff Tails":
+		{
+			"DisplayName": "Plush's Ariff Tails",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		},
+		"extra-slot-project-amy":
+		{
+			"DisplayName": "Extra Slot Amy",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		},
+		"extra-slot-project-ray":
+		{
+			"DisplayName": "Extra Slot Ray",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		},
+		"extra-slot-project-mighty":
+		{
+			"DisplayName": "Extra Slot Mighty",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		},
+		"es-3d2d-shadow":
+		{
+			"DisplayName": "Extra Slot 3D in 2D Shadow",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		}
+	},
+	"Settings":
+	{
+		"List":
+		[
+			{
+				"InternalName": "uh.flash",
+				"DisplayName": "Super Flash Strenth",
+				"Variable": "uh.flash",
+				"DefaultValue": "0",
+				"Category": "Main Settings",		
+				"Options":
+				{
+					"0": "Pure White",
+					"1": "Mostly White",
+					"2": "Mostly White & Soft Cycle"
+				}
+			},
+			{
+				"InternalName": "uh.style.sonic",
+				"DisplayName": "Sonic Palette Style",
+				"Variable": "uh.style.sonic",
+				"DefaultValue": "1",
+				"Category": "Main Settings",		
+				"Options":
+				{
+					"0": "Cycle",
+					"1": "Flash White"
+				}
+			},
+			{
+				"InternalName": "uh.hyper.sonic",
+				"DisplayName": "Sonic Hyper Form",
+				"Variable": "uh.hyper.sonic",
+				"DefaultValue": "2",
+				"Category": "Main Settings",		
+				"Options":
+				{
+					"0": "Slow",
+					"1": "Fast",
+					"2": "Rainbow"
+				}
+			},
+			{
+				"InternalName": "uh.style.tails",
+				"DisplayName": "Tails Palette Style",
+				"Variable": "uh.style.tails",
+				"DefaultValue": "0",
+				"Category": "Main Settings",		
+				"Options":
+				{
+					"0": "Cycle",
+					"1": "Flash White"
+				}
+			},
+			{
+				"InternalName": "uh.hyper.tails",
+				"DisplayName": "Tails Hyper Form",
+				"Variable": "uh.hyper.tails",
+				"DefaultValue": "0",
+				"Category": "Main Settings",		
+				"Options":
+				{
+					"0": "Slow",
+					"1": "Fast",
+					"2": "Rainbow"
+				}
+			},
+			{
+				"InternalName": "uh.style.knuckles",
+				"DisplayName": "Knuckles Palette Style",
+				"Variable": "uh.style.knuckles",
+				"DefaultValue": "0",
+				"Category": "Main Settings",		
+				"Options":
+				{
+					"0": "Cycle",
+					"1": "Flash White"
+				}
+			},
+			{
+				"InternalName": "uh.hyper.knuckles",
+				"DisplayName": "Knuckles Hyper Form",
+				"Variable": "uh.hyper.knuckles",
+				"DefaultValue": "1",
+				"Category": "Main Settings",		
+				"Options":
+				{
+					"0": "Slow",
+					"1": "Fast",
+					"2": "Rainbow"
+				}
+			},
+			{
+				"InternalName": "uh.override_esu",
+				"DisplayName": "Override ESU Super/Hyper",
+				"Variable": "uh.override_esu",
+				"DefaultValue": "0",
+				"Category": "ESU Settings",		
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "uh.palette.mighty",
+				"DisplayName": "Override Mighty's Palette",
+				"Variable": "uh.palette.mighty",
+				"DefaultValue": "0",
+				"Category": "ESU Settings",		
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "uh.style.mighty",
+				"DisplayName": "Mighty Palette Style",
+				"Variable": "uh.style.mighty",
+				"DefaultValue": "0",
+				"Category": "ESU Settings",		
+				"Options":
+				{
+					"0": "Cycle",
+					"1": "Flash White"
+				}
+			},
+			{
+				"InternalName": "uh.hyper.mighty",
+				"DisplayName": "Mighty Hyper Form",
+				"Variable": "uh.hyper.mighty",
+				"DefaultValue": "1",
+				"Category": "ESU Settings",		
+				"Options":
+				{
+					"0": "Slow",
+					"1": "Fast",
+					"2": "Rainbow"
+				}
+			},
+			{
+				"InternalName": "uh.palette.ray",
+				"DisplayName": "Override Ray's Palette",
+				"Variable": "uh.palette.ray",
+				"DefaultValue": "0",
+				"Category": "ESU Settings",		
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "uh.style.ray",
+				"DisplayName": "Ray Palette Style",
+				"Variable": "uh.style.ray",
+				"DefaultValue": "0",
+				"Category": "ESU Settings",		
+				"Options":
+				{
+					"0": "Cycle",
+					"1": "Flash White"
+				}
+			},
+			{
+				"InternalName": "uh.hyper.ray",
+				"DisplayName": "Ray Hyper Form",
+				"Variable": "uh.hyper.ray",
+				"DefaultValue": "1",
+				"Category": "ESU Settings",		
+				"Options":
+				{
+					"0": "Slow",
+					"1": "Fast",
+					"2": "Rainbow"
+				}
+			},
+			{
+				"InternalName": "uh.palette.amy",
+				"DisplayName": "Override Amy's Palette",
+				"Variable": "uh.palette.amy",
+				"DefaultValue": "0",
+				"Category": "ESU Settings",		
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "uh.style.amy",
+				"DisplayName": "Amy Palette Style",
+				"Variable": "uh.style.amy",
+				"DefaultValue": "0",
+				"Category": "ESU Settings",		
+				"Options":
+				{
+					"0": "Cycle",
+					"1": "Flash White"
+				}
+			},
+			{
+				"InternalName": "uh.hyper.amy",
+				"DisplayName": "Amy Hyper Form",
+				"Variable": "uh.hyper.amy",
+				"DefaultValue": "1",
+				"Category": "ESU Settings",		
+				"Options":
+				{
+					"0": "Slow",
+					"1": "Fast",
+					"2": "Rainbow"
+				}
+			},
+			{
+				"InternalName": "uh.palette.shadow",
+				"DisplayName": "Override Shadow's Palette",
+				"Variable": "uh.palette.shadow",
+				"DefaultValue": "0",
+				"Category": "ESU Settings",		
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "uh.style.shadow",
+				"DisplayName": "Shadow Palette Style",
+				"Variable": "uh.style.shadow",
+				"DefaultValue": "1",
+				"Category": "ESU Settings",		
+				"Options":
+				{
+					"0": "Cycle",
+					"1": "Flash White"
+				}
+			},
+			{
+				"InternalName": "uh.hyper.shadow",
+				"DisplayName": "Shadow Hyper Form",
+				"Variable": "uh.hyper.shadow",
+				"DefaultValue": "2",
+				"Category": "ESU Settings",		
+				"Options":
+				{
+					"0": "Slow",
+					"1": "Fast",
+					"2": "Rainbow"
+				}
+			}
+
+		]
+	}
+}

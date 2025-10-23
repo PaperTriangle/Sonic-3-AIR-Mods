@@ -5,7 +5,16 @@
 		"UniqueID": "super-flicky-fix",
 		"Author": "PaperTriangle",
 		"Description": "Fixes handling of the super flicky to use Sonic's extended palette.",
-		"ModVersion": "1.6"
+		"ModVersion": "1.7"
+	},
+	"OtherMods":
+	{
+		"underwater-super-hyper-palettes":
+		{
+			"DisplayName": "Underwater Super/Hyper Palettes",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		}
 	},
 	"Settings":
 	{

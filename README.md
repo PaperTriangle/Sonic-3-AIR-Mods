@@ -80,9 +80,6 @@ Makes characters keep rolling when passing from dynamic object to ground object.
 
 **PLEASE NOTE:** This mod is pretty poorly coded and could be much more efficient...
 
-## Less White Super Forms
-Makes super flashes less white to be more consistent with the setting from the ESU mods.
-
 ## Moar Transparency
 Adds transparency effects to more objects in the game. The effects can be *incredibly subtle* at some points and will bypass tranparency removal from **Moar Transparency**.
 
@@ -123,8 +120,8 @@ An option has been added to run this using the released zone order, however this
 
 **PLEASE NOTE:** The GitHub version of this mod comes with the related zone order code from **Useott's Original Zone Order** baked into the mod.
 
-## Underwater Hyper
-Adds an underwater palette for Hyper Sonic.
+## Underwater Super/Hyper Palettes
+Adds an underwater palette for Hyper Sonic, underwater palette options for Tails and Knuckles, and also has some options to make the flash less white to align with some of the ESU characters.
 
 ## Where's Robo
 Simple rawdata mod to replace the object layout of SSZ so the first Eggrobo badnik jetpacks in a little earlier to actually show up in the stage at the wider resolution of Sonic 3 AIR.

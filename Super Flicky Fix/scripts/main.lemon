@@ -78,13 +78,19 @@ function void moddedFlickyPalette()
 {
 	if (superflicky.palettefx.state & 0x80)
 	{
+		bool compatCheck = (sff.super_stars && Mods.isModActive("Classic Hyper Trails") && !Game.getSetting(SETTING_HYPER_TAILS)) || (Mods.isModActive("Underwater Super/Hyper Palettes") && System.getGlobalVariableValueByName("uh.hyper.tails") == 0)
 		// Update ongoing palette effect
-		u16 nextFrame = (superflicky.palettefx.frame + 6) % 18
-		u16 blendFactor = superflicky.palettefx.timer * 0x100 / 0x0f
+		u16 nextFrame = ((compatCheck ? super.palettefx.frame.tails : superflicky.palettefx.frame) + 6) % 18
+		u8 cycle = compatCheck ? 0x0f : 0x1f
+		u16 flashStrength = Mods.isModActive("Underwater Super/Hyper Palettes") && System.getGlobalVariableValueByName("uh.flash") ? 0xc8 : 0x100
+		u16 blendFactor = (compatCheck ? super.palettefx.timer.tails : superflicky.palettefx.timer) * flashStrength / cycle
 		if (nextFrame % 18 == 0)
-			blendFactor = 0x100 - blendFactor
+			blendFactor = flashStrength - blendFactor
 		else if (nextFrame % 18 == 12)
 			blendFactor = 0
+
+		if (Mods.isModActive("Underwater Super/Hyper Palettes") && System.getGlobalVariableValueByName("uh.hyper.tails") == 0 && global.xtrachar == 0 && !isMainCharacter(CHARACTER_SONIC))
+			blendFactor = flashStrength - blendFactor
 
 		for (u8 underwater = 0; underwater < (level.water_present ? 2 : 1); ++underwater)
 		{
@@ -121,7 +127,7 @@ function void moddedFlickyPalette()
 		--superflicky.palettefx.timer
 		if (superflicky.palettefx.timer < 0)
 		{
-			superflicky.palettefx.timer = 0x0f
+			superflicky.palettefx.timer = cycle
 			superflicky.palettefx.frame = nextFrame
 		}
 	}
@@ -135,7 +141,8 @@ function void moddedFlickyPalette()
 
 		for (u8 underwater = 0; underwater < (level.water_present ? 2 : 1); ++underwater)
 		{
-			u16 blendFactor = clamp((superflicky.palettefx.frame + (1 - superflicky.palettefx.timer) * 6 / 2) * 0x100 / 0x24, 0, 0x100)
+			u16 flashStrength = Mods.isModActive("Underwater Super/Hyper Palettes") && System.getGlobalVariableValueByName("uh.flash") ? 0xc8 : 0x100
+			u16 blendFactor = clamp((superflicky.palettefx.frame + (1 - superflicky.palettefx.timer) * 6 / 2) * flashStrength / 0x24, 0, flashStrength)
 		
 			u32 offset = CHARACTER_SONIC * 0x40 + (underwater ? 0x300 : 0)
 			u32 source = 0x802180 + offset
@@ -185,7 +192,8 @@ function void moddedFlickyPalette()
 			superflicky.palettefx.timer = 0x11
 		}
 
-		u16 blendFactor = clamp(u16(superflicky.palettefx.timer) * 0x100 / 0x12, 0, 0x100)
+		u16 flashStrength = Mods.isModActive("Underwater Super/Hyper Palettes") && System.getGlobalVariableValueByName("uh.flash") ? 0xc8 : 0x100
+		u16 blendFactor = clamp(u16(superflicky.palettefx.timer) * flashStrength / 0x12, 0, flashStrength)
 		for (u8 underwater = 0; underwater < (level.water_present ? 2 : 1); ++underwater)
 		{
 			u32 offset = CHARACTER_SONIC * 0x40 + (underwater ? 0x300 : 0)
@@ -233,7 +241,7 @@ function void UpdatePaletteEffects.SuperForm.applyGeneral(u8 characterVersion, u
 function void UpdatePaletteEffects.SuperForm()
 {
 	u8 backupSuper = super.active.tails
-	if (sff.super_stars && Mods.isModActive("Classic Hyper Trails") && System.hasExternalPaletteData(getCharacterPaletteKey(CHARACTER_SONIC), 5))
+	if (sff.super_stars && Mods.isModActive("Classic Hyper Trails"))
 	{
 		if (super.active.tails == 0xff && !Game.getSetting(SETTING_HYPER_TAILS))
 		{

@@ -1,6 +1,31 @@
+global bool uh.flash
+
 global bool uh.style
 global bool uh.speed
 
+global bool uh.style.sonic
+global u8 uh.hyper.sonic
+global bool uh.style.tails
+global u8 uh.hyper.tails
+global bool uh.style.knuckles
+global u8 uh.hyper.knuckles
+
+global bool uh.override_esu
+global bool uh.palette.mighty
+global bool uh.style.mighty
+global u8 uh.hyper.mighty
+global bool uh.palette.ray
+global bool uh.style.ray
+global u8 uh.hyper.ray
+global bool uh.palette.amy
+global bool uh.style.amy
+global u8 uh.hyper.amy
+global bool uh.palette.shadow
+global bool uh.style.shadow
+global u8 uh.hyper.shadow
+
+
+define u8 global.xtrachar = u8[0xffffe654]
 
 function void UpdatePaletteEffects.SuperForm.smoothedVersion(u8 characterVersion)
 {
@@ -13,8 +38,11 @@ function void UpdatePaletteEffects.SuperForm.smoothedVersion(u8 characterVersion
 			u8 cycles = (Game.getSetting(SETTING_GFX_ANTIFLICKER) == 2) ? 0x18 : 0x0c
 			u32 address1 = 0x003a42 + super.palettefx.frame
 			u32 address2 = 0x003a42 + (super.palettefx.frame + 6) % 72
-			u16 FlashOpacity = 0xc8
-			u16 blendFactor = u16(super.palettefx.timer) * FlashOpacity / cycles
+			bool useHyperPalette = UH.isRainbowHyper()
+			bool isHyperEffect = (UH.isFastFlash() || useHyperPalette) && (super.active == 0xff || super.active.tails == 0xff)
+			bool isCyclePalette = UH.isCycleEffect(useHyperPalette, isHyperEffect)
+			u16 flashStrength = (uh.flash && !isCyclePalette) || uh.flash == 2 ? 0xc8 : 0x100
+			u16 blendFactor = u16(super.palettefx.timer) * flashStrength / cycles
 
 			UpdatePaletteEffects.SuperForm.blendSonicKnux(address2, address1, blendFactor, false)
 			if (level.water_present)
@@ -40,8 +68,11 @@ function void UpdatePaletteEffects.SuperForm.smoothedVersion(u8 characterVersion
 			u8 cycles = 0x0c
 			u32 address1 = 0x003a8a + super.palettefx.frame.tails
 			u32 address2 = 0x003a8a + (super.palettefx.frame.tails + 6) % 36
-			u16 FlashOpacity = 0xc8
-			u16 blendFactor = u16(super.palettefx.timer.tails) * 0x100 / cycles
+			bool useHyperPalette = UH.isRainbowHyper()
+			bool isHyperEffect = (UH.isFastFlash() || useHyperPalette) && (super.active == 0xff || super.active.tails == 0xff)
+			bool isCyclePalette = UH.isCycleEffect(useHyperPalette, isHyperEffect)
+			u16 flashStrength = (uh.flash && !isCyclePalette) || uh.flash == 2 ? 0xc8 : 0x100
+			u16 blendFactor = u16(super.palettefx.timer.tails) * flashStrength / cycles
 
 			UpdatePaletteEffects.SuperForm.blendTails(address2, address1, blendFactor, false)
 			if (level.water_present)
@@ -55,7 +86,7 @@ function void UpdatePaletteEffects.SuperForm.smoothedVersion(u8 characterVersion
 			}
 
 			// Also update Sonic's colors, for the flickies
-			if (super.active.tails == 0xff)
+			if (super.active.tails == 0xff || (Mods.isModActive("Super Flicky Fix") && !Game.getSetting(SETTING_HYPER_TAILS) && super.active.tails == 0x01))
 				UpdatePaletteEffects.UpdateSuperSonic.Smoothed(0xff)
 		}
 		else
@@ -66,8 +97,11 @@ function void UpdatePaletteEffects.SuperForm.smoothedVersion(u8 characterVersion
 			super.palettefx.timer = min(super.palettefx.timer, cycles - 1)
 			u32 address1 = 0x003aae + super.palettefx.frame
 			u32 address2 = 0x003aae + nextFrame
-			u16 FlashOpacity = 0xc8
-			u16 blendFactor = super.palettefx.timer * FlashOpacity / cycles
+			bool useHyperPalette = UH.isRainbowHyper()
+			bool isHyperEffect = (UH.isFastFlash() || useHyperPalette) && (super.active == 0xff || super.active.tails == 0xff)
+			bool isCyclePalette = UH.isCycleEffect(useHyperPalette, isHyperEffect)
+			u16 flashStrength = (uh.flash && !isCyclePalette) || uh.flash == 2 ? 0xc8 : 0x100
+			u16 blendFactor = super.palettefx.timer * flashStrength / cycles
 			UpdatePaletteEffects.SuperForm.blendSonicKnux(address2, address1, blendFactor, false)
 
 			if (level.water_present)
@@ -91,8 +125,11 @@ function void UpdatePaletteEffects.SuperForm.smoothedVersion(u8 characterVersion
 		if (characterVersion <= 1)
 		{
 			// Sonic
-			u16 FlashOpacity = 0xc8
-			u16 blendFactor = clamp((super.palettefx.frame + (1 - super.palettefx.timer) * 6 / 2) * FlashOpacity / 0x24, 0, FlashOpacity)
+			bool useHyperPalette = UH.isRainbowHyper()
+			bool isHyperEffect = (UH.isFastFlash() || useHyperPalette) && (super.active == 0xff || super.active.tails == 0xff)
+			bool isCyclePalette = UH.isCycleEffect(useHyperPalette, isHyperEffect)
+			u16 flashStrength = (uh.flash && !isCyclePalette) || uh.flash == 2 ? 0xc8 : 0x100
+			u16 blendFactor = clamp((super.palettefx.frame + (1 - super.palettefx.timer) * 6 / 2) * flashStrength / 0x24, 0, flashStrength)
 			u32 superPaletteAddress = 0x00398e + 0x1e
 			UpdatePaletteEffects.SuperForm.blendSonicKnux(0x802184, superPaletteAddress, blendFactor, false)
 
@@ -140,8 +177,11 @@ function void UpdatePaletteEffects.SuperForm.smoothedVersion(u8 characterVersion
 			super.palettefx.frame.tails = 0
 			super.palettefx.timer = 0x11
 		}
-		u16 FlashOpacity = 0xc8
-		u16 blendFactor = clamp(u16(super.palettefx.timer) * FlashOpacity / 0x12, 0, FlashOpacity)
+		bool useHyperPalette = UH.isRainbowHyper()
+		bool isHyperEffect = (UH.isFastFlash() || useHyperPalette) && (super.active == 0xff || super.active.tails == 0xff)
+		bool isCyclePalette = UH.isCycleEffect(useHyperPalette, isHyperEffect)
+		u16 flashStrength = (uh.flash && !isCyclePalette) || uh.flash == 2 ? 0xc8 : 0x100
+		u16 blendFactor = clamp(u16(super.palettefx.timer) * flashStrength / 0x12, 0, flashStrength)
 
 		if (characterVersion <= 1)
 		{
@@ -211,8 +251,11 @@ function void UpdatePaletteEffects.UpdateSuperSonic.Smoothed(u8 characterVersion
 	u16 nextFrame = (super.palettefx.frame < 54) ? (super.palettefx.frame + 6) : 36
 	u32 address1 = 0x00398e + super.palettefx.frame
 	u32 address2 = 0x00398e + nextFrame
-	u16 FlashOpacity = 0xc8
-	u16 blendFactor = super.palettefx.timer * FlashOpacity / cycles
+	bool useHyperPalette = UH.isRainbowHyper()
+	bool isHyperEffect = (UH.isFastFlash() || useHyperPalette) && (super.active == 0xff || super.active.tails == 0xff)
+	bool isCyclePalette = UH.isCycleEffect(useHyperPalette, isHyperEffect)
+	u16 flashStrength = (uh.flash && !isCyclePalette) || uh.flash == 2 ? 0xc8 : 0x100
+	u16 blendFactor = super.palettefx.timer * flashStrength / cycles
 	if (characterVersion == 0xff)
 		UpdatePaletteEffects.SuperForm.blendFlicky(address2, address1, blendFactor, false)
 	else
@@ -239,22 +282,32 @@ function void UpdatePaletteEffects.UpdateSuperSonic.Smoothed(u8 characterVersion
 
 function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
 {
+	if (!uh.override_esu && global.xtrachar != 0)
+	{
+		base.UpdatePaletteEffects.SuperForm.moddingVersion(characterVersion)
+		return
+	}
+	
 	if (super.palettefx.state & 0x80)
 	{
 		// Update ongoing palette effect
 		u8 character = getMainCharacter()
-		bool isHyperEffect = uh.speed && (super.active == 0xff || super.active.tails == 0xff)
+		bool useHyperPalette = UH.isRainbowHyper()
+		bool isHyperEffect = (UH.isFastFlash() || useHyperPalette) && (super.active == 0xff || super.active.tails == 0xff)
+		bool isCyclePalette = UH.isCycleEffect(useHyperPalette, isHyperEffect)
+		u16 flashStrength = (uh.flash && !isCyclePalette) || uh.flash == 2 ? 0xc8 : 0x100
+		
 		u16 nextFrame = (super.palettefx.frame + 6) % (isHyperEffect ? 108 : 18)
-		u16 FlashOpacity = 0xc8
-		u16 blendFactor = super.palettefx.timer * FlashOpacity / (isHyperEffect ? 0x07 : 0x0f)
+		
+		u16 blendFactor = super.palettefx.timer * flashStrength / (isHyperEffect ? 0x07 : 0x0f)
 		if (characterVersion == 2)
 		{
 			// Tails
 			nextFrame = (super.palettefx.frame.tails + 6) % (isHyperEffect ? 108 : 18)
-			blendFactor = super.palettefx.timer.tails * FlashOpacity / (isHyperEffect ? 0x07 : 0x0f)
+			blendFactor = super.palettefx.timer.tails * flashStrength / (isHyperEffect ? 0x07 : 0x0f)
 		}
 		if (nextFrame % 18 == 0)
-			blendFactor = FlashOpacity - blendFactor
+			blendFactor = flashStrength - blendFactor
 		else if (nextFrame % 18 == 12)
 			blendFactor = 0
 
@@ -265,7 +318,8 @@ function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
 			u32 dest   = 0x802000 + offset
 
 			// Load modded Super palette
-			u8 line = getModdedPaletteLine(character, isHyperEffect, underwater)
+			
+			u8 line = getModdedPaletteLine(character, useHyperPalette && isHyperEffect, underwater)
 
 			zeroMemory(dest, 0x40)
 			u16 numColors = System.loadExternalPaletteData(getCharacterPaletteKey(character), line, 0x800000, 0x20)
@@ -285,7 +339,10 @@ function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
 				else
 				{
 					// Apply flash effect
-					u16[dest + k] = blendColorsPacked(u16[dest + k], !uh.style ? u16[source + k] : 0x0eee, blendFactor)
+					if (isCyclePalette)
+						u16[dest + k] = blendColorsPacked(u16[dest + k], u16[source + k], blendFactor)
+					else
+						u16[dest + k] = blendColorsPacked(u16[dest + k], 0x0eee, blendFactor)
 				}
 			}
 		}
@@ -301,7 +358,7 @@ function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
 			}
 
 			// Also update Sonic's colors, for the flickies
-			if (super.active.tails == 0xff)
+			if (super.active.tails == 0xff || (Mods.isModActive("Super Flicky Fix") && !Game.getSetting(SETTING_HYPER_TAILS) && super.active.tails == 0x01))
 				UpdatePaletteEffects.UpdateSuperSonic.Smoothed(0xff)
 			return
 		}
@@ -317,7 +374,8 @@ function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
 	{
 		// Fade in
 		u8 character = getMainCharacter()
-		bool isHyperEffect = uh.speed && (super.active == 0xff || super.active.tails == 0xff)
+		bool useHyperPalette = UH.isRainbowHyper()
+		bool isHyperEffect = (UH.isFastFlash() || useHyperPalette) && (super.active == 0xff || super.active.tails == 0xff)
 
 		// Fix here for Tails and Knuckles #contributed by 3Pills
 		--super.palettefx.timer
@@ -335,15 +393,15 @@ function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
 
 			for (u8 underwater = 0; underwater < (level.water_present ? 2 : 1); ++underwater)
 			{
-				u16 FlashOpacity = 0xc8
-				u16 blendFactor = clamp((super.palettefx.frame + (1 - super.palettefx.timer) * 6 / 2) * FlashOpacity / 0x24, 0, FlashOpacity)
+				u16 flashStrength = uh.flash ? (uh.style || (!uh.style && global.xtrachar == 0 && isMainCharacter(CHARACTER_SONIC)) || uh.flash == 2 ? 0xc8 : 0x100) : 0x100
+				u16 blendFactor = clamp((super.palettefx.frame + (1 - super.palettefx.timer) * 6 / 2) * flashStrength / 0x24, 0, flashStrength)
 
 				u32 offset = character * 0x40 + (underwater ? 0x300 : 0)
 				u32 source = 0x802180 + offset
 				u32 dest   = 0x802000 + offset
 
 				// Load modded Super palette
-				u8 line = getModdedPaletteLine(character, isHyperEffect, underwater)
+				u8 line = getModdedPaletteLine(character, useHyperPalette && isHyperEffect, underwater)
 
 				zeroMemory(dest, 0x40)
 				u16 numColors = System.loadExternalPaletteData(getCharacterPaletteKey(character), line, 0x800000, 0x20)
@@ -394,8 +452,12 @@ function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
 			super.palettefx.timer = 0x11
 		}
 
-		u16 FlashOpacity = 0xc8
-		u16 blendFactor = clamp(u16(super.palettefx.timer) * FlashOpacity / 0x12, 0, FlashOpacity)
+		bool useHyperPalette = UH.isRainbowHyper()
+		bool isHyperEffect = (UH.isFastFlash() || useHyperPalette) && (super.active == 0xff || super.active.tails == 0xff)
+		bool isCyclePalette = UH.isCycleEffect(useHyperPalette, isHyperEffect)
+		u16 flashStrength = (uh.flash && !isCyclePalette) || uh.flash == 2 ? 0xc8 : 0x100
+		
+		u16 blendFactor = clamp(u16(super.palettefx.timer) * flashStrength / 0x12, 0, flashStrength)
 		for (u8 underwater = 0; underwater < (level.water_present ? 2 : 1); ++underwater)
 		{
 			u32 offset = getMainCharacter() * 0x40 + (underwater ? 0x300 : 0)
@@ -441,4 +503,98 @@ function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
 			--super.palettefx.timer
 		}
 	}
+}
+
+// Rainbow Hyper
+function bool UH.isRainbowHyper()
+{
+	if (global.xtrachar == 0)
+		if (isMainCharacter(CHARACTER_SONIC))
+			return uh.hyper.sonic == 2
+		else if (isMainCharacter(CHARACTER_TAILS))
+			return uh.hyper.tails == 2
+		else if (isMainCharacter(CHARACTER_KNUCKLES))
+			return uh.hyper.knuckles == 2
+			
+	if (uh.override_esu)
+		if (global.xtrachar == 1)
+			return uh.hyper.mighty == 2
+		else if (global.xtrachar == 2)
+			return uh.hyper.ray == 2
+		else if (global.xtrachar == 3)
+			return uh.hyper.amy == 2
+		else if (global.xtrachar == 5)
+			return uh.hyper.shadow == 2
+			
+	return true
+}
+
+
+// Fast Flash or Not?
+function bool UH.isFastFlash()
+{
+	if (global.xtrachar == 0)
+		if (isMainCharacter(CHARACTER_SONIC))
+			return uh.hyper.sonic != 0
+		else if (isMainCharacter(CHARACTER_TAILS))
+			return uh.hyper.tails != 0
+		else if (isMainCharacter(CHARACTER_KNUCKLES))
+			return uh.hyper.knuckles != 0
+
+	if (uh.override_esu)
+		if (global.xtrachar == 1)
+			return uh.hyper.mighty != 0
+		else if (global.xtrachar == 2)
+			return uh.hyper.ray != 0
+		else if (global.xtrachar == 3)
+			return uh.hyper.amy != 0
+		else if (global.xtrachar == 5)
+			return uh.hyper.shadow != 0
+
+	return true
+}
+
+// Flash or Cycle
+function bool UH.isCycleEffect(bool useHyperPalette, bool isHyperEffect)
+{
+	if (useHyperPalette && isHyperEffect)
+		return false
+
+	if (global.xtrachar == 0)
+		if (isMainCharacter(CHARACTER_SONIC))
+			return !uh.style.sonic
+		else if (isMainCharacter(CHARACTER_TAILS))
+			return !uh.style.tails
+		else if (isMainCharacter(CHARACTER_KNUCKLES))
+			return !uh.style.knuckles
+
+	if (uh.override_esu)
+		if (global.xtrachar == 1)
+			return !uh.style.mighty
+		else if (global.xtrachar == 2)
+			return !uh.style.ray
+		else if (global.xtrachar == 3)
+			return !uh.style.amy
+		else if (global.xtrachar == 5)
+			return !uh.style.shadow
+
+	return false
+}
+
+// Returns the palette key of the specified extra character.
+function string getExtraCharacterPaletteKey(u8 xtrachar)
+{
+	if (uh.palette.mighty && xtrachar == 1)
+		return "es_mighty_custom"
+	else if (uh.palette.ray && xtrachar == 2)
+		return "es_ray_custom"
+	else if (uh.palette.amy && xtrachar == 3)
+		return "es_amy_custom"
+	else if (uh.palette.shadow && xtrachar == 5)
+		if (System.getGlobalVariableValueByName("shadow.isBoosting") || System.getGlobalVariableValueByName("shadow.Homing") > 1 || System.getGlobalVariableValueByName("shadow.DropDown"))
+			return "es_shadow_boost_custom"
+		else
+			return "es_shadow_custom"
+	
+	return base.getExtraCharacterPaletteKey(xtrachar)
 }
