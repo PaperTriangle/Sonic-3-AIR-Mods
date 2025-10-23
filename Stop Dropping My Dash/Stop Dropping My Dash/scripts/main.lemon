@@ -111,6 +111,42 @@ function void fn01dc56()
 	}
 }
 
+global bool sdmd.ignore_ground
+
+// Dont land on ground if can Smash.
+//# address-hook(0x01e490)
+function void LetSonicClimbOnObject()
+{
+	if !sdmd.ignore_ground
+	{
+		base.LetSonicClimbOnObject()
+		return
+	}
+	
+	u8 bit = (1 << D6.u8)
+	
+	// Already on another object?
+	if (objA1.flags2a & char.flag.ON_OBJECT)
+	{
+		// Unregister there
+		A3 = 0xffff0000 + u16[A1 + 0x42]
+		u8[A3 + 0x2a] &= ~bit
+	}
+	
+	// Standing on this object now
+	u16[A1 + 0x42] = A0.u16
+	u8[A1 + 0x26] = 0
+	objA1.velocity.y = 0
+	objA1.groundspeed = objA1.velocity.x
+	objA1.flags2a |= char.flag.ON_OBJECT
+	
+	objA0.flags2a |= bit
+	if (objA1.flags2a & char.flag.IN_AIR)
+	{
+		objA1.flags2a &= ~char.flag.IN_AIR
+	}
+}
+
 //--------------
 // ICZ Ice Block
 //--------------
@@ -258,7 +294,13 @@ function void Rocks.Update()
 	D2 = objA0.box_size.y
 	D3.u16 = D2.u16 + 1
 	D4.u16 = objA0.position.x.u16
-	fn01dc56()
+	
+	if smashOnThrough && (objA0.subtype2c & 0x01)
+		sdmd.ignore_ground = true
+
+	fn01dc56() 							// Collision check was moved into this method!
+
+	sdmd.ignore_ground = false
 
 	if (objA0.subtype2c & 0x02)
 	{
@@ -425,7 +467,14 @@ function void fn02a502()
 	D2 = objA0.box_size.y
 	D3.u16 = D2.u16 + 1
 	D4.u16 = objA0.position.x.u16
-	fn01dc56()
+	
+	
+	if smashOnThrough
+		sdmd.ignore_ground = true
+
+	fn01dc56() 							// Collision check was moved into this method!
+
+	sdmd.ignore_ground = false
 
 	D0.u16 = objA0.flags2a & (object.flag.P1_ON_OBJECT | object.flag.P2_ON_OBJECT)
 	if (D0.u16 == 0)
@@ -691,7 +740,13 @@ function void fn04172e()
 	D2.u16 = 0x10
 	D3.u16 = 0x11
 	D4.u16 = objA0.position.x.u16
-	fn01dc56()
+	
+	if smashOnThrough
+		sdmd.ignore_ground = true
+
+	fn01dc56() 							// Collision check was moved into this method!
+
+	sdmd.ignore_ground = false
 	
 	if (SDMD.destroyObjectExternally())
 	{
