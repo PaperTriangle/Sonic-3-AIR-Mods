@@ -284,7 +284,7 @@ function void LetSonicClimbOnObject()
 {
 	base.LetSonicClimbOnObject()
 
-	if (global.zone_act == 0x0000)
+	if (global.zone_act == 0x0000) && (objA1.position.x.u16 > 0x2c70 && objA1.position.x.u16 < 0x2d90)
 	{
 		objA1.flags2a &= ~char.flag.ROLLING
 		objA1.state = char.state.RUNNING
