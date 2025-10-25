@@ -297,14 +297,14 @@ function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
 		bool isCyclePalette = UH.isCycleEffect(useHyperPalette, isHyperEffect)
 		u16 flashStrength = (uh.flash && !isCyclePalette) || uh.flash == 2 ? 0xc8 : 0x100
 		
-		u16 nextFrame = (super.palettefx.frame + 6) % (isHyperEffect ? 108 : 18)
+		u16 nextFrame = (super.palettefx.frame + 6) % (isCyclePalette ? (isHyperEffect ? 108 : 72) : (isHyperEffect ? 108 : 18))
 		
-		u16 blendFactor = super.palettefx.timer * flashStrength / (isHyperEffect ? 0x07 : 0x0f)
+		u16 blendFactor = super.palettefx.timer * flashStrength / (isCyclePalette ? (isHyperEffect ? 0x0b : 0x17) : (isHyperEffect ? 0x07 : 0x0f))
 		if (characterVersion == 2)
 		{
 			// Tails
 			nextFrame = (super.palettefx.frame.tails + 6) % (isCyclePalette ? (isHyperEffect ? 108 : 72) : (isHyperEffect ? 108 : 18))
-			blendFactor = super.palettefx.timer.tails * flashStrength / (isCyclePalette ? (isHyperEffect ? 0x0f : 0x17) : (isHyperEffect ? 0x07 : 0x0f))
+			blendFactor = super.palettefx.timer.tails * flashStrength / (isCyclePalette ? (isHyperEffect ? 0x0b : 0x17) : (isHyperEffect ? 0x07 : 0x0f))
 		}
 		if (nextFrame % 18 == 0)
 			blendFactor = flashStrength - blendFactor
@@ -318,6 +318,8 @@ function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
 			u32 dest   = 0x802000 + offset
 
 			// Load modded Super palette
+			if (characterVersion == 2)
+				super.palettefx.frame = super.palettefx.frame.tails
 			
 			u8 line = getModdedPaletteLine(character, useHyperPalette && isHyperEffect, underwater)
 
@@ -353,7 +355,7 @@ function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
 			--super.palettefx.timer.tails
 			if (super.palettefx.timer.tails < 0)
 			{
-				super.palettefx.timer.tails = (isCyclePalette ? (isHyperEffect ? 0x0f : 0x17) : (isHyperEffect ? 0x07 : 0x0f))
+				super.palettefx.timer.tails = (isCyclePalette ? (isHyperEffect ? 0x0b : 0x17) : (isHyperEffect ? 0x07 : 0x0f))
 				super.palettefx.frame.tails = nextFrame
 			}
 
@@ -366,7 +368,7 @@ function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
 		--super.palettefx.timer
 		if (super.palettefx.timer < 0)
 		{
-			super.palettefx.timer = isHyperEffect ? 0x07 : 0x0f
+			super.palettefx.timer = (isCyclePalette ? (isHyperEffect ? 0x0b : 0x17) : (isHyperEffect ? 0x07 : 0x0f))
 			super.palettefx.frame = nextFrame
 		}
 	}
