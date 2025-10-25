@@ -40,30 +40,10 @@ global u8 superflicky.palettefx.state
 // Use Sonic's extended palette to blend (incase someone is using more pixels in Tails' palette)
 function void UpdatePaletteEffects.SuperForm.blendFlicky(u32 source1, u32 source2, u16 blendFactor, bool underwater)
 {
-	if (sff.super_sonic_palette)
-	{
-		bool isSuperPaletteModded = System.hasExternalPaletteData(getCharacterPaletteKey(CHARACTER_SONIC), 5)		// Check line index 5, for Super/Hyper form palette
-		
-		if (super.palettefx.state == 2 && superflicky.palettefx.state != 2)
-		{
-			superflicky.palettefx.state = 2
-			superflicky.palettefx.frame = 30
-		}
-		
-		if (isSuperPaletteModded)
-		{
-			moddedFlickyPalette()			
-		}
-		else
-		{
-			u16 offset = CHARACTER_SONIC * 0x40 + (underwater ? 0x300 : 0)
-			for (u8 k = 0; k < 6; k += 2)
-			{
-				u16[0x802004 + offset + k] = blendColorsPacked(u16[source1 + k], u16[source2 + k], blendFactor)
-			}
-		}
-		
-	}
+	bool isSuperPaletteModded = System.hasExternalPaletteData(getCharacterPaletteKey(CHARACTER_SONIC), 5)		// Check line index 5, for Super/Hyper form palette
+
+	if (sff.super_sonic_palette && isSuperPaletteModded)
+		return
 	else
 	{
 		u16 offset = CHARACTER_SONIC * 0x40 + (underwater ? 0x300 : 0)
@@ -76,21 +56,24 @@ function void UpdatePaletteEffects.SuperForm.blendFlicky(u32 source1, u32 source
 
 function void moddedFlickyPalette()
 {
+	if (super.active.tails == 0 && superflicky.palettefx.state == 0xff)
+	{
+		superflicky.palettefx.state = 2
+		superflicky.palettefx.frame = 0
+		superflicky.palettefx.timer = 0x3c
+	}
+
 	if (superflicky.palettefx.state & 0x80)
 	{
-		bool compatCheck = (sff.super_stars && Mods.isModActive("Classic Hyper Trails") && !Game.getSetting(SETTING_HYPER_TAILS)) || (Mods.isModActive("Underwater Super/Hyper Palettes") && System.getGlobalVariableValueByName("uh.hyper.tails") == 0)
 		// Update ongoing palette effect
-		u16 nextFrame = ((compatCheck ? super.palettefx.frame.tails : superflicky.palettefx.frame) + 6) % 18
-		u8 cycle = compatCheck ? 0x0f : 0x1f
+		u16 nextFrame = (superflicky.palettefx.frame + 6) % 18
+		u8 cycle = 0x0f
 		u16 flashStrength = Mods.isModActive("Underwater Super/Hyper Palettes") && System.getGlobalVariableValueByName("uh.flash") ? 0xc8 : 0x100
-		u16 blendFactor = (compatCheck ? super.palettefx.timer.tails : superflicky.palettefx.timer) * flashStrength / cycle
+		u16 blendFactor = superflicky.palettefx.timer * flashStrength / cycle
 		if (nextFrame % 18 == 0)
 			blendFactor = flashStrength - blendFactor
 		else if (nextFrame % 18 == 12)
 			blendFactor = 0
-
-		if compatCheck
-			blendFactor = flashStrength - blendFactor
 
 		for (u8 underwater = 0; underwater < (level.water_present ? 2 : 1); ++underwater)
 		{
@@ -136,7 +119,7 @@ function void moddedFlickyPalette()
 		// Sonic
 		//  -> Fading #contributed by iCloudius
 		// Fade in effect
-		superflicky.palettefx.frame += 6
+		superflicky.palettefx.frame += 4
 		superflicky.palettefx.timer = 1
 
 		for (u8 underwater = 0; underwater < (level.water_present ? 2 : 1); ++underwater)
@@ -169,7 +152,7 @@ function void moddedFlickyPalette()
 				else
 				{
 					// Apply flash effect
-					u16[dest + k] = blendColorsPacked(u16[source + k], u16[dest + k], blendFactor)
+					u16[dest + k] = blendColorsPacked(u16[source + k], 0xeee, blendFactor)
 				}
 			}
 		}
@@ -180,20 +163,13 @@ function void moddedFlickyPalette()
 
 		// Fully faded in
 		superflicky.palettefx.state = 0xff
-		//u8[0xffffb000 + 0x2e] = 0		// Reset "char.control_flags"
+		superflicky.palettefx.timer = 9
+		superflicky.palettefx.frame = 0
 	}
-	else
+	else if (superflicky.palettefx.state == 2)
 	{
-		// Fade out
-		if (superflicky.palettefx.frame >= 30)
-		{
-			// This is the first frame, set everything so that only the timer is used
-			superflicky.palettefx.frame = 0
-			superflicky.palettefx.timer = 0x11
-		}
-
-		u16 flashStrength = Mods.isModActive("Underwater Super/Hyper Palettes") && System.getGlobalVariableValueByName("uh.flash") ? 0xc8 : 0x100
-		u16 blendFactor = clamp(u16(superflicky.palettefx.timer) * flashStrength / 0x12, 0, flashStrength)
+		u16 flashStrength = (Mods.isModActive("Underwater Super/Hyper Palettes") && System.getGlobalVariableValueByName("uh.flash") ? 0xc8 : 0x100)
+		u16 blendFactor = 0xff * superflicky.palettefx.timer / 0x3c
 		for (u8 underwater = 0; underwater < (level.water_present ? 2 : 1); ++underwater)
 		{
 			u32 offset = CHARACTER_SONIC * 0x40 + (underwater ? 0x300 : 0)
@@ -217,8 +193,11 @@ function void moddedFlickyPalette()
 		
 		if (superflicky.palettefx.timer == 0)
 		{
-			// Fully faded out
 			superflicky.palettefx.state = 0
+		}
+		else if (superflicky.palettefx.timer <= 0x27)
+		{
+			superflicky.palettefx.timer = 0
 		}
 		else
 		{
@@ -239,36 +218,19 @@ function void UpdatePaletteEffects.SuperForm.applyGeneral(u8 characterVersion, u
 // Make Palette rotation slower for OG Super Tails with Classic Hyper Trails compat
 //# address-hook(0x003750) end(0x00398c)
 function void UpdatePaletteEffects.SuperForm()
-{
-	u8 backupSuper = super.active.tails
-	if (sff.super_stars && Mods.isModActive("Classic Hyper Trails"))
-	{
-		if (super.active.tails == 0xff && !Game.getSetting(SETTING_HYPER_TAILS))
-		{
-			super.active.tails = 0x01
-		}
-	}
-	
+{	
 	base.UpdatePaletteEffects.SuperForm()
-
-	if (backupSuper != super.active.tails)
-	{
-		super.active.tails = backupSuper
-	}
+	
+	bool isSuperPaletteModded = System.hasExternalPaletteData(getCharacterPaletteKey(CHARACTER_SONIC), 5)		// Check line index 5, for Super/Hyper form palette
+	
+	if (sff.super_sonic_palette && isSuperPaletteModded)
+		moddedFlickyPalette()
 }
 
 // Make Super Flicky Palette still work with Classic Hyper Trails compat
 function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
 {
 	base.UpdatePaletteEffects.SuperForm.moddingVersion(characterVersion)
-	
-	if (sff.super_stars && sff.super_sonic_palette && Mods.isModActive("Classic Hyper Trails") && super.active.tails == 0x01 && !Game.getSetting(SETTING_HYPER_TAILS))
-		if (super.palettefx.state & 0x80)
-			if (characterVersion == 2)
-			{
-				UpdatePaletteEffects.UpdateSuperSonic.Smoothed(0xff)
-				return
-			}
 }
 
 // Super Tails Stars
