@@ -166,7 +166,7 @@ function void moddedFlickyPalette()
 
 		// Fully faded in
 		superflicky.palettefx.state = 0xff
-		superflicky.palettefx.timer = 17
+		superflicky.palettefx.timer = (Mods.isModActive("Underwater Super/Hyper Palettes") && System.getGlobalVariableValueByName("uh.style.tails")) ? 0 : 17
 		superflicky.palettefx.frame = 0
 	}
 	else if (superflicky.palettefx.state == 2)
@@ -228,12 +228,6 @@ function void UpdatePaletteEffects.SuperForm()
 	
 	if (sff.super_sonic_palette && isSuperPaletteModded)
 		moddedFlickyPalette()
-}
-
-// Make Super Flicky Palette still work with Classic Hyper Trails compat
-function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
-{
-	base.UpdatePaletteEffects.SuperForm.moddingVersion(characterVersion)
 }
 
 // Super Tails Stars
