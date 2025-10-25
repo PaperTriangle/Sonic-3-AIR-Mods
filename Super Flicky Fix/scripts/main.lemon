@@ -547,7 +547,7 @@ function void fn018466()
 
 	#if STANDALONE
 		// Hyper form active?
-		if (u8[A2 + 0x38] == CHARACTER_TAILS && !(sff.super_stars && Mods.isModActive("Classic Hyper Trails") && !Game.getSetting(SETTING_HYPER_TAILS)))
+		if (u8[A2 + 0x38] == CHARACTER_TAILS && (Mods.isModActive("Classic Hyper Trails") && !(sff.super_stars && !Game.getSetting(SETTING_HYPER_TAILS))))
 		{
 			if (super.active.tails & 0x80)
 				return
