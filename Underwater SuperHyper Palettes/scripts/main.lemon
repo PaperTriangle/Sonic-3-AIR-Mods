@@ -299,12 +299,12 @@ function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
 		
 		u16 nextFrame = (super.palettefx.frame + 6) % (isCyclePalette ? (isHyperEffect ? 108 : 72) : (isHyperEffect ? 108 : 18))
 		
-		u16 blendFactor = super.palettefx.timer * flashStrength / (isCyclePalette ? (isHyperEffect ? 0x0b : 0x17) : (isHyperEffect ? 0x07 : 0x0f))
+		u16 blendFactor = clamp(super.palettefx.timer * flashStrength / (isCyclePalette ? (isHyperEffect ? 0x0b : 0x17) : (isHyperEffect ? 0x07 : 0x0f)), 0, flashStrength)
 		if (characterVersion == 2)
 		{
 			// Tails
 			nextFrame = (super.palettefx.frame.tails + 6) % (isCyclePalette ? (isHyperEffect ? 108 : 72) : (isHyperEffect ? 108 : 18))
-			blendFactor = super.palettefx.timer.tails * flashStrength / (isCyclePalette ? (isHyperEffect ? 0x0b : 0x17) : (isHyperEffect ? 0x07 : 0x0f))
+			blendFactor = clamp(super.palettefx.timer.tails * flashStrength / (isCyclePalette ? (isHyperEffect ? 0x0b : 0x17) : (isHyperEffect ? 0x07 : 0x0f)), 0, flashStrength)
 		}
 		if (nextFrame % 18 == 0)
 			blendFactor = flashStrength - blendFactor
@@ -429,8 +429,8 @@ function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
 
 		// Fully faded in
 		super.palettefx.state = 0xff
-		super.palettefx.timer = isCyclePalette ? 0 : (isHyperEffect ? 8 : 17)
-		super.palettefx.timer.tails = isCyclePalette ? 0 : (isHyperEffect ? 8 : 17)
+		super.palettefx.timer = isCyclePalette ? 0 : (isHyperEffect ? 0x0b : 0x17)
+		super.palettefx.timer.tails = isCyclePalette ? 0 : (isHyperEffect ? 0x0b : 0x17)
 		super.palettefx.frame = 0
 		super.palettefx.frame.tails = 0
 		u8[0xffffb000 + 0x2e] = 0		// Reset "char.control_flags"
@@ -445,7 +445,7 @@ function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
 			super.palettefx.timer = 0x3c
 		}
 		
-		u16 blendFactor = 0xff * super.palettefx.timer / 0x3d
+		u16 blendFactor = clamp(0xff * super.palettefx.timer / 0x3d, 0, 0xff)
 		for (u8 underwater = 0; underwater < (level.water_present ? 2 : 1); ++underwater)
 		{
 			u32 offset = getMainCharacter() * 0x40 + (underwater ? 0x300 : 0)
