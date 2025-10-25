@@ -65,8 +65,6 @@ function void moddedFlickyPalette()
 
 	if (superflicky.palettefx.state & 0x80)
 	{
-		bool compatCheck = (sff.super_stars && Mods.isModActive("Classic Hyper Trails") && !Game.getSetting(SETTING_HYPER_TAILS)) //|| (Mods.isModActive("Underwater Super/Hyper Palettes") && (System.getGlobalVariableValueByName("uh.style.tails") == 0 || (super.active.tails == 0xff && System.getGlobalVariableValueByName("uh.hyper.tails") == 2)))
-		
 		// Update ongoing palette effect
 		u16 nextFrame = (superflicky.palettefx.frame + 6) % 18
 		u8 cycle = 0x0f
@@ -77,7 +75,7 @@ function void moddedFlickyPalette()
 		else if (nextFrame % 18 == 12)
 			blendFactor = 0
 
-		if compatCheck
+		if (Mods.isModActive("Underwater Super/Hyper Palettes") && System.getGlobalVariableValueByName("uh.style.tails"))
 			blendFactor = flashStrength - blendFactor
 
 		for (u8 underwater = 0; underwater < (level.water_present ? 2 : 1); ++underwater)
@@ -168,7 +166,7 @@ function void moddedFlickyPalette()
 
 		// Fully faded in
 		superflicky.palettefx.state = 0xff
-		superflicky.palettefx.timer = 9
+		superflicky.palettefx.timer = 17
 		superflicky.palettefx.frame = 0
 	}
 	else if (superflicky.palettefx.state == 2)
@@ -224,16 +222,7 @@ function void UpdatePaletteEffects.SuperForm.applyGeneral(u8 characterVersion, u
 //# address-hook(0x003750) end(0x00398c)
 function void UpdatePaletteEffects.SuperForm()
 {	
-	u8 backupSuper = super.active.tails
-
-	if (sff.super_stars && Mods.isModActive("Classic Hyper Trails"))
-		if (super.active.tails == 0xff && !Game.getSetting(SETTING_HYPER_TAILS))
-			super.active.tails = 0x01
-
 	base.UpdatePaletteEffects.SuperForm()
-
-	if (backupSuper != super.active.tails)
-		super.active.tails = backupSuper
 	
 	bool isSuperPaletteModded = System.hasExternalPaletteData(getCharacterPaletteKey(CHARACTER_SONIC), 5)		// Check line index 5, for Super/Hyper form palette
 	

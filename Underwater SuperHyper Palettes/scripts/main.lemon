@@ -429,8 +429,8 @@ function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
 
 		// Fully faded in
 		super.palettefx.state = 0xff
-		super.palettefx.timer = isCyclePalette ? 0 : 9
-		super.palettefx.timer.tails = isCyclePalette ? 0 : 9
+		super.palettefx.timer = isCyclePalette ? 0 : (isHyperEffect ? 8 : 17)
+		super.palettefx.timer.tails = isCyclePalette ? 0 : (isHyperEffect ? 8 : 17)
 		super.palettefx.frame = 0
 		super.palettefx.frame.tails = 0
 		u8[0xffffb000 + 0x2e] = 0		// Reset "char.control_flags"
