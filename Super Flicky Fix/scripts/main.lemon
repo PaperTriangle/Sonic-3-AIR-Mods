@@ -69,7 +69,7 @@ function void moddedFlickyPalette()
 		u16 nextFrame = (superflicky.palettefx.frame + 6) % 18
 		u8 cycle = 0x0f
 		u16 flashStrength = Mods.isModActive("Underwater Super/Hyper Palettes") && System.getGlobalVariableValueByName("uh.flash") ? 0xc8 : 0x100
-		u16 blendFactor = clamp(superflicky.palettefx.timer * flashStrength / cycle, 0, flashStrength)
+		u16 blendFactor = clamp(u16(superflicky.palettefx.timer) * flashStrength / cycle, 0, flashStrength)
 		if (nextFrame % 18 == 0)
 			blendFactor = flashStrength - blendFactor
 		else if (nextFrame % 18 == 12)
@@ -128,7 +128,7 @@ function void moddedFlickyPalette()
 		for (u8 underwater = 0; underwater < (level.water_present ? 2 : 1); ++underwater)
 		{
 			u16 flashStrength = Mods.isModActive("Underwater Super/Hyper Palettes") && System.getGlobalVariableValueByName("uh.flash") ? 0xc8 : 0x100
-			u16 blendFactor = clamp((superflicky.palettefx.frame + (1 - superflicky.palettefx.timer) * 6 / 2) * flashStrength / 0x24, 0, flashStrength)
+			u16 blendFactor = clamp((superflicky.palettefx.frame + (1 - u16(superflicky.palettefx.timer)) * 6 / 2) * flashStrength / 0x24, 0, flashStrength)
 		
 			u32 offset = CHARACTER_SONIC * 0x40 + (underwater ? 0x300 : 0)
 			u32 source = 0x802180 + offset
@@ -172,7 +172,7 @@ function void moddedFlickyPalette()
 	else if (superflicky.palettefx.state == 2)
 	{
 		u16 flashStrength = (Mods.isModActive("Underwater Super/Hyper Palettes") && System.getGlobalVariableValueByName("uh.flash") ? 0xc8 : 0x100)
-		u16 blendFactor = clamp(0xff * superflicky.palettefx.timer / 0x3c, 0, 0xff)
+		u16 blendFactor = clamp(0xff * u16(superflicky.palettefx.timer) / 0x3c, 0, 0xff)
 		for (u8 underwater = 0; underwater < (level.water_present ? 2 : 1); ++underwater)
 		{
 			u32 offset = CHARACTER_SONIC * 0x40 + (underwater ? 0x300 : 0)
