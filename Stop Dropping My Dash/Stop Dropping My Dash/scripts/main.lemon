@@ -449,6 +449,100 @@ function void fn020056()
 	u8[A1 + 0x2f] = (A1 == 0xffffb04a) ? oldJumpState2p2 : oldJumpState2
 }
 
+//----------------
+// Dwayne the Rock
+//----------------
+
+//# address-hook(0x2042F0)
+function void ExtraChar.AmyObjects()
+{
+	if (objA0.subtype2c == 0x04) // Dwayne the rock
+	{		
+		if (objA0.render_flags & render_flag.VISIBLE)
+		{
+			u16[A0 + 0x38] = score.bonus_counter
+			u8[A0 + 0x32] = u8[0xffffb000 + 0x20]
+			u8[A0 + 0x33] = u8[0xffffb04a + 0x20]
+			objA0.value3a = u8[0xffffb000 + 0x2a]
+			objA0.value3b = u8[0xffffb04a + 0x2a]
+		
+			u16 width = 0x1c
+			u16 height = 0x08
+			A1 = 0xffffb000
+			D1.u16 = width
+			D2.u16 = height - 1
+			D3.u16 = height
+			D4.u16 = objA0.position.x.u16
+
+			bool smashOnThrough = SDMD.canSmash(u8[A0 + 0x32])
+			u16 vel.last = s16[0xffffb000 + 0x1a]
+			
+			if smashOnThrough && (objA0.subtype2c & 0x01)
+				sdmd.ignore_ground = true
+
+			fn01dc56() 							// Collision check was moved into this method!
+
+			sdmd.ignore_ground = false
+			
+			D0.u8 = objA0.flags2a & (object.flag.P1_ON_OBJECT | object.flag.P2_ON_OBJECT)
+			if (D0.u8 != 0)
+			{
+				if (D0.u8 == (object.flag.P1_ON_OBJECT | object.flag.P2_ON_OBJECT))
+				{
+					if (u8[A0 + 0x32] == 2 || u8[A0 + 0x33] == 2 || smashOnThrough || SDMD.canBounce(u8[A0 + 0x32]))
+					{
+						A1 = 0xffffb000
+						D0.u8 = u8[A0 + 0x32]
+						fn01fba8()
+						
+						if (smashOnThrough)
+						{
+							A1 = 0xffffb000
+							objA1.velocity.y = vel.last
+							SDMD.restoreSmash()
+						}
+
+						A1 = 0xffffb04a
+						D0.u8 = u8[A0 + 0x33]
+						fn01fba8()
+
+						ExtraChar.DwayneRockBreak()
+						return
+					}
+				}
+				else
+				{
+					D1.u8 = D0.u8 & object.flag.P1_ON_OBJECT
+					if (D1.u8 == 0)
+					{
+						fn01fbe0()
+						return
+					}
+
+					if (u8[A0 + 0x32] == 2 || smashOnThrough || SDMD.canBounce(u8[A0 + 0x32]))
+					{
+						A1 = 0xffffb000
+						fn01fbae()
+						ExtraChar.DwayneRockBreak()
+
+						if (smashOnThrough)
+						{
+							A1 = 0xffffb000
+							objA1.velocity.y = vel.last
+							SDMD.restoreSmash()
+						}
+						
+						return
+					}
+				}
+			}
+		}
+		DrawOrUnloadObject()
+	}
+	else
+		base.ExtraChar.AmyObjects()
+}
+
 //-----------
 // Cork Floor
 //-----------
