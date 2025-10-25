@@ -303,8 +303,8 @@ function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
 		if (characterVersion == 2)
 		{
 			// Tails
-			nextFrame = (super.palettefx.frame.tails + 6) % (isHyperEffect ? 108 : 18)
-			blendFactor = super.palettefx.timer.tails * flashStrength / (isHyperEffect ? 0x07 : 0x0f)
+			nextFrame = (super.palettefx.frame.tails + 6) % (isCyclePalette ? (isHyperEffect ? 108 : 72) : (isHyperEffect ? 108 : 18))
+			blendFactor = super.palettefx.timer.tails * flashStrength / (isCyclePalette ? (isHyperEffect ? 0x0f : 0x17) : (isHyperEffect ? 0x07 : 0x0f))
 		}
 		if (nextFrame % 18 == 0)
 			blendFactor = flashStrength - blendFactor
@@ -353,7 +353,7 @@ function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
 			--super.palettefx.timer.tails
 			if (super.palettefx.timer.tails < 0)
 			{
-				super.palettefx.timer.tails = isHyperEffect ? 0x07 : 0x0f
+				super.palettefx.timer.tails = (isCyclePalette ? (isHyperEffect ? 0x0f : 0x17) : (isHyperEffect ? 0x07 : 0x0f))
 				super.palettefx.frame.tails = nextFrame
 			}
 
@@ -376,69 +376,61 @@ function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
 		u8 character = getMainCharacter()
 		bool useHyperPalette = UH.isRainbowHyper()
 		bool isHyperEffect = (UH.isFastFlash() || useHyperPalette) && (super.active == 0xff || super.active.tails == 0xff)
+		bool isCyclePalette = UH.isCycleEffect(useHyperPalette, isHyperEffect)
 
 		// Fix here for Tails and Knuckles #contributed by 3Pills
 		--super.palettefx.timer
 		if (super.palettefx.timer >= 0)
 			return
 
-		if (characterVersion <= 1)
+		// Fade in effect
+		super.palettefx.frame += 4
+		super.palettefx.timer = 1
+
+		for (u8 underwater = 0; underwater < (level.water_present ? 2 : 1); ++underwater)
 		{
-			// Sonic
-			//  -> Fading #contributed by iCloudius
+			u16 flashStrength = (uh.flash && !isCyclePalette) || uh.flash == 2 ? 0xc8 : 0x100
+			u16 blendFactor = clamp((super.palettefx.frame + (1 - super.palettefx.timer) * 6 / 2) * flashStrength / 0x24, 0, flashStrength)
 
-			// Fade in effect
-			super.palettefx.frame += 6
-			super.palettefx.timer = 1
+			u32 offset = character * 0x40 + (underwater ? 0x300 : 0)
+			u32 source = 0x802180 + offset
+			u32 dest   = 0x802000 + offset
 
-			for (u8 underwater = 0; underwater < (level.water_present ? 2 : 1); ++underwater)
+			// Load modded Super palette
+			u8 line = getModdedPaletteLine(character, useHyperPalette && isHyperEffect, underwater)
+
+			zeroMemory(dest, 0x40)
+			u16 numColors = System.loadExternalPaletteData(getCharacterPaletteKey(character), line, 0x800000, 0x20)
+			for (u16 i = 0; i < numColors; ++i)
 			{
-				u16 flashStrength = uh.flash ? (uh.style || (!uh.style && global.xtrachar == 0 && isMainCharacter(CHARACTER_SONIC)) || uh.flash == 2 ? 0xc8 : 0x100) : 0x100
-				u16 blendFactor = clamp((super.palettefx.frame + (1 - super.palettefx.timer) * 6 / 2) * flashStrength / 0x24, 0, flashStrength)
+				u32 rgba = u32[0x800000 + i * 4]
+				u16[dest + i * 2] = (rgba & 0xff000000) ? packColorExt(rgba) : 0
+			}
 
-				u32 offset = character * 0x40 + (underwater ? 0x300 : 0)
-				u32 source = 0x802180 + offset
-				u32 dest   = 0x802000 + offset
-
-				// Load modded Super palette
-				u8 line = getModdedPaletteLine(character, useHyperPalette && isHyperEffect, underwater)
-
-				zeroMemory(dest, 0x40)
-				u16 numColors = System.loadExternalPaletteData(getCharacterPaletteKey(character), line, 0x800000, 0x20)
-				for (u16 i = 0; i < numColors; ++i)
+			for (u8 k = 0; k < 0x40; k += 2)
+			{
+				if (u16[dest + k] == 0)
 				{
-					u32 rgba = u32[0x800000 + i * 4]
-					u16[dest + i * 2] = (rgba & 0xff000000) ? packColorExt(rgba) : 0
+					// Use original color as fallback
+					u16[dest + k] = u16[source + k]
 				}
-
-				for (u8 k = 0; k < 0x40; k += 2)
+				else
 				{
-					if (u16[dest + k] == 0)
-					{
-						// Use original color as fallback
-						u16[dest + k] = u16[source + k]
-					}
-					else
-					{
-						// Apply flash effect
-						u16[dest + k] = blendColorsPacked(u16[source + k], u16[dest + k], blendFactor)
-					}
+					// Apply flash effect
+					u16[dest + k] = blendColorsPacked(u16[source + k], isCyclePalette ? u16[dest + k] : 0xeee, blendFactor)
 				}
 			}
 		}
-		else
-		{
-			// Tails / Knuckles
-			//  -> They don't need an additional fade-in, as their palette animation is constantly fading in and out anyway
-			super.palettefx.frame = 0
-			super.palettefx.frame.tails = 0
-		}
 
-		if (super.palettefx.frame < 36) && (characterVersion <= 1)
+		if (super.palettefx.frame < 36)
 			return
 
 		// Fully faded in
 		super.palettefx.state = 0xff
+		super.palettefx.timer = isCyclePalette ? 0 : 9
+		super.palettefx.timer.tails = isCyclePalette ? 0 : 9
+		super.palettefx.frame = 0
+		super.palettefx.frame.tails = 0
 		u8[0xffffb000 + 0x2e] = 0		// Reset "char.control_flags"
 	}
 	else  // (super.palettefx.state == 2)
@@ -448,16 +440,10 @@ function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
 		{
 			// This is the first frame, set everything so that only the timer is used
 			super.palettefx.frame = 0
-			super.palettefx.frame.tails = 0
-			super.palettefx.timer = 0x11
+			super.palettefx.timer = 0x3c
 		}
-
-		bool useHyperPalette = UH.isRainbowHyper()
-		bool isHyperEffect = (UH.isFastFlash() || useHyperPalette) && (super.active == 0xff || super.active.tails == 0xff)
-		bool isCyclePalette = UH.isCycleEffect(useHyperPalette, isHyperEffect)
-		u16 flashStrength = (uh.flash && !isCyclePalette) || uh.flash == 2 ? 0xc8 : 0x100
 		
-		u16 blendFactor = clamp(u16(super.palettefx.timer) * flashStrength / 0x12, 0, flashStrength)
+		u16 blendFactor = 0xff * super.palettefx.timer / 0x3d
 		for (u8 underwater = 0; underwater < (level.water_present ? 2 : 1); ++underwater)
 		{
 			u32 offset = getMainCharacter() * 0x40 + (underwater ? 0x300 : 0)
@@ -495,8 +481,11 @@ function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
 
 		if (super.palettefx.timer == 0)
 		{
-			// Fully faded out
 			super.palettefx.state = 0
+		}
+		else if (super.palettefx.timer <= 0x27)
+		{
+			super.palettefx.timer = 0
 		}
 		else
 		{
