@@ -173,7 +173,12 @@ function void fn08b3aa()
 	bool smashOnThrough = SDMD.canSmash(objA0.value3a)
 	u16 vel.last = s16[0xffffb000 + 0x1a]
 
+	if smashOnThrough
+		sdmd.ignore_ground = true
+
 	fn01dc56() 							// Collision check was moved into this method!
+
+	sdmd.ignore_ground = false
 
 	if !SDMD.destroyObjectExternally()
 	{
