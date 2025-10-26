@@ -142,6 +142,9 @@ function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
 			u32 dest   = 0x802000 + offset
 
 			// Load modded Super palette
+			
+			u16 superFrameBackup = super.palettefx.frame
+			
 			if (characterVersion == 2)
 				super.palettefx.frame = super.palettefx.frame.tails
 			
@@ -151,6 +154,8 @@ function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
 				line = getModdedPaletteLine(character, useHyperPalette && isHyperEffect, underwater)
 			else
 				line = getModdedPaletteLineAsReleased(character, useHyperPalette && isHyperEffect, underwater, super.palettefx.frame / 2)
+				
+			super.palettefx.frame = superFrameBackup
 
 			zeroMemory(dest, 0x40)
 			u16 numColors = System.loadExternalPaletteData(getCharacterPaletteKey(character), line, 0x800000, 0x20)
@@ -200,7 +205,7 @@ function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
 			}
 
 			// Also update Sonic's colors, for the flickies
-			if (super.active.tails == 0xff && (!Mods.isModActive("Super Flicky Fix")))
+			if (super.active.tails == 0xff && ((!Mods.isModActive("Super Flicky Fix")) || (Mods.isModActive("Super Flicky Fix") && !System.getGlobalVariableValueByName("sff.super_sonic_palette"))))
 				UpdatePaletteEffects.UpdateSuperSonic.Smoothed(0xff)
 			return
 		}
