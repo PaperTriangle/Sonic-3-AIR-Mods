@@ -477,7 +477,7 @@ function void ExtraChar.AmyObjects()
 			bool smashOnThrough = SDMD.canSmash(u8[A0 + 0x32])
 			u16 vel.last = s16[0xffffb000 + 0x1a]
 			
-			if smashOnThrough && (objA0.subtype2c & 0x01)
+			if smashOnThrough
 				sdmd.ignore_ground = true
 
 			fn01dc56() 							// Collision check was moved into this method!
@@ -497,7 +497,6 @@ function void ExtraChar.AmyObjects()
 						
 						if (smashOnThrough)
 						{
-							A1 = 0xffffb000
 							objA1.velocity.y = vel.last
 							SDMD.restoreSmash()
 						}
@@ -523,14 +522,14 @@ function void ExtraChar.AmyObjects()
 					{
 						A1 = 0xffffb000
 						fn01fbae()
-						ExtraChar.DwayneRockBreak()
-
+						
 						if (smashOnThrough)
 						{
-							A1 = 0xffffb000
 							objA1.velocity.y = vel.last
 							SDMD.restoreSmash()
 						}
+						
+						ExtraChar.DwayneRockBreak()
 						
 						return
 					}
