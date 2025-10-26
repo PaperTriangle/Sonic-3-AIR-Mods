@@ -926,3 +926,71 @@ function void Character.UpdateGroundContact()
 		}
 	}
 }
+
+
+//------------------------------------------
+// Prevent ghost splashes from glide sliding
+//------------------------------------------
+
+//# address-hook(0x018cb6) end(0x018d68)
+function void fn018cb6()
+{
+	A2 = 0xffff0000 + objA0.dustcloud.character_address
+	D1 = 0x10
+	if (u8[A2 + 0x20] != char.state.BRAKING)
+	{
+		bool b = true
+		if (u8[A2 + 0x38] == CHARACTER_KNUCKLES)
+		{
+			D1 = 0x06
+			b = (u8[A2 + 0x2f] != 3)
+		}
+	
+		if (b)
+		{
+			objA0.base_state = 0x02
+			u8[A0 + 0x36] = 0
+			objA0.state = 0x00 // Set to inactive to prevent ghost splashes
+			return
+		}
+	}
+	
+	--u8[A0 + 0x36]
+	if (s8[A0 + 0x36] < 0)
+	{
+		u8[A0 + 0x36] = 3
+		if ((u8[A2 + 0x2a] & char.flag.UNDERWATER) == 0)
+		{
+						
+			//u8[A1 + 0x22] = 0
+			u8[A2 + 0x34] = 0
+			
+			if (allocDynamicObjectStd())
+			{
+				// Spawn skidding dust
+				objA1.update_address = objA0.update_address
+				objA1.position.x.u16 = u16[A2 + 0x10]
+				objA1.position.y.u16 = u16[A2 + 0x14]
+				if (objA0.flags38 != 0)
+				{
+					D1.u16 -= 4
+				}
+				if (global.inv_gravity)
+					D1.s16 = -D1.s16
+	
+				objA1.position.y.u16 += D1.u16
+				objA1.render_flags = objA0.render_flags
+				u8[A1 + 0x05] += 2
+				objA1.box_size.x = 4
+				objA1.sprite_priority = 0x80
+				objA1.sprite_attributes = (objA0.sprite_attributes & ~sprite_attribute.PRIORITY) | (u16[A2 + 0x0a] & sprite_attribute.PRIORITY)
+				objA1.mapping_offset = objA0.mapping_offset
+				u8[A1 + 0x20] = 3
+				u8[A1 + 0x2a] = 0
+				objA1.dustcloud.character_address = objA0.dustcloud.character_address
+			}
+		}
+	}
+	
+	fn018d6a()
+}
