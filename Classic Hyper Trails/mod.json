@@ -72,6 +72,17 @@
 					"4": "2* (Compounding 2*N)",
 					"5": "2+ (Compounding 1+N)"
 				}
+			},
+			{
+				"InternalName": "cht.super_tails",
+				"DisplayName": "OG Super Tails Trails",
+				"Variable": "cht.super_tails",	
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
 			}
 		]
 	}

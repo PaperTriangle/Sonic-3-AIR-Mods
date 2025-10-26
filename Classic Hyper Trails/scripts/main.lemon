@@ -1,5 +1,6 @@
 global bool cht.transparent
 global u8 cht.number
+global bool cht.super_tails
 
 function bool Standalone.drawCharacterSprite(u8 character, u8 variant, s16 px, s16 py, bool asSmallGhost)
 {
@@ -26,7 +27,7 @@ function bool Standalone.drawCharacterSprite(u8 character, u8 variant, s16 px, s
 	bool useAfterShoes = false
 	if (isPlayer1)
 	{
-		if ((super.active == 0xff) || (super.active.tails == 0xff && !(Mods.isModActive("Super Flicky Fix") && System.getGlobalVariableValueByName("sff.super_stars") && !Game.getSetting(SETTING_HYPER_TAILS))))
+		if ((super.active == 0xff) || (super.active.tails == 0xff && (Game.getSetting(SETTING_HYPER_TAILS) || (!cht.super_tails && !Game.getSetting(SETTING_HYPER_TAILS)))))
 		{
 			useHyperImages = true
 		}
