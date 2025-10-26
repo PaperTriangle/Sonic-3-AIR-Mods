@@ -38,12 +38,6 @@
 			"DisplayName": "Plush's Ariff Tails",
 			"IsRequired": "0",
 			"Priority": "Lower"
-		},
-		"AmyGaloreMisc":
-		{
-			"DisplayName": "Amy Galore: Standalone edition",
-			"IsRequired": "0",
-			"Priority": "Lower"
 		}
 	},
 	"Settings":
