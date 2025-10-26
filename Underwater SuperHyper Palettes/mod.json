@@ -77,7 +77,7 @@
 			},
 			{
 				"InternalName": "uh.flash.rainbow",
-				"DisplayName": "Rainbow Flash Strenth",
+				"DisplayName": "Rainbow Flash Strength",
 				"Variable": "uh.flash.rainbow",
 				"DefaultValue": "1",
 				"Category": "Main Settings",		
