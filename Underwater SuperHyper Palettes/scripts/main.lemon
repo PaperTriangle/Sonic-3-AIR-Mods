@@ -1,284 +1,39 @@
 global bool uh.flash
+global bool uh.flash.rainbow
+global bool uh.flash.type
 
 global bool uh.style
 global bool uh.speed
 
 global bool uh.style.sonic
 global u8 uh.hyper.sonic
+global u16 uh.tint.sonic
 global bool uh.style.tails
 global u8 uh.hyper.tails
+global u16 uh.tint.tails
 global bool uh.style.knuckles
 global u8 uh.hyper.knuckles
+global u16 uh.tint.knuckles
 
 global bool uh.override_esu
 global bool uh.palette.mighty
 global bool uh.style.mighty
 global u8 uh.hyper.mighty
+global u16 uh.tint.mighty
 global bool uh.palette.ray
 global bool uh.style.ray
 global u8 uh.hyper.ray
+global u16 uh.tint.ray
 global bool uh.palette.amy
 global bool uh.style.amy
 global u8 uh.hyper.amy
+global u16 uh.tint.amy
 global bool uh.palette.shadow
 global bool uh.style.shadow
 global u8 uh.hyper.shadow
-
+global u16 uh.tint.shadow
 
 define u8 global.xtrachar = u8[0xffffe654]
-
-function void UpdatePaletteEffects.SuperForm.smoothedVersion(u8 characterVersion)
-{
-	if (super.palettefx.state & 0x80)
-	{
-		// Update ongoing palette effect
-		if (characterVersion == 0)
-		{
-			// Hyper Sonic
-			u8 cycles = (Game.getSetting(SETTING_GFX_ANTIFLICKER) == 2) ? 0x18 : 0x0c
-			u32 address1 = 0x003a42 + super.palettefx.frame
-			u32 address2 = 0x003a42 + (super.palettefx.frame + 6) % 72
-			bool useHyperPalette = UH.isRainbowHyper()
-			bool isHyperEffect = (UH.isFastFlash() || useHyperPalette) && (super.active == 0xff || super.active.tails == 0xff)
-			bool isCyclePalette = UH.isCycleEffect(useHyperPalette, isHyperEffect)
-			u16 flashStrength = (uh.flash && !isCyclePalette) || uh.flash == 2 ? 0xc8 : 0x100
-			u16 blendFactor = u16(super.palettefx.timer) * flashStrength / cycles
-
-			UpdatePaletteEffects.SuperForm.blendSonicKnux(address2, address1, blendFactor, false)
-			if (level.water_present)
-				UpdatePaletteEffects.SuperForm.blendSonicKnux(address2, address1, blendFactor, true)	// Same palette as above water
-
-			--super.palettefx.timer
-			if (super.palettefx.timer < 0)
-			{
-				super.palettefx.timer = cycles - 1
-				super.palettefx.frame += 6
-				if (super.palettefx.frame >= 72)
-					super.palettefx.frame = 0
-			}
-		}
-		else if (characterVersion == 1)
-		{
-			// Super Sonic
-			UpdatePaletteEffects.UpdateSuperSonic.Smoothed(characterVersion)
-		}
-		else if (characterVersion == 2)
-		{
-			// Super/Hyper Tails
-			u8 cycles = 0x0c
-			u32 address1 = 0x003a8a + super.palettefx.frame.tails
-			u32 address2 = 0x003a8a + (super.palettefx.frame.tails + 6) % 36
-			bool useHyperPalette = UH.isRainbowHyper()
-			bool isHyperEffect = (UH.isFastFlash() || useHyperPalette) && (super.active == 0xff || super.active.tails == 0xff)
-			bool isCyclePalette = UH.isCycleEffect(useHyperPalette, isHyperEffect)
-			u16 flashStrength = (uh.flash && !isCyclePalette) || uh.flash == 2 ? 0xc8 : 0x100
-			u16 blendFactor = u16(super.palettefx.timer.tails) * flashStrength / cycles
-
-			UpdatePaletteEffects.SuperForm.blendTails(address2, address1, blendFactor, false)
-			if (level.water_present)
-				UpdatePaletteEffects.SuperForm.blendTails(address2, address1, blendFactor, true)
-
-			--super.palettefx.timer.tails
-			if (super.palettefx.timer.tails < 0)
-			{
-				super.palettefx.timer.tails = cycles - 1
-				super.palettefx.frame.tails = (super.palettefx.frame.tails + 6) % 36
-			}
-
-			// Also update Sonic's colors, for the flickies
-			if (super.active.tails == 0xff || (Mods.isModActive("Super Flicky Fix") && !Game.getSetting(SETTING_HYPER_TAILS) && super.active.tails == 0x01))
-				UpdatePaletteEffects.UpdateSuperSonic.Smoothed(0xff)
-		}
-		else
-		{
-			// Super/Hyper Knuckles
-			u16 nextFrame = (super.palettefx.frame + 6) % 60
-			u8 cycles = (nextFrame == 0) ? 0x0f : 0x03
-			super.palettefx.timer = min(super.palettefx.timer, cycles - 1)
-			u32 address1 = 0x003aae + super.palettefx.frame
-			u32 address2 = 0x003aae + nextFrame
-			bool useHyperPalette = UH.isRainbowHyper()
-			bool isHyperEffect = (UH.isFastFlash() || useHyperPalette) && (super.active == 0xff || super.active.tails == 0xff)
-			bool isCyclePalette = UH.isCycleEffect(useHyperPalette, isHyperEffect)
-			u16 flashStrength = (uh.flash && !isCyclePalette) || uh.flash == 2 ? 0xc8 : 0x100
-			u16 blendFactor = super.palettefx.timer * flashStrength / cycles
-			UpdatePaletteEffects.SuperForm.blendSonicKnux(address2, address1, blendFactor, false)
-
-			if (level.water_present)
-			{
-				address1 = 0x003aae + super.palettefx.frame
-				address2 = 0x003aae + nextFrame
-				UpdatePaletteEffects.SuperForm.blendSonicKnux(address2, address1, blendFactor, true)
-			}
-
-			--super.palettefx.timer
-			if (super.palettefx.timer < 0)
-			{
-				super.palettefx.timer = 0x10	// Will be corrected in next update
-				super.palettefx.frame = nextFrame
-			}
-		}
-	}
-	else if (super.palettefx.state == 1)
-	{
-		// Fade in
-		if (characterVersion <= 1)
-		{
-			// Sonic
-			bool useHyperPalette = UH.isRainbowHyper()
-			bool isHyperEffect = (UH.isFastFlash() || useHyperPalette) && (super.active == 0xff || super.active.tails == 0xff)
-			bool isCyclePalette = UH.isCycleEffect(useHyperPalette, isHyperEffect)
-			u16 flashStrength = (uh.flash && !isCyclePalette) || uh.flash == 2 ? 0xc8 : 0x100
-			u16 blendFactor = clamp((super.palettefx.frame + (1 - u16(super.palettefx.timer)) * 6 / 2) * flashStrength / 0x24, 0, flashStrength)
-			u32 superPaletteAddress = 0x00398e + 0x1e
-			UpdatePaletteEffects.SuperForm.blendSonicKnux(0x802184, superPaletteAddress, blendFactor, false)
-
-			if (level.water_present)
-			{
-				superPaletteAddress = UpdatePaletteEffects.SuperForm.getSuperSonicUnderwaterPalette() + 0x1e
-				UpdatePaletteEffects.SuperForm.blendSonicKnux(0x802484, superPaletteAddress, blendFactor, true)
-			}
-
-			// Brief wait time for animation (standing still in the air)
-			--super.palettefx.timer
-			if (super.palettefx.timer >= 0)
-				return
-
-			// Fade in effect
-			super.palettefx.frame += 6
-			super.palettefx.timer = 1
-			if (super.palettefx.frame < 36)
-				return
-		}
-		else
-		{
-			// Brief wait time for animation (standing still in the air)
-			--super.palettefx.timer
-			if (super.palettefx.timer >= 0)
-				return
-
-			// Tails / Knuckles
-			//  -> They don't need an additional fade-in, as their palette animation is constantly fading in and out anyway
-			super.palettefx.frame = 0
-			super.palettefx.frame.tails = 0
-		}
-
-		// Fully faded in
-		super.palettefx.state = 0xff
-		u8[0xffffb000 + 0x2e] = 0		// Reset "char.control_flags"
-	}
-	else  // (super.palettefx.state == 2)
-	{
-		// Fade out
-		if (super.palettefx.frame >= 30)
-		{
-			// This is the first frame, set everything so that only the timer is used
-			super.palettefx.frame = 0
-			super.palettefx.frame.tails = 0
-			super.palettefx.timer = 0x11
-		}
-		bool useHyperPalette = UH.isRainbowHyper()
-		bool isHyperEffect = (UH.isFastFlash() || useHyperPalette) && (super.active == 0xff || super.active.tails == 0xff)
-		bool isCyclePalette = UH.isCycleEffect(useHyperPalette, isHyperEffect)
-		u16 flashStrength = (uh.flash && !isCyclePalette) || uh.flash == 2 ? 0xc8 : 0x100
-		u16 blendFactor = clamp(u16(super.palettefx.timer) * flashStrength / 0x12, 0, flashStrength)
-
-		if (characterVersion <= 1)
-		{
-			// Sonic (both Super and Hyper form use the same fade-out)
-			u32 superPaletteAddress = 0x00398e + 0x1e
-			UpdatePaletteEffects.SuperForm.blendSonicKnux(0x802184, superPaletteAddress, blendFactor, false)
-
-			if (level.water_present)
-			{
-				superPaletteAddress = UpdatePaletteEffects.SuperForm.getSuperSonicUnderwaterPalette() + 0x1e
-				UpdatePaletteEffects.SuperForm.blendSonicKnux(0x802484, superPaletteAddress, blendFactor, true)
-			}
-		}
-		else if (characterVersion == 2)
-		{
-			// Tails
-			u32 superPaletteAddress = 0x003a8a + 0x12
-			UpdatePaletteEffects.SuperForm.blendTails2(0x8021d0, superPaletteAddress, blendFactor, false)
-
-			if (level.water_present)
-			{
-				UpdatePaletteEffects.SuperForm.blendTails2(0x8024d0, superPaletteAddress, blendFactor, true)
-			}
-
-			// Update of Sonic's colors used by the Flickies
-			{
-				// With fixed palette blend target. #contributed by Dynamic Lemons
-
-				superPaletteAddress = 0x00398e + 0x1e
-				UpdatePaletteEffects.SuperForm.blendFlicky(0xfffffc84, superPaletteAddress, blendFactor, false)
-
-				if (level.water_present)
-				{
-					superPaletteAddress = UpdatePaletteEffects.SuperForm.getSuperSonicUnderwaterPalette() + 0x1e
-					UpdatePaletteEffects.SuperForm.blendFlicky(0xfffff004, superPaletteAddress, blendFactor, true)
-				}
-			}
-		}
-		else
-		{
-			// Knuckles
-			u32 superPaletteAddress = 0x003aae + 0x1e
-			UpdatePaletteEffects.SuperForm.blendSonicKnux(0x802204, superPaletteAddress, blendFactor, false)
-
-			if (level.water_present)
-			{
-				UpdatePaletteEffects.SuperForm.blendSonicKnux(0x802504, superPaletteAddress, blendFactor, true)
-			}
-		}
-
-		if (super.palettefx.timer == 0)
-		{
-			// Fully faded out
-			super.palettefx.state = 0
-		}
-		else
-		{
-			--super.palettefx.timer
-		}
-	}
-}
-
-function void UpdatePaletteEffects.UpdateSuperSonic.Smoothed(u8 characterVersion)
-{
-	// Note that this is used for Tails as well, but only to update Sonic's palette (affects the Flickies!)
-	u8 cycles = (Game.getSetting(SETTING_GFX_ANTIFLICKER) == 2) ? 0x18 : 0x0c
-	u16 nextFrame = (super.palettefx.frame < 54) ? (super.palettefx.frame + 6) : 36
-	u32 address1 = 0x00398e + super.palettefx.frame
-	u32 address2 = 0x00398e + nextFrame
-	bool useHyperPalette = UH.isRainbowHyper()
-	bool isHyperEffect = (UH.isFastFlash() || useHyperPalette) && (super.active == 0xff || super.active.tails == 0xff)
-	bool isCyclePalette = UH.isCycleEffect(useHyperPalette, isHyperEffect)
-	u16 flashStrength = (uh.flash && !isCyclePalette) || uh.flash == 2 ? 0xc8 : 0x100
-	u16 blendFactor = super.palettefx.timer * flashStrength / cycles
-	if (characterVersion == 0xff)
-		UpdatePaletteEffects.SuperForm.blendFlicky(address2, address1, blendFactor, false)
-	else
-		UpdatePaletteEffects.SuperForm.blendSonicKnux(address2, address1, blendFactor, false)
-
-	if (level.water_present)
-	{
-		u32 source = UpdatePaletteEffects.SuperForm.getSuperSonicUnderwaterPalette()
-		address1 = source + super.palettefx.frame
-		address2 = source + nextFrame
-		if (characterVersion == 0xff)
-			UpdatePaletteEffects.SuperForm.blendFlicky(address2, address1, blendFactor, true)
-		else
-			UpdatePaletteEffects.SuperForm.blendSonicKnux(address2, address1, blendFactor, true)
-	}
-
-	--super.palettefx.timer
-	if (super.palettefx.timer < 0)
-	{
-		super.palettefx.timer = cycles - 1
-		super.palettefx.frame = nextFrame
-	}
-}
 
 function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
 {
@@ -297,20 +52,89 @@ function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
 		bool isCyclePalette = UH.isCycleEffect(useHyperPalette, isHyperEffect)
 		u16 flashStrength = (uh.flash && !isCyclePalette) || uh.flash == 2 ? 0xc8 : 0x100
 		
-		u16 nextFrame = (super.palettefx.frame + 6) % (isCyclePalette ? (isHyperEffect ? 108 : 72) : (isHyperEffect ? 108 : 18))
+		if (uh.flash.rainbow && (useHyperPalette && isHyperEffect))
+			flashStrength = 0x100
 		
-		u16 blendFactor = clamp(u16(super.palettefx.timer) * flashStrength / (isCyclePalette ? (isHyperEffect ? 0x0b : 0x17) : (isHyperEffect ? 0x07 : 0x0f)), 0, flashStrength)
-		if (characterVersion == 2)
+		// Set Up Cycles
+		u8 cycles
+		
+		if (uh.flash.type)
 		{
-			// Tails
-			nextFrame = (super.palettefx.frame.tails + 6) % (isCyclePalette ? (isHyperEffect ? 108 : 72) : (isHyperEffect ? 108 : 18))
-			blendFactor = clamp(u16(super.palettefx.timer.tails) * flashStrength / (isCyclePalette ? (isHyperEffect ? 0x0b : 0x17) : (isHyperEffect ? 0x07 : 0x0f)), 0, flashStrength)
+			if (isCyclePalette)
+				cycles = isHyperEffect ? 0x0b : 0x17
+			else
+				cycles = isHyperEffect ? 0x07 : 0x0f
 		}
-		if (nextFrame % 18 == 0)
-			blendFactor = flashStrength - blendFactor
-		else if (nextFrame % 18 == 12)
-			blendFactor = 0
-
+		else
+		{
+			if (isCyclePalette)
+				cycles = isHyperEffect ? 0x07 : 0x0b
+			else
+				cycles = isHyperEffect ? 0x04 : 0x06
+		}
+		
+		// Set Up blending
+		u16 nextFrame
+		u16 blendFactor
+		
+		if (uh.flash.type)
+		{
+			nextFrame = (super.palettefx.frame + 6) % (isCyclePalette ? (isHyperEffect ? 108 : 72) : (isHyperEffect ? 108 : 18))
+			blendFactor = clamp(u16(super.palettefx.timer) * flashStrength / cycles, 0, flashStrength)
+			
+			if (characterVersion == 2)
+			{
+				// Tails
+				nextFrame = (super.palettefx.frame.tails + 6) % (isCyclePalette ? (isHyperEffect ? 108 : 72) : (isHyperEffect ? 108 : 18))
+				blendFactor = clamp(u16(super.palettefx.timer.tails) * flashStrength / cycles, 0, flashStrength)
+			}
+			if (nextFrame % 18 == 0)
+				blendFactor = flashStrength - blendFactor
+			else if (nextFrame % 18 == 12)
+				blendFactor = 0
+		}
+		else
+		{
+			if (useHyperPalette && isHyperEffect)
+			{
+				blendFactor = (super.palettefx.frame % 2 == 0) ? flashStrength : 0
+				nextFrame = (super.palettefx.frame + 1) % 12
+			}
+			else if (isCyclePalette)
+			{
+				u8 tempFrame = super.palettefx.frame >= 4 ? 6 - super.palettefx.frame : super.palettefx.frame
+				blendFactor = tempFrame * flashStrength / 3
+				nextFrame = (super.palettefx.frame + 1) % 6
+			}
+			else
+			{
+				blendFactor = (super.palettefx.frame >= 3 ? 1 : super.palettefx.frame) * flashStrength / 2
+				nextFrame = (super.palettefx.frame + 1) % 4
+			}
+			
+			if (characterVersion == 2)
+			{
+				if (useHyperPalette && isHyperEffect)
+				{
+					blendFactor = (super.palettefx.frame.tails % 2 == 0) ? flashStrength : 0
+					nextFrame = (super.palettefx.frame.tails + 1) % 12
+				}
+				else if (isCyclePalette)
+				{
+					u8 tempFrame = super.palettefx.frame.tails >= 4 ? 6 - super.palettefx.frame.tails : super.palettefx.frame.tails
+					blendFactor = tempFrame * flashStrength / 3
+					nextFrame = (super.palettefx.frame.tails + 1) % 6
+				}
+				else
+				{
+					blendFactor = (super.palettefx.frame.tails >= 3 ? 1 : super.palettefx.frame.tails) * flashStrength / 2
+					nextFrame = (super.palettefx.frame.tails + 1) % 4
+				}
+			}
+		}
+		
+		// Apply Blending
+		
 		for (u8 underwater = 0; underwater < (level.water_present ? 2 : 1); ++underwater)
 		{
 			u32 offset = character * 0x40 + (underwater ? 0x300 : 0)
@@ -321,7 +145,12 @@ function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
 			if (characterVersion == 2)
 				super.palettefx.frame = super.palettefx.frame.tails
 			
-			u8 line = getModdedPaletteLine(character, useHyperPalette && isHyperEffect, underwater)
+			u8 line
+			
+			if (uh.flash.type)
+				line = getModdedPaletteLine(character, useHyperPalette && isHyperEffect, underwater)
+			else
+				line = getModdedPaletteLineAsReleased(character, useHyperPalette && isHyperEffect, underwater, super.palettefx.frame / 2)
 
 			zeroMemory(dest, 0x40)
 			u16 numColors = System.loadExternalPaletteData(getCharacterPaletteKey(character), line, 0x800000, 0x20)
@@ -344,23 +173,34 @@ function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
 					if (isCyclePalette)
 						u16[dest + k] = blendColorsPacked(u16[dest + k], u16[source + k], blendFactor)
 					else
-						u16[dest + k] = blendColorsPacked(u16[dest + k], 0x0eee, blendFactor)
+					{
+						u16 flashColour = 0xeee
+						
+						if !(useHyperPalette && isHyperEffect)
+						{
+							flashColour = underwater ? UH.flashTint() - (UH.flashTint() == 0xcce ? -0x200 : 0x002) : UH.flashTint()
+						}
+						
+						u16[dest + k] = blendColorsPacked(u16[dest + k], flashColour, blendFactor)
+					}
 				}
 			}
 		}
-
+		
+		// Progress the animation
+		
 		if (characterVersion == 2)
 		{
 			// Super/Hyper Tails
 			--super.palettefx.timer.tails
 			if (super.palettefx.timer.tails < 0)
 			{
-				super.palettefx.timer.tails = (isCyclePalette ? (isHyperEffect ? 0x0b : 0x17) : (isHyperEffect ? 0x07 : 0x0f))
+				super.palettefx.timer.tails = cycles
 				super.palettefx.frame.tails = nextFrame
 			}
 
 			// Also update Sonic's colors, for the flickies
-			if (super.active.tails == 0xff || (Mods.isModActive("Super Flicky Fix") && !Game.getSetting(SETTING_HYPER_TAILS) && super.active.tails == 0x01))
+			if (super.active.tails == 0xff && (!Mods.isModActive("Super Flicky Fix")))
 				UpdatePaletteEffects.UpdateSuperSonic.Smoothed(0xff)
 			return
 		}
@@ -368,11 +208,11 @@ function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
 		--super.palettefx.timer
 		if (super.palettefx.timer < 0)
 		{
-			super.palettefx.timer = (isCyclePalette ? (isHyperEffect ? 0x0b : 0x17) : (isHyperEffect ? 0x07 : 0x0f))
+			super.palettefx.timer = cycles
 			super.palettefx.frame = nextFrame
 		}
 	}
-	else if (super.palettefx.state == 1)
+	else if (super.palettefx.state == 1) // Fade In
 	{
 		// Fade in
 		u8 character = getMainCharacter()
@@ -429,41 +269,44 @@ function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
 
 		// Fully faded in
 		super.palettefx.state = 0xff
-		super.palettefx.timer = isCyclePalette ? 0 : (isHyperEffect ? 0x0b : 0x17)
-		super.palettefx.timer.tails = isCyclePalette ? 0 : (isHyperEffect ? 0x0b : 0x17)
-		super.palettefx.frame = 0
-		super.palettefx.frame.tails = 0
+		super.palettefx.timer = uh.flash.type ? (isCyclePalette ? 0 : (isHyperEffect ? 0x0b : 0x17)) : (isCyclePalette ? 0 : (isHyperEffect ? 0x04 : 0x06))
+		super.palettefx.timer.tails = uh.flash.type ? (isCyclePalette ? 0 : (isHyperEffect ? 0x0b : 0x17)) : (isCyclePalette ? 0 : (isHyperEffect ? 0x04 : 0x06))
+		super.palettefx.frame = uh.flash.type ? 0 : (isCyclePalette ? 0 : isHyperEffect ? 0 : 2)
+		super.palettefx.frame.tails = uh.flash.type ? 0 : (isCyclePalette ? 0 : isHyperEffect ? 0 : 2)
 		u8[0xffffb000 + 0x2e] = 0		// Reset "char.control_flags"
 	}
-	else  //(super.palettefx.state == 2)
+	else  // Fade Out (super.palettefx.state == 2)
 	{
 		// Fade out
 		if (super.palettefx.frame >= 30)
 		{
 			// This is the first frame, set everything so that only the timer is used
 			super.palettefx.frame = 0
-			super.palettefx.timer = 0x3c
+			super.palettefx.timer = 0x1e
 		}
 		
-		u16 blendFactor = clamp(0xff * u16(super.palettefx.timer) / 0x3c, 0, 0x100)
+		u16 blendFactor = clamp(0xff * u16(super.palettefx.timer) / 0x1e, 0, 0x100)
 		
-		for (u8 underwater = 0; underwater < (level.water_present ? 2 : 1); ++underwater)
+		if (level.framecounter % 2 == 0 || super.palettefx.timer == 0)
 		{
-			u32 offset = getMainCharacter() * 0x40 + (underwater ? 0x300 : 0)
-			u32 source = 0x802180 + offset
-			u32 dest   = 0x802000 + offset
-
-			for (u8 k = 0; k < 0x40; k += 2)
+			for (u8 underwater = 0; underwater < (level.water_present ? 2 : 1); ++underwater)
 			{
-				if (u16[dest + k] == 0)
+				u32 offset = getMainCharacter() * 0x40 + (underwater ? 0x300 : 0)
+				u32 source = 0x802180 + offset
+				u32 dest   = 0x802000 + offset
+
+				for (u8 k = 0; k < 0x40; k += 2)
 				{
-					// Use original color as fallback
-					u16[dest + k] = u16[source + k]
-				}
-				else
-				{
-					// Apply flash effect
-					u16[dest + k] = blendColorsPacked(u16[source + k], u16[dest + k], blendFactor)
+					if (u16[dest + k] == 0)
+					{
+						// Use original color as fallback
+						u16[dest + k] = u16[source + k]
+					}
+					else
+					{
+						// Apply flash effect
+						u16[dest + k] = blendColorsPacked(u16[source + k], u16[dest + k], blendFactor)
+					}
 				}
 			}
 		}
@@ -486,15 +329,41 @@ function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
 		{
 			super.palettefx.state = 0
 		}
-		else if (super.palettefx.timer <= 0x27)
-		{
-			super.palettefx.timer = 0
-		}
 		else
 		{
 			--super.palettefx.timer
 		}
 	}
+}
+
+function u8 getModdedPaletteLineAsReleased(u8 character, bool isHyperEffect, bool underwater, u8 cycle)
+{
+	string key = getCharacterPaletteKey(character)
+	u8 line = 5
+	if (isHyperEffect)
+	{
+		// Hyper color cycle (if mod supports it)
+		line = 6 + cycle
+		if (!System.hasExternalPaletteData(key, line))
+		{
+			line = 5
+		}
+	}
+	if (underwater)
+	{
+		// Use underwater palette (if mod supports it)
+		//  -> Based on scripts #contributed by iCloudius
+		u8 variant = getUnderwaterPaletteVariantByCurrentZone()
+		if (variant > 0)
+		{
+			for (; variant > 0; --variant)	// If needed, also try the lower variants as fallbacks
+			{
+				if (System.hasExternalPaletteData(key, line + variant * 7))
+					return line + variant * 7
+			}
+		}
+	}
+	return line
 }
 
 // Rainbow Hyper
@@ -542,6 +411,30 @@ function bool UH.isFastFlash()
 			return uh.hyper.amy != 0
 		else if (global.xtrachar == 5)
 			return uh.hyper.shadow != 0
+
+	return true
+}
+
+// Flash Tint
+function u16 UH.flashTint()
+{
+	if (global.xtrachar == 0)
+		if (isMainCharacter(CHARACTER_SONIC))
+			return uh.tint.sonic
+		else if (isMainCharacter(CHARACTER_TAILS))
+			return uh.tint.tails
+		else if (isMainCharacter(CHARACTER_KNUCKLES))
+			return uh.tint.knuckles
+
+	if (uh.override_esu)
+		if (global.xtrachar == 1)
+			return uh.tint.mighty
+		else if (global.xtrachar == 2)
+			return uh.tint.ray
+		else if (global.xtrachar == 3)
+			return uh.tint.amy
+		else if (global.xtrachar == 5)
+			return uh.tint.shadow
 
 	return true
 }

@@ -4,7 +4,7 @@
 		"Name": "Underwater Super/Hyper Palettes",
 		"UniqueID": "underwater-super-hyper-palettes",
 		"Author": "PaperTriangle",
-		"ModVersion": "1.0",
+		"ModVersion": "1.1",
 		"Description": "Adds underwater version of the Hyper Sonic palette.",
 	},
 	"OtherMods":
@@ -51,16 +51,40 @@
 		"List":
 		[
 			{
+				"InternalName": "uh.flash.type",
+				"DisplayName": "Flashing Type",
+				"Variable": "uh.flash.type",
+				"DefaultValue": "1",
+				"Category": "Main Settings",		
+				"Options":
+				{
+					"0": "\"Mega Drive\"-esque",
+					"1": "Smoothed"
+				}
+			},
+			{
 				"InternalName": "uh.flash",
-				"DisplayName": "Super Flash Strenth",
+				"DisplayName": "Super Flash Strength",
 				"Variable": "uh.flash",
-				"DefaultValue": "0",
+				"DefaultValue": "1",
 				"Category": "Main Settings",		
 				"Options":
 				{
 					"0": "Pure White",
-					"1": "Mostly White",
-					"2": "Mostly White & Soft Cycle"
+					"2": "Mostly White",
+					"3": "Mostly White & Soft Cycle"
+				}
+			},
+			{
+				"InternalName": "uh.flash.rainbow",
+				"DisplayName": "Rainbow Flash Strenth",
+				"Variable": "uh.flash.rainbow",
+				"DefaultValue": "1",
+				"Category": "Main Settings",		
+				"Options":
+				{
+					"0": "Super Flash Strength",
+					"1": "Pure White"
 				}
 			},
 			{
@@ -68,7 +92,7 @@
 				"DisplayName": "Sonic Palette Style",
 				"Variable": "uh.style.sonic",
 				"DefaultValue": "1",
-				"Category": "Main Settings",		
+				"Category": "Sonic Settings",		
 				"Options":
 				{
 					"0": "Cycle",
@@ -80,7 +104,7 @@
 				"DisplayName": "Sonic Hyper Form",
 				"Variable": "uh.hyper.sonic",
 				"DefaultValue": "2",
-				"Category": "Main Settings",		
+				"Category": "Sonic Settings",		
 				"Options":
 				{
 					"0": "Slow",
@@ -89,11 +113,29 @@
 				}
 			},
 			{
+				"InternalName": "uh.tint.sonic",
+				"DisplayName": "Sonic White Flash Tint",
+				"Variable": "uh.tint.sonic",
+				"DefaultValue": "0xcee",
+				"Category": "Sonic Settings",
+				"Options":
+				{
+					"0xeee": "White",
+					"0xcce": "Red",
+					"0xcec": "Green",
+					"0xecc": "Blue",
+					"0xcee": "Yellow",
+					"0xece": "Magenta",
+					"0xeec": "Cyan",
+					"0xccc": "Grey"
+				}
+			},
+			{
 				"InternalName": "uh.style.tails",
 				"DisplayName": "Tails Palette Style",
 				"Variable": "uh.style.tails",
 				"DefaultValue": "0",
-				"Category": "Main Settings",		
+				"Category": "Tails Settings",		
 				"Options":
 				{
 					"0": "Cycle",
@@ -105,7 +147,7 @@
 				"DisplayName": "Tails Hyper Form",
 				"Variable": "uh.hyper.tails",
 				"DefaultValue": "0",
-				"Category": "Main Settings",		
+				"Category": "Tails Settings",		
 				"Options":
 				{
 					"0": "Slow",
@@ -114,11 +156,29 @@
 				}
 			},
 			{
+				"InternalName": "uh.tint.tails",
+				"DisplayName": "Tails White Flash Tint",
+				"Variable": "uh.tint.tails",
+				"DefaultValue": "0xeee",
+				"Category": "Tails Settings",
+				"Options":
+				{
+					"0xeee": "White",
+					"0xcce": "Red",
+					"0xcec": "Green",
+					"0xecc": "Blue",
+					"0xcee": "Yellow",
+					"0xece": "Magenta",
+					"0xeec": "Cyan",
+					"0xccc": "Grey"
+				}
+			},
+			{
 				"InternalName": "uh.style.knuckles",
 				"DisplayName": "Knuckles Palette Style",
 				"Variable": "uh.style.knuckles",
 				"DefaultValue": "0",
-				"Category": "Main Settings",		
+				"Category": "Knuckles Settings",		
 				"Options":
 				{
 					"0": "Cycle",
@@ -130,7 +190,7 @@
 				"DisplayName": "Knuckles Hyper Form",
 				"Variable": "uh.hyper.knuckles",
 				"DefaultValue": "1",
-				"Category": "Main Settings",		
+				"Category": "Knuckles Settings",		
 				"Options":
 				{
 					"0": "Slow",
@@ -139,11 +199,29 @@
 				}
 			},
 			{
+				"InternalName": "uh.tint.knuckles",
+				"DisplayName": "Knuckles White Flash Tint",
+				"Variable": "uh.tint.knuckles",
+				"DefaultValue": "0xeee",
+				"Category": "Knuckles Settings",
+				"Options":
+				{
+					"0xeee": "White",
+					"0xcce": "Red",
+					"0xcec": "Green",
+					"0xecc": "Blue",
+					"0xcee": "Yellow",
+					"0xece": "Magenta",
+					"0xeec": "Cyan",
+					"0xccc": "Grey"
+				}
+			},
+			{
 				"InternalName": "uh.override_esu",
 				"DisplayName": "Override ESU Super/Hyper",
 				"Variable": "uh.override_esu",
 				"DefaultValue": "0",
-				"Category": "ESU Settings",		
+				"Category": "Main Settings",		
 				"Options":
 				{
 					"0": "Disabled",
@@ -155,7 +233,7 @@
 				"DisplayName": "Override Mighty's Palette",
 				"Variable": "uh.palette.mighty",
 				"DefaultValue": "0",
-				"Category": "ESU Settings",		
+				"Category": "ES Mighty Settings",		
 				"Options":
 				{
 					"0": "Disabled",
@@ -167,7 +245,7 @@
 				"DisplayName": "Mighty Palette Style",
 				"Variable": "uh.style.mighty",
 				"DefaultValue": "0",
-				"Category": "ESU Settings",		
+				"Category": "ES Mighty Settings",		
 				"Options":
 				{
 					"0": "Cycle",
@@ -179,7 +257,7 @@
 				"DisplayName": "Mighty Hyper Form",
 				"Variable": "uh.hyper.mighty",
 				"DefaultValue": "1",
-				"Category": "ESU Settings",		
+				"Category": "ES Mighty Settings",		
 				"Options":
 				{
 					"0": "Slow",
@@ -188,11 +266,29 @@
 				}
 			},
 			{
+				"InternalName": "uh.tint.mighty",
+				"DisplayName": "Mighty White Flash Tint",
+				"Variable": "uh.tint.mighty",
+				"DefaultValue": "0xcce",
+				"Category": "ES Mighty Settings",
+				"Options":
+				{
+					"0xeee": "White",
+					"0xcce": "Red",
+					"0xcec": "Green",
+					"0xecc": "Blue",
+					"0xcee": "Yellow",
+					"0xece": "Magenta",
+					"0xeec": "Cyan",
+					"0xccc": "Grey"
+				}
+			},
+			{
 				"InternalName": "uh.palette.ray",
 				"DisplayName": "Override Ray's Palette",
 				"Variable": "uh.palette.ray",
 				"DefaultValue": "0",
-				"Category": "ESU Settings",		
+				"Category": "ES Ray Settings",		
 				"Options":
 				{
 					"0": "Disabled",
@@ -204,7 +300,7 @@
 				"DisplayName": "Ray Palette Style",
 				"Variable": "uh.style.ray",
 				"DefaultValue": "0",
-				"Category": "ESU Settings",		
+				"Category": "ES Ray Settings",		
 				"Options":
 				{
 					"0": "Cycle",
@@ -216,7 +312,7 @@
 				"DisplayName": "Ray Hyper Form",
 				"Variable": "uh.hyper.ray",
 				"DefaultValue": "1",
-				"Category": "ESU Settings",		
+				"Category": "ES Ray Settings",		
 				"Options":
 				{
 					"0": "Slow",
@@ -225,11 +321,29 @@
 				}
 			},
 			{
+				"InternalName": "uh.tint.ray",
+				"DisplayName": "Ray White Flash Tint",
+				"Variable": "uh.tint.ray",
+				"DefaultValue": "0xcee",
+				"Category": "ES Ray Settings",
+				"Options":
+				{
+					"0xeee": "White",
+					"0xcce": "Red",
+					"0xcec": "Green",
+					"0xecc": "Blue",
+					"0xcee": "Yellow",
+					"0xece": "Magenta",
+					"0xeec": "Cyan",
+					"0xccc": "Grey"
+				}
+			},
+			{
 				"InternalName": "uh.palette.amy",
 				"DisplayName": "Override Amy's Palette",
 				"Variable": "uh.palette.amy",
 				"DefaultValue": "0",
-				"Category": "ESU Settings",		
+				"Category": "ES Amy Settings",		
 				"Options":
 				{
 					"0": "Disabled",
@@ -240,8 +354,8 @@
 				"InternalName": "uh.style.amy",
 				"DisplayName": "Amy Palette Style",
 				"Variable": "uh.style.amy",
-				"DefaultValue": "0",
-				"Category": "ESU Settings",		
+				"DefaultValue": "1",
+				"Category": "ES Amy Settings",		
 				"Options":
 				{
 					"0": "Cycle",
@@ -253,7 +367,7 @@
 				"DisplayName": "Amy Hyper Form",
 				"Variable": "uh.hyper.amy",
 				"DefaultValue": "1",
-				"Category": "ESU Settings",		
+				"Category": "ES Amy Settings",		
 				"Options":
 				{
 					"0": "Slow",
@@ -262,11 +376,29 @@
 				}
 			},
 			{
+				"InternalName": "uh.tint.amy",
+				"DisplayName": "Amy White Flash Tint",
+				"Variable": "uh.tint.amy",
+				"DefaultValue": "0xece",
+				"Category": "ES Amy Settings",
+				"Options":
+				{
+					"0xeee": "White",
+					"0xcce": "Red",
+					"0xcec": "Green",
+					"0xecc": "Blue",
+					"0xcee": "Yellow",
+					"0xece": "Magenta",
+					"0xeec": "Cyan",
+					"0xccc": "Grey"
+				}
+			},
+			{
 				"InternalName": "uh.palette.shadow",
 				"DisplayName": "Override Shadow's Palette",
 				"Variable": "uh.palette.shadow",
 				"DefaultValue": "0",
-				"Category": "ESU Settings",		
+				"Category": "ES Shadow Settings",		
 				"Options":
 				{
 					"0": "Disabled",
@@ -278,7 +410,7 @@
 				"DisplayName": "Shadow Palette Style",
 				"Variable": "uh.style.shadow",
 				"DefaultValue": "1",
-				"Category": "ESU Settings",		
+				"Category": "ES Shadow Settings",		
 				"Options":
 				{
 					"0": "Cycle",
@@ -290,12 +422,30 @@
 				"DisplayName": "Shadow Hyper Form",
 				"Variable": "uh.hyper.shadow",
 				"DefaultValue": "2",
-				"Category": "ESU Settings",		
+				"Category": "ES Shadow Settings",		
 				"Options":
 				{
 					"0": "Slow",
 					"1": "Fast",
 					"2": "Rainbow"
+				}
+			},
+			{
+				"InternalName": "uh.tint.shadow",
+				"DisplayName": "Shadow White Flash Tint",
+				"Variable": "uh.tint.shadow",
+				"DefaultValue": "0xcee",
+				"Category": "ES Shadow Settings",
+				"Options":
+				{
+					"0xeee": "White",
+					"0xcce": "Red",
+					"0xcec": "Green",
+					"0xecc": "Blue",
+					"0xcee": "Yellow",
+					"0xece": "Magenta",
+					"0xeec": "Cyan",
+					"0xccc": "Grey"
 				}
 			}
 
