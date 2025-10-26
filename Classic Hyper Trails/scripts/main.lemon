@@ -27,7 +27,7 @@ function bool Standalone.drawCharacterSprite(u8 character, u8 variant, s16 px, s
 	bool useAfterShoes = false
 	if (isPlayer1)
 	{
-		if ((super.active == 0xff) || (super.active.tails == 0xff && (Game.getSetting(SETTING_HYPER_TAILS) || (!cht.super_tails && !Game.getSetting(SETTING_HYPER_TAILS)))))
+		if ((super.active == 0xff) || (super.active.tails == 0xff && (Game.getSetting(SETTING_HYPER_TAILS) || !(!cht.super_tails && !Game.getSetting(SETTING_HYPER_TAILS)))))
 		{
 			useHyperImages = true
 		}
