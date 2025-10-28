@@ -5,36 +5,36 @@ global u8 sdmd.rushbreak
 //-----------------
 
 #if AMY_GALORE_ACTIVE
-function bool SDMD.canBounce(u8 state.in)
+function bool SDMD.canBounce(u32 AX)
 {
-	if (global.characters == CHARACTER_AMY || global.characters == CHARACTER_AMY_TAILS)
+	if (AX == char.ADDRESS_P1) && (global.characters == CHARACTER_AMY || global.characters == CHARACTER_AMY_TAILS)
 	{
-		return (state.in == char.state.HAMMERJUMP || state.in == char.state.HAMMERSWING || (state.in == char.state.NOROLLJUMP && AmyMISC.NoRollFBreak == 0x01) || (state.in == char.state.HAMMERGLIDE))
+		return (u8[AX + 0x20] == char.state.HAMMERJUMP || u8[AX + 0x20] == char.state.HAMMERSWING || (u8[AX + 0x20] == char.state.NOROLLJUMP && AmyMISC.NoRollFBreak == 0x01) || (u8[AX + 0x20] == char.state.HAMMERGLIDE))
 	}
 	
-	return base.SDMD.canBounce(state.in)
+	return base.SDMD.canBounce(AX)
 }
 
-function bool SDMD.canSmash(u8 state.in)
+function bool SDMD.canSmash(u32 AX)
 {	
-	if (global.characters == CHARACTER_AMY || global.characters == CHARACTER_AMY_TAILS)
+	if (AX == char.ADDRESS_P1) && (global.characters == CHARACTER_AMY || global.characters == CHARACTER_AMY_TAILS)
 	{
-		return (state.in == char.state.ATOMFALL || (AmyMISC.IdleHammer == true && u8[0xffffb000 + 0x38] == CHARACTER_SONIC && AmyMISC.IdleHammerAnim > 7))
+		return (u8[AX + 0x20] == char.state.ATOMFALL || (AmyMISC.IdleHammer == true && u8[char.ADDRESS_P1 + 0x38] == CHARACTER_SONIC && AmyMISC.IdleHammerAnim > 7))
 	}
 
-	return base.SDMD.canSmash(state.in)
+	return base.SDMD.canSmash(AX)
 }
 
 function bool SDMD.destroyObjectExternally()
 {
 	if (global.characters == CHARACTER_AMY || global.characters == CHARACTER_AMY_TAILS)
 	{
-		A1 = 0xffffb000
+		A1 = char.ADDRESS_P1
 		bool Valid
 		if (((objA0.position.x.u16 - objA1.position.x.u16) <= 0x35 && !(objA1.flags2a & char.flag.FACING_LEFT)) || ((objA0.position.x.u16 - objA1.position.x.u16) >= -0x35 && (objA1.flags2a & char.flag.FACING_LEFT))) && (((objA0.position.y.u16 - objA1.position.y.u16) <= 0x10) || ((objA0.position.y.u16 - objA1.position.y.u16) >= -0x10))
 			Valid = true
 			
-		return Valid && ( (AmyMISC.IdleHammer == true && u8[0xffffb000 + 0x38] == CHARACTER_SONIC && AmyMISC.IdleHammerAnim > 7) || u8[0xffffb000 + 0x20] == char.state.HAMMERGLIDE || u8[0xffffb000 + 0x20] == char.state.HIGHJUMP || (AmyMISC.HammerRushing && sdmd.rushbreak) ) 
+		return Valid && ( (AmyMISC.IdleHammer == true && u8[char.ADDRESS_P1 + 0x38] == CHARACTER_SONIC && AmyMISC.IdleHammerAnim > 7) || u8[char.ADDRESS_P1 + 0x20] == char.state.HAMMERGLIDE || u8[char.ADDRESS_P1 + 0x20] == char.state.HIGHJUMP || (AmyMISC.HammerRushing && sdmd.rushbreak) ) 
 	}
 	
 	return base.SDMD.destroyObjectExternally()

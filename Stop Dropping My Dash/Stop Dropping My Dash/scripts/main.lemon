@@ -1,11 +1,10 @@
 define u8 global.xtrachar	= u8[0xffffe654]
-global u8 oldJumpState1
-global u8 oldJumpState2
-global u8 oldJumpState3
+global bool sdmd.ignore_ground
+global bool sdmd.ignore_ground_p2
 global u8 balloonjump
-global u8 oldJumpState1p2
-global u8 oldJumpState2p2
-global u8 oldJumpState3p2
+
+define u32 char.ADDRESS_P1 = 0xffffb000
+define u32 char.ADDRESS_P2 = 0xffffb04a
 
 #define SDMD_ACTIVE
 
@@ -13,55 +12,100 @@ global u8 oldJumpState3p2
 // Mod Compat Functions
 //---------------------
 
-function bool SDMD.canBounce(u8 state.in)
+function bool SDMD.canBounce(u32 AX)
 {
-	return (u8[0xffffb000 + 0x38] == CHARACTER_SONIC && state.in == char.state.SONIC_DROPDASH) || (global.xtrachar == 3 && System.getGlobalVariableValueByName("Amy_HammerSpinAttacking"))
+	return (u8[AX + 0x20] == char.state.ROLLING)  || (u8[AX + 0x38] == CHARACTER_SONIC && u8[AX + 0x20] == char.state.SONIC_DROPDASH) || (global.xtrachar == 3 && AX == char.ADDRESS_P1 && System.getGlobalVariableValueByName("Amy_HammerSpinAttacking"))
 }
 
-function bool SDMD.canSmash(u8 state.in)
-{	
-	return (global.xtrachar == 1 && u8[0xffffb000 + 0x0d] & 0x02) || (global.xtrachar == 3 && System.getGlobalVariableValueByName("Amy_HammerSpinAttacking") && u8[0xffffb000 + 0x2f] == 0) || (global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.DropDown"))
-}
-
-function bool SDMD.allowUpwardsMotion()
+function bool SDMD.canSmash(u32 AX)
 {
-	if (global.xtrachar == 1 && u8[0xffffb000 + 0x0d] & 0x02)
-		return false
-	
-	if (global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.DropDown"))
-		return false
-
-	return true
-}
-
-function void SDMD.restoreSmash()
-{	
-	if (global.xtrachar == 1)
-	{
-		u8[A1 + 0x0d] |= 0x02 
-		u8[A1 + 0x2f] = 1
-	}
-	
-	if (global.xtrachar == 3)
-	{
-		objA1.flags2a &= ~char.flag.ON_OBJECT
-		objA1.flags2a |= char.flag.IN_AIR
-		objA1.velocity.y = System.getGlobalVariableValueByName("ESA.yVelocityLastFrame")
-		System.setGlobalVariableValueByName("Amy_InputTracker", 0)
-		System.setGlobalVariableValueByName("Amy_HammerSlamState", 0)
-		System.setGlobalVariableValueByName("Amy_HammerSlamFrameTimer", System.getGlobalVariableValueByName("Amy_HammerSlamFrameTimer") + 1) 
-		u8[A1 + 0x2f] = 0               // Double jump state
-		u8[A1 + 0x20] = 0x7a 			// char.state.AMY_HAMMERSLAM
-	}
-	
-	if (global.xtrachar == 5)
-	{
-		System.setGlobalVariableValueByName("shadow.DropDown", 1)
-	}
+	return (global.xtrachar == 1 && u8[AX + 0x0d] & 0x02) || (global.xtrachar == 3 && System.getGlobalVariableValueByName("Amy_HammerSpinAttacking") && u8[AX + 0x2f] == 0) || (global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.DropDown"))
 }
 
 function bool SDMD.destroyObjectExternally()
 {
+	return false
+}
+
+//------------------
+// Generic Functions
+//------------------
+
+function u8 SDMD.breakCheck()
+{
+	return SDMD.canBounce(char.ADDRESS_P1) | (SDMD.canSmash(char.ADDRESS_P1) << 1) | (SDMD.canBounce(char.ADDRESS_P2) << 2) | (SDMD.canSmash(char.ADDRESS_P2) << 3)
+}
+
+function void SDMD.dropPlayers()
+{
+	if (objA0.flags2a & object.flag.P1_ON_OBJECT)
+	{
+		u8[char.ADDRESS_P1 + 0x2a] |= char.flag.IN_AIR
+		u8[char.ADDRESS_P1 + 0x2a] &= ~char.flag.ON_OBJECT
+		u8[char.ADDRESS_P1 + 0x05] = base_state.NORMAL
+	}
+	else if (objA0.flags2a & object.flag.P1_PUSHING)
+	{
+		u8[char.ADDRESS_P1 + 0x2a] &= ~char.flag.PUSHING
+		u8[char.ADDRESS_P1 + 0x05] = base_state.NORMAL
+	}
+	
+	if (objA0.flags2a & object.flag.P2_ON_OBJECT)
+	{
+		u8[char.ADDRESS_P2 + 0x2a] |= char.flag.IN_AIR
+		u8[char.ADDRESS_P2 + 0x2a] &= ~char.flag.ON_OBJECT
+		u8[char.ADDRESS_P2 + 0x05] = base_state.NORMAL
+	}
+	else if (objA0.flags2a & object.flag.P2_PUSHING)
+	{
+		u8[char.ADDRESS_P2 + 0x2a] &= ~char.flag.PUSHING
+		u8[char.ADDRESS_P2 + 0x05] = base_state.NORMAL
+	}
+}
+
+function void SDMD.bouncePlayer(bool willBounce, bool willSmash)
+{
+	u8[A1 + 0x2a] |= char.flag.IN_AIR
+	u8[A1 + 0x2a] &= ~char.flag.ON_OBJECT
+
+	if (willSmash)
+		return
+	else if (willBounce)
+		objA1.velocity.y = -0x300
+	else
+		u8[A1 + 0x05] = base_state.NORMAL
+}
+
+function bool SDMD.willItBreak(u8 collisionFlags, u8 shouldBreak)
+{
+	if (collisionFlags != 0) && (shouldBreak)
+	{
+		if (collisionFlags == (object.flag.P1_ON_OBJECT | object.flag.P2_ON_OBJECT))
+		{
+			A1 = char.ADDRESS_P1
+			SDMD.bouncePlayer(shouldBreak & 1, shouldBreak & 2)
+			
+			A1 = char.ADDRESS_P2
+			SDMD.bouncePlayer(shouldBreak & 4, shouldBreak & 8)
+			
+			return true
+		}
+		else if (collisionFlags & object.flag.P1_ON_OBJECT) && (shouldBreak & 3)
+		{
+			A1 = char.ADDRESS_P1
+			SDMD.bouncePlayer(shouldBreak & 1, shouldBreak & 2)
+			
+			return true
+		}
+		else if (collisionFlags & object.flag.P2_ON_OBJECT) && (shouldBreak & 12)
+		{
+			A1 = char.ADDRESS_P2
+			SDMD.bouncePlayer(shouldBreak & 4, shouldBreak & 8)
+			
+			return true
+		}
+	}
+	
 	return false
 }
 
@@ -72,18 +116,8 @@ function bool SDMD.destroyObjectExternally()
 //# address-hook(0x01dc56) end(0x01dcb4)
 function void fn01dc56()
 {
-	// Save player 1's jump states
-	oldJumpState1 = u8[0xffffb000 + 0x40]
-	oldJumpState2 = u8[0xffffb000 + 0x2f]
-	oldJumpState3 = u8[0xffffb000 + 0x20]
-	
-	// Save player 2's jump states
-	oldJumpState1p2 = u8[0xffffb04a + 0x40]
-	oldJumpState2p2 = u8[0xffffb04a + 0x2f]
-	oldJumpState3p2 = u8[0xffffb04a + 0x20]
-	
 	// Check player 1
-	A1 = 0xffffb000
+	A1 = char.ADDRESS_P1
 	D6 = 3		// object.flag.P1_ON_OBJECT
 #if STANDALONE
 	if (debug_mode.state == 0)
@@ -103,21 +137,30 @@ function void fn01dc56()
 	}
 
 	// Check player 2
-	A1 = 0xffffb04a
+	A1 = char.ADDRESS_P2
 	if (objA1.render_flags & render_flag.VISIBLE)
 	{
 		++D6.u8		// object.flag.P2_ON_OBJECT, do not simply set to 4, as upper bits should be preserved
+		
+		u32 backupD1 = D1
+		u32 backupD2 = D2
+		u32 backupD3 = D3
+		u32 backupD4 = D4
+
 		fn01dc74()
+
+		D1 = backupD1
+		D2 = backupD2
+		D3 = backupD3
+		D4 = backupD4
 	}
 }
-
-global bool sdmd.ignore_ground
 
 // Dont land on ground if can Smash.
 //# address-hook(0x01e490)
 function void LetSonicClimbOnObject()
 {
-	if !sdmd.ignore_ground
+	if (!sdmd.ignore_ground && A1 == char.ADDRESS_P1) || (!sdmd.ignore_ground_p2 && A1 == char.ADDRESS_P2)
 	{
 		base.LetSonicClimbOnObject()
 		return
@@ -136,176 +179,87 @@ function void LetSonicClimbOnObject()
 	// Standing on this object now
 	u16[A1 + 0x42] = A0.u16
 	u8[A1 + 0x26] = 0
-	objA1.velocity.y = 0
-	objA1.groundspeed = objA1.velocity.x
-	objA1.flags2a |= char.flag.ON_OBJECT
-	
 	objA0.flags2a |= bit
-	if (objA1.flags2a & char.flag.IN_AIR)
-	{
-		objA1.flags2a &= ~char.flag.IN_AIR
-	}
 }
 
-//--------------
-// ICZ Ice Block
-//--------------
+//------------------------------------
+// Cork Floor (destroyable from above)
+//------------------------------------
 
-// Remove collision check from here for ESU support.
-//# address-hook(0x08b384) end(0x08b3a4)
-function void fn08b384()
+//# address-hook(0x02a502) end(0x02a586)
+function void fn02a502()
 {
-	objA0.value3a = u8[0xffffb000 + 0x20]
-	objA0.value3b = u8[0xffffb04a + 0x20]
-
-	D1 = 0x23
-	D2 = 0x10
-	D3 = 0x10
+	u16[A0 + 0x38] = score.bonus_counter
+	u8[A0 + 0x34] = u8[char.ADDRESS_P1 + 0x20]
+	u8[A0 + 0x36] = u8[char.ADDRESS_P2 + 0x20]
+	
+	D1 = objA0.box_size.x + 11
+	D2 = objA0.box_size.y
+	D3.u16 = D2.u16 + 1
 	D4.u16 = objA0.position.x.u16
 
-	fn08b3aa()
-	DrawOrUnloadObject()
-}
-
-//# address-hook(0x08b3aa) end(0x08b430)
-function void fn08b3aa()
-{
-	bool smashOnThrough = SDMD.canSmash(objA0.value3a)
-	u16 vel.last = s16[0xffffb000 + 0x1a]
-
-	if smashOnThrough
+	u8 shouldBreak = SDMD.breakCheck()
+	
+	if (shouldBreak & 3)
 		sdmd.ignore_ground = true
+		
+	if (shouldBreak & 12)
+		sdmd.ignore_ground_p2 = true
 
 	fn01dc56() 							// Collision check was moved into this method!
 
 	sdmd.ignore_ground = false
+	sdmd.ignore_ground_p2 = false
 
-	if !SDMD.destroyObjectExternally()
+	if (SDMD.destroyObjectExternally())
 	{
-
-		// Any character on top rolling?
-		A2 = 0
-		if ((objA0.flags2a & object.flag.P1_ON_OBJECT) && (objA0.value3a == char.state.ROLLING || smashOnThrough || SDMD.canBounce(objA0.value3a)))
-		{
-			A1 = 0xffffb000
-			if (objA0.flags2a & object.flag.P2_ON_OBJECT)
-			{
-				A2 = 0xffffb04a
-			}
-		}
-		else if ((objA0.flags2a & object.flag.P2_ON_OBJECT) && (objA0.value3b == char.state.ROLLING))
-		{
-			A1 = 0xffffb04a
-		#if STANDALONE
-			if (objA0.flags2a & object.flag.P1_ON_OBJECT)
-			{
-				A2 = 0xffffb000
-			}
-		#endif
-		}
-		else
-		{
-			return
-		}
-
-		u8[A1 + 0x05] = base_state.NORMAL
-		objA1.velocity.y = -0x300
-		objA1.hitbox_extends.x = char.hitbox.x.ROLLING
-		objA1.hitbox_extends.y = char.hitbox.y.ROLLING
-		objA1.state = (A1 == 0xffffb04a) ? objA0.value3b : objA0.value3a
-		objA1.flags2a |= (char.flag.IN_AIR | char.flag.ROLLING)
-		objA1.flags2a &= ~char.flag.ON_OBJECT
+		SDMD.dropPlayers()
 		
-		// Restore jump states
-		u8[A1 + 0x40] = (A1 == 0xffffb04a) ? oldJumpState1p2 : oldJumpState1
-		u8[A1 + 0x2f] = (A1 == 0xffffb04a) ? oldJumpState2p2 : oldJumpState2
-		
-		if (smashOnThrough && A1 == 0xffffb000)
-		{
-			objA1.velocity.y = vel.last
-			SDMD.restoreSmash()
-		}
-
-		if (A2 != 0)
-		{
-			u8[A2 + 0x2a] |= char.flag.IN_AIR
-			u8[A2 + 0x2a] &= ~char.flag.ON_OBJECT
-		}
+		fn02a5d8()
+		return
 	}
-	else
+	
+	u8 collisionFlags = objA0.flags2a & (object.flag.P1_ON_OBJECT | object.flag.P2_ON_OBJECT)
+	if (SDMD.willItBreak(collisionFlags, shouldBreak))
 	{
-		if (objA0.flags2a & object.flag.P1_ON_OBJECT)
-		{
-			u8[0xffffb000 + 0x2a] |= char.flag.IN_AIR
-			u8[0xffffb000 + 0x2a] &= ~char.flag.ON_OBJECT
-			u8[0xffffb000 + 0x05] = base_state.NORMAL
-		}
-		else if (objA0.flags2a & object.flag.P1_PUSHING)
-		{
-			u8[0xffffb000 + 0x2a] &= ~char.flag.PUSHING
-			u8[0xffffb000 + 0x05] = base_state.NORMAL
-		}
-		
-		if (objA0.flags2a & object.flag.P2_ON_OBJECT)
-		{
-			u8[0xffffb04a + 0x2a] |= char.flag.IN_AIR
-			u8[0xffffb04a + 0x2a] &= ~char.flag.ON_OBJECT
-			u8[0xffffb04a + 0x05] = base_state.NORMAL
-		}
-		else if (objA0.flags2a & object.flag.P2_PUSHING)
-		{
-			u8[0xffffb04a + 0x2a] &= ~char.flag.PUSHING
-			u8[0xffffb04a + 0x05] = base_state.NORMAL
-		}
+		fn02a5d8()
+		return
 	}
-
-	// Spawn broken ice block chunks
-	// "spawnChildObjects(0x08b480)" replaced by:
-	spawnChildObject(0x08b432, 0x00, 0, -8)
-	spawnChildObject(0x08b432, 0x02, 0, 8)
-	spawnChildObject(0x08b432, 0x04, -16, -8)
-	spawnChildObject(0x08b432, 0x06, 16, -8)
-	spawnChildObject(0x08b432, 0x08, -16, 8)
-	spawnChildObject(0x08b432, 0x0a, 16, 8)
-	spawnChildObject(0x08b432, 0x0c, 0, 0)
-	spawnChildObject(0x08b432, 0x0e, 0, 0)
-	spawnChildObject(0x08b432, 0x10, 0, 0)
-	spawnChildObject(0x08b432, 0x12, 0, 0)
-	spawnChildObject(0x08b432, 0x14, 0, 0)
-	spawnChildObject(0x08b432, 0x16, 0, 0)
-
-	playSound(0x6e)
-	Object.TriggerUnloading()
+	
+	DrawOrUnloadObject()
 }
 
-//------
-// Rocks
-//------
+//----------
+// AIZ Rocks
+//----------
 
 //# address-hook(0x01faf2) end(0x01fb4a)
 function void Rocks.Update()
 {
 	
 	u16[A0 + 0x38] = score.bonus_counter
-	u8[A0 + 0x32] = u8[0xffffb000 + 0x20]
-	u8[A0 + 0x33] = u8[0xffffb04a + 0x20]
-	objA0.value3a = u8[0xffffb000 + 0x2a]
-	objA0.value3b = u8[0xffffb04a + 0x2a]
-	
-	bool smashOnThrough = SDMD.canSmash(u8[A0 + 0x32])
-	u16 vel.last = s16[0xffffb000 + 0x1a]
+	u8[A0 + 0x32] = u8[char.ADDRESS_P1 + 0x20]
+	u8[A0 + 0x33] = u8[char.ADDRESS_P2 + 0x20]
+	objA0.value3a = u8[char.ADDRESS_P1 + 0x2a]
+	objA0.value3b = u8[char.ADDRESS_P2 + 0x2a]
 
 	D1 = objA0.box_size.x + 11
 	D2 = objA0.box_size.y
 	D3.u16 = D2.u16 + 1
 	D4.u16 = objA0.position.x.u16
 	
-	if smashOnThrough && (objA0.subtype2c & 0x01)
+	u8 shouldBreak = SDMD.breakCheck()
+	
+	if (shouldBreak & 3) && (objA0.subtype2c & 0x01)
 		sdmd.ignore_ground = true
+		
+	if (shouldBreak & 12) && (objA0.subtype2c & 0x01)
+		sdmd.ignore_ground_p2 = true
 
 	fn01dc56() 							// Collision check was moved into this method!
 
 	sdmd.ignore_ground = false
+	sdmd.ignore_ground_p2 = false
 
 	if (objA0.subtype2c & 0x02)
 	{
@@ -314,151 +268,85 @@ function void Rocks.Update()
 
 	if (objA0.subtype2c & 0x01)
 	{
-	
 		if (SDMD.destroyObjectExternally())
 		{
-			if (objA0.flags2a & object.flag.P1_ON_OBJECT)
-			{
-				u8[0xffffb000 + 0x2a] |= char.flag.IN_AIR
-				u8[0xffffb000 + 0x2a] &= ~char.flag.ON_OBJECT
-				u8[0xffffb000 + 0x05] = base_state.NORMAL
-			}
-			else if (objA0.flags2a & object.flag.P1_PUSHING)
-			{
-				u8[0xffffb000 + 0x2a] &= ~char.flag.PUSHING
-				u8[0xffffb000 + 0x05] = base_state.NORMAL
-			}
-			
-			if (objA0.flags2a & object.flag.P2_ON_OBJECT)
-			{
-				u8[0xffffb04a + 0x2a] |= char.flag.IN_AIR
-				u8[0xffffb04a + 0x2a] &= ~char.flag.ON_OBJECT
-				u8[0xffffb04a + 0x05] = base_state.NORMAL
-			}
-			else if (objA0.flags2a & object.flag.P2_PUSHING)
-			{
-				u8[0xffffb04a + 0x2a] &= ~char.flag.PUSHING
-				u8[0xffffb04a + 0x05] = base_state.NORMAL
-			}
+			SDMD.dropPlayers()
 			
 			fn01fbf8()
 			return
 		}
 		
-		D0.u8 = objA0.flags2a & (object.flag.P1_ON_OBJECT | object.flag.P2_ON_OBJECT)
-		if (D0.u8 != 0)
+		u8 collisionFlags = objA0.flags2a & (object.flag.P1_ON_OBJECT | object.flag.P2_ON_OBJECT)
+		if (SDMD.willItBreak(collisionFlags, shouldBreak))
 		{
-			if (D0.u8 == (object.flag.P1_ON_OBJECT | object.flag.P2_ON_OBJECT))
-			{
-				if (u8[A0 + 0x32] == 2 || u8[A0 + 0x33] == 2 || smashOnThrough || SDMD.canBounce(u8[A0 + 0x32]))
-				{
-					A1 = 0xffffb000
-					D0.u8 = u8[A0 + 0x32]
-					fn01fba8()
-					
-					if (smashOnThrough)
-					{
-						A1 = 0xffffb000
-						objA1.velocity.y = vel.last
-						SDMD.restoreSmash()
-					}
-					
-					A1 = 0xffffb04a
-					D0.u8 = u8[A0 + 0x33]
-					fn01fba8()
-					
-					fn01fbf8()
-					
-					return
-				}
-			}
-			else
-			{
-				D1.u8 = D0.u8 & object.flag.P1_ON_OBJECT
-				if (D1.u8 == 0)
-				{
-					fn01fbe0()
-					return
-				}
-
-				if (u8[A0 + 0x32] == 2 || smashOnThrough || SDMD.canBounce(u8[A0 + 0x32]))
-				{
-					A1 = 0xffffb000
-					fn01fbae()
-					fn01fbf8()
-					
-					if (smashOnThrough)
-					{
-						A1 = 0xffffb000
-						objA1.velocity.y = vel.last
-						SDMD.restoreSmash()
-					}
-					
-					return
-				}
-			}
+			fn01fbf8()
+			return
 		}
 	}
 
 	fn01fb4c()
 }
 
-//# address-hook(0x01fbae) end(0x01fbde)
-function void fn01fbae()
-{
-	u8[A1 + 0x05] = base_state.NORMAL
-	objA1.velocity.y = -0x300
-	objA1.hitbox_extends.x = char.hitbox.x.ROLLING
-	objA1.hitbox_extends.y = char.hitbox.y.ROLLING
-	objA1.state = (A1 == 0xffffb04a) ? oldJumpState3p2 : oldJumpState3
-	objA1.flags2a |= (char.flag.IN_AIR | char.flag.ROLLING)
-	objA1.flags2a &= ~char.flag.ON_OBJECT
-	
-	// Restore jump states
-	u8[A1 + 0x40] = (A1 == 0xffffb04a) ? oldJumpState1p2 : oldJumpState1
-	u8[A1 + 0x2f] = (A1 == 0xffffb04a) ? oldJumpState2p2 : oldJumpState2
-	
-}
+//------------------------------
+// Knuckles Specific AIZ Rock...
+//------------------------------
 
-
-//# address-hook(0x01fba8) end(0x01fbac)
-function void fn01fba8()
+//# address-hook(0x020002) end(0x020052)
+function void fn020002()
 {
-	if (D0.u8 == 0x02  || SDMD.canSmash(D0.u8))
+	u16[A0 + 0x38] = score.bonus_counter
+	D1 = objA0.box_size.x + 11
+	D2 = objA0.box_size.y
+	D3.u16 = D2.u16 + 1
+	D4.u16 = objA0.position.x.u16
+
+	if (u8[char.ADDRESS_P1 + 0x38] == CHARACTER_KNUCKLES)
+		sdmd.ignore_ground = true
+
+	fn01dc56() 							// Collision check was moved into this method!
+
+	sdmd.ignore_ground = false
+
+	D0.u8 = objA0.flags2a & object.flag.P1_ON_OBJECT
+	if (D0.u8 == 0)
 	{
-		fn01fbae()
+		DrawOrUnloadObject()
+		return
 	}
-	else
+
+	A1 = char.ADDRESS_P1
+	if (u8[A1 + 0x38] != CHARACTER_KNUCKLES)
 	{
+		DrawOrUnloadObject()
+		return
+	}
+	
+	objA1.velocity.y = -0x300
+	
+	if objA1.state != char.state.ROLLING
+	{
+		u8[A1 + 0x2a] |= char.flag.ROLLING
+		objA1.hitbox_extends.x = char.hitbox.x.ROLLING
+		objA1.hitbox_extends.y = char.hitbox.y.ROLLING
+		objA1.state = char.state.ROLLING
+	}
+
+	if (objA0.flags2a & object.flag.P2_ON_OBJECT)
+	{
+		A1 = char.ADDRESS_P2
 		u8[A1 + 0x05] = base_state.NORMAL
 		u8[A1 + 0x2a] |= char.flag.IN_AIR
 		u8[A1 + 0x2a] &= ~char.flag.ON_OBJECT
 	}
-}
 
-// Knuckles Specific Rock...
-//# address-hook(0x020056) end(0x020086)
-function void fn020056()
-{
-	u8[A1 + 0x2a] |= char.flag.ROLLING
-	objA1.hitbox_extends.x = char.hitbox.x.ROLLING
-	objA1.hitbox_extends.y = char.hitbox.y.ROLLING
-	objA1.state = (A1 == 0xffffb04a) ? oldJumpState3p2 : oldJumpState3
-	objA1.velocity.y = -0x300
-	objA1.flags2a |= char.flag.IN_AIR
-	objA1.flags2a &= ~char.flag.ON_OBJECT
-	u8[A1 + 0x05] = base_state.NORMAL
-	
-	// Restore jump states
-	u8[A1 + 0x40] = (A1 == 0xffffb04a) ? oldJumpState1p2 : oldJumpState1
-	u8[A1 + 0x2f] = (A1 == 0xffffb04a) ? oldJumpState2p2 : oldJumpState2
+	fn020088()
 }
 
 //----------------
 // Dwayne the Rock
 //----------------
 
-//# address-hook(0x2042F0)
+//# address-hook(0x2042f0)
 function void ExtraChar.AmyObjects()
 {
 	if (objA0.subtype2c == 0x04) // Dwayne the rock
@@ -479,203 +367,51 @@ function void ExtraChar.AmyObjects()
 			D3.u16 = height
 			D4.u16 = objA0.position.x.u16
 
-			bool smashOnThrough = SDMD.canSmash(u8[A0 + 0x32])
-			u16 vel.last = s16[0xffffb000 + 0x1a]
+			u8 shouldBreak = SDMD.breakCheck()
 			
-			if smashOnThrough
+			if (shouldBreak & 3)
 				sdmd.ignore_ground = true
+				
+			if (shouldBreak & 12)
+				sdmd.ignore_ground_p2 = true
 
 			fn01dc56() 							// Collision check was moved into this method!
 
 			sdmd.ignore_ground = false
-			
-			D0.u8 = objA0.flags2a & (object.flag.P1_ON_OBJECT | object.flag.P2_ON_OBJECT)
-			if (D0.u8 != 0)
+			sdmd.ignore_ground_p2 = false
+
+			if (SDMD.destroyObjectExternally())
 			{
-				if (D0.u8 == (object.flag.P1_ON_OBJECT | object.flag.P2_ON_OBJECT))
-				{
-					if (u8[A0 + 0x32] == 2 || u8[A0 + 0x33] == 2 || smashOnThrough || SDMD.canBounce(u8[A0 + 0x32]))
-					{
-						A1 = 0xffffb000
-						D0.u8 = u8[A0 + 0x32]
-						fn01fba8()
-						
-						if (smashOnThrough)
-						{
-							objA1.velocity.y = vel.last
-							SDMD.restoreSmash()
-						}
-
-						A1 = 0xffffb04a
-						D0.u8 = u8[A0 + 0x33]
-						fn01fba8()
-
-						ExtraChar.DwayneRockBreak()
-						return
-					}
-				}
-				else
-				{
-					D1.u8 = D0.u8 & object.flag.P1_ON_OBJECT
-					if (D1.u8 == 0)
-					{
-						fn01fbe0()
-						return
-					}
-
-					if (u8[A0 + 0x32] == 2 || smashOnThrough || SDMD.canBounce(u8[A0 + 0x32]))
-					{
-						A1 = 0xffffb000
-						fn01fbae()
-						
-						if (smashOnThrough)
-						{
-							objA1.velocity.y = vel.last
-							SDMD.restoreSmash()
-						}
-						
-						ExtraChar.DwayneRockBreak()
-						
-						return
-					}
-				}
+				SDMD.dropPlayers()
+				
+				ExtraChar.DwayneRockBreak()
+				return
+			}
+			
+			u8 collisionFlags = objA0.flags2a & (object.flag.P1_ON_OBJECT | object.flag.P2_ON_OBJECT)
+			if (SDMD.willItBreak(collisionFlags, shouldBreak))
+			{
+				ExtraChar.DwayneRockBreak()
+				return
 			}
 		}
+
 		DrawOrUnloadObject()
 	}
 	else
 		base.ExtraChar.AmyObjects()
 }
 
-//-----------
-// Cork Floor
-//-----------
-
-//# address-hook(0x02a502) end(0x02a586)
-function void fn02a502()
-{
-	u16[A0 + 0x38] = score.bonus_counter
-	u8[A0 + 0x34] = u8[0xffffb000 + 0x20]
-	u8[A0 + 0x36] = u8[0xffffb04a + 0x20]
-	
-	bool smashOnThrough = SDMD.canSmash(u8[A0 + 0x34])
-	u16 vel.last = s16[0xffffb000 + 0x1a]
-	
-	D1 = objA0.box_size.x + 11
-	D2 = objA0.box_size.y
-	D3.u16 = D2.u16 + 1
-	D4.u16 = objA0.position.x.u16
-	
-	
-	if smashOnThrough
-		sdmd.ignore_ground = true
-
-	fn01dc56() 							// Collision check was moved into this method!
-
-	sdmd.ignore_ground = false
-
-	D0.u16 = objA0.flags2a & (object.flag.P1_ON_OBJECT | object.flag.P2_ON_OBJECT)
-	if (D0.u16 == 0)
-	{
-		DrawOrUnloadObject()
-		return
-	}
-
-	if (D0.u8 == (object.flag.P1_ON_OBJECT | object.flag.P2_ON_OBJECT))
-	{
-		if (u8[A0 + 0x34] != 2 && u8[A0 + 0x36] != 2 && !smashOnThrough && !SDMD.canBounce(u8[A0 + 0x34]))
-		{
-			DrawOrUnloadObject()
-			return
-		}
-
-		A1 = 0xffffb000
-		D0.u8 = u8[A0 + 0x34]
-		fn02a588()
-
-		if (smashOnThrough)
-        {
-        	A1 = 0xffffb000
-        	objA1.velocity.y = vel.last
-        	SDMD.restoreSmash()
-        }
-		
-		A1 = 0xffffb04a
-		D0.u8 = u8[A0 + 0x36]
-		fn02a588()
-
-		fn02a5d8()
-	}
-	else
-	{
-		D1.u8 = D0.u8 & object.flag.P1_ON_OBJECT
-		if (D1.u8 == 0)
-		{
-			fn02a5c0()
-			return
-		}
-
-		if (u8[A0 + 0x34] != 2 && !smashOnThrough && !SDMD.canBounce(u8[A0 + 0x34]))
-		{
-			DrawOrUnloadObject()
-			return
-		}
-
-		A1 = 0xffffb000
-		fn02a58e()
-		
-		if (smashOnThrough)
-		{
-			A1 = 0xffffb000
-			objA1.velocity.y = vel.last
-			SDMD.restoreSmash()
-		}
-		
-		fn02a5d8()
-	}
-}
-
-//# address-hook(0x02a588) end(0x02a5be)
-function void fn02a58e()
-{
-	objA1.flags2a |= (char.flag.IN_AIR | char.flag.ROLLING)
-	objA1.flags2a &= ~char.flag.ON_OBJECT
-	objA1.hitbox_extends.x = char.hitbox.x.ROLLING
-	objA1.hitbox_extends.y = char.hitbox.y.ROLLING
-	objA1.state = (A1 == 0xffffb04a) ? oldJumpState3p2 : oldJumpState3
-	objA1.velocity.y = -0x300
-	u8[A1 + 0x05] = base_state.NORMAL
-	
-	// Restore jump states
-	u8[A1 + 0x40] = (A1 == 0xffffb04a) ? oldJumpState1p2 : oldJumpState1
-	u8[A1 + 0x2f] = (A1 == 0xffffb04a) ? oldJumpState2p2 : oldJumpState2
-}
-
-//# address-hook(0x02a588) end(0x02a5be)
-function void fn02a588()
-{
-	if (D0.u8 == 2 || SDMD.canBounce(D0.u8))
-	{
-		fn02a58e()
-	}
-	else
-	{
-		u8[A1 + 0x2a] |= char.flag.IN_AIR
-		u8[A1 + 0x2a] &= ~char.flag.ON_OBJECT
-		u8[A1 + 0x05] = base_state.NORMAL
-	}
-}
-
-//------------
+//-------------
 // CNZ Balloons
-//------------
+//-------------
 
 //# address-hook(0x0317ae) end(0x03181c)
 function void fn0317ae()
 {
 	
 	// This is not handled via the specific mods, adding here for consistency
-	if (!SDMD.canSmash(u8[A1 + 0x20]))
+	if (!SDMD.canSmash(A1))
 		objA1.velocity.y = -0x700
 	objA1.flags2a |= char.flag.IN_AIR
 	objA1.flags2a &= ~(char.flag.CONTROL_LOCK | char.flag.PUSHING)
@@ -683,13 +419,13 @@ function void fn0317ae()
 
 	u8[A1 + 0x2e] = 0
 	if (u8[A1 + 0x40] == 1)
-		balloonjump |= (A1 == 0xffffb04a) ? 2 : 1				// This flag forces vertical velocity
+		balloonjump |= (A1 == char.ADDRESS_P2) ? 2 : 1				// This flag forces vertical velocity
 
 	objA0.state |= 0x01
 	if (s8[A0 + 0x2c] < 0)
 	{
 		// This is not handled via the specific mods, adding here for consistency
-		if (!SDMD.canSmash(u8[A1 + 0x20]))
+		if (!SDMD.canSmash(A1))
 			objA1.velocity.y = -0x380
 		
 		if (level.water_present != 0 && u8[A0 + 0x34] == 0)
@@ -738,7 +474,7 @@ function void fn032f56()
 	objA1.flags2a &= ~(char.flag.CONTROL_LOCK | char.flag.PUSHING)
 	
 	if (u8[A1 + 0x40] == 1)
-		balloonjump |= (A1 == 0xffffb04a) ? 2 : 1				// This flag forces vertical velocity
+		balloonjump |= (A1 == char.ADDRESS_P2) ? 2 : 1				// This flag forces vertical velocity
 	
 	objA0.state = 0x01
 
@@ -777,19 +513,19 @@ function void Character.updateJumpMoves()
 
 	s16 balloon_vel = char.velocity.y
 	if (balloon_vel >= 0)
-		balloonjump &= ~((A0 == 0xffffb04a) ? 2 : 1)
+		balloonjump &= ~((A0 == char.ADDRESS_P2) ? 2 : 1)
 	
-	if ((A0 == 0xffffb000 && !(balloonjump & 1)) || (A0 == 0xffffb04a && !(balloonjump & 2)))
+	if ((A0 == char.ADDRESS_P1 && !(balloonjump & 1)) || (A0 == char.ADDRESS_P2 && !(balloonjump & 2)))
 	{
 		base.Character.updateJumpMoves()
 		return
 	}
 
 	char.velocity.y = 0 											// Velocity was set to 0 here otherwise secondary jump actions would not work.
-	u8 backupjumpstate = char.double_jump_state 
+	//u8 backupjumpstate = char.double_jump_state 
 	base.Character.updateJumpMoves()
 	
-	if (SDMD.allowUpwardsMotion())
+	if (!SDMD.canSmash(A0))
 		char.velocity.y = balloon_vel
 }
 
@@ -807,7 +543,7 @@ function void P2Balloons()
 
 	u8[A1 + 0x2e] = 0
 	if (u8[A1 + 0x40] == 1)
-		balloonjump |= (A1 == 0xffffb04a) ? 2 : 1				// This flag forces vertical velocity
+		balloonjump |= (A1 == char.ADDRESS_P2) ? 2 : 1				// This flag forces vertical velocity
 		
 	if (s8[A0 + 0x2c] < 0)
 	{
@@ -821,6 +557,77 @@ function void P2Balloons()
     }
 }
 
+//--------------
+// ICZ Ice Block
+//--------------
+
+// Remove collision check from here for ESU support.
+//# address-hook(0x08b384) end(0x08b3a4)
+function void fn08b384()
+{
+	objA0.value3a = u8[char.ADDRESS_P1 + 0x20]
+	objA0.value3b = u8[char.ADDRESS_P2 + 0x20]
+
+	D1 = 0x23
+	D2 = 0x10
+	D3 = 0x10
+	D4.u16 = objA0.position.x.u16
+
+	fn08b3aa()
+	DrawOrUnloadObject()
+}
+
+//# address-hook(0x08b3aa) end(0x08b430)
+function void fn08b3aa()
+{
+	u8 shouldBreak = SDMD.breakCheck()
+	
+	if (shouldBreak & 3)
+		sdmd.ignore_ground = true
+		
+	if (shouldBreak & 12)
+		sdmd.ignore_ground_p2 = true
+
+	fn01dc56() 							// Collision check was moved into this method!
+
+	sdmd.ignore_ground = false
+	sdmd.ignore_ground_p2 = false
+
+	if (SDMD.destroyObjectExternally())
+	{
+		SDMD.dropPlayers()
+		
+		SDMD.breakIce()
+	}
+	
+	u8 collisionFlags = objA0.flags2a & (object.flag.P1_ON_OBJECT | object.flag.P2_ON_OBJECT)
+	if (SDMD.willItBreak(collisionFlags, shouldBreak))
+	{
+		SDMD.breakIce()
+	}
+}
+
+function void SDMD.breakIce()
+{
+	// Spawn broken ice block chunks
+	// "spawnChildObjects(0x08b480)" replaced by:
+	spawnChildObject(0x08b432, 0x00, 0, -8)
+	spawnChildObject(0x08b432, 0x02, 0, 8)
+	spawnChildObject(0x08b432, 0x04, -16, -8)
+	spawnChildObject(0x08b432, 0x06, 16, -8)
+	spawnChildObject(0x08b432, 0x08, -16, 8)
+	spawnChildObject(0x08b432, 0x0a, 16, 8)
+	spawnChildObject(0x08b432, 0x0c, 0, 0)
+	spawnChildObject(0x08b432, 0x0e, 0, 0)
+	spawnChildObject(0x08b432, 0x10, 0, 0)
+	spawnChildObject(0x08b432, 0x12, 0, 0)
+	spawnChildObject(0x08b432, 0x14, 0, 0)
+	spawnChildObject(0x08b432, 0x16, 0, 0)
+
+	playSound(0x6e)
+	Object.TriggerUnloading()
+}
+
 //----------
 // SOZ Rocks
 //----------
@@ -828,135 +635,43 @@ function void P2Balloons()
 //# address-hook(0x04172e) end(0x0417a4)
 function void fn04172e()
 {	
-	u8[A0 + 0x30] = u8[0xffffb000 + 0x20]
-	u8[A0 + 0x31] = u8[0xffffb04a + 0x20]
-	
-	bool smashOnThrough = SDMD.canSmash(u8[A0 + 0x30])
-	u16 vel.last = s16[0xffffb000 + 0x1a]
+	u8[A0 + 0x30] = u8[char.ADDRESS_P1 + 0x20]
+	u8[A0 + 0x31] = u8[char.ADDRESS_P2 + 0x20]
 	
 	D1.u16 = 0x23
 	D2.u16 = 0x10
 	D3.u16 = 0x11
 	D4.u16 = objA0.position.x.u16
 	
-	if smashOnThrough
+	u8 shouldBreak = SDMD.breakCheck()
+	
+	if (shouldBreak & 3)
 		sdmd.ignore_ground = true
+		
+	if (shouldBreak & 12)
+		sdmd.ignore_ground_p2 = true
 
 	fn01dc56() 							// Collision check was moved into this method!
 
 	sdmd.ignore_ground = false
-	
+	sdmd.ignore_ground_p2 = false
+
 	if (SDMD.destroyObjectExternally())
 	{
-		if (objA0.flags2a & object.flag.P1_ON_OBJECT)
-		{
-			u8[0xffffb000 + 0x2a] |= char.flag.IN_AIR
-			u8[0xffffb000 + 0x2a] &= ~char.flag.ON_OBJECT
-			u8[0xffffb000 + 0x05] = base_state.NORMAL
-		}
-		else if (objA0.flags2a & object.flag.P1_PUSHING)
-		{
-			u8[0xffffb000 + 0x2a] &= ~char.flag.PUSHING
-			u8[0xffffb000 + 0x05] = base_state.NORMAL
-		}
-		
-		if (objA0.flags2a & object.flag.P2_ON_OBJECT)
-		{
-			u8[0xffffb04a + 0x2a] |= char.flag.IN_AIR
-			u8[0xffffb04a + 0x2a] &= ~char.flag.ON_OBJECT
-			u8[0xffffb04a + 0x05] = base_state.NORMAL
-		}
-		else if (objA0.flags2a & object.flag.P2_PUSHING)
-		{
-			u8[0xffffb04a + 0x2a] &= ~char.flag.PUSHING
-			u8[0xffffb04a + 0x05] = base_state.NORMAL
-		}
+		SDMD.dropPlayers()
 		
 		fn0417f6()
 		return
 	}
-
-	D0.u8 = objA0.flags2a & (object.flag.P1_ON_OBJECT | object.flag.P2_ON_OBJECT)
-	if (D0.u8 == 0)
-	{
-		DrawOrUnloadObject()
-	}
-	else if (D0.u8 == (object.flag.P1_ON_OBJECT | object.flag.P2_ON_OBJECT))
-	{
-		if (u8[A0 + 0x30] != 0x02 && u8[A0 + 0x31] != 0x02 && !smashOnThrough && !SDMD.canBounce(u8[A0 + 0x30]))
-		{
-			DrawOrUnloadObject()
-			return
-		}
-
-		A1 = 0xffffb000
-		D0.u8 = u8[A0 + 0x30]
-		fn0417a6()
-		
-		if (smashOnThrough)
-		{
-			A1 = 0xffffb000
-			objA1.velocity.y = vel.last
-			SDMD.restoreSmash()
-		}
-
-		A1 = 0xffffb04a
-		D0.u8 = u8[A0 + 0x31]
-		fn0417a6()
-
-		fn0417f6()
-	}
-	else
-	{
-		D1.u8 = D0.u8 & 0x08
-		if (D1.u8 == 0)
-		{
-			fn0417de()
-			return
-		}
-
-		if (u8[A0 + 0x30] != 0x02 && !smashOnThrough && !SDMD.canBounce(u8[A0 + 0x30]))
-		{
-			DrawOrUnloadObject()
-			return
-		}
-
-		A1 = 0xffffb000
-		D0.u8 = 2
-		fn0417a6()
-		
-		if (smashOnThrough)
-		{
-			A1 = 0xffffb000
-			objA1.velocity.y = vel.last
-			SDMD.restoreSmash()
-		}
-		
-		fn0417f6()
-	}
-}
-
-//# address-hook(0x0417a6) end(0x0417dc)
-function void fn0417a6()
-{
-	if (D0.u8 == 2 || SDMD.canBounce(D0.u8))
-	{
-		u8[A1 + 0x2a] |= char.flag.ROLLING
-		objA1.hitbox_extends.x = char.hitbox.x.ROLLING
-		objA1.hitbox_extends.y = char.hitbox.y.ROLLING
-		objA1.state = (A1 == 0xffffb04a) ? oldJumpState3p2 : oldJumpState3
-		objA1.velocity.y = -0x300
-		
-		// Restore jump states
-		u8[A1 + 0x40] = (A1 == 0xffffb04a) ? oldJumpState1p2 : oldJumpState1
-		u8[A1 + 0x2f] = (A1 == 0xffffb04a) ? oldJumpState2p2 : oldJumpState2
-	}
-
-	u8[A1 + 0x2a] |= char.flag.IN_AIR
-	u8[A1 + 0x2a] &= ~char.flag.ON_OBJECT
-	u8[A1 + 0x05] = base_state.NORMAL
 	
+	u8 collisionFlags = objA0.flags2a & (object.flag.P1_ON_OBJECT | object.flag.P2_ON_OBJECT)
+	if (SDMD.willItBreak(collisionFlags, shouldBreak))
+	{
+		fn0417f6()
+		return
+	}
 
+	DrawOrUnloadObject()
 }
 
 //---------------------------
