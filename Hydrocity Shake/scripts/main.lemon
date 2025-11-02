@@ -131,6 +131,20 @@ function void fn069eda()
 	loadPaletteLine1(0x06ae56)
 }
 
+//# address-hook(0x06a55c) end(0x06a57a)
+function void fn06a55c()
+{
+	if ((objA0.render_flags & render_flag.VISIBLE) == 0)
+		return
+
+	objA0.base_state = 0x04
+	copyMemory(0xfffff0a0, 0x06ae76, 0x20)
+	
+	u16[0xfffff0a0 + 0x05*2] = 0x2ec
+	u16[0xfffff0a0 + 0x06*2] = 0x286
+	u16[0xfffff0a0 + 0x0f*2] = 0x244
+}
+
 // Pipe spurts use falling panic animation.
 //# address-hook(0x030338) end(0x0303e8)
 function void fn030338()
