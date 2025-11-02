@@ -397,9 +397,9 @@ function void fn08e744()
 		s16 xSpeed = objA0.subtype2c - 0x05
 		
 		if (objA0.subtype2c != 0x0a)
-			BB.SpawnPart(dirFlag * xSpeed * 0x100, -0x400, 0x03, 0)
+			BB.SpawnPart(dirFlag * xSpeed * (System.rand() % 0x100 + 0x080), System.rand() % 0x200 * -1 - 0x200, 0x03, 0)
 		else
-			BB.SpawnPart(dirFlag * xSpeed * 0x100, -0x400, 0x04, (objA0.render_flags & render_flag.FLIP_X) ? 1 : 0)
+			BB.SpawnPart(dirFlag * xSpeed * (System.rand() % 0x100 + 0x080), System.rand() % 0x200 * -1 - 0x200, 0x04, (objA0.render_flags & render_flag.FLIP_X) ? 1 : 0) 
 		
 		Object.TriggerUnloading()
 		return
