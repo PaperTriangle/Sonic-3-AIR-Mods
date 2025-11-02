@@ -393,13 +393,13 @@ function void fn08e744()
 	if !((u8[A1 + 0x2a] & 0x80) == 0)
 	{
 		
-		s8 dirFlag = (objA0.render_flags & render_flag.FLIP_X) ? 1 : -1
+		s16 dirFlag = (objA0.render_flags & render_flag.FLIP_X) ? 1 : -1
 		s16 xSpeed = objA0.subtype2c - 0x05
 		
 		if (objA0.subtype2c != 0x0a)
-			BB.SpawnPart(dirFlag * xSpeed * 0x080, -0x100 - 0x080 * s16(objA0.subtype2c), 0x03, 0)
+			BB.SpawnPart(dirFlag * xSpeed * 0x100, -0x400, 0x03, 0)
 		else
-			BB.SpawnPart(dirFlag * xSpeed * 0x080, -0x100 - 0x080 * s16(objA0.subtype2c), 0x04, (objA0.render_flags & render_flag.FLIP_X) ? 1 : 0)
+			BB.SpawnPart(dirFlag * xSpeed * 0x100, -0x400, 0x04, (objA0.render_flags & render_flag.FLIP_X) ? 1 : 0)
 		
 		Object.TriggerUnloading()
 		return
