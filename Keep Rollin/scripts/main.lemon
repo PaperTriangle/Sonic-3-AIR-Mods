@@ -551,6 +551,37 @@ function void fn03a0d6()
 	base.fn03a0d6()
 }
 
+// Fix for LBZ Launchers
+
+//# address-hook(0x0261f2) end(0x026296)
+function void fn0261f2()
+{
+	base.fn0261f2()
+	
+	if (A1 == 0xffffb000 && kr.wasRolling)
+	{
+		// Make character roll if they were rolling before.
+		objA1.flags2a |= char.flag.ROLLING
+		objA1.state = char.state.ROLLING
+		objA1.state.former = char.state.ROLLING
+		objA1.hitbox_extends.x = char.hitbox.x.ROLLING
+		objA1.hitbox_extends.y = char.hitbox.y.ROLLING
+		objA1.animation.sprite = kr.backup_sprite
+		objA1.animation.timer = kr.backup_timer
+	}
+	else if (A1 == 0xffffb04a && kr.wasRolling_p2)
+	{
+		// Make character roll if they were rolling before.
+		objA1.flags2a |= char.flag.ROLLING
+		objA1.state = char.state.ROLLING
+		objA1.state.former = char.state.ROLLING
+		objA1.hitbox_extends.x = char.hitbox.x.ROLLING
+		objA1.hitbox_extends.y = char.hitbox.y.ROLLING
+		objA1.animation.sprite = kr.backup_sprite_p2
+		objA1.animation.timer = kr.backup_timer_p2
+	}
+}
+
 // Fix for MVZ Vertical Pole
 
 //# address-hook(0x03f246) end(0x03f35e)
