@@ -1,5 +1,5 @@
-global s8 platFlag
-global s8 platFlag2
+define u32 char.ADDRESS_P1 = 0xffffb000
+define u32 char.ADDRESS_P2 = 0xffffb04a
 
 //--------
 // Rolling
@@ -10,36 +10,35 @@ function void yieldExecution()
 	if (global.zone_act == 0x0001)
 		System.loadExternalRawData("AIZ2_Cliff_Collision", 0x020e9e)
 
-	if (platFlag >= 0)
-		platFlag = ((u8[0xffffb000 + 0x2a] & char.flag.ON_OBJECT) != 0) || ((u8[0xffffb000 + 0x2a] & char.flag.IN_AIR) == 0) ? 0x8 : platFlag
-	
-	if (u8[0xffffb000 + 0x40] > 0)
-		platFlag = -2
-		
-	if (platFlag2 >= 0)
-		platFlag2 = ((u8[0xffffb04a + 0x2a] & char.flag.ON_OBJECT) != 0) || ((u8[0xffffb04a + 0x2a] & char.flag.IN_AIR) == 0) ? 0x8 : platFlag2
-	
-	if (u8[0xffffb04a + 0x40] > 0)
-		platFlag2 = -2
+	keepRollin(char.ADDRESS_P1)
+	keepRollin(char.ADDRESS_P2)
 
 	base.yieldExecution()
 
-	if (platFlag > 0)
-		platFlag--
-	else if (platFlag < 0)
-		platFlag++
+	//System.writeDisplayLine(stringformat("Values: %d, %d", u8[char.ADDRESS_P1 + 0x39], u8[char.ADDRESS_P2 + 0x39]))
+}
+
+function void keepRollin(u32 AX)
+{
+	u32 backupA0 = A0
+	A0 = AX
+	
+	if (char.state == char.state.ROLLING) && (char.look_up_down_timer > 0)
+		char.look_up_down_timer--
+	
+	if (char.jumping > 0)
+		char.look_up_down_timer = 0
+	else if (char.state == char.state.ROLLING) && !(char.flags & char.flag.IN_AIR)
+		char.look_up_down_timer = 0x08
 		
-	if (platFlag2 > 0)
-		platFlag2--
-	else if (platFlag2 < 0)
-		platFlag2++
+	A0 = backupA0
 }
 
 //# address-hook(0x012172) end(0x012178)
 //# address-hook(0x01560c) end(0x01569a)
 function void Character.LandingOnGround()
 {
-	if char.state == char.state.ROLLING && ((A0 == 0xffffb000 && platFlag > 0) || (A0 == 0xffffb04a && platFlag2 > 0))
+	if (char.state == char.state.ROLLING) && (char.look_up_down_timer > 0)
 		Character.LandingOnGroundResetState()
 	else
 		base.Character.LandingOnGround()
@@ -50,7 +49,7 @@ function void Character.LandingOnGround()
 //# address-hook(0x017b24) end(0x017bb4)
 function void Character.LandingOnGroundNoSpindash()
 {
-	if char.state == char.state.ROLLING && ((A0 == 0xffffb000 && platFlag > 0) || (A0 == 0xffffb04a && platFlag2 > 0))
+	if (char.state == char.state.ROLLING) && (char.look_up_down_timer > 0)
 		Character.LandingOnGroundResetState()
 	else
 		base.Character.LandingOnGroundNoSpindash()
