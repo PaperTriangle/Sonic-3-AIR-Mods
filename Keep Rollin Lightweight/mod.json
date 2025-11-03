@@ -1,0 +1,43 @@
+{
+	"Metadata": 
+	{
+		"Name": "Keep Rollin' Lightweight",
+		"UniqueID": "keep-rollin",
+		"Author": "PaperTriangle",
+		"Description": "keep rolling over certain objects and small gaps.",
+		"ModVersion": "1.0"
+	},
+	"OtherMods":
+	{
+		"gotta-go-fast":
+		{
+			"DisplayName": "Gotta Go Fast!",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		},
+		"extra-slot-project-amy":
+		{
+			"DisplayName": "Extra Slot Amy",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		},
+		"extra-slot-project-ray":
+		{
+			"DisplayName": "Extra Slot Ray",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		},
+		"extra-slot-project-mighty":
+		{
+			"DisplayName": "Extra Slot Mighty",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		},
+		"es-3d2d-shadow":
+		{
+			"DisplayName": "Extra Slot 3D in 2D Shadow",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		}
+	}
+}

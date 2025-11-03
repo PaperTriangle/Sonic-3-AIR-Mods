@@ -1,0 +1,57 @@
+global s8 platFlag
+global s8 platFlag2
+
+//--------
+// Rolling
+//--------
+
+function void yieldExecution()
+{
+	if (global.zone_act == 0x0001)
+		System.loadExternalRawData("AIZ2_Cliff_Collision", 0x020e9e)
+
+	if (platFlag >= 0)
+		platFlag = ((u8[0xffffb000 + 0x2a] & char.flag.ON_OBJECT) != 0) || ((u8[0xffffb000 + 0x2a] & char.flag.IN_AIR) == 0) ? 0x8 : platFlag
+	
+	if (u8[0xffffb000 + 0x40] > 0)
+		platFlag = -2
+		
+	if (platFlag2 >= 0)
+		platFlag2 = ((u8[0xffffb04a + 0x2a] & char.flag.ON_OBJECT) != 0) || ((u8[0xffffb04a + 0x2a] & char.flag.IN_AIR) == 0) ? 0x8 : platFlag2
+	
+	if (u8[0xffffb04a + 0x40] > 0)
+		platFlag2 = -2
+
+	base.yieldExecution()
+
+	if (platFlag > 0)
+		platFlag--
+	else if (platFlag < 0)
+		platFlag++
+		
+	if (platFlag2 > 0)
+		platFlag2--
+	else if (platFlag2 < 0)
+		platFlag2++
+}
+
+//# address-hook(0x012172) end(0x012178)
+//# address-hook(0x01560c) end(0x01569a)
+function void Character.LandingOnGround()
+{
+	if char.state == char.state.ROLLING && ((A0 == 0xffffb000 && platFlag > 0) || (A0 == 0xffffb04a && platFlag2 > 0))
+		Character.LandingOnGroundResetState()
+	else
+		base.Character.LandingOnGround()
+}
+
+//# address-hook(0x01217e) end(0x012230)
+//# address-hook(0x015618)
+//# address-hook(0x017b24) end(0x017bb4)
+function void Character.LandingOnGroundNoSpindash()
+{
+	if char.state == char.state.ROLLING && ((A0 == 0xffffb000 && platFlag > 0) || (A0 == 0xffffb04a && platFlag2 > 0))
+		Character.LandingOnGroundResetState()
+	else
+		base.Character.LandingOnGroundNoSpindash()
+}
