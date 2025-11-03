@@ -1,11 +1,11 @@
 {
 	"Metadata": 
 	{
-		"Name": "Keep Rollin' Lightweight",
+		"Name": "Keep Rollin'",
 		"UniqueID": "keep-rollin",
 		"Author": "PaperTriangle",
 		"Description": "keep rolling over certain objects and small gaps.",
-		"ModVersion": "1.0"
+		"ModVersion": "2.0"
 	},
 	"OtherMods":
 	{
