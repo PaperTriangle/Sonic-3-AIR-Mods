@@ -1,3 +1,6 @@
+global u8 hs.bmpline
+global bool hs.underwater_flash
+
 //# address-hook(0x06b7bc) end(0x06b7ea)
 function void fn06b7bc()
 {
@@ -102,7 +105,7 @@ function void fn069eda()
 	}
 	
 	// Freeze animation and do pattern loading here.
-	if (camera.position.y.u16 >= 0x0450 && u8[0xffffeee8] != 0xff)
+	if (camera.position.y.u16 >= 0x0410 && u8[0xffffeee8] != 0xff)
 	{
 		u8[0xffffeee8] = 0xff
 		requestLoadingPatterns(0x5b)		// Boss sprites
@@ -129,20 +132,127 @@ function void fn069eda()
 
 	objA0.flags38 |= 0x08
 	loadPaletteLine1(0x06ae56)
+	
+	if (hs.underwater_flash && hs.bmpline > 0)
+	{
+		u16 offset = 3 * 0x40 + (hs.bmpline - 1) * 0x20
+		for (u8 k = 0; k < 0x10; k += 1)
+			u16[0x802000 + offset + 2*k] = u16[0xfffffc20 + 0x02 * k]
+	}
 }
 
+// Fix underwater ring colour in boss arena
 //# address-hook(0x06a55c) end(0x06a57a)
 function void fn06a55c()
 {
-	if ((objA0.render_flags & render_flag.VISIBLE) == 0)
+	//if ((objA0.render_flags & render_flag.VISIBLE) == 0)
+	//	return
+
+	if (camera.position.y.u16 >= 0x0410) && (objA0.base_state != 0x04)
+	{
+		objA0.base_state = 0x04
+		copyMemory(0xfffff0a0, 0x06ae76, 0x20)
+		
+		u16[0xfffff0a0 + 0x05*2] = 0x2ec
+		u16[0xfffff0a0 + 0x06*2] = 0x286
+		u16[0xfffff0a0 + 0x0f*2] = 0x244
+		
+		if (hs.underwater_flash && hs.bmpline > 0)
+		{
+			u16 offset = 3 * 0x40 + (hs.bmpline - 1) * 0x20
+			for (u8 k = 0; k < 0x10; k += 1)
+			{
+				u16[0x802000 + offset + 2*k] = u16[0xfffff0a0 + 0x02 * k] // Load this above water to prevent a black section of the sprite for a few frames.
+				u16[0x802300 + offset + 2*k] = u16[0xfffff0a0 + 0x02 * k]
+			}
+		}
+	}
+	else
+		return
+}
+
+//# address-hook(0x06ac48) end(0x06acc0)
+function void fn06ac48()
+{
+	if (u8[A0 + 0x28] != 0)
 		return
 
-	objA0.base_state = 0x04
-	copyMemory(0xfffff0a0, 0x06ae76, 0x20)
+	if (boss.remaining_hits == 0)
+	{
+		// Boss beaten
+		objA0.update_address = 0x085668
+		objA0.countdown_callback = 0x06a22a
+
+		// "spawnChildObjects(0x083fee)" replaced by:
+		spawnChildObject(0x083d84, 0x00, 0, 0)		// Boss explosion generator
+
+		AddScoreForBossEnemy()
+		return
+	}
+
+	if (objA0.state == 0)
+	{
+		objA0.state = 0x20
+		playSound(0x6e)
+	}
+
+	objA0.flags2a |= 0x40
+	Boss.updateHitFlashing(7, 0x06acc6, 0x06acd4)
 	
-	u16[0xfffff0a0 + 0x05*2] = 0x2ec
-	u16[0xfffff0a0 + 0x06*2] = 0x286
-	u16[0xfffff0a0 + 0x0f*2] = 0x244
+	if (hs.underwater_flash)
+		Boss.updateHitFlashingUnderwater(7, 0x06acc6, 0x06ae76 + 2 * 0x07, 0x06acd4 + 2 * 0x07)
+
+	--objA0.state
+	if (objA0.state == 0)
+	{
+		objA0.flags2a &= ~0x40
+		if (objA0.animation.sprite == 0)
+		{
+			u8[A0 + 0x28] = u8[A0 + 0x25]
+		}
+	}
+}
+
+function void Boss.updateHitFlashingUnderwater(u8 numColors, u32 destAddresses, u32 sourceAddress1, u32 sourceAddress2)
+{
+	u8 flashcounter = objA0.state
+	// Update palette during flashing when boss got hit
+#if STANDALONE
+	if (Game.getSetting(SETTING_GFX_ANTIFLICKER) == 2)
+	{
+		u8 value = (flashcounter + 0x0f) & 0x0f
+		u16 blendFactor = (value <= 12) ? (value * 0x14) : ((0x10 - value) * 0x3c)
+		for (u8 i = 0; i < numColors; ++i)
+		{
+			u16 color1 = u16[sourceAddress1 + u16[destAddresses + i * 2] - u16[destAddresses] - 6]
+			u16 color2 = u16[sourceAddress2 + i * 2]
+			u32 dst = 0xfffef480 + u16[destAddresses + i * 2]
+			u16[dst] = blendColorsPacked(color1, color2, blendFactor)
+		}
+	}
+	else
+#endif
+	{
+		for (u8 i = 0; i < numColors; ++i)
+		{
+			u32 dst = 0xfffef480 + u16[destAddresses + i * 2]
+			u16[dst] = ((flashcounter & 0x01) == 0) ? u16[sourceAddress2 + i * 2] : u16[sourceAddress1 + u16[destAddresses + i * 2] - u16[destAddresses] - 6]
+		}
+	}
+}
+
+// Draw Water Agitator
+function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16 renderQueue)
+{
+	if (hs.underwater_flash && hs.bmpline > 0 && objA0.update_address == 0x06a51e) //&& (u16[0x802000 + 3 * 0x40 + (hs.bmpline - 1) * 0x20 + 0x04] == u16[0xfffffc20 + 0x04])
+	{
+		if (index == 0xa3e1)
+			Renderer.drawCustomSprite(stringformat("water_agitator_pole_%d", abs(0x16 - objA0.animation.sprite)), px - 4, py, 0x90 + hs.bmpline * 0x10, 0, renderQueue)
+			
+		return true
+	}
+		
+	return base.Standalone.onDrawVdpSprite(px, py, size, index, renderQueue)
 }
 
 // Pipe spurts use falling panic animation.

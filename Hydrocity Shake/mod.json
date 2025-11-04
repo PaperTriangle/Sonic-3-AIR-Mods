@@ -5,6 +5,39 @@
 		"UniqueID": "hydrocity-shake",
 		"Author": "PaperTriangle",
 		"Description": "Fixes the animation on tiles near HCZ1 boss and make the characters do their balance animation during the HCZ2 outro cutscene.",
-		"ModVersion": "1.4"
+		"ModVersion": "1.5"
+	},
+	"Settings":
+	{
+		"Uncategorized":
+		[
+			{
+				"InternalName": "hs.underwater_flash",
+				"DisplayName": "Underwater Big Shaker Flash",
+				"Variable": "hs.underwater_flash",
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "hs.bmpline",
+				"DisplayName": "Custom Water Agitator Pole",
+				"Variable": "hs.bmpline",
+				"DefaultValue": "6",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Palette Line 10",
+					"2": "Palette Line 11",
+					"3": "Palette Line 12",
+					"4": "Palette Line 13",
+					"5": "Palette Line 14",
+					"6": "Palette Line 15"
+				}
+			}
+		]
 	}
 }
