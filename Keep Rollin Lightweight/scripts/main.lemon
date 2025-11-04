@@ -100,3 +100,28 @@ function void fn03a0d6()
 
 	objA1.flags2a |= char.flag.IN_AIR
 }
+
+// Fix for standing in FBZ Horizontal Cylinder
+//# address-hook(0x039f7e) end(0x03a0ae)
+function void fn039f7e()
+{
+	bool isInside = (objA0.flags2a >> D6.u8) & 1
+
+	base.fn039f7e()
+
+	if (isInside)
+	{
+		if ((u8[A1 + 0x2a] & char.flag.IN_AIR) == 0)
+		{
+			D0.u16 = objA1.position.x.u16 - objA0.position.x.u16 + D4.u16
+			if (D0.u16 < D5.u16) && !((u8[A1 + 0x2a] & char.flag.ON_OBJECT) == 0)
+			{
+				if (objA1.state != char.state.ROLLING)
+				{
+					u8[A1 + 0x2d] = 0x80
+					objA1.state.both = char.state.RUNNING2
+				}
+			}
+		}
+	}
+}
