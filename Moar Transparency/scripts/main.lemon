@@ -708,7 +708,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 			
 			return true
 		}
-		else if (objA0.update_address == 0x01f244)
+		else if (objA0.update_address == 0x01f244 || objA0.update_address == 0x06a504)
 		{
 			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
 			
@@ -779,7 +779,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		}
 		
 		// HCZ Boss Bubbles
-		if (objA0.mapping_offset == 0x02fcb2)
+		if (objA0.mapping_offset == 0x02fcb2) && (objA0.update_address == 0x06a6e4 || objA0.update_address == 0x06a6b8 || objA0.update_address == 0x01abb6)
 		{
 			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 160)
 			
