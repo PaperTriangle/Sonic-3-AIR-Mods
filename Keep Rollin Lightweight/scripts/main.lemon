@@ -16,8 +16,6 @@ function void yieldExecution()
 	keepRollin(char.ADDRESS_P2)
 
 	base.yieldExecution()
-
-	//System.writeDisplayLine(stringformat("Values: %d, %d", u8[char.ADDRESS_P1 + 0x39], u8[char.ADDRESS_P2 + 0x39]))
 }
 
 function void keepRollin(u32 AX)
@@ -28,7 +26,7 @@ function void keepRollin(u32 AX)
 	if (char.state == char.state.ROLLING) && (char.look_up_down_timer > 0)
 		char.look_up_down_timer--
 	
-	if (char.jumping > 0)
+	if (char.jumping > 0) || (kr.frames < 0x10 && char.velocity.x == 0)
 		char.look_up_down_timer = 0
 	else if (char.state == char.state.ROLLING) && !(char.flags & char.flag.IN_AIR)
 		char.look_up_down_timer = kr.frames
