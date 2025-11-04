@@ -1,5 +1,10 @@
 {
 	"water_agitator_pole_0":  { "File": "water_agitator_pole_0.bmp", "Rect": "0,0,40,96", "Center": "0,0" },
 	"water_agitator_pole_1":  { "File": "water_agitator_pole_1.bmp", "Rect": "0,0,40,96", "Center": "0,0" },
-	"water_agitator_pole_2":  { "File": "water_agitator_pole_2.bmp", "Rect": "0,0,40,96", "Center": "0,0" }
+	"water_agitator_pole_2":  { "File": "water_agitator_pole_2.bmp", "Rect": "0,0,40,96", "Center": "0,0" },
+	
+	"agitator_bubble_0":  { "File": "bubble_0.bmp", "Rect": "0,0,4,4", "Center": "-2,-2" },
+	"agitator_bubble_1":  { "File": "bubble_1.bmp", "Rect": "0,0,6,6", "Center": "-1,-1" },
+	"agitator_bubble_2":  { "File": "bubble_2.bmp", "Rect": "0,0,8,8", "Center": "0,0" },
+	"agitator_bubble_3":  { "File": "bubble_3.bmp", "Rect": "0,0,12,12", "Center": "-2,-2" }
 }

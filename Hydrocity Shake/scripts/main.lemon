@@ -1,5 +1,6 @@
 global u8 hs.bmpline
 global bool hs.underwater_flash
+global bool hs.bubbles
 
 //# address-hook(0x06b7bc) end(0x06b7ea)
 function void fn06b7bc()
@@ -244,12 +245,22 @@ function void Boss.updateHitFlashingUnderwater(u8 numColors, u32 destAddresses, 
 // Draw Water Agitator
 function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16 renderQueue)
 {
-	if (hs.underwater_flash && hs.bmpline > 0 && objA0.update_address == 0x06a51e) //&& (u16[0x802000 + 3 * 0x40 + (hs.bmpline - 1) * 0x20 + 0x04] == u16[0xfffffc20 + 0x04])
+	if (global.zone_act == 0x0100 && hs.underwater_flash && hs.bmpline > 0)
 	{
-		if (index == 0xa3e1)
-			Renderer.drawCustomSprite(stringformat("water_agitator_pole_%d", abs(0x16 - objA0.animation.sprite)), px - 4, py, 0x90 + hs.bmpline * 0x10, 0, renderQueue)
-			
-		return true
+		if (objA0.update_address == 0x06a51e)
+		{
+			if (index == 0xa3e1)
+				Renderer.drawCustomSprite(stringformat("water_agitator_pole_%d", abs(0x16 - objA0.animation.sprite)), px - 4, py, 0x90 + hs.bmpline * 0x10, 0, renderQueue)
+				
+			return true
+		}
+		
+		if (objA0.mapping_offset == 0x02fcb2) && (objA0.update_address == 0x06a6e4 || objA0.update_address == 0x06a6b8 || objA0.update_address == 0x01abb6)
+		{
+			Renderer.drawSprite(stringformat("agitator_bubble_%d", clamp(index - 0xa45c, 0, 3)), px, py, hs.bubbles ? 0x00 : 0x90 + hs.bmpline * 0x10, 0, renderQueue, 0 , Mods.isModActive("Moar Transparency") && System.getGlobalVariableValueByName("mt.bubbles") ? 160 : 0xff)
+		
+			return true
+		}
 	}
 		
 	return base.Standalone.onDrawVdpSprite(px, py, size, index, renderQueue)
