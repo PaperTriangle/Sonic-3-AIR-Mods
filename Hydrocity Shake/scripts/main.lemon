@@ -246,7 +246,7 @@ function void Boss.updateHitFlashingUnderwater(u8 numColors, u32 destAddresses, 
 // Draw Water Agitator
 function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16 renderQueue)
 {
-	if (global.zone_act == 0x0100 && hs.underwater_flash && hs.bmpline > 0)
+	if (global.zone == 0x01 && hs.underwater_flash && hs.bmpline > 0)
 	{
 		if (objA0.update_address == 0x06a51e)
 		{
@@ -256,9 +256,9 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 			return true
 		}
 		
-		if (objA0.mapping_offset == 0x02fcb2) && (objA0.update_address == 0x06a6e4 || objA0.update_address == 0x06a6b8 || objA0.update_address == 0x01abb6)
+		if (objA0.mapping_offset == 0x02fcb2) && (objA0.update_address == 0x06a6e4 || objA0.update_address == 0x06a6b8 || objA0.update_address == 0x01abb6 || objA0.update_address == 0x06a79c)
 		{
-			Renderer.drawSprite(stringformat("agitator_bubble_%d", clamp(index - 0xa45c, 0, 3)), px, py, hs.bubbles ? 0x00 : 0x90 + hs.bmpline * 0x10, 0, renderQueue, 0 , Mods.isModActive("Moar Transparency") && System.getGlobalVariableValueByName("mt.bubbles") ? 160 : 0xff)
+			Renderer.drawSprite(stringformat("agitator_bubble_%d", clamp(index - 0xa45c, 0, 3)), px, py, hs.bubbles ? 0x00 : 0x90 + hs.bmpline * 0x10, objA0.update_address == 0x06a79c ? SPRITE_FLAG_PRIO : 0, renderQueue, 0 , Mods.isModActive("Moar Transparency") && System.getGlobalVariableValueByName("mt.bubbles") ? 160 : 0xff)
 		
 			return true
 		}
