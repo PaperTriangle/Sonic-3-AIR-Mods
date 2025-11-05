@@ -57,6 +57,17 @@
 					"0": "Water Agitator",
 					"1": "Regular Bubbles"
 				}
+			},
+			{
+				"InternalName": "hs.bubble_shrink",
+				"DisplayName": "Shrinking Air Bubbles",
+				"Variable": "hs.bubble_shrink",
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
 			}
 		]
 	}
