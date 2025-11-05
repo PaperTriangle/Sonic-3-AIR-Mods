@@ -928,7 +928,7 @@ function void HS.Particle.Update()
 {
 	UpdateMovementStraightSimple()
 	
-	objA0.animation.sprite += 0x0a
+	objA0.animation.sprite += 0x0b
 	
 	DrawObject()
 
@@ -949,7 +949,7 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 		u8 flags = 0 																				// No sprite flags in most cases
 		u16 rq = 0x9fff
 		
-		Renderer.drawSpriteTinted(key, px, py, 0x00, flags, rq, 0x00, 0xffffffff, 1 - float(objA0.animation.sprite) / 255, 1 - float(objA0.animation.sprite) / 255)
+		Renderer.drawSpriteTinted(key, px, py, 0x00, flags, rq, 0x00, Mods.isModActive("Moar Transparency") && System.getGlobalVariableValueByName("mt.bubbles") ? 0xffffffb0 : 0xffffffff, 1 - float(objA0.animation.sprite) / 255, 1 - float(objA0.animation.sprite) / 255)
 		return true																					// Make sure to return after!
 	}
 	
