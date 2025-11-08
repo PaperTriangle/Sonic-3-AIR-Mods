@@ -14,7 +14,7 @@ define u32 char.ADDRESS_P2 = 0xffffb04a
 
 function bool SDMD.canBounce(u32 AX)
 {
-	return (u8[AX + 0x20] == char.state.ROLLING)  || (u8[AX + 0x38] == CHARACTER_SONIC && u8[AX + 0x20] == char.state.SONIC_DROPDASH) || (global.xtrachar == 3 && AX == char.ADDRESS_P1 && System.getGlobalVariableValueByName("Amy_HammerSpinAttacking"))
+	return (u8[AX + 0x20] == char.state.ROLLING) || (u8[AX + 0x38] == CHARACTER_SONIC && u8[AX + 0x20] == char.state.SONIC_DROPDASH) || (global.xtrachar == 3 && AX == char.ADDRESS_P1 && System.getGlobalVariableValueByName("Amy_HammerSpinAttacking"))
 }
 
 function bool SDMD.canSmash(u32 AX)

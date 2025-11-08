@@ -9,7 +9,7 @@ function bool SDMD.canBounce(u32 AX)
 {
 	if (AX == char.ADDRESS_P1) && (global.characters == CHARACTER_AMY || global.characters == CHARACTER_AMY_TAILS)
 	{
-		return (u8[AX + 0x20] == char.state.HAMMERJUMP || u8[AX + 0x20] == char.state.HAMMERSWING || (u8[AX + 0x20] == char.state.NOROLLJUMP && AmyMISC.NoRollFBreak == 0x01) || (u8[AX + 0x20] == char.state.HAMMERGLIDE))
+		return (u8[AX + 0x20] == char.state.ROLLING) || (u8[AX + 0x20] == char.state.HAMMERJUMP || u8[AX + 0x20] == char.state.HAMMERSWING || (u8[AX + 0x20] == char.state.NOROLLJUMP && AmyMISC.NoRollFBreak == 0x01) || (u8[AX + 0x20] == char.state.HAMMERGLIDE))
 	}
 	
 	return base.SDMD.canBounce(AX)
