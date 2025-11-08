@@ -402,6 +402,11 @@ function void ExtraChar.AmyObjects()
 		base.ExtraChar.AmyObjects()
 }
 
+function void ExtraChar.DwayneRockBreak()
+{
+	base.ExtraChar.DwayneRockBreak()
+}
+
 //-------------
 // CNZ Balloons
 //-------------
