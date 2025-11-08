@@ -39,22 +39,5 @@
 			"IsRequired": "0",
 			"Priority": "Lower"
 		}
-	},
-	"Settings":
-	{
-		"Uncategorized":
-		[
-			{
-				"InternalName": "kr.frames",
-				"DisplayName": "Number of Frames to Check",
-				"Variable": "kr.frames",	
-				"DefaultValue": "0x08",
-				"Options":
-				{
-					"0x08": "Strict",
-					"0x10": "Lenient"
-				}
-			}
-		]
 	}
 }
