@@ -1,699 +1,125 @@
-define u8 global.xtrachar	= u8[0xffffe654]
-
-global u8 kr.move_cliff_collision
-
-global u8 kr.backup_sprite
-global u8 kr.backup_timer
-
-global u8 kr.x
-global u8 kr.y
-
-global u8 kr.backup_flags
-global u8 kr.backup_flags2
-
-global u8 kr.wasRolling
-global u8 kr.wasOnObject
-global u8 kr.wasInAir
-
-global u8 kr.wasRolling2
-global u8 kr.wasOnObject2
-global u8 kr.wasInAir2
-
-
-global u8 kr.backup_sprite_p2
-global u8 kr.backup_timer_p2
-global u8 kr.backup_flags_p2
-global u8 kr.backup_flags2_p2
-
-global u8 kr.wasRolling_p2
-global u8 kr.wasOnObject_p2
-global u8 kr.wasInAir_p2
-
-global u8 kr.wasRolling2_p2
-global u8 kr.wasOnObject2_p2
-global u8 kr.wasInAir2_p2
+define u32 char.ADDRESS_P1 = 0xffffb000
+define u32 char.ADDRESS_P2 = 0xffffb04a
 
 //--------
 // Rolling
 //--------
 
-// Yield Execution section handles detected the state before an object impact.
 function void yieldExecution()
 {
-	if (kr.move_cliff_collision == 1 && global.zone_act == 0x0001)
+	if (global.zone_act == 0x0001)
 		System.loadExternalRawData("AIZ2_Cliff_Collision", 0x020e9e)
 
-	// Player 1
-	A0 = 0xffffb000
+	keepRollin(char.ADDRESS_P1)
+	keepRollin(char.ADDRESS_P2)
 
-	//System.writeDisplayLine(stringformat("Values: 0x%02x", char.jumping))
-
-	// Remove backup flags if not rolling or running. Prevents issues like ICZ2 Slope.
-	if !((char.state == char.state.RUNNING) || (char.state == char.state.RUNNING2) || (char.state == char.state.ROLLING) || (char.state == char.state.ROLLING2)) || char.jumping != 0 || KR.stopRolling()
-	{
-		kr.backup_flags = 0
-		kr.backup_flags2 = 0
-	}
-
-	// Delay the function if the character is in the air for a few frames. Solves some misaligned platforms.
-	if !kr.wasInAir && u8[A0 + 0x2a] & char.flag.IN_AIR
-	{
-		kr.x++
-		if kr.x >= 4
-		{
-			kr.x = 0
-			kr.wasInAir = true
-		}
-	}
-	else
-	{
-		// Backup states twice... It seemed needed...
-		kr.wasRolling = kr.backup_flags & char.flag.ROLLING
-		kr.wasOnObject = kr.backup_flags & char.flag.ON_OBJECT
-		kr.wasInAir = kr.backup_flags & char.flag.IN_AIR
-
-		kr.wasRolling2 = kr.backup_flags2 & char.flag.ROLLING
-		kr.wasOnObject2 = kr.backup_flags2 & char.flag.ON_OBJECT
-		kr.wasInAir2 = kr.backup_flags2 & char.flag.IN_AIR
-
-		kr.backup_flags2 = kr.backup_flags
-		kr.backup_flags = u8[A0 + 0x2a]
-		
-		//System.writeDisplayLine(stringformat("Values: 0x%02x, 0x%02x, 0x%02x, 0x%02x", (kr.backup_flags & char.flag.ON_OBJECT), kr.wasOnObject, kr.wasOnObject2, char.state == char.state.ROLLING))
-		
-		//System.writeDisplayLine(stringformat("Values: 0x%02x, %d, %d", char.rotation, objA0.velocity.x , objA0.velocity.y))
-		
-		// Character is not in the air?
-		if !(char.flags & char.flag.IN_AIR)
-		{
-			// Character was ground rolling in the last two frames?
-			if ((!kr.wasInAir && kr.wasRolling) || (!kr.wasInAir2 && kr.wasRolling2))
-			{
-				// Does on object state match for the last two frames?
-				if (kr.wasOnObject2 != (u8[A0 + 0x2a] & char.flag.ON_OBJECT)) || (u8[A0 + 0x2a] != (kr.backup_flags & char.flag.ON_OBJECT))
-				{
-					// Make character roll if they were rolling before.
-					char.flags |= char.flag.ROLLING
-					char.state = char.state.ROLLING
-					char.state.former = char.state.ROLLING
-					
-					// Only adjust this if it needs adjusting.
-					if (char.hitbox_extends.y != char.hitbox.y.ROLLING)
-					{
-						char.hitbox_extends.x = char.hitbox.x.ROLLING
-						char.hitbox_extends.y = char.hitbox.y.ROLLING
-						s8 dy = (char.character == CHARACTER_TAILS) ? 1 : 5
-						char.position.y.u16 += (global.inv_gravity) ? -dy : dy
-					}
-				}	
-			}
-		}
-	}
-
-	// Back up animations.
-	kr.backup_sprite = char.animation.sprite
-	kr.backup_timer = char.animation.timer
-	
-	// Player 2
-	A0 = 0xffffb04a
-	
-	// Remove backup flags if not rolling or running. Prevents issues like ICZ2 Slope.
-	if !((char.state == char.state.RUNNING) || (char.state == char.state.RUNNING2) || (char.state == char.state.ROLLING) || (char.state == char.state.ROLLING2)) || char.jumping != 0 || KR.stopRollingP2()
-	{
-		kr.backup_flags_p2 = 0
-		kr.backup_flags2_p2 = 0
-	}
-	
-	// Delay the function if the character is in the air for a few frames. Solves some misaligned platforms.
-	if !kr.wasInAir_p2 && u8[A0 + 0x2a] & char.flag.IN_AIR
-	{
-		kr.y++
-		if kr.y >= 4
-		{
-			kr.y = 0
-			kr.wasInAir_p2 = true
-		}
-	}
-	else
-	{
-		// Backup states twice... It seemed needed...
-		kr.wasRolling_p2 = kr.backup_flags_p2 & char.flag.ROLLING
-		kr.wasOnObject_p2 = kr.backup_flags_p2 & char.flag.ON_OBJECT
-		kr.wasInAir_p2 = kr.backup_flags_p2 & char.flag.IN_AIR
-
-		kr.wasRolling2_p2 = kr.backup_flags2_p2 & char.flag.ROLLING
-		kr.wasOnObject2_p2 = kr.backup_flags2_p2 & char.flag.ON_OBJECT
-		kr.wasInAir2_p2 = kr.backup_flags2_p2 & char.flag.IN_AIR
-
-		kr.backup_flags2_p2 = kr.backup_flags_p2
-		kr.backup_flags_p2 = u8[A0 + 0x2a]
-		
-		// Character is not in the air?
-		if !(char.flags & char.flag.IN_AIR)
-		{
-			// Character was ground rolling in the last two frames?
-			if ((!kr.wasInAir_p2 && kr.wasRolling_p2) || (!kr.wasInAir2_p2 && kr.wasRolling2_p2))
-			{
-				// Does on object state match for the last two frames?
-				if (kr.wasOnObject2_p2 != (u8[A0 + 0x2a] & char.flag.ON_OBJECT)) || (kr.wasOnObject_p2 != (u8[A0 + 0x2a] & char.flag.ON_OBJECT))
-				{
-					// Make character roll if they were rolling before.
-					char.flags |= char.flag.ROLLING
-					char.state = char.state.ROLLING
-					char.state.former = char.state.ROLLING
-
-					// Only adjust this if it needs adjusting.
-					if (char.hitbox_extends.y != char.hitbox.y.ROLLING)
-					{
-						char.hitbox_extends.x = char.hitbox.x.ROLLING
-						char.hitbox_extends.y = char.hitbox.y.ROLLING
-						s8 dy = (char.character == CHARACTER_TAILS) ? 1 : 5
-						char.position.y.u16 += (global.inv_gravity) ? -dy : dy
-					}
-				}
-			}
-		}
-	}
-	
-	// Back up animations.
-	kr.backup_sprite_p2 = char.animation.sprite
-	kr.backup_timer_p2 = char.animation.timer
-	
 	base.yieldExecution()
-
 }
 
-// Force rolling here as well... Otherwise we get an animation frame issue.
-function bool Standalone.drawCharacterSprite(u8 character, u8 variant, s16 px, s16 py, bool asSmallGhost)
+function void keepRollin(u32 AX)
 {
-	// Is Player 1, character is not rolling, and character was ground rolling in on of the last two frames.
-	if (A0 == 0xffffb000) && (char.state != char.state.ROLLING && ((!kr.wasInAir && kr.wasRolling) || (!kr.wasInAir2 && kr.wasRolling2)))
-	{
-		// On object state different for the last frame, character is not rolling, and chartacter is moving.
-		if (kr.wasOnObject != (u8[A0 + 0x2a] & char.flag.ON_OBJECT) && !(char.flags & char.flag.ROLLING) && char.groundspeed != 0)
-		{
-			// Make character roll if they were rolling before.
-			char.flags |= char.flag.ROLLING
-			char.state = char.state.ROLLING
-			char.state.former = char.state.ROLLING
-			char.hitbox_extends.x = char.hitbox.x.ROLLING
-			char.hitbox_extends.y = char.hitbox.y.ROLLING
-			
-			s8 dy = (char.character == CHARACTER_TAILS) ? 1 : 5
-			py += (global.inv_gravity) ? -dy : dy
-			
-			// Only adjust this when coming off of an object.
-			if !kr.wasOnObject
-				char.position.y.u16 += (global.inv_gravity) ? -dy : dy
-			
-			// Restore the backed up animation frame.
-			char.animation.sprite = kr.backup_sprite
-			char.animation.timer = kr.backup_timer
-		}
-	}
-	else if (A0 == 0xffffb04a) && (char.state != char.state.ROLLING && ((!kr.wasInAir_p2 && kr.wasRolling_p2) || (!kr.wasInAir2_p2 && kr.wasRolling2_p2)))
-	{
-		// On object state different for the last frame, character is not rolling, and chartacter is moving.
-		if (kr.wasOnObject_p2 != (u8[A0 + 0x2a] & char.flag.ON_OBJECT) && !(char.flags & char.flag.ROLLING) && char.groundspeed != 0)
-		{
-			// Make character roll if they were rolling before.
-			char.flags |= char.flag.ROLLING
-			char.state = char.state.ROLLING
-			char.state.former = char.state.ROLLING
-			char.hitbox_extends.x = char.hitbox.x.ROLLING
-			char.hitbox_extends.y = char.hitbox.y.ROLLING
-			
-			s8 dy = (char.character == CHARACTER_TAILS) ? 1 : 5
-			py += (global.inv_gravity) ? -dy : dy
-			
-			// Only adjust this when coming off of an object.
-			if !kr.wasOnObject_p2
-				char.position.y.u16 += (global.inv_gravity) ? -dy : dy
-			
-			// Restore the backed up animation frame.
-			char.animation.sprite = kr.backup_sprite_p2
-			char.animation.timer = kr.backup_timer_p2
-		}
-	}
+	u32 backupA0 = A0
+	A0 = AX
 	
-	return base.Standalone.drawCharacterSprite(character, variant, px, py, asSmallGhost)
-}
-
-// Mod Compat...
-
-function bool KR.stopRolling()
-{
-	if (Mods.isModActive("Extra Slot 3D in 2D Shadow") && System.getGlobalVariableValueByName("shadow.isBoosting"))
-		return true
+	if (char.state == char.state.ROLLING) && (char.look_up_down_timer > 0)
+		char.look_up_down_timer--
 	
-	return false
-}
-
-function bool KR.stopRollingP2()
-{
-	return false
-}
-
-// Fix for AIZ Hollow Tree
-
-global bool kr.tree_flag
-
-function void fn01f7ce()
-{
-	kr.tree_flag = true
-	
-	base.fn01f7ce()
-	
-	if (objA1.state == char.state.RUNNING)
-	{
-		if (A1 == 0xffffb000)
-		{
-			kr.backup_flags = 0
-			kr.backup_flags2 = 0
-			kr.wasRolling = 0
-			kr.wasRolling2 = 0
-		}
-		else if (A1 == 0xffffb04a)
-		{
-			kr.backup_flags_p2 = 0
-			kr.backup_flags2_p2 = 0
-			kr.wasRolling_p2 = 0
-			kr.wasRolling2_p2 = 0
-		}
-	}
-}
-
-
-//# address-hook(0x01e490)
-function void LetSonicClimbOnObject()
-{
-	base.LetSonicClimbOnObject()
-
-	if (global.zone_act == 0x0000) && kr.tree_flag
-	{
-		objA1.flags2a &= ~char.flag.ROLLING
-		objA1.state = char.state.RUNNING
-
-		if (A1 == 0xffffb000)
-		{
-			kr.backup_flags = 0
-			kr.backup_flags2 = 0
-			kr.wasRolling = 0
-			kr.wasRolling2 = 0
-		}
-		else if (A1 == 0xffffb04a)
-		{
-			kr.backup_flags_p2 = 0
-			kr.backup_flags2_p2 = 0
-			kr.wasRolling_p2 = 0
-			kr.wasRolling2_p2 = 0
-		}
+	if (char.jumping > 0) || (char.velocity.x == 0)
+		char.look_up_down_timer = 0
+	else if (char.state == char.state.ROLLING) && !(char.flags & char.flag.IN_AIR)
+		char.look_up_down_timer = 0x08
 		
-		kr.tree_flag = false
-	}
+	A0 = backupA0
 }
 
-//# address-hook(0x01f914) end(0x01f994)
-function void fn01f914()
+//# address-hook(0x012172) end(0x012178)
+//# address-hook(0x01560c) end(0x01569a)
+function void Character.LandingOnGround()
 {
-	base.fn01f914()
-	objA1.state = char.state.RUNNING
-
+	if (char.state == char.state.ROLLING) && (char.look_up_down_timer > 0)
+		Character.LandingOnGroundResetState()
+	else
+		base.Character.LandingOnGround()
 }
 
-// Collapsing cliff AIZ.
-
-//# address-hook(0x0204fe) end(0x02058e)
-function void CollapsingCliff.Init()
+//# address-hook(0x01217e) end(0x012230)
+//# address-hook(0x015618)
+//# address-hook(0x017b24) end(0x017bb4)
+function void Character.LandingOnGroundNoSpindash()
 {
-	base.CollapsingCliff.Init()
-	
-	if (kr.move_cliff_collision == 2 && global.zone_act == 0x0001)
-		objA0.position.y.u16 += 0x04
+	if (char.state == char.state.ROLLING) && (char.look_up_down_timer > 0)
+		Character.LandingOnGroundResetState()
+	else
+		base.Character.LandingOnGroundNoSpindash()
 }
 
-function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16 renderQueue)
-{
-	if (kr.move_cliff_collision == 2 && global.zone_act == 0x0001)
-	{
-		if (objA0.update_address == 0x020594 || objA0.update_address == 0x0205de || objA0.update_address == 0x0205ce || objA0.update_address == 0x020620)
-		{
-			Renderer.drawVdpSprite(px, py - 0x04, size, index, renderQueue)
-			return true
-		}
-	}
-	
-	return base.Standalone.onDrawVdpSprite(px, py, size, index, renderQueue)
-}
-
-// Fix for HCZ Hand Launcher
-
-//# address-hook(0x030ce0) end(0x030dea)
-function void fn030ce0()
-{
-	base.fn030ce0()
-	
-	if (u8[0xffffb000 + 0x20] == char.state.RUNNING) // p1 char.state
-	{
-		kr.backup_flags = 0
-		kr.backup_flags2 = 0
-		kr.wasRolling = 0
-		kr.wasRolling2 = 0
-	}
-	
-	if (u8[0xffffb04a + 0x20] == char.state.RUNNING) // p2 char.state
-	{
-		kr.backup_flags_p2 = 0
-		kr.backup_flags2_p2 = 0
-		kr.wasRolling_p2 = 0
-		kr.wasRolling2_p2 = 0
-	}
-}
-
-// Fix for MGZ Spiral Run
-
-//# address-hook(0x033cac) end(0x033f64)
-function void fn033cac()
-{
-	base.fn033cac()
-	
-	if (objA1.state == char.state.RUNNING)
-	{
-		if (A1 == 0xffffb000)
-		{
-			kr.backup_flags = 0
-			kr.backup_flags2 = 0
-			kr.wasRolling = 0
-			kr.wasRolling2 = 0
-		}
-		else if (A1 == 0xffffb04a)
-		{
-			kr.backup_flags_p2 = 0
-			kr.backup_flags2_p2 = 0
-			kr.wasRolling_p2 = 0
-			kr.wasRolling2_p2 = 0
-		}
-	}
-
-}
-
-// Fix for CNZ Cylinder
-
-//# address-hook(0x033c34) end(0x033c72)
-function void fn033c34()
-{
-	base.fn033c34()
-	
-	objA1.flags2a &= ~char.flag.ROLLING
-	objA1.state = char.state.RUNNING
-	
-	if (A1 == 0xffffb000)
-	{
-		kr.backup_flags = 0
-		kr.backup_flags2 = 0
-		kr.wasRolling = 0
-		kr.wasRolling2 = 0
-	}
-	else if (A1 == 0xffffb04a)
-	{
-		kr.backup_flags_p2 = 0
-		kr.backup_flags2_p2 = 0
-		kr.wasRolling_p2 = 0
-		kr.wasRolling2_p2 = 0
-	}
-}
-
-//# address-hook(0x0338c4) end(0x033abe)
-function void fn0338c4()
-{
-	u8 bit = (1 << D6.u8)
-	if (((objA0.flags2a & bit) != 0) && (debug_mode.state == 0) && (u8[A2 + 0x01] == 0))
-	{
-		if !(u8[A1 + 0x2a] & char.flag.IN_AIR) && (abs(objA1.groundspeed) >= 0x300)
-		{
-			if (A1 == 0xffffb000)
-			{
-				objA1.state = char.state.RUNNING
-				kr.backup_flags = 0
-				kr.backup_flags2 = 0
-				kr.wasRolling = 0
-				kr.wasRolling2 = 0
-			}
-			else if (A1 == 0xffffb04a)
-			{
-				objA1.state = char.state.RUNNING
-				kr.backup_flags_p2 = 0
-				kr.backup_flags2_p2 = 0
-				kr.wasRolling_p2 = 0
-				kr.wasRolling2_p2 = 0
-			}
-		}
-	}
-
-	base.fn0338c4()
-}
-
-// Fix for CNZ Barrel
-
-//# address-hook(0x03260a) end(0x03260c)
-function void fn03260a()
-{
-	if (A1 == 0xffffb000)
-	{
-		objA1.state = char.state.RUNNING
-		kr.backup_flags = 0
-		kr.backup_flags2 = 0
-		kr.wasRolling = 0
-		kr.wasRolling2 = 0
-	}
-	else if (A1 == 0xffffb04a)
-	{
-		objA1.state = char.state.RUNNING
-		kr.backup_flags_p2 = 0
-		kr.backup_flags2_p2 = 0
-		kr.wasRolling_p2 = 0
-		kr.wasRolling2_p2 = 0
-	}
-
-	base.fn03260a()
-}
-
-// Fix for FBZ Cylinder
-
-//# address-hook(0x03a314) end(0x03a466)
-function void fn03a314()
-{
-	base.fn03a314()
-	
-	if (objA1.state == char.state.RUNNING)
-	{
-		if (A1 == 0xffffb000)
-		{
-			kr.backup_flags = 0
-			kr.backup_flags2 = 0
-			kr.wasRolling = 0
-			kr.wasRolling2 = 0
-		}
-		else if (A1 == 0xffffb04a)
-		{
-			kr.backup_flags_p2 = 0
-			kr.backup_flags2_p2 = 0
-			kr.wasRolling_p2 = 0
-			kr.wasRolling2_p2 = 0
-		}
-	}
-}
-
-//# address-hook(0x039f7e) end(0x03a0ae)
-function void fn039f7e()
-{
-	base.fn039f7e()
-	
-	if (objA1.state == char.state.RUNNING)
-	{
-		objA1.flags2a &= ~char.flag.ROLLING
-		objA1.state = char.state.RUNNING
-
-		if (A1 == 0xffffb000)
-		{
-			kr.backup_flags = 0
-			kr.backup_flags2 = 0
-			kr.wasRolling = 0
-			kr.wasRolling2 = 0
-		}
-		else if (A1 == 0xffffb04a)
-		{
-
-			kr.backup_flags_p2 = 0
-			kr.backup_flags2_p2 = 0
-			kr.wasRolling_p2 = 0
-			kr.wasRolling2_p2 = 0
-		}
-	}
-}
-
-//# address-hook(0x03a0d6) end(0x03a21a)
-function void fn03a0d6()
-{
-
-	D1.u16 = objA1.position.y.u16 - objA0.position.y.u16 + D4.u16
-	if !(D1.u16 >= D5.u16) && ((u8[A1 + 0x2a] & char.flag.ON_OBJECT) != 0)
-	{
-			objA1.state = char.state.RUNNING
-			objA1.flags2a &= ~char.flag.ROLLING
-			
-			if objA1.flags2a & char.flag.IN_AIR
-			{
-				objA1.flags2a &= ~char.flag.IN_AIR
-			}
-	}
-
-	base.fn03a0d6()
-}
-
-// Fix for LBZ Launchers
-
+// Keep rolling on LBZ Spring Launcher
 //# address-hook(0x0261f2) end(0x026296)
 function void fn0261f2()
 {
 	base.fn0261f2()
-	
-	if (A1 == 0xffffb000 && kr.wasRolling)
+
+	if (objA1.state != char.state.ROLLING) && (u8[A1 + 0x39] > 0)
 	{
-		// Make character roll if they were rolling before.
-		objA1.flags2a |= char.flag.ROLLING
-		objA1.state = char.state.ROLLING
-		objA1.state.former = char.state.ROLLING
+		u8[A1 + 0x2a] |= char.flag.ROLLING
 		objA1.hitbox_extends.x = char.hitbox.x.ROLLING
 		objA1.hitbox_extends.y = char.hitbox.y.ROLLING
-		objA1.animation.sprite = kr.backup_sprite
-		objA1.animation.timer = kr.backup_timer
-	}
-	else if (A1 == 0xffffb04a && kr.wasRolling_p2)
-	{
-		// Make character roll if they were rolling before.
-		objA1.flags2a |= char.flag.ROLLING
 		objA1.state = char.state.ROLLING
-		objA1.state.former = char.state.ROLLING
-		objA1.hitbox_extends.x = char.hitbox.x.ROLLING
-		objA1.hitbox_extends.y = char.hitbox.y.ROLLING
-		objA1.animation.sprite = kr.backup_sprite_p2
-		objA1.animation.timer = kr.backup_timer_p2
+		s8 dy = (u8[A1 + 0x38] == CHARACTER_TAILS) ? 1 : 5
+		objA1.position.y.u16 += (global.inv_gravity) ? -dy : dy
 	}
 }
 
-// Fix for MVZ Vertical Pole
+// Prevent Rolling in FBZ Vertical Cylinder
+//# address-hook(0x03a0d6) end(0x03a21a)
+function void fn03a0d6()
+{	
 
-//# address-hook(0x03f246) end(0x03f35e)
-function void fn03f246()
-{
-	base.fn03f246()
-	
-	if !(objA1.flags2a & char.flag.ROLLING)
+	u8 bit = (1 << D6.u8)
+
+	if ((objA0.flags2a & bit) == 0)
 	{
-		if (A1 == 0xffffb000)
+		D0.u16 = objA1.position.x.u16 - objA0.position.x.u16 + 0x80
+		if (D0.u16 >= 0x0100)
+			return
+
+		D1.u16 = objA1.position.y.u16 - objA0.position.y.u16 + D4.u16
+		if (D1.u16 >= D5.u16)
+			return
+
+		if (u8[A1 + 0x05] >= base_state.DIED || debug_mode.state != 0 || s8[A1 + 0x2e] < 0)
+			return
+
+		if (D0.u16 >= 0x20 && D0.u16 < 0xe0)
+			return
+	}
+
+	base.fn03a0d6()
+
+	objA1.flags2a |= char.flag.IN_AIR
+}
+
+// Fix for standing after rolling in FBZ Horizontal Cylinder
+//# address-hook(0x039f7e) end(0x03a0ae)
+function void fn039f7e()
+{
+	bool isInside = (objA0.flags2a >> D6.u8) & 1
+
+	base.fn039f7e()
+
+	if (isInside)
+	{
+		if ((u8[A1 + 0x2a] & char.flag.IN_AIR) == 0)
 		{
-			kr.backup_flags = 0
-			kr.backup_flags2 = 0
-			kr.wasRolling = 0
-			kr.wasRolling2 = 0
+			D0.u16 = objA1.position.x.u16 - objA0.position.x.u16 + D4.u16
+			if (D0.u16 < D5.u16) && !((u8[A1 + 0x2a] & char.flag.ON_OBJECT) == 0)
+			{
+				if (objA1.state != char.state.ROLLING)
+				{
+					u8[A1 + 0x2d] = 0x80
+					objA1.state.both = char.state.RUNNING2
+				}
+			}
 		}
-		else if (A1 == 0xffffb04a)
-		{
-			kr.backup_flags_p2 = 0
-			kr.backup_flags2_p2 = 0
-			kr.wasRolling_p2 = 0
-			kr.wasRolling2_p2 = 0
-		}
-	}
-}
-
-// Fix for SOZ Sand Streams
-
-//# address-hook(0x03ff9e) end(0x0400c8)
-function void fn03ff9e()
-{
-	base.fn03ff9e()
-	
-	if !(objA1.flags2a & char.flag.ROLLING)
-	{
-		if (A1 == 0xffffb000)
-		{
-			kr.backup_flags = 0
-			kr.backup_flags2 = 0
-			kr.wasRolling = 0
-			kr.wasRolling2 = 0
-		}
-		else if (A1 == 0xffffb04a)
-		{
-			kr.backup_flags_p2 = 0
-			kr.backup_flags2_p2 = 0
-			kr.wasRolling_p2 = 0
-			kr.wasRolling2_p2 = 0
-		}
-	}
-}
-
-// Fix for HPZ / SSZ Teleporter
-
-//# address-hook(0x0457be) end(0x045816)
-function void fn0457be()
-{
-	base.fn0457be()
-
-	objA1.state = char.state.RUNNING
-}
-
-// Fix for LRZ Spiral Staircase
-
-//# address-hook(0x0423d0) end(0x042478)
-function void fn0423d0()
-{
-	base.fn0423d0()
-
-	if (A1 == 0xffffb000)
-	{
-		objA1.flags2a &= ~char.flag.ROLLING
-		objA1.state = char.state.RUNNING
-		kr.backup_flags = 0
-		kr.backup_flags2 = 0
-		kr.wasRolling = 0
-		kr.wasRolling2 = 0
-	}
-	else if (A1 == 0xffffb04a)
-	{
-		objA1.flags2a &= ~char.flag.ROLLING
-		objA1.state = char.state.RUNNING
-		kr.backup_flags_p2 = 0
-		kr.backup_flags2_p2 = 0
-		kr.wasRolling_p2 = 0
-		kr.wasRolling2_p2 = 0
-	}
-}
-
-// Fix for LRZ Vertical Half Pipe
-
-//# address-hook(0x0426b0) end(0x04278c)
-function void fn0426b0()
-{
-	base.fn0426b0()
-	
-	if (A1 == 0xffffb000)
-	{
-		objA1.flags2a &= ~char.flag.ROLLING
-		objA1.state = char.state.RUNNING
-		kr.backup_flags = 0
-		kr.backup_flags2 = 0
-		kr.wasRolling = 0
-		kr.wasRolling2 = 0
-	}
-	else if (A1 == 0xffffb04a)
-	{
-		objA1.flags2a &= ~char.flag.ROLLING
-		objA1.state = char.state.RUNNING
-		kr.backup_flags_p2 = 0
-		kr.backup_flags2_p2 = 0
-		kr.wasRolling_p2 = 0
-		kr.wasRolling2_p2 = 0
 	}
 }

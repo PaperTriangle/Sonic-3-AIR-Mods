@@ -5,7 +5,7 @@
 		"UniqueID": "keep-rollin",
 		"Author": "PaperTriangle",
 		"Description": "keep rolling over certain objects and small gaps.",
-		"ModVersion": "1.5"
+		"ModVersion": "2.0"
 	},
 	"OtherMods":
 	{
@@ -39,23 +39,5 @@
 			"IsRequired": "0",
 			"Priority": "Lower"
 		}
-	},
-	"Settings":
-	{
-		"Uncategorized":
-		[
-			{
-				"InternalName": "kr.move_cliff_collision",
-				"DisplayName": "Adjust AIZ2 Collapsing Cliffs",
-				"Variable": "kr.move_cliff_collision",	
-				"DefaultValue": "1",
-				"Options":
-				{
-					"0": "Disabled",
-					"1": "Use New Collision",
-					"2": "Move Original Down"
-				}
-			}
-		]
 	}
 }
