@@ -267,15 +267,13 @@ function void UpdateKnucklesGlideCollision()
 		char.groundspeed = 0
 		char.velocity.x = 0
 		char.velocity.y = 0
-		if (!dsmg.knux_slide)
-		{
-			s16 dy = s8(char.hitbox_extends.y - char.hitbox.default.y)
-			char.position.y.u16 += global.inv_gravity ? -dy : dy
-		}
-		else
-		{
-			char.position.y.u16 += global.inv_gravity ? -2 : 2
-		}
+		
+		s16 dy = s8(char.hitbox_extends.y - char.hitbox.default.y)
+		char.position.y.u16 += global.inv_gravity ? -dy : dy
+		
+		//System.writeDisplayLine(stringformat("Values: 0x%02x, 0x%02x, %d, %d", dsmg.knux_slide, char.hitbox_extends.y, char.velocity.x, char.groundspeed))
+		
+		char.hitbox_extends.y = char.hitbox.default.y
 		Character.LandingOnGroundNoSpindash()
 		
 		D0.u8 = (char.rotation + 0x20) & 0xc0
@@ -283,8 +281,6 @@ function void UpdateKnucklesGlideCollision()
 		{
 			char.hlock_countdown = 15
 			char.state = dsmg.knux_fall ? char.state.KNUX_STANDUP2 : char.state.KNUX_STANDUP
-			char.position.y.u16 += global.inv_gravity ? 8 : -8
-			
 		}
 		if (dsmg.knux_fall)
 			playSound(0x4c)
@@ -334,6 +330,8 @@ function void yieldExecution()
 		dsmg.backup_state = u8[0xffffb000 + 0x2f]
 	}
 	
+	//System.writeDisplayLine(stringformat("Values: 0x%02x, 0x%02x, 0x%02x, 0x%02x", dsmg.backup_state, dsmg.knux_slide, dsmg.knux_fall, u8[0xffffb000 + 0x1e]))
+	
 	base.yieldExecution()
 
 }
@@ -353,7 +351,7 @@ function void Character.UpdateKnucklesUprightOnGround()
 		{
 			char.animation.sprite = 0xcc
 			char.animation.timer = 0x7f
-			char.animation.frame = 0	
+			char.animation.frame = 0			
 			char.hitbox_extends.y = 0xa		// pushes the character down a bit.
 
 			
@@ -385,7 +383,7 @@ function bool Standalone.drawCharacterSprite(u8 character, u8 variant, s16 px, s
 		{
 			char.animation.sprite = 0xcc
 		}
-		   
+		
 		if (dsmg.backup_state == 1 && (u8[0xffffb000 + 0x2a] & char.flag.ON_OBJECT)) // Fix for one glide frame that gets pushed higher
 		{
 			py += 0x08
