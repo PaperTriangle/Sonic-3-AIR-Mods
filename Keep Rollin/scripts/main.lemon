@@ -129,7 +129,6 @@ function void fn039f7e()
 //# address-hook(0x014f74) end(0x015000)
 function void Character.CheckForStartRolling()
 {
-	System.writeDisplayLine(stringformat("Values: 0x%02x", char.animation.sprite))
 	if (char.animation.sprite >= 0x69 && char.animation.sprite <= 0x77) || (char.animation.sprite >= 0x49 && char.animation.sprite <= 0x54)
 		return
 
