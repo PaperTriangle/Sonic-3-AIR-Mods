@@ -189,6 +189,8 @@ function void yieldExecution()
 		// I thought this may break with Hyper Sonic's dash... But it seems fine?
 		if (tca.infbz1forreal && tca.bg_stars && u16[0xfffffc00 + 0x39 * 2] != u16[0x00052dc0 + 0x07 * 2])
 		{
+			TCA.RenderFix()
+			
 			for (u16 fs = 0 ; fs*128 < getScreenWidth() + 128; fs++)
 			{
 				Renderer.drawSprite(stringformat("fbz_stars_%d", tca.bg_twinkle ? (level.framecounter >> 4) % 4 : 1), 128 + fs*128 - ((level.framecounter + camera.position.x.u16) % 1152) / 9, 128 - (camera.background.y >> 16) - camera.screenshake.offset, 0, SPRITE_FLAG_PRIO, 0x1001)
@@ -345,7 +347,8 @@ function void yieldExecution()
 		{
 			if (!tca.knux_stars_off && tca.bg_stars)
 			{
-			
+				TCA.RenderFix()
+				
 				for (u16 fs = 0 ; fs*128 < getScreenWidth(); fs++)
 				{
 					Renderer.drawSprite(stringformat("knux_stars_%d", tca.bg_twinkle ? (level.framecounter >> 4) % 4 : 1), 128 + fs*128 - (camera.position.x.u16 % 1024) / 8, -1 * (camera.position.y.u16 - 0x400) - camera.screenshake.offset + 80, 0, SPRITE_FLAG_PRIO, 0x2001)
@@ -425,6 +428,15 @@ function void yieldExecution()
 	}
 	
 	base.yieldExecution()
+}
+
+function void TCA.RenderFix()
+{
+#if GAMEAPP >= 0x25021500
+	Renderer.resetLifetimeContext(2)
+	Renderer.setLifetimeContext(2)
+	Renderer.setViewport(0x9fe0)
+#endif
 }
 
 // Zone Icons

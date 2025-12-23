@@ -727,7 +727,6 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 			}
 			else if (objA0.update_address == 0x06b26e && !(objA0.animation.sprite == 0x15 || objA0.animation.sprite == 0x20))
 			{
-				System.writeDisplayLine(stringformat("ZoneAct: 0x%04x", objA0.animation.sprite))
 				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
 				
 				return true
