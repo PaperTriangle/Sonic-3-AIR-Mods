@@ -435,7 +435,7 @@ function void TCA.RenderFix()
 #if GAMEAPP >= 0x25021500
 	Renderer.resetLifetimeContext(2)
 	Renderer.setLifetimeContext(2)
-	Renderer.setViewport(0x9fe0)
+	Renderer.resetViewport(0x9fe0)
 #endif
 }
 
