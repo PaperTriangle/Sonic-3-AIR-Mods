@@ -183,7 +183,8 @@ function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
 						
 						if !(useHyperPalette && isHyperEffect)
 						{
-							flashColour = underwater ? UH.flashTint() - (UH.flashTint() == 0xcce ? -0x200 : 0x002) : UH.flashTint()
+							//System.writeDisplayLine(stringformat("Values: 0x%04x", (UH.flashTint() == 0xcce ? 0xece : (UH.flashTint() == 0xcee ? 0xcec : UH.flashTint() - 0x002)) ))
+							flashColour = underwater ? (UH.flashTint() == 0xcce ? 0xece : (UH.flashTint() == 0xcee ? 0xcec : UH.flashTint() - 0x002)) : UH.flashTint()
 						}
 						
 						u16[dest + k] = blendColorsPacked(u16[dest + k], flashColour, blendFactor)
