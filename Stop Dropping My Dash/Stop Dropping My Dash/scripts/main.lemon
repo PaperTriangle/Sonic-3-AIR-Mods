@@ -33,6 +33,9 @@ function bool SDMD.destroyObjectExternally()
 
 function u8 SDMD.breakCheck()
 {
+	if (global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.WallLatch") > 0)
+		return false
+	
 	return SDMD.canBounce(char.ADDRESS_P1) | (SDMD.canSmash(char.ADDRESS_P1) << 1) | (SDMD.canBounce(char.ADDRESS_P2) << 2) | (SDMD.canSmash(char.ADDRESS_P2) << 3)
 }
 
