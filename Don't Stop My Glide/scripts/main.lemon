@@ -330,7 +330,13 @@ function void yieldExecution()
 		dsmg.backup_state = u8[0xffffb000 + 0x2f]
 	}
 	
+	// Debug printout
 	//System.writeDisplayLine(stringformat("Values: 0x%02x, 0x%02x, 0x%02x, 0x%02x", dsmg.backup_state, dsmg.knux_slide, dsmg.knux_fall, u8[0xffffb000 + 0x1e]))
+	
+	// Fix issue where state stays active
+	// Prevents strange interactions between MGZ Spinning Tops and Tarpits
+	if (u8[0xffffb000 + 0x2a] & char.flag.IN_AIR) == 0
+		knuckles.glideclimbstate = 0
 	
 	base.yieldExecution()
 
