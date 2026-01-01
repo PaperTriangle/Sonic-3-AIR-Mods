@@ -430,7 +430,7 @@ function void UpdateLevelScrolling.MHZ2()
 //# address-hook(0x01be46) end(0x01bfae)
 function void SetupCharacterAtStartPosition()
 {
-	if tca.intended && global.zone_act == 0x0800 && (checkpoint.number == 0)
+	if tca.intended && global.zone_act == 0x0800 && (checkpoint.number == 0) && global.rolling_demo == 0
 	{
 		u16[0xffffb000 + 0x10] = 0x0000
 		u16[0xffffb000 + 0x14] = 0x066c
