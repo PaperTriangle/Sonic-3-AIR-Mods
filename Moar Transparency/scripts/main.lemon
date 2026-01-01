@@ -1280,6 +1280,33 @@ function void fn053ad4()
 	fn053ba2()
 }
 
+//# address-hook(0x053bd4)
+function void fn053bd4()
+{
+	if (!mt.telebeam && !mt.teleframe)
+	{
+		base.fn053bd4()
+		return
+	}
+
+	if (camera.foreground.x.u16 >= 0x3780)
+	{
+		A1 = 0xfffffc30
+		u16[A1] = 0x2c
+		u16[A1 + 0x04] = 0
+		UnloadObject()
+	}
+	else
+	{
+		D1 = 0x24
+		D2 = 0x00
+		D3 = 0x01
+		D4.u16 = objA0.position.x.u16
+		fn01dc56()
+		DrawObject()
+	}
+}
+
 // Teleporter SSZ Start
 //# address-hook(0x057c1e) end(0x057cd0)
 function void fn057c1e()
