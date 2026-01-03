@@ -15,12 +15,12 @@ function void LevelObjectTableBuilder.addObject(u16 px, u16 py, u8 type, u8 subt
 		}
 		else if (global.zone_act == 0x0100) // HCZ1
 		{
-			if (px == 0x1010 && py == 0x00f0)
+			if (px == 0x1da3 && py == 0x0370)
 				subtype = 0x0f
 		}
 		else if (global.zone_act == 0x0101) // HCZ2
 		{
-			if (px == 0x1c20 && py == 0x0370)
+			if (px == 0x1a10 && py == 0x0570)
 				subtype = 0x0f
 			else if (px == 0x3410 && py == 0x0830)
 				subtype = 0x0f
@@ -31,10 +31,14 @@ function void LevelObjectTableBuilder.addObject(u16 px, u16 py, u8 type, u8 subt
 				subtype = 0x0f
 			else if (px == 0x2150 && py == 0x0abf)
 				subtype = 0x0f
+			else if (px == 0x2170 && py == 0x0abf)
+				return
 		}
 		else if (global.zone_act == 0x0201) // MGZ2
 		{
 			if (px == 0x2450 && py == 0x02c0)
+				subtype = 0x0f
+			if (px == 0x1400 && py == 0x0680)
 				subtype = 0x0f
 		}
 		else if (global.zone_act == 0x0300) // CNZ1
@@ -51,10 +55,25 @@ function void LevelObjectTableBuilder.addObject(u16 px, u16 py, u8 type, u8 subt
 			else if (px == 0x2070 && py == 0x0730)
 				subtype = 0x0f
 		}
+		else if (global.zone_act == 0x0400) // FBZ1
+		{
+			if (px == 0x1410 && py == 0x0378)
+				base.LevelObjectTableBuilder.addObject(0x140e, 0x0af1, OBJECTTABLE1_01, 0x0f, 0)
+		}
+		else if (global.zone_act == 0x0401) // FBZ2
+		{
+			if (px == 0x1c40 && py == 0x0710)
+				base.LevelObjectTableBuilder.addObject(0x1c2e, 0x08f0, OBJECTTABLE1_01, 0x0f, 0)
+		}
 		else if (global.zone_act == 0x0500) // ICZ1
 		{
-			if (px == 0x53f0 && py == 0x01f1)
-				subtype = 0x0f
+			if (px == 0x5778 && py == 0x0211)
+			{
+				LevelObjectTableBuilder.addObject(0x57aa, 0x0734, OBJECTTABLE1_b6, 0x00, 0)
+				LevelObjectTableBuilder.addObject(0x57aa, 0x0737, OBJECTTABLE1_01, 0x0f, 0)
+			}
+			if (px == 0x57c0 && (py == 0x0734 || py == 0x073c))
+				px += 0x18
 		}
 		else if (global.zone_act == 0x0501) // ICZ2
 		{
@@ -63,7 +82,7 @@ function void LevelObjectTableBuilder.addObject(u16 px, u16 py, u8 type, u8 subt
 			else if (px == 0x26c0 && py == 0x00b3)
 			{
 				base.LevelObjectTableBuilder.addObject(0x26c0, 0x00b3, OBJECTTABLE1_b6, 0x00, 0)
-				base.LevelObjectTableBuilder.addObject(0x26c0, 0x00b5, OBJECTTABLE1_01, 0x0f, 0)
+				base.LevelObjectTableBuilder.addObject(0x26c0, 0x00b4, OBJECTTABLE1_01, 0x0f, 0)
 				return
 			}
 		}
@@ -73,10 +92,14 @@ function void LevelObjectTableBuilder.addObject(u16 px, u16 py, u8 type, u8 subt
 				subtype = 0x0f
 			else if (px == 0x2b10 && py == 0x06f0)
 				subtype = 0x0f
+			else if (px == 0x35f0 && py == 0x0228)
+				subtype = 0x0f
 		}
 		else if (global.zone_act == 0x0601) // LBZ2
 		{
-			if (px == 0x11b2 && py == 0x04f0)
+			if (px == 0x0650 && py == 0x05f0)
+				subtype == 0x0f
+			else if (px == 0x11b2 && py == 0x04f0)
 				subtype = 0x0f
 			else if (px == 0x3730 && py == 0x0130)
 				subtype = 0x0f
@@ -85,10 +108,10 @@ function void LevelObjectTableBuilder.addObject(u16 px, u16 py, u8 type, u8 subt
 		}
 		else if (global.zone_act == 0x0700) // MHZ1
 		{
-			if (px == 0x13a0 && py == 0x0470)
-			{
+			if (px == 0x0f30 && py == 0x0870)
 				subtype = 0x0f
-			}
+			else if (px == 0x13a0 && py == 0x0470)
+				subtype = 0x0f
 			else if (px == 0x17b0 && py == 0x0420)
 			{
 				base.LevelObjectTableBuilder.addObject(0x1790, 0x0272, OBJECTTABLE1_01, 0x0f, 0)
@@ -100,16 +123,8 @@ function void LevelObjectTableBuilder.addObject(u16 px, u16 py, u8 type, u8 subt
 				subtype = 0x0f
 			else if (px == 0x2220 && py == 0x03b0)
 				subtype = 0x0f
-		}
-		else if (global.zone_act == 0x0400) // FBZ1
-		{
-			if (px == 0x1410 && py == 0x0378)
-				base.LevelObjectTableBuilder.addObject(0x140e, 0x0af1, OBJECTTABLE1_01, 0x0f, 0)
-		}
-		else if (global.zone_act == 0x0401) // FBZ2
-		{
-			if (px == 0x1c40 && py == 0x0710)
-				base.LevelObjectTableBuilder.addObject(0x1c2e, 0x08f0, OBJECTTABLE1_01, 0x0f, 0)
+			else if (px == 0x3250 && py == 0x02b0)
+				subtype = 0x0f
 		}
 		else if (global.zone_act == 0x0800) // SOZ1
 		{
@@ -122,11 +137,20 @@ function void LevelObjectTableBuilder.addObject(u16 px, u16 py, u8 type, u8 subt
 				return
 			else if (px == 0x2240 && py == 0x05b0)
 				subtype = 0x0f
+			else if (px == 0x22b0 && py == 0x04dc)
+			{
+				base.LevelObjectTableBuilder.addObject(0x2290, 0x0970, OBJECTTABLE1_01, 0x0f, 0)
+			}
 		}
 		else if (global.zone_act == 0x0801) // SOZ2
 		{
 			if (px == 0x2830 && py == 0x01f0)
-				subtype = 0x0f
+				px -= 0x10
+			else if (px == 0x2850 && py == 0x01f0)
+			{
+				base.LevelObjectTableBuilder.addObject(0x2840, 0x01f0, OBJECTTABLE1_01, 0x0f, 0)
+				px += 0x10
+			}
 			else if (px == 0x0c30 && py == 0x0250)
 			{
 				px = 0x0c40
@@ -134,6 +158,10 @@ function void LevelObjectTableBuilder.addObject(u16 px, u16 py, u8 type, u8 subt
 			}
 			else if (px == 0x0c50 && py == 0x0250)
 				return
+			else if (px == 0x19c8 && py == 0x05b0)
+			{
+				base.LevelObjectTableBuilder.addObject(0x19a0, 0x0330, OBJECTTABLE1_01, 0x0f, 0)
+			}
 		}
 		else if (global.zone_act == 0x0900) // LRZ1
 		{
