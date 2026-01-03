@@ -61,6 +61,9 @@ A mod that adds in a Fast Run to Sonic and Knuckles. Can also override some ESU 
 
 **PLEASE NOTE:** This mod is for my own personal use and it includes random sprites I have found. I have tried to provide a credit to the original creators for the ones I remember... But fuck idk where those Sonic ones came from...
 
+## Haru Style Monitors Plus HUD
+Adjusts the HUD elements of the Hyper Ring to better match the Haru's Forever-esc style.
+
 ## HCZ & ICZ Alternate Title Cards
 Simple mod to put a space in "HYDROCITY" and "ICECAP" title cards, making them "HYDRO CITY" and "ICE CAP", respectively.
 
@@ -99,6 +102,11 @@ Hud Elements have compatibility with **Haru's Forever-esque HUD**. Lives icon ha
 
 ## Rotate
 Makes player rotation worse... Made this as a test— I do not recommend using...
+
+## Static Monitors Plus Hyper Rings
+Places Hyper Ring power ups in zones at static locations. Most of the time this overrides existing power ups, but sometimes it adds new monitors. I created this because I wanted to use the Hyper Ring power up, but I don't like randomisers.
+
+**PLEASE NOTE:** This mod hooks into the LevelObjectTableBuilder.addObject() function, so it will not work if you are using any mods to alter zone objects. I suggest deleting the rawdata related files for FBZ object pos from Misc. Fixes & Tweaks if you use both mods.
 
 ## Stop Dropping My Dash
 Allows Sonic to hold a Drop Dash while bouncing off of more objects. Also allows characters to perform their double jump moves after interacting with these objects.

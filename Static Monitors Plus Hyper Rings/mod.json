@@ -1,0 +1,9 @@
+{
+  "Metadata": {
+    "Name": "Static Hyper Ring Monitors",
+	"UniqueID": "static-hyper-ring-monitors",
+    "Author": "PaperTriangle",
+    "Description": "Simple mod to place Hyper Ring monitors from Monitors + to static locations each zone.",
+    "ModVersion": "1.0"
+  }
+}
