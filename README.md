@@ -132,6 +132,4 @@ An option has been added to run this using the released zone order, however this
 Adds an underwater palette for Hyper Sonic, underwater palette options for Tails and Knuckles, and also has some options to make the flash less white to align with some of the ESU characters.
 
 ## Where's Robo
-Simple rawdata mod to replace the object layout of SSZ so the first Eggrobo badnik jetpacks in a little earlier to actually show up in the stage at the wider resolution of Sonic 3 AIR.
-
-Will not work with another mod that replaces SSZ layouts.
+Updates LevelObjectTableBuilder.buildObjects_SSZ1() to ensure that the first Egg Robo badnik loads properly in 16:9 if using Sonic 3 A.I.R. layouts.
