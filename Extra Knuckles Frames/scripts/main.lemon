@@ -1,16 +1,49 @@
 global bool ekf.style
+global u8 ekf.frame
 
-function u64 stringformat(u64 format, u64 arg1)
+// This function is here only for script mods that want to change or extend the character sprites
+function u64 Standalone.getModdedAnimationSpriteKey(u8 character, u16 animationSpriteEx)
 {
-	if (format == "character_knuckles_0x%02x")
+	if (character == CHARACTER_KNUCKLES)
 	{
-		if (arg1 == 0xc0 && char.state == char.state.KNUX_FLYCLIMB && level.framecounter.low % 16 < 8)
-			return base.stringformat("knuckles_glide_extra_frame_%d", ekf.style)
-		else if (arg1 == 0x8c  && level.framecounter.low % 20 < 10)
-			return base.stringformat("knuckles_panic_extra_frame_%d", ekf.style)
+		u64 key = base.Standalone.getModdedAnimationSpriteKey(character, animationSpriteEx)
+		bool glidin = char.animation.sprite == 0xc0
+		bool fallin = char.animation.sprite == 0x8c
+
+		if (glidin && ekf.frame > 15) || (fallin && ekf.frame > 19)
+			ekf.frame = 0
+		
+		if (glidin && ekf.frame > 7)
+			key = EKF.GlideFrame()
+		else if (fallin && ekf.frame > 9)
+			key = EKF.FallingPanicFrame()
+		
+		return key
 	}
 	
-	return base.stringformat(format, arg1)
+	return base.Standalone.getModdedAnimationSpriteKey(character, animationSpriteEx)
+}
+
+// Adjust the moded frame counter.
+function void EKF.FrameCount(u32 AX)
+{
+	bool glidin = u8[AX + 0x22] == 0xc0
+	bool fallin = u8[AX + 0x22] == 0x8c
+	
+	if (glidin || fallin)
+		ekf.frame++
+	else
+		ekf.frame = 0
+}
+
+// Increase modded animation frame counter here.
+//# address-hook(0x017d30) end(0x017ef0)
+function void UpdateKnucklesAnimation()
+{
+	if (A0 == 0xffffb000)
+		EKF.FrameCount(A0)
+	
+	base.UpdateKnucklesAnimation()
 }
 
 // Remove the programmed LBZ2 falling animation.
@@ -29,4 +62,34 @@ function void fn074952()
 
 	TriggerNextZone(0x0700)		// Mushroom Hill Zone
 	UnloadObject()
+}
+
+// Reset counter in SSZ cutscene.
+//# address-hook(0x07cc3a) end(0x07cc62)
+function void fn07cc3a()
+{
+	ekf.frame = 0
+	
+	base.fn07cc3a()
+}
+
+// Move the framecounter in SSZ cutscene.
+//# address-hook(0x07cc68) end(0x07ccaa)
+function void fn07cc68()
+{
+	base.fn07cc68()
+	
+	EKF.FrameCount(A1)
+}
+
+// Function for Gliding frame, can be used to add extra modded logic.
+function u64 EKF.GlideFrame()
+{
+	return stringformat("knuckles_glide_extra_frame_%d", ekf.style)
+}
+
+// Function for Falling Panic frame, can be used to add extra modded logic.
+function u64 EKF.FallingPanicFrame()
+{
+	return stringformat("knuckles_panic_extra_frame_%d", ekf.style)
 }
