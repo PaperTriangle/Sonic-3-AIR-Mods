@@ -6,7 +6,20 @@ function void LevelObjectTableBuilder.addObject(u16 px, u16 py, u8 type, u8 subt
 		if (global.zone_act == 0x0000) // AIZ1
 		{
 			if (px == 0x28c0 && py == 0x0561)
+			{
+				py--
 				subtype = 0x0f
+			}
+			else if (px == 0x28a4 && py == 0x0561)
+			{
+				py--
+				px = 0x28a0
+			}
+			else if (px == 0x28dc && py == 0x0561)
+			{
+				px = 0x28e0
+				py--
+			}
 		}
 		else if (global.zone_act == 0x0001) // AIZ2
 		{
