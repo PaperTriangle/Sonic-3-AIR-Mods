@@ -47,13 +47,19 @@ function void LevelObjectTableBuilder.addObject(u16 px, u16 py, u8 type, u8 subt
 				subtype = 0x0f
 			else if (px == 0x1a50 && py == 0x00d0)
 				subtype = 0x0f
+			else if (px == 0x1eb8 && py == 0x062f)
+			{
+				base.LevelObjectTableBuilder.addObject(0x1eb0, 0x0870, OBJECTTABLE1_01, 0x0f, 0)
+			}
 		}
 		else if (global.zone_act == 0x0301) // CNZ2
 		{
-			if (px == 0x1730 && py == 0x0130)
+			if (px == 0x2070 && py == 0x0730)
 				subtype = 0x0f
-			else if (px == 0x2070 && py == 0x0730)
-				subtype = 0x0f
+			else if (px == 0x1480 && py == 0x0710)
+			{
+				base.LevelObjectTableBuilder.addObject(0x1450, 0x01b0, OBJECTTABLE1_01, 0x0f, 0)
+			}
 		}
 		else if (global.zone_act == 0x0400) // FBZ1
 		{
