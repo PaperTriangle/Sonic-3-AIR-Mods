@@ -4,8 +4,8 @@
 		"Name": "Keep Rollin'",
 		"UniqueID": "keep-rollin",
 		"Author": "PaperTriangle",
-		"Description": "keep rolling over certain objects and small gaps.",
-		"ModVersion": "2.0"
+		"Description": "Keep rolling over certain objects and small gaps.",
+		"ModVersion": "2.1"
 	},
 	"OtherMods":
 	{
