@@ -1280,6 +1280,7 @@ function void fn053ad4()
 	fn053ba2()
 }
 
+// Fix collision height of this to prevent snapping.
 //# address-hook(0x053bd4)
 function void fn053bd4()
 {
