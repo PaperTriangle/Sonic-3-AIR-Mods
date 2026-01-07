@@ -1,3 +1,5 @@
+global bool kr.deztube
+
 define u32 char.ADDRESS_P1 = 0xffffb000
 define u32 char.ADDRESS_P2 = 0xffffb04a
 
@@ -18,18 +20,22 @@ function void yieldExecution()
 
 function void keepRollin(u32 AX)
 {
-	u32 backupA0 = A0
-	A0 = AX
 	
-	if (char.state == char.state.ROLLING) && (char.look_up_down_timer > 0)
-		char.look_up_down_timer--
-	
-	if (char.jumping > 0) || (char.velocity.x == 0 && char.state == char.state.ROLLING)
-		char.look_up_down_timer = 0
-	else if (char.state == char.state.ROLLING) && !(char.flags & char.flag.IN_AIR)
-		char.look_up_down_timer = 0x08
+	if ((global.game_mode & 0x7f) == 0x0c)
+	{
+		u32 backupA0 = A0
+		A0 = AX
 		
-	A0 = backupA0
+		if (char.state == char.state.ROLLING) && (char.look_up_down_timer > 0)
+			char.look_up_down_timer--
+		
+		if (char.jumping > 0) || (char.velocity.x == 0 && char.state == char.state.ROLLING)
+			char.look_up_down_timer = 0
+		else if (char.state == char.state.ROLLING) && !(char.flags & char.flag.IN_AIR)
+			char.look_up_down_timer = 0x08
+			
+		A0 = backupA0
+	}
 }
 
 //# address-hook(0x012172) end(0x012178)
@@ -73,7 +79,11 @@ function void fn0261f2()
 // Prevent Rolling in FBZ Vertical Cylinder
 //# address-hook(0x03a0d6) end(0x03a21a)
 function void fn03a0d6()
-{	
+{
+#if STANDALONE
+	if (debug_mode.state)
+		return
+#endif
 
 	u8 bit = (1 << D6.u8)
 
@@ -103,6 +113,11 @@ function void fn03a0d6()
 //# address-hook(0x039f7e) end(0x03a0ae)
 function void fn039f7e()
 {
+#if STANDALONE
+	if (debug_mode.state)
+		return
+#endif
+
 	bool isInside = (objA0.flags2a >> D6.u8) & 1
 
 	base.fn039f7e()
@@ -125,14 +140,79 @@ function void fn039f7e()
 }
 
 // Prevent rolling when in corckscrew animations.
+// Option for DEZ to prevent rolling in DEZ Tubes.
 //# address-hook(0x01174a) end(0x0117d8)
 //# address-hook(0x014f74) end(0x015000)
 function void Character.CheckForStartRolling()
 {
-	if (char.animation.sprite >= 0x69 && char.animation.sprite <= 0x77) || (char.animation.sprite >= 0x49 && char.animation.sprite <= 0x54)
-		return
+	if kr.deztube || global.zone != 0x0b
+		if (char.animation.sprite >= 0x69 && char.animation.sprite <= 0x77) || (char.animation.sprite >= 0x49 && char.animation.sprite <= 0x54)
+			return
+	else if kr.deztube && global.zone == 0x0b
+		if (char.animation.sprite >= 0x31 && char.animation.sprite <= 0x3c)
+			return
 
 	base.Character.CheckForStartRolling()
+}
+
+// Fix DEZ Tubes crashing with Debug.
+//# address-hook(0x048f12) end(0x048f8e)
+function void fn048f12()
+{
+#if STANDALONE
+	if (debug_mode.state)
+		return
+#endif
+
+	base.fn048f12()
+}
+
+// Fix DEZ Tubes crashing with Debug.
+//# address-hook(0x049090) end(0x0491d4)
+function void fn049090()
+{
+#if STANDALONE
+	if (debug_mode.state)
+		return
+#endif
+
+	base.fn049090()
+}
+
+// Fix LBZ Cylinder sticking you in Debug.
+//# address-hook(0x02c3e8) end(0x02c516)
+function void fn02c3e8()
+{
+#if STANDALONE
+	if (debug_mode.state)
+		return
+#endif
+
+	base.fn02c3e8()
+}
+
+// Fix CNZ Barber Pole sticking you in Debug.
+//# address-hook(0x033392) end(0x0335a6)
+function void fn033392()
+{
+#if STANDALONE
+	if (debug_mode.state)
+		return
+#endif
+
+	base.fn033392()
+}
+
+// Fix CNZ Barber Pole sticking you in Debug.
+//# address-hook(0x0335c4) end(0x0337d6)
+function void fn0335c4()
+{
+#if STANDALONE
+	if (debug_mode.state)
+		return
+#endif
+
+	base.fn0335c4()
 }
 
 // AIZ Hollow Tree Running
@@ -193,4 +273,210 @@ function void fn089f38()
 	}
 
 	DrawOrUnloadObject()
+}
+
+// DEZ Wind Tunnle
+//# address-hook(0x04964a) end(0x049764)
+function void fn04964a()
+{
+	u16 dx = objA1.position.x.u16 - objA0.position.x.u16
+	u16 dy = objA1.position.y.u16 - objA0.position.y.u16 + 0x0140
+	if (u8[A2] == 0)
+	{
+		if (dx < 0x0500 && dy < 0x0280 && debug_mode.state == 0)
+		{
+			objA1.state = char.state.RUNNING
+			u8[A1 + 0x27] = 0x01
+			objA1.flags2a &= ~char.flag.CONTROL_LOCK
+			objA1.flags2a |= char.flag.IN_AIR
+			u8[A1 + 0x2e] = control_flag.DISABLE_UPDATE
+			u8[A1 + 0x30] = 0xff		// "char.rotation.x.count"
+			u8[A1 + 0x31] = 0x04		// "char.rotation.x.speed"
+
+			u8[A1 + 0x40] = 0
+			u8[A2] = 1
+		}
+	}
+	else
+	{
+		if (dx < 0x0500 && debug_mode.state == 0)
+		{
+			objA1.velocity.x += 0x38
+			D6.u16 = 0x0600
+			D5.u16 = 0x18
+			D0.u16 = objA1.velocity.y
+
+			if (D4 & 0x0100)		// CONTROL_UP held
+			{
+				D0.u16 -= D5.u16
+				D1.s16 = -D6.s16
+				if (D0.s16 <= D1.s16)
+				{
+					D0.u16 += D5.u16
+					if (D0.s16 > D1.s16)
+					{
+						D0.u16 = D1.u16
+					}
+				}
+			}
+
+			if (D4 & 0x0200)		// CONTROL_DOWN held
+			{
+				D0.u16 += D5.u16
+				if (D0.s16 >= D6.s16)
+				{
+					D0.u16 -= D5.u16
+					if (D0.s16 < D6.s16)
+					{
+						D0.u16 = D6.u16
+					}
+				}
+			}
+
+			objA1.velocity.y = D0.u16
+			D0.u16 = objA1.velocity.y
+			D1.s16 = D0.s16 >> 5
+			if (D1.u16 != 0)
+			{
+				if (D1.s16 >= 0)
+				{
+					D0.u16 -= D1.u16
+					if (D0.s16 < 0)
+						D0.u16 = 0
+					objA1.velocity.y = D0.u16
+				}
+				else
+				{
+					D0.u16 -= D1.u16
+					if (D0.s16 > 0)
+						D0.u16 = 0
+					objA1.velocity.y = D0.u16
+				}
+			}
+
+			u8 anim = u8[A1 + 0x27]
+
+			pushAll()
+			A0 = A1
+			UpdateMovementStraightSimple()
+			Character.UpdateRotationInAir()
+			Character.CheckCollision()
+			popAll()
+
+			if !(objA1.flags2a & char.flag.IN_AIR)
+			{
+				
+				u8[A1 + 0x27] = anim
+				objA1.flags2a &= ~char.flag.CONTROL_LOCK
+				objA1.flags2a |= char.flag.IN_AIR
+				u8[A1 + 0x2e] = control_flag.DISABLE_UPDATE
+				u8[A1 + 0x30] = 0xff		// "char.rotation.x.count"
+				u8[A1 + 0x31] = 0x04		// "char.rotation.x.speed"
+
+				u8[A1 + 0x40] = 0
+				s16[A1 + 0x1c] = 0
+				
+				u8[A2] = 1
+			}
+
+			objA1.flags2a |= char.flag.IN_AIR
+			if ((level.framecounter.low & 0x0f) == 0)
+			{
+				playSound(0xd4)
+			}
+		}
+		else
+		{
+			u8[A1 + 0x2e] = 0
+			u8[A2] = 0
+		}
+	}
+}
+
+//# address-hook(0x0497c2) end(0x0497fe)
+function void fn0497c2()
+{
+	u8 anim1 = u8[char.ADDRESS_P1 + 0x27]
+	u8 anim2 = u8[char.ADDRESS_P2 + 0x27]
+	
+	base.fn0497c2()
+	
+	u32 backupA1 = A1
+	A1 = char.ADDRESS_P1
+	
+	if !(objA1.flags2a & char.flag.IN_AIR)
+	{
+		
+		u8[A1 + 0x27] = anim1
+		objA1.flags2a &= ~char.flag.CONTROL_LOCK
+		objA1.flags2a |= char.flag.IN_AIR
+		u8[A1 + 0x2e] = control_flag.DISABLE_UPDATE
+		u8[A1 + 0x30] = 0xff		// "char.rotation.x.count"
+		u8[A1 + 0x31] = 0x04		// "char.rotation.x.speed"
+
+		u8[A1 + 0x40] = 0
+		s16[A1 + 0x1c] = 0
+	}
+	
+	A1 = char.ADDRESS_P2
+	
+	if !(objA1.flags2a & char.flag.IN_AIR)
+	{
+		
+		u8[A1 + 0x27] = anim2
+		objA1.flags2a &= ~char.flag.CONTROL_LOCK
+		objA1.flags2a |= char.flag.IN_AIR
+		u8[A1 + 0x2e] = control_flag.DISABLE_UPDATE
+		u8[A1 + 0x30] = 0xff		// "char.rotation.x.count"
+		u8[A1 + 0x31] = 0x04		// "char.rotation.x.speed"
+
+		u8[A1 + 0x40] = 0
+		s16[A1 + 0x1c] = 0
+	}
+	
+	A1 = backupA1
+}
+
+//# address-hook(0x049986) end(0x0499fc)
+function void fn049986()
+{
+	u8 anim1 = u8[char.ADDRESS_P1 + 0x27]
+	u8 anim2 = u8[char.ADDRESS_P2 + 0x27]
+	
+	base.fn049986()
+	
+	u32 backupA1 = A1
+	A1 = char.ADDRESS_P1
+	
+	if !(objA1.flags2a & char.flag.IN_AIR)
+	{
+		
+		u8[A1 + 0x27] = anim1
+		objA1.flags2a &= ~char.flag.CONTROL_LOCK
+		objA1.flags2a |= char.flag.IN_AIR
+		u8[A1 + 0x2e] = control_flag.DISABLE_UPDATE
+		u8[A1 + 0x30] = 0xff		// "char.rotation.x.count"
+		u8[A1 + 0x31] = 0x04		// "char.rotation.x.speed"
+
+		u8[A1 + 0x40] = 0
+		s16[A1 + 0x1c] = 0
+	}
+	
+	A1 = char.ADDRESS_P2
+	
+	if !(objA1.flags2a & char.flag.IN_AIR)
+	{
+		
+		u8[A1 + 0x27] = anim2
+		objA1.flags2a &= ~char.flag.CONTROL_LOCK
+		objA1.flags2a |= char.flag.IN_AIR
+		u8[A1 + 0x2e] = control_flag.DISABLE_UPDATE
+		u8[A1 + 0x30] = 0xff		// "char.rotation.x.count"
+		u8[A1 + 0x31] = 0x04		// "char.rotation.x.speed"
+
+		u8[A1 + 0x40] = 0
+		s16[A1 + 0x1c] = 0
+	}
+	
+	A1 = backupA1
 }

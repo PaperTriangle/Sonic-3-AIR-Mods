@@ -7,6 +7,23 @@
 		"Description": "Keep rolling over certain objects and small gaps.",
 		"ModVersion": "2.1"
 	},
+	"Settings":
+	{
+		"List":
+		[
+			{
+				"InternalName": "kr.deztube",
+				"DisplayName": "Prevent Rolling in DEZ Tubes",
+				"Variable": "kr.deztube",
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			}
+		]
+	},
 	"OtherMods":
 	{
 		"gotta-go-fast":
