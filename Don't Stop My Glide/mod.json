@@ -5,7 +5,7 @@
 		"UniqueID": "do-not-stop-my-glide",
 		"Author": "PaperTriangle",
 		"Description": "Allows Knuckles to glide straight through walls.",
-		"ModVersion": "1.7"
+		"ModVersion": "1.8"
 	},
 	"OtherMods":
 	{
@@ -14,6 +14,12 @@
 			"DisplayName": "Sonic 3: D.A. Garden Edition",
 			"IsRequired": "0",
 			"Priority": "Higher"
+		},
+		"thorn-originsresolution":
+		{
+			"DisplayName": "Origins Screen Resolution",
+			"IsRequired": "0",
+			"Priority": "Lower"
 		}
 	},
 	"Settings":

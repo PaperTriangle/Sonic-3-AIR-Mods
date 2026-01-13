@@ -715,7 +715,7 @@ function void ItemEffect.ApplySuperTransformation()
 //# address-hook(0x01c11e) end(0x01c236)
 function void UpdateCameraPositionY_Glide()
 {
-	D0.s16 = char.position.y.u16 - u16[A1]
+	D0.s16 = char.position.y.u16 - u16[A1] - (getScreenHeight() - 224)/2
 	if (level.vertical_wrap == 0xff00)
 	{
 		D0.s16 &= level.height.bitmask

@@ -70,9 +70,12 @@ function void fn08598a()
 //# address-hook(0x06169a) end(0x0616e4)
 function void fn06169a()
 {
-	giant_ring_1 = u16[0xfffffc2a]
-	giant_ring_2 = u16[0xfffffc2c]
-	giant_ring_3 = u16[0xfffffc3e]
+	if !(global.zone_act == 0x0700 && isMainCharacter(CHARACTER_KNUCKLES) && u16[0xffffb000 + 0x10] < 0x00c0 && u16[0xffffb000 + 0x14] < 0x0900)
+	{
+		giant_ring_1 = u16[0xfffffc2a]
+		giant_ring_2 = u16[0xfffffc2c]
+		giant_ring_3 = u16[0xfffffc3e]
+	}
 	
 	base.fn06169a()
 }
@@ -82,7 +85,10 @@ function void fn0618fc()
 {
 	base.fn0618fc()
 	
-	u16[0xfffffc2a] = giant_ring_1
-	u16[0xfffffc2c] = giant_ring_2
-	u16[0xfffffc3e] = giant_ring_3
+	if !(global.zone_act == 0x0700 && isMainCharacter(CHARACTER_KNUCKLES) && u16[0xffffb000 + 0x10] < 0x00c0 && u16[0xffffb000 + 0x14] < 0x0900)
+	{
+		u16[0xfffffc2a] = giant_ring_1
+		u16[0xfffffc2c] = giant_ring_2
+		u16[0xfffffc3e] = giant_ring_3
+	}
 }

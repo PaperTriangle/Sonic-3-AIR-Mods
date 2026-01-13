@@ -903,8 +903,18 @@ function void Character.clearEnemiesOnScreen(u16 minY)
 	push(A2)
 
 	// Go through all the badniks to destroy
-	D6.u16 = global.dynamic_objects.size
-	A4 = addressof(global.dynamic_objects.size) + 2		// Resulting address: 0xffffe382
+
+	if Mods.isModActive("Origins Screen Resolution") && System.getGlobalVariableValueByName("screen_width") > 0
+	{
+		D6.u16 = u16[0x8ae380] 								//global.dynamic_objects.size_new || Actually it's twice the number of dynamic objects
+		A4 = 0x8ae380 + 2									// Resulting address: 0x8ae382
+	}
+	else
+	{
+		D6.u16 = global.dynamic_objects.size
+		A4 = addressof(global.dynamic_objects.size) + 2		// Resulting address: 0xffffe382
+	}
+	
 	while (D6.u16 != 0)
 	{
 		// Get address of dynamic object

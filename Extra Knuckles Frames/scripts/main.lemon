@@ -56,8 +56,11 @@ function void fn074952()
 	objA1.position.y.u16 = objA0.position.y.u16
 
 	char.state = char.state.FALLING_PANIC
+	ekf.frame++
 
-	if (u16[0xffffb000 + 0x14] < level.bossarea.top + 0x0200)
+	UpdatePlayer1SpritePatterns()
+
+	if (u16[0xffffb000 + 0x14] < level.bossarea.top + 0x0200 + (getScreenHeight() - 224))
 		return
 
 	TriggerNextZone(0x0700)		// Mushroom Hill Zone

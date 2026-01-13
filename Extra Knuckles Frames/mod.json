@@ -7,6 +7,15 @@
 		"Description": "Adds in a couple extra frames for knuckles.",
 		"ModVersion": "2.0"
 	},
+	"OtherMods":
+	{
+		"thorn-originsresolution":
+		{
+			"DisplayName": "Origins Screen Resolution",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		}
+	},
 	"Settings":
 	{
 		"List":
