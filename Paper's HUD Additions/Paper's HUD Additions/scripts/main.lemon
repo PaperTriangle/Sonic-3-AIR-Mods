@@ -41,24 +41,27 @@ function void RenderHUD()
 
 	bool isBonusStage = (global.zone >= 0x13 && global.zone <= 0x15)
 #if STANDALONE
-	if (!debug_mode.state)
+	if (!debug_mode.state || Mods.isModActive("Mobile Debug Display"))
 	{
 		if (!isBonusStage)
 		{
 		
 			// Lives (not visible in Time Attack or with infinite lives setting)
-		if (!Game.isTimeAttack() && !Game.getSetting(SETTING_INFINITE_LIVES))
-		{
-			bool useMobilePosition = HUD.useMobileLivesDisplay()
-			u16 px = useMobilePosition ? (getScreenWidth() - baseX - (0x30 + (phud.name ? PHUD.MobileLivesOffset() : 0))) : baseX + PHUD.LivesOffset()
-			u16 py = useMobilePosition ? baseY : 200
-	
-			if (!PHUD.RenderLives(px, py, renderQueue))
+			if (!Game.isTimeAttack() && !Game.getSetting(SETTING_INFINITE_LIVES))
 			{
-				base.RenderHUD()
-				return
+				bool useMobilePosition = HUD.useMobileLivesDisplay()
+				u16 px = useMobilePosition ? (getScreenWidth() - baseX - (0x30 + (phud.name ? PHUD.MobileLivesOffset() : 0))) : baseX + PHUD.LivesOffset()
+				u16 py = useMobilePosition ? baseY : getScreenHeight() - 24
+		
+				if (!PHUD.RenderLives(px, py, renderQueue))
+				{
+					base.RenderHUD()
+					return
+				}
 			}
-		}
+			
+			if (debug_mode.state)
+				PHUD.RenderDebug(baseX, baseY, renderQueue)
 		
 			// Score
 			HUD.drawSprite("hud_text_score", baseX, baseY, renderQueue)
@@ -452,4 +455,39 @@ function void fn05f26c()
 {
 	base.fn05f26c()
 	phud.extra_characters_on_screen = true
+}
+
+// Debug Coords Compat
+function void PHUD.RenderDebug(u16 baseX, u16 baseY, u16 renderQueue)
+{
+	string DigitKey
+	bool haruCompat = Mods.isModActive("Haru's Forever-esque HUD")
+	bool useMobilePosition = HUD.useMobileLivesDisplay() && (!Game.isTimeAttack() && !Game.getSetting(SETTING_INFINITE_LIVES))
+	u16 px = getScreenWidth() - baseX - (0x30 + (phud.name ? PHUD.MobileLivesOffset() : 0))
+	u16 py = useMobilePosition ? baseY + 0x14 : baseY
+
+	u16 X = (u32(camera.position.x.u16) << 16) + u16[0xffffb000 + 0x10]
+	u16 Y = (u32(camera.position.y.u16) << 16) + u16[0xffffb000 + 0x14]
+	
+	if (haruCompat)
+		DigitKey = "haru_debug_hud_digit_%d" 
+	else if (Debug.Digits == 1)
+		DigitKey = "debug_hud_digit_%d"
+	else
+		DigitKey = "hud_digit_%d"
+
+	// Text "X" and "Y"
+	HUD.drawSprite(haruCompat ? "haru_debug_hud_xy" : "DebugHud_X_Y", px, py, renderQueue)
+	++renderQueue
+	
+	// Position digits
+	HUD.drawDebugPositions(DigitKey, X, px + 0x2a, py - 0x03, renderQueue)
+	++renderQueue
+	HUD.drawDebugPositions(DigitKey, Y, px + 0x2a, py + 0x0d, renderQueue)
+	++renderQueue
+}
+
+function void HUD.drawDebugPositions(u64 stringMask, u32 number, u16 px, u16 py, u16 renderQueue)
+{
+	base.HUD.drawDebugPositions(stringMask, number, px, py, renderQueue)
 }
