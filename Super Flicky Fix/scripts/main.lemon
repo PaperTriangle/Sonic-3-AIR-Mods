@@ -309,6 +309,9 @@ function void fn01a170()
 		}
 		else
 		{
+			if Mods.isModActive("Origins Screen Resolution") && !competition_mode.active
+				System.setGlobalVariableValueByName("init_sprite_attributes", true)
+			
 			Kosinski.addToDMAQueue(0x14c652, Shield.targetInVRAM)
 			
 			if (allocHyperStarObject())
@@ -324,6 +327,9 @@ function void fn01a170()
 				alreadyHasStars = true
 				fn01937c()
 			}
+			
+			if Mods.isModActive("Origins Screen Resolution") && !competition_mode.active
+				System.setGlobalVariableValueByName("init_sprite_attributes", false)
 		}
 	}
 	else
@@ -373,6 +379,9 @@ function void fn0193ec()
 		base.fn0193ec()
 		return
 	}
+	
+	if Mods.isModActive("Origins Screen Resolution") && !competition_mode.active && System.getGlobalVariableValueByName("init_sprite_attributes")
+		objA0.sprite_attributes = System.getGlobalVariableValueByName("Shield.new_VRAM_target") >> 5
 	
 	if (super.active.tails)
 	{
