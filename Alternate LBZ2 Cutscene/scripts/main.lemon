@@ -797,7 +797,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 	}
 	
 	// Origins Resolution debris compat
-	if (Mods.isModActive("Origins Screen Resolution") && (System.getGlobalVariableValueByName("screen_width") > 0)) && (objA0.update_address == 0x856d0 && objA0.sprite_priority == 0x0080)
+	if Mods.isModActive("Origins Screen Resolution") && (objA0.update_address == 0x856d0 && objA0.sprite_priority == 0x0080)
 	{
 		Renderer.drawVdpSprite(px, py, size, index, 0x4000)
 		return true
