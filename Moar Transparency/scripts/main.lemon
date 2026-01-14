@@ -199,6 +199,27 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 	if (Mods.isModActive("No Transparency"))
 		System.setGlobalVariableValueByName("renderTransparentPlz", false)
 	
+	// Fix for debug monitor object 'cause why not?
+	if (debug_mode.state && debug_mode.selection == 0x01) && (objA0.update_address == 0x01365c || objA0.update_address == 0x010a94 || objA0.update_address == 0x016444)
+	{
+		u8 flags = ((objA0.render_flags & render_flag.FLIP_Y) ? SPRITE_FLAG_FLIP_Y : 0) | (prioFlag ? SPRITE_FLAG_PRIO : 0)
+		
+		if (Game.getSetting(SETTING_MONITOR_STYLE))
+		{
+			Renderer.drawCustomSprite("monitor_s2_intact", px, py, 0x00, flags, renderQueue)
+			py += (objA0.render_flags & render_flag.FLIP_Y) ? 2 : -2
+		}
+		else
+		{
+			Renderer.drawCustomSprite("monitor_s3_intact", px, py, 0x00, flags, renderQueue)
+			py += (objA0.render_flags & render_flag.FLIP_Y) ? 5 : -5
+		}
+
+		Renderer.drawCustomSprite(Monitor.getIconSpriteKey(9), px, py, 0x00, flags, renderQueue + 1)		// Draw static monitor icon
+
+		return true
+	}
+	
 	return base.Standalone.onWriteToSpriteTable(px, py, renderQueue)
 }
 
