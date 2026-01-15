@@ -1,0 +1,42 @@
+{
+	"Metadata":
+	{
+		"Name": "ESU Origins Resolution Tweaks",
+		"Author": "PaperTriangle",
+		"Description": "Some tweaks for ESU characters to work with the Origins Resolution mod.",
+		"ModVersion": "1.0"
+	},
+	"OtherMods":
+	{
+		"extra-slot-project-amy":
+		{
+			"DisplayName": "Extra Slot Amy",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		},
+		"extra-slot-project-ray":
+		{
+			"DisplayName": "Extra Slot Ray",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		},
+		"extra-slot-project-mighty":
+		{
+			"DisplayName": "Extra Slot Mighty",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		},
+		"es-3d2d-shadow":
+		{
+			"DisplayName": "Extra Slot 3D in 2D Shadow",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		},
+		"thorn-originsresolution":
+		{
+			"DisplayName": "Origins Screen Resolution",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		}
+	}
+}

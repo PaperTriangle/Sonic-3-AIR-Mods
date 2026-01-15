@@ -44,8 +44,8 @@ Allows Knuckles' glide to land on dynamic objects and prevents the glide from st
 
 Also has some other options like Hyper Stars for Hyper Knuckles.
 
-## ESU Characters PNG Bonus Icons
-Replaces the act clear icons with a PNG version of the UI symbol to prevent water palettes interacting with the HUD.
+## ESU Origins Resolution Tweaks
+Some tweaks for ESU characters so they work with the Origins Resolution mod... Mostly around intro cutscenes. Also replaces the act clear icons with a PNG version of the UI symbol to prevent water palettes interacting with the HUD.
 
 ## Extended Palette For Giant Ring
 Makes the Giant Ring operate using an extended palette line. Preventing the Super Rings from messing with stage / HUD palettes.

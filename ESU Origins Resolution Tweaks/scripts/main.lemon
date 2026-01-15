@@ -1,0 +1,211 @@
+define u8 global.xtrachar	= u8[0xffffe654]
+
+// Place this function here again to ensure it will function 
+// as expected when loaded above ESU characters.
+function void initializeMainGame()
+{
+	set_screen_size = 1
+	base.initializeMainGame()
+	set_screen_size = 0
+}
+
+// Fix super stars
+//# address-hook(0x0191a4) end(0x019230)
+function void fn0191a4()
+{
+	if !(isMainCharacter(CHARACTER_TAILS) && (global.xtrachar == 2 || global.xtrachar == 3))
+	{
+		base.fn0191a4()
+		return
+	}
+
+	if (!super.active.tails || super.active.tails == 0xff)
+	{
+		UnloadObject()
+		return
+	}
+
+	u8 backupSuper = super.active
+	u8 backupXtraChar = global.xtrachar
+	super.active = super.active.tails
+	global.xtrachar = 0
+
+	base.fn0191a4()
+
+	super.active = backupSuper
+	global.xtrachar = backupXtraChar
+}
+
+// Fix Hyper Stars
+// Hyper Stars
+//# address-hook(0x0193ec) end(0x019486)
+function void fn0193ec()
+{
+	if !(isMainCharacter(CHARACTER_TAILS) && (global.xtrachar == 2 || global.xtrachar == 3))
+	{
+		base.fn0193ec()
+		return
+	}
+	
+	u8 backupSuper = super.active
+	u8 backupXtraChar = global.xtrachar
+	super.active = super.active.tails
+	global.xtrachar = 0
+
+	base.fn0193ec()
+
+	super.active = backupSuper
+	global.xtrachar = backupXtraChar
+}
+
+//Make sure the sky is behind the palm trees
+//# address-hook(0x01c550) end(0x01c5c4)
+function void fn01c550()
+{
+	base.fn01c550()
+		
+	if Mods.isModActive("Origins Screen Resolution") && (global.xtrachar == 3)
+	{
+		s16 screenShift = getScreenHeight() - 224
+
+		if (level.vertical_wrap == 0x2e0)
+		{
+			level.vertical_wrap = 0x2e0 - screenShift/2
+		}
+	
+		if (move_area.bottom.current == 0x0090)
+		{
+			move_area.bottom.target = 0x0090 - screenShift
+			move_area.bottom.current = move_area.bottom.target
+		}
+
+	}
+}
+
+//# address-hook(0x01be46) end(0x01bfae)
+function void SetupCharacterAtStartPosition()
+{
+	base.SetupCharacterAtStartPosition()
+	
+	if Mods.isModActive("Origins Screen Resolution") && (global.xtrachar == 3)
+	{
+		s16 screenShift = getScreenHeight() - 224
+		
+		if (move_area.bottom.target == 0x0090)
+		{
+			move_area.bottom.target = 0x0090 - screenShift
+			move_area.bottom.current = move_area.bottom.target
+		}
+	}
+}
+
+// Let Flickies leave the screen.
+//# address-hook(0x063750) end(0x06378a)
+function void fn063750()
+{
+	if (objA0.position.x.u16 < camera.position.x.u16 - 0x20)
+	{
+		UnloadObject()
+	}
+	else
+	{
+		base.fn063750()
+	}
+}
+
+// Prevent Animals from Despawning.
+//# address-hook(0x06364e) end(0x06367c)
+function void fn06364e()
+{
+	checkpoint.number = 1
+	checkpoint.x = 0x06f4
+	checkpoint.y = 0x09ec
+#if STANDALONE
+	if (global.zone_act == 0x0000)
+	{
+		if (Game.getSetting(SETTING_LEVELLAYOUTS) == 2)
+		{
+			checkpoint.x = 0x1830
+			checkpoint.y = 0x0119
+		}
+		else
+		{
+			checkpoint.x = 0x1460
+			checkpoint.y = 0x041a
+		}
+	}
+#endif
+	Checkpoint.SaveCurrentState()
+	checkpoint.time = 0
+
+#if !STANDALONE
+	// This should already have been set to exactly this value...
+	D0.u16 = 0x0700		// Mushroom Hill Act 1
+	global.zone_act = D0.u16
+	global.zone_act.apparent = D0.u16
+#endif
+
+#if STANDALONE
+	Game.endSkippableCutscene()
+
+	// Use this code for a direct start without fade to black (along with the "pointToReach" change above)
+	bool manualCutsceneSkip = ((control.pad1.pressed & CONTROL_START) || (control.pad2.pressed & CONTROL_START))
+	if (global.zone_act == 0x0000 && !manualCutsceneSkip)
+	{
+		u32 backupA0 = A0
+
+		u16[0xffffb000 + 0x10] = objA0.position.x.u16
+		u16[0xffffb000 + 0x14] = objA0.position.y.u16
+		s16[0xffffb000 + 0x18] = objA0.velocity.x
+		s16[0xffffb000 + 0x1c] = objA0.velocity.x
+		u8[0xffffb000 + 0x2e] = 0
+
+		// Give Knuckles another update, to make sure he's rendered this frame at all
+		A0 = 0xffffb000
+		call objA0.update_address
+		A0 = backupA0
+
+		// Remove the object that listens to CONTROL_START
+		for (u32 address = 0xffffb128; address < 0xffffcfcb; address += 0x4a)
+		{
+			A1 = address
+			if (objA1.update_address == 0x063720 || objA1.update_address == 0x063682)
+			{
+				unloadObjectAt(A1)
+			}
+		}
+
+		// Load palette line 1 for enemies
+		copyMemory(0xfffffc20, 0x0a8b7c, 0x20)
+
+		player1.control_override = 0
+		player1.camera_lock = 0
+		fn0851e4()
+
+		if (allocDynamicObjectStd())
+		{
+			// Show title card
+			objA1.update_address = addressof(TitleCard.Update)
+		}
+
+		global.level_started = -0x6f	// Let HUD fly in
+		hud.dirty.timer = 0x80
+		timer.alldata = 0
+		hud.dirty.lives = 0x01
+
+		UnloadObject()
+
+		// Spawn Tails
+		if (getNumPlayers() > 1)
+		{
+			tails.respawn_counter = 60
+			tails.ai_routine = 0x02
+		}
+	}
+	else
+#endif
+	{
+		level.restart = 1
+		Object.TriggerUnloading()
+	}
+}

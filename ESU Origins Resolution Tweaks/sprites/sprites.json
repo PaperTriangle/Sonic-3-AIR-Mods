@@ -1,0 +1,29 @@
+{
+	"hud_bonus_icon_Mighty":  { "File": "character_mighty_levelresults_bonusicon.png", "Rect":  "0,0,12,19" },
+	"hud_bonus_icon_slot2":  { "File": "character_ray_levelresults_bonusicon.png", "Rect":  "0,0,12,19" },
+	"hud_bonus_icon_slot3":   { "File": "character_amy_levelresults_bonusicon.png", "Rect":  "0,0,12,19" },
+	
+	"titleCard_M_in_S3_air":  { "File": "mighty_title_cards.png", "Rect": "640,0,66,224", "Center": "0,46" },
+	"titleCard_M_in_S3&K":  { "File": "mighty_title_cards.png", "Rect": "706,0,66,224", "Center": "0,46" },
+	"titleCard_M_in_S3":  { "File": "mighty_title_cards.png", "Rect": "772,0,66,224", "Center": "0,46" },
+	"titleCard_M_in_S&K":  { "File": "mighty_title_cards.png", "Rect": "838,0,66,224", "Center": "0,46" },
+	"titleCard_M_in_DAGE_def":  { "File": "mighty_title_cards.png", "Rect": "904,0,66,224", "Center": "0,46" },
+	
+	"titleCard_Ray_in_S3_air":  { "File": "ray_title_cards.png", "Rect": "64,0,66,224", "Center": "0,46" },
+	"titleCard_Ray_in_S3&K":  { "File": "ray_title_cards.png", "Rect": "262,0,66,224", "Center": "0,46" },
+	"titleCard_Ray_in_S&K":  { "File": "ray_title_cards.png", "Rect": "130,0,66,224", "Center": "0,46" },
+	"titleCard_Ray_in_S3":  { "File": "ray_title_cards.png", "Rect": "196,0,66,224", "Center": "0,46" },
+	"titleCard_Ray_in_DAGE_def":  { "File": "ray_title_cards.png", "Rect": "328,0,66,224", "Center": "0,46" },
+	
+	"titleCard_Amy_in_S3_air":  { "File": "amy_title_cards.png", "Rect": "64,0,66,224", "Center": "0,46" },
+	"titleCard_Amy_in_S3&K":  { "File": "amy_title_cards.png", "Rect": "262,0,66,224", "Center": "0,46" },
+	"titleCard_Amy_in_S&K":  { "File": "amy_title_cards.png", "Rect": "130,0,66,224", "Center": "0,46" },
+	"titleCard_Amy_in_S3":  { "File": "amy_title_cards.png", "Rect": "196,0,66,224", "Center": "0,46" },
+	"titleCard_Amy_in_DAGE_def":  { "File": "amy_title_cards.png", "Rect": "328,0,66,224", "Center": "0,46" },
+	
+	"titleCards_SH_in_S3_air":  { "File": "shadow_title_cards.png", "Rect": "640,0,66,224", "Center": "0,46" },
+	"titleCards_SH_in_S3&K":  { "File": "shadow_title_cards.png", "Rect": "706,0,66,224", "Center": "0,46" },
+	"titleCards_SH_in_S3":  { "File": "shadow_title_cards.png", "Rect": "772,0,66,224", "Center": "0,46" },
+	"titleCards_SH_in_S&K":  { "File": "shadow_title_cards.png", "Rect": "838,0,66,224", "Center": "0,46" },
+	"titleCards_SH_in_DAGE_def":  { "File": "shadow_title_cards.png", "Rect": "904,0,66,224", "Center": "0,46" }
+}
