@@ -310,7 +310,7 @@ function void fn01a170()
 		else
 		{
 			if Mods.isModActive("Origins Screen Resolution") && !competition_mode.active
-				System.setGlobalVariableValueByName("init_sprite_attributes", true)
+				System.setGlobalVariableValueByName("init_sprite_attributes", 1)
 			
 			Kosinski.addToDMAQueue(0x14c652, Shield.targetInVRAM)
 			
@@ -329,7 +329,7 @@ function void fn01a170()
 			}
 			
 			if Mods.isModActive("Origins Screen Resolution") && !competition_mode.active
-				System.setGlobalVariableValueByName("init_sprite_attributes", false)
+				System.setGlobalVariableValueByName("init_sprite_attributes", 0)
 		}
 	}
 	else
@@ -380,8 +380,8 @@ function void fn0193ec()
 		return
 	}
 	
-	if Mods.isModActive("Origins Screen Resolution") && !competition_mode.active && System.getGlobalVariableValueByName("init_sprite_attributes")
-		objA0.sprite_attributes = System.getGlobalVariableValueByName("Shield.new_VRAM_target") >> 5
+	if Mods.isModActive("Origins Screen Resolution") && !competition_mode.active && System.getGlobalVariableValueByName("init_sprite_attributes") == 1
+		objA0.sprite_attributes = 0xd940 >> 5
 	
 	if (super.active.tails)
 	{
