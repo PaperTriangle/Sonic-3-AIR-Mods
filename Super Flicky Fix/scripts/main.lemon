@@ -269,7 +269,7 @@ function bool Character.performSuperTransformation()
 //# address-hook(0x0191a4) end(0x019230)
 function void fn0191a4()
 {
-	if (!isMainCharacter(CHARACTER_TAILS))
+	if (!isMainCharacter(CHARACTER_TAILS) || global.xtrachar > 0)
 	{
 		base.fn0191a4()
 		return
@@ -374,61 +374,18 @@ function bool allocHyperStarObject()
 //# address-hook(0x0193ec) end(0x019486)
 function void fn0193ec()
 {
-	if (!isMainCharacter(CHARACTER_TAILS))
+	if (!isMainCharacter(CHARACTER_TAILS) || global.xtrachar > 0)
 	{
 		base.fn0193ec()
 		return
 	}
-	
-	if Mods.isModActive("Origins Screen Resolution") && !competition_mode.active && System.getGlobalVariableValueByName("init_sprite_attributes") == 1
-		objA0.sprite_attributes = 0xd940 >> 5
-	
-	if (super.active.tails)
-	{
-		--objA0.animation.timer
-		if (s8(objA0.animation.timer) < 0)
-		{
-			objA0.animation.timer = 1
-			++objA0.animation.sprite
-			if (objA0.animation.sprite >= 3)
-			{
-				objA0.animation.sprite = 0
-				u16[A0 + 0x30] = 0
-				u16[A0 + 0x34] = 0
-			}
-		}
 
-		D0.u8 = objA0.value26
-		objA0.value26 -= 0x10
-		LookupSinCos()
-		D0.s16 <<= 3
-		D1.s16 <<= 3
-		objA0.velocity.x = D0.u16
-		objA0.velocity.y = D1.u16
-		u16[A0 + 0x30] += objA0.velocity.x
-		u16[A0 + 0x34] += objA0.velocity.y
+	u8 backupSuper = super.active
+	super.active = super.active.tails
 
-		D2.s16 = s8[A0 + 0x30]
-		if (u8[0xffffb000 + 0x2a] & char.flag.FACING_LEFT)
-			D2.s16 = -D2.s16
-		objA0.position.x.u16 = u16[0xffffb000 + 0x10] + D2.s16
-		objA0.position.y.u16 = u16[0xffffb000 + 0x14] + s8[A0 + 0x34]
-		objA0.sprite_attributes = (objA0.sprite_attributes & ~sprite_attribute.PRIORITY) | (u16[0xffffb000 + 0x0a] & sprite_attribute.PRIORITY)
+	base.fn0193ec()
 
-	#if STANDALONE
-		// Do not render stars if Sonic is outside the screen (e.g. MGZ 2 boss)
-		if (u8[0xffffb000 + 0x04] & render_flag.VISIBLE)
-	#endif
-		{
-			//System.writeDisplayLine(stringformat("Values: 0x%08x", A0))
-			DrawObject()
-		}
-	}
-	else
-	{
-		alreadyHasStars = false
-		UnloadObject()
-	}
+	super.active = backupSuper
 }
 
 function void yieldExecution()
