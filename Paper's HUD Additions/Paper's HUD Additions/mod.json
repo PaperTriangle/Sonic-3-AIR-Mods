@@ -25,6 +25,12 @@
 			"DisplayName": "Origins Screen Resolution",
 			"IsRequired": "0",
 			"Priority": "Lower"
+		},
+		"MobileDebugDisplay":
+		{
+			"DisplayName": "Mobile Debug Display",
+			"IsRequired": "0",
+			"Priority": "Lower"
 		}
 	},
 	"Settings":

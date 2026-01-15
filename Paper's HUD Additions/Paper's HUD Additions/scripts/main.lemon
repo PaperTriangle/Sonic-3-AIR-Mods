@@ -471,7 +471,7 @@ function void PHUD.RenderDebug(u16 baseX, u16 baseY, u16 renderQueue)
 	
 	if (haruCompat)
 		DigitKey = "haru_debug_hud_digit_%d" 
-	else if (Debug.Digits == 1)
+	else if (System.getGlobalVariableValueByName("Debug.Digits") == 1)
 		DigitKey = "debug_hud_digit_%d"
 	else
 		DigitKey = "hud_digit_%d"
