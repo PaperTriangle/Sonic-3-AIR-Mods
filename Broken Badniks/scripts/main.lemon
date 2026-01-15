@@ -654,7 +654,7 @@ function void fn068ee4()
 	D0.u8 = u8[A2 + D0.u16]
 	u16 offset = u16[A3 + D0.u16 * 2]
 #if STANDALONE
-	offset = u32(offset) * getScreenWidth() / (320 - getScreenExtend()*2)
+	offset = u32(offset) * getScreenWidth() / (320 - getScreenExtend())
 #endif
 	objA0.position.x.u16 = camera.position.x.u16 + offset
 	objA0.velocity.y = 0x400
