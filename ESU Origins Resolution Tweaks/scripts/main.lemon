@@ -4,9 +4,9 @@ define u8 global.xtrachar	= u8[0xffffe654]
 // as expected when loaded above ESU characters.
 function void initializeMainGame()
 {
-	set_screen_size = 1
+	System.setGlobalVariableValueByName("set_screen_size", 1)
 	base.initializeMainGame()
-	set_screen_size = 0
+	System.setGlobalVariableValueByName("set_screen_size", 0)
 }
 
 // Fix super stars
