@@ -24,6 +24,12 @@
 			"DisplayName": "Extra Slot Amy",
 			"IsRequired": "0",
 			"Priority": "Lower"
+		},
+		"thorn-originsresolution":
+		{
+			"DisplayName": "Origins Screen Resolution",
+			"IsRequired": "0",
+			"Priority": "Lower"
 		}
 	},
 	"Settings":

@@ -1205,7 +1205,7 @@ function void fn0459b4()
 	if (level.framecounter.low & 0x01)
 	{
 		// Update position of the beam
-		D0.u16 = min(u16[A0 + 0x44], camera.position.y.u16 + 0x68)
+		D0.u16 = min(u16[A0 + 0x44], camera.position.y.u16 + 0x68 + (getScreenHeight() - 224)/2)
 		objA0.position.y.u16 = D0.u16
 
 		D1.u16 = objA0.position.x.u16
