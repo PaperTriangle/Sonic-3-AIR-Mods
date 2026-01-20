@@ -923,6 +923,15 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		}
 	}
 	
+	if (objA0.update_address == 0x090700)
+	{
+		System.writeDisplayLine(stringformat("ZoneAct: 0x%04x", objA0.position.x.u16))
+		if (index == 0x6430 || index == 0xe430)
+			Renderer.drawSprite("master_emerald_cave", px, py, 0xa0 + mt.bmpline * 0x10, objA0.position.x.u16 > 0x1640 ? SPRITE_FLAG_PRIO : 0x00, renderQueue, 0, 0xff)
+		
+		return true
+	}
+	
 	// Other
 	if (mt.teleframe)
 	{
@@ -1916,7 +1925,7 @@ function void fn23de96()
 constant array<u16> BEAM_HPZ = {0xeee, 0xe88, 0xe66, 0xc44, 0xa24}
 constant array<u16> BEAM_SSZ = {0xeee, 0xeea, 0xec8, 0xea6, 0xe84}
 
-function void MT.LoadBeamPalette()
+function void MT.LoadBeamPalette(bool afterHPZCutscene)
 {
 	u32 PaletteAD
 	u32 TargetAD
@@ -1934,9 +1943,9 @@ function void MT.LoadBeamPalette()
 		if (global.zone == 0x0a || global.zone_act == 0x1601 || global.zone_act == 0x1701)
 		{
 			PaletteAD = mt.hpzpalette ? 0x0a977e : 0x066a14
-			TargetAD = 0x802196 + offset
+			TargetAD = (afterHPZCutscene ? 0x802016 : 0x802196) + offset
 		}
-		else
+		else if (global.zone == 0x03 || global.zone == 0x05)
 		{
 			PaletteAD = mt.cnzpalette ? 0x0a977e : 0x066a14
 			PaletteAD = 0x0a977e
@@ -1952,22 +1961,30 @@ function void MT.LoadBeamPalette()
 		u16[TargetAD + 2*3] = mt.palettesource ? BEAM_HPZ[3] : u16[PaletteAD + 0x02 * 0x03]
 		u16[TargetAD + 2*4] = mt.palettesource ? BEAM_HPZ[4] : u16[PaletteAD + 0x02 * 0x04]
 	}
-	else
+	else if (PaletteAD == 0x0a977e)
 	{
 		for (u8 k = 0; k < 5; k += 1)
 		{
 			u16[TargetAD + 2*k] = mt.palettesource ? BEAM_SSZ[k] : u16[PaletteAD + 0x02 * k]
 		}
 	}
+}
+
+function void MT.LoadBeamPalette()
+{
+	MT.LoadBeamPalette(false)
+}
+
+function void MT.LoadEmeraldPalette(bool preLoad)
+{
+	u16 offset = 3 * 0x40 + mt.bmpline * 0x20
+	u32 TargetAD = (preLoad ? 0x802196 : 0x802016) + offset
 	
-	if (global.zone_act == 0x1701)
-	{
-		u16[TargetAD] = 		u16[0x00066a20]
-		u16[TargetAD + 2] = 	0x6a0
-		u16[TargetAD + 2*2] = 	0x660
-		u16[TargetAD + 2*3] = 	u16[0x00066a28]
-		u16[TargetAD + 2*4] = 	u16[0x00066a26]
-	}
+	u16[TargetAD] = 		u16[0x00066a20]
+	u16[TargetAD + 2] = 	0x6a0
+	u16[TargetAD + 2*2] = 	0x660
+	u16[TargetAD + 2*3] = 	u16[0x00066a28]
+	u16[TargetAD + 2*4] = 	u16[0x00066a26]
 }
 
 // Load CNZ Teleporter Beam Palette
@@ -2039,7 +2056,7 @@ function void fn090964()
 		
 		u32[0xfffffce2] = 0x040c0408
 		
-		MT.LoadBeamPalette()
+		MT.LoadEmeraldPalette(true)
 	}
 	
 }
@@ -2126,17 +2143,11 @@ function void fn090700()
 	
 	if (objA0.render_flags & render_flag.VISIBLE)
 	{
-		if (global.zone_act == 0x1601)
-			level.palettefx.timer_1 = 7999
-							
-		if (objA0.value26 == 0)
-		{
-			if (global.zone_act != 0x1701)
-			{
-				u32[0xfffffc62] = 0x06a00660
-			}
-		}
-		else if (u8[0xfffffac1] == 0)
+		// Getting rid of this keeps the red flashing...
+		//if (global.zone_act == 0x1601)
+		//	level.palettefx.timer_1 = 7999
+		
+		if (objA0.value26 != 0) && (u8[0xfffffac1] == 0)
 		{
 			A1 = 0x0914ce
 			A2 = 0xfffffc62
@@ -2171,7 +2182,7 @@ function void fn085a1a()
 	u16 b1
 	u16 b2
 	
-	if (mt.teleframe && global.zone_act == 0x1701)
+	if mt.teleframe && (global.zone_act == 0x1701 || global.zone_act == 0x1601)
 	{
 		offset = 3 * 0x40 + mt.bmpline * 0x20
 		
@@ -2184,7 +2195,7 @@ function void fn085a1a()
 	
 	base.fn085a1a()
 	
-	if (mt.teleframe && global.zone_act == 0x1701)
+	if mt.teleframe && (global.zone_act == 0x1701 || global.zone_act == 0x1601)
 	{
 		u16[0x802016 + offset + 2] = u16[0xfffffc62]
 		u16[0x802016 + offset + 4] = u16[0xfffffc64]
@@ -2192,4 +2203,46 @@ function void fn085a1a()
 		u16[0xfffffc62] = b1
 		u16[0xfffffc64] = b2
 	}
+}
+
+// Clone of the base method so we get original screen
+// movement if using teleframes while using origins resolution
+//# address-hook(0x064c70) end(0x064ca4)
+function void fn064c70()
+{
+	if !mt.teleframe
+	{
+		base.fn064c70()
+		return
+	}
+	
+	A1 = 0xffffb000
+	if (objA1.position.x.u16 < 0x14d0)
+		return
+
+#if STANDALONE
+	Game.startSkippableCutscene()
+#endif
+
+	objA0.update_address = 0x064ca6
+	StopObjectA1()
+	player1.control_override = 0xff
+	control.player1 = 0
+
+	if (allocDynamicObjectStd())
+	{
+		objA1.update_address = 0x0863c0
+	}
+	move_area.bottom.target = 0x0300
+	
+	MT.LoadEmeraldPalette(false)
+}
+
+//# address-hook(0x064964) end(0x06497e)
+function void fn064964()
+{
+	base.fn064964()
+	
+	if mt.teleframe
+		MT.LoadBeamPalette(true)
 }
