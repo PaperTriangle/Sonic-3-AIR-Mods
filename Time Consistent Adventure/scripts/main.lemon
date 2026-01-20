@@ -37,6 +37,7 @@ global u16 transition_time = 0
 global bool tca.knux_stars_off
 global u8 tca.ds_char
 global bool tca.infbz1forreal
+global bool tca.inssz1forreal
 
 constant array<u16> NEW_MGZ_PALETTE = {0x4ae, 0x26c, 0x24a, 0x026, 0x004, 0x000, 0x0cc, 0x0a8, 0x064, 0x042, 0x6cc, 0xaee, 0x48a, 0x246, 0x024, 0x000, 0x6ce, 0x4ae, 0x28e, 0x24e, 0x22c, 0x488, 0x0a6, 0x084, 0x062, 0x042, 0xcac, 0xa8a, 0x868, 0x446, 0x224}
 constant array<u16> NEW_TRANSITION = {0x422, 0x402, 0x202, 0x200, 0x000, 0x682, 0x480, 0x460, 0x440, 0x220, 0x624, 0x624, 0x624, 0x422, 0x200}
@@ -329,7 +330,7 @@ function void yieldExecution()
 		else if (transition_state == 0 && tca.ssz_trans_point == 3 && camera.position.y.u16 < 0x700 && checkpoint.number < 2 )
 			transition_state = 1
 		
-		if (transition_state == 1 && transition_time <= 0x78)
+		if (transition_state == 1 && transition_time <= 0x78) && tca.inssz1forreal
 		{	
 			transition_time += !tca.fadespeed ? 1 : 2
 			if (transition_time % (tca.fadespeed ? 30 : 24) == 0 || !tca.fadetype)
@@ -1322,6 +1323,11 @@ function void TitleCard.Show()
 		tca.infbz1forreal = 1
 	else
 		tca.infbz1forreal = 0
+		
+	if (tca.fbz && global.zone_act == 0x0a00)
+		tca.inssz1forreal = 1
+	else
+		tca.inssz1forreal = 0
 		
 	if (tca.icz_trans_point && isMainCharacter(CHARACTER_KNUCKLES) && global.zone_act == 0x0501 && camera.position.x.u16 > 0x3ab0)
 	{
