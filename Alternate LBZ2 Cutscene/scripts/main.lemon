@@ -317,7 +317,10 @@ function void fn08d47c()
 
 		// We will still play the jump sound regardless of settings.
 		if (objA0.position.x.u16 >= 0x4440)
-		playSound(0x62)
+		{
+			playSound(0x62)
+			//move_area.bottom.target += (getScreenHeight() - 224)/2 // Origins Resolution for boss arena
+		}
 
 		return
 	}
@@ -365,7 +368,11 @@ function void fn08d47c()
 
 	// Added in a jump sound when they exit the Egg Mobile
 	if (objA0.position.x.u16 >= 0x4440)
+	{
 		playSound(0x62)
+		//move_area.bottom.target += (getScreenHeight() - 224)/2 // Origins Resolution for boss arena
+	}
+
 }
 
 // Fix for getting hurt and falling into updrafts
@@ -540,12 +547,6 @@ function void fn07473a()
 //# address-hook(0x0549c6) end(0x054a92)
 function void fn0549c6()
 {
-	if (!altlbz2cs.highjump)
-	{
-		base.fn0549c6()
-		return
-	}
-	
 	if (u8[0xffffb000 + 0x05] >= base_state.DIED)
 		return
 
@@ -558,7 +559,7 @@ function void fn0549c6()
 		}
 
 		// Camera reached boss fight area?
-		if (camera.position.x.u16 >= 0x4390 - getScreenExtend() || camera.position.y.u16 >= 0x0668)
+		if (camera.position.x.u16 >= 0x4390 - getScreenExtend() || camera.position.y.u16 >= 0x0668 - (getScreenHeight() - 224)/2)
 		{
 			player1.camera_lock = 0
 		}
@@ -586,10 +587,10 @@ function void fn0549c6()
 		}
 
 		// This check is what is removed.
-		//if (camera.position.y.u16 >= 0x0668)
-		//{
-		//	level.vertical_wrap = move_area.bottom.current
-		//}
+		if (!altlbz2cs.highjump) && (camera.position.y.u16 >= 0x0668 - (getScreenHeight() - 224)/2)
+		{
+			level.vertical_wrap = move_area.bottom.target
+		}
 
 		A1 = 0xffffeed4
 		D1 = u16[0xffffeea2]
@@ -630,11 +631,14 @@ function void fn0729de()
 	if (!altlbz2cs.highjump)
 	{
 		base.fn0729de()
+		loadPaletteLine1(0x073886)
 		return
 	}
 	
 	// Set this value here, since we removed it from 0x0549c6
-	level.vertical_wrap = move_area.bottom.current
+	level.vertical_wrap = move_area.bottom.target
+	
+	loadPaletteLine1(0x073886)
 	
 	base.fn0729de()
 }
@@ -950,6 +954,8 @@ function u64 Standalone.getModdedSoundKey(u64 soundKey, u8 sfxId, u8 soundRegTyp
     return base.Standalone.getModdedSoundKey(soundKey, sfxId, soundRegType)
 }
 
+// Origins Resolution Compat & Function Replacements
+
 // Origins Eggman fleeing and Origins Resolution fix
 //# address-hook(0x072e9e) end(0x072ed4)
 function void fn072e9e()
@@ -958,4 +964,114 @@ function void fn072e9e()
 	
 	if Mods.isModActive("LBZ Eggman Fleeing") && Mods.isModActive("Origins Screen Resolution") && (System.getGlobalVariableValueByName("screen_width") > 0)
 		objA0.velocity.y += (getScreenHeight() - 224)/2
+}
+
+// Adjust vertical screen boundaries for LBZ2 Knuckles punch cutscene through bosses to account for screen height.
+// We also initialize unused.lives_counter.player2 here as a timer for shifting the Death Egg image at the end of the level.
+// Change: Only use getScreenHeightExtend()/2 for this.
+//# address-hook(0x05449a) end(0x054504)
+function void fn05449a()
+{
+	if (u16[0xffffeec6] == 0)
+	{
+		UpdateBackground.LBZ2()
+		fn0544a4()
+		return
+	}
+
+	unused.lives_counter.player2 = 0	// new; this unused byte in ROM is repurposed as a timer for shifting the Death Egg image in the act ending cutscene
+
+	u16[0xffffeec6] = 0
+	u16[A3] = u16[A3 + 0x08]
+	u16[A3 + 0x04] = u16[A3 + 0x0c]
+	move_area.right = 0x4390 + getScreenExtend()
+	move_area.bottom.current = 0x0668 - (getScreenHeight() - 224)/2
+	move_area.bottom.target = 0x0668 - (getScreenHeight() - 224)/2
+	u16[0xffffeee0] = 0x3c
+	u16[0xffffeea2] = 0x1e00
+	u32[0xffffee9c] = 0x6200
+	player1.camera_lock = 0xff
+	u8[0xffffef40] = 0xff
+	level.scrolling_routine += 4
+
+	fn054508()
+}
+
+// I adjust this because it appears to be a pixel off.
+// I also add the extra graphic to cover the jump with unlocked camera
+function void Renderer.drawCustomSprite(u64 key, s16 px, s16 py, u8 atex, u8 flags, u16 renderQueue)
+{
+	if (camera.position.x.u16 < 0x4340) && (key == "lbz2_death_egg_platform" || key == "lbz2_death_egg_platformsupport" || key == "lbz2_death_egg_platformsupport" || key == "lbz2_death_egg")
+		return
+		
+	if (key == "lbz2_death_egg")
+		Renderer.drawSprite("death_egg_extension", px + 463, py - 56, u16(atex), SPRITE_FLAG_WORLDSPACE | SPRITE_FLAG_PRIO, renderQueue)
+	
+	Renderer.drawSprite(key, px, py, u16(atex), flags, renderQueue)
+}
+
+// Adjust horizontal screen boundary for LBZ2 ball shooter boss.
+// The default 0x39b8 value causes a slight camera jump at wide resolutions, including 426x240.
+// I mix this up a bit to be more like origins.
+//# address-hook(0x07397a) end(0x07399c)
+function void fn07397a()
+{
+	if ((objA0.flags38 & 0x80) == 0)
+		return
+
+	objA0.base_state = 0x06
+	player1.camera_lock = 1
+
+	if (getScreenWidth() > 320)
+	{
+		move_area.left = 0x3a20 - getScreenExtend() * 3
+		move_area.right = 0x3a20 - getScreenExtend() 
+	}
+	else
+	{
+		move_area.left = 0x39f0
+		move_area.right = 0x39f0
+	}
+}
+
+// I mix this up a bit to be more like origins.
+//# address-hook(0x073906) end(0x073954)
+function void fn073906()
+{
+	setupObjectAttributesFull(0x0740ec)
+
+	boss.remaining_hits = 8
+	objA0.countdown_callback = 0x073960
+	A1 = 0x0738ce
+	objA0.value26 = MUSIC_MAINBOSS
+	StartBossFight()
+
+#if STANDALONE
+	if (getScreenWidth() > 320)
+	{
+		// Both are 0x3a20 originally
+		level.bossarea.left = 0x3a20 - getScreenExtend() * 3
+		level.bossarea.right = 0x3a20 - getScreenExtend()
+	}
+    level.bossarea.top -= (getScreenHeight() - 224)
+    level.bossarea.bottom -= (getScreenHeight() - 224)
+#endif
+
+	// "spawnChildObjects(0x07414c)" replaced by:
+	spawnChildObject(0x073e0e, 0x00, 0, -8)		// Robotnik head, Egg Mobile empty seat
+	spawnChildObject(0x073ea2, 0x02, -24, -112)
+
+	requestLoadingPatterns(0x77)		// Robotnik running + ship and boss explosion sprites
+
+	Kosinski.addToDMAQueue(0x376542, 0x84a0)		// Boss sprites
+
+	loadPaletteLine1(0x0741fe)
+
+#if STANDALONE
+	// If you made it here and stayed dry, you've earned this achievement
+	if (Game.getAchievementValue(ACHIEVEMENT_LBZ_STAY_DRY) == 1)
+	{
+		Game.setAchievementComplete(ACHIEVEMENT_LBZ_STAY_DRY)
+	}
+#endif
 }
