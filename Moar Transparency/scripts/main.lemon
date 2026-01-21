@@ -925,7 +925,6 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 	
 	if (objA0.update_address == 0x090700)
 	{
-		System.writeDisplayLine(stringformat("ZoneAct: 0x%04x", objA0.position.x.u16))
 		if (index == 0x6430 || index == 0xe430)
 			Renderer.drawSprite("master_emerald_cave", px, py, 0xa0 + mt.bmpline * 0x10, objA0.position.x.u16 > 0x1640 ? SPRITE_FLAG_PRIO : 0x00, renderQueue, 0, 0xff)
 		
