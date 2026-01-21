@@ -1,22 +1,24 @@
-global bool ekf.style
-global u8 ekf.frame
+global bool dsmg.extra_frames
+global u8 dsmg.frame
+
+define u8 global.xtrachar	= u8[0xffffe654]
 
 // This function is here only for script mods that want to change or extend the character sprites
 function u64 Standalone.getModdedAnimationSpriteKey(u8 character, u16 animationSpriteEx)
 {
-	if (character == CHARACTER_KNUCKLES)
+	if dsmg.extra_frames && (character == CHARACTER_KNUCKLES) && (global.xtrachar == 0)
 	{
 		u64 key = base.Standalone.getModdedAnimationSpriteKey(character, animationSpriteEx)
 		bool glidin = char.animation.sprite == 0xc0
 		bool fallin = char.animation.sprite == 0x8c
 
-		if (glidin && ekf.frame > 15) || (fallin && ekf.frame > 19)
-			ekf.frame = 0
+		if (glidin && dsmg.frame > 15) || (fallin && dsmg.frame > 19)
+			dsmg.frame = 0
 		
-		if (glidin && ekf.frame > 7)
-			key = EKF.GlideFrame()
-		else if (fallin && ekf.frame > 9)
-			key = EKF.FallingPanicFrame()
+		if (glidin && dsmg.frame > 7)
+			key = DSMG.GlideFrame()
+		else if (fallin && dsmg.frame > 9)
+			key = DSMG.FallingPanicFrame()
 		
 		return key
 	}
@@ -25,23 +27,23 @@ function u64 Standalone.getModdedAnimationSpriteKey(u8 character, u16 animationS
 }
 
 // Adjust the moded frame counter.
-function void EKF.FrameCount(u32 AX)
+function void DSMG.FrameCount(u32 AX)
 {
 	bool glidin = u8[AX + 0x22] == 0xc0
 	bool fallin = u8[AX + 0x22] == 0x8c
 	
 	if (glidin || fallin)
-		ekf.frame++
+		dsmg.frame++
 	else
-		ekf.frame = 0
+		dsmg.frame = 0
 }
 
 // Increase modded animation frame counter here.
 //# address-hook(0x017d30) end(0x017ef0)
 function void UpdateKnucklesAnimation()
 {
-	if (A0 == 0xffffb000)
-		EKF.FrameCount(A0)
+	if dsmg.extra_frames && (A0 == 0xffffb000)
+		DSMG.FrameCount(A0)
 	
 	base.UpdateKnucklesAnimation()
 }
@@ -50,13 +52,18 @@ function void UpdateKnucklesAnimation()
 //# address-hook(0x074952) end(0x0749a8)
 function void fn074952()
 {
+	if !dsmg.extra_frames
+	{
+		base.fn074952()
+		return
+	}
 	MoveWithGravity20()
 	A1 = 0xffffb000
 	objA1.position.x.u16 = objA0.position.x.u16
 	objA1.position.y.u16 = objA0.position.y.u16
 
 	char.state = char.state.FALLING_PANIC
-	ekf.frame++
+	dsmg.frame++
 
 	UpdatePlayer1SpritePatterns()
 
@@ -71,7 +78,8 @@ function void fn074952()
 //# address-hook(0x07cc3a) end(0x07cc62)
 function void fn07cc3a()
 {
-	ekf.frame = 0
+	if dsmg.extra_frames
+		dsmg.frame = 0
 	
 	base.fn07cc3a()
 }
@@ -82,17 +90,18 @@ function void fn07cc68()
 {
 	base.fn07cc68()
 	
-	EKF.FrameCount(A1)
+	if dsmg.extra_frames
+		DSMG.FrameCount(A1)
 }
 
 // Function for Gliding frame, can be used to add extra modded logic.
-function u64 EKF.GlideFrame()
+function u64 DSMG.GlideFrame()
 {
-	return stringformat("knuckles_glide_extra_frame_%d", ekf.style)
+	return stringformat("knuckles_glide_extra_frame_%d", (Mods.isModActive("Slightly Better Knuckles") || Mods.isModActive("Slightly Better Knuckles [Original Palette]")) ? 1 : 0)
 }
 
 // Function for Falling Panic frame, can be used to add extra modded logic.
-function u64 EKF.FallingPanicFrame()
+function u64 DSMG.FallingPanicFrame()
 {
-	return stringformat("knuckles_panic_extra_frame_%d", ekf.style)
+	return stringformat("knuckles_panic_extra_frame_%d", (Mods.isModActive("Slightly Better Knuckles") || Mods.isModActive("Slightly Better Knuckles [Original Palette]")) ? 1 : 0)
 }

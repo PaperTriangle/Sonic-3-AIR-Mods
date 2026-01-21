@@ -1,3 +1,5 @@
+include extra_frames
+
 define u8 global.xtrachar	= u8[0xffffe654]
 
 global bool dsmg.slide_setting

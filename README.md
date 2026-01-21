@@ -42,16 +42,13 @@ Also has an option to remove the lives and continues detail, shifting the player
 ## Don't Stop My Glide
 Allows Knuckles' glide to land on dynamic objects and prevents the glide from stopping while gliding through certain objects.
 
-Also has some other options like Hyper Stars for Hyper Knuckles.
+Also adds in a couple of extra frames to Knuckles from Origins and some other options like Hyper Stars for Hyper Knuckles.
 
 ## ESU Origins Resolution Tweaks
 Some tweaks for ESU characters so they work with the Origins Resolution mod... Mostly around intro cutscenes. Also replaces the act clear icons with a PNG version of the UI symbol to prevent water palettes interacting with the HUD.
 
 ## Extended Palette For Giant Ring
 Makes the Giant Ring operate using an extended palette line. Preventing the Super Rings from messing with stage / HUD palettes.
-
-## Extra Knuckles Frames
-Adds in a couple of extra frames to Knuckles from Origins. Also removes LBZ2 cutscene falling+hurt animation for Knuckles.
 
 ## Flying Hold Frame Fix
 Makes the animation while holding on to Tails less jumpy. Should be placed below other sprite mods. Should work with ESU if placed below it.
