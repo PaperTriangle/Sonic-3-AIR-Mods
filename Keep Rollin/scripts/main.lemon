@@ -87,6 +87,30 @@ function void fn0261f2()
 	}
 }
 
+// Prevent camera issues in LBZ Booster Tubes
+
+//# address-hook(0x029620) end(0x0296d2)
+function void fn029620()
+{
+	if !kr.sticky_collision
+	{
+		base.fn029620()
+		return
+	}
+	
+	if (debug_mode.state != 0)
+		return
+
+	u16 dx = objA1.position.x.u16 - objA0.position.x.u16 + 0x10
+	u16 dy = objA1.position.y.u16 - objA0.position.y.u16 + 0x18
+	if (dx < 0x20 && dy < 0x28 && u8[A1 + 0x2e] == 0)
+	{
+		u8[A1 + 0x39] = 0
+	}
+	
+	base.fn029620()
+}
+
 // Prevent Rolling in FBZ Vertical Cylinder
 //# address-hook(0x03a0d6) end(0x03a21a)
 function void fn03a0d6()
