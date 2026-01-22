@@ -12,6 +12,28 @@
 		"List":
 		[
 			{
+				"InternalName": "kr.sticky_collision",
+				"DisplayName": "Use Sticky Collision Check",
+				"Variable": "kr.sticky_collision",
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "kr.vertical_roll",
+				"DisplayName": "Act the same Vertically",
+				"Variable": "kr.vertical_roll",
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
 				"InternalName": "kr.deztube",
 				"DisplayName": "Prevent Rolling in DEZ Tubes",
 				"Variable": "kr.deztube",
