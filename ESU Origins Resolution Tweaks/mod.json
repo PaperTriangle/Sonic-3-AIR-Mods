@@ -38,5 +38,33 @@
 			"IsRequired": "0",
 			"Priority": "Lower"
 		}
+	},
+	"Settings":
+	{
+		"List":
+  		[
+			{
+				"InternalName": "ort.spawnfix",
+				"DisplayName": "Wider Spawning [IN TESTING]",
+				"Variable": "ort.spawnfix",
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "ort.tcgraphics",
+				"DisplayName": "Unload Title Card Graphics",
+				"Variable": "ort.tcgraphics",
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			}
+		]
 	}
 }
