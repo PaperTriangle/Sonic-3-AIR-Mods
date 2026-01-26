@@ -32,6 +32,12 @@
 			"DisplayName": "Stone 3 A.I.R.",
 			"IsRequired": "0",
 			"Priority": "Higher"
+		},
+		"thorn-originsresolution":
+		{
+			"DisplayName": "Origins Screen Resolution",
+			"IsRequired": "0",
+			"Priority": "Lower"
 		}
 	},
 	"Settings":
