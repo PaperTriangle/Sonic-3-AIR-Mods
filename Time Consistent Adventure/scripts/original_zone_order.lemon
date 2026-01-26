@@ -152,15 +152,6 @@ function void fn00c890()
         return
     }
 	
-	u16 tca.ds_char = u16[A0 + 0x34]
-	
-	bool tca.knux_route = false
-	
-	if (tca.ds_char == 3 || tca.ds_char == 4)
-		tca.knux_route = true
-	else if (tca.ds_char > 4) && MISC.getAllowedZones(tca.ds_char - 1) == 0x0b
-		tca.knux_route = true
-	
 	// Render "New" or static noise for the slots
 	D0.u16 = level.framecounter & 0x0c
 	A2 = 0x200000 + u32[0x3a216a + D0.u16]
@@ -189,6 +180,15 @@ function void fn00c890()
 
 		if (s8[A0] >= 0)
 		{
+			u16 tca.ds_char = u16[A3 + 0x34]
+	
+			bool tca.knux_route = false
+			
+			if (tca.ds_char == 3 || tca.ds_char == 4)
+				tca.knux_route = true
+			else if (tca.ds_char > 4) && MISC.getAllowedZones(tca.ds_char - 1) == 0x0b
+				tca.knux_route = true
+		
 			if (u8[A3 + 0x3a] == u8[A3 + 0x37] && u8[A3 + 0x3b] != 0)
 			{
 				// Render "CLEAR" label
@@ -206,11 +206,14 @@ function void fn00c890()
 				//This is the modified content, everything else should be untouched.
 				// Render zone number
 				D0.u16 = u16[A3 + 0x36] * 2
-				if (u16[A3 + 0x36] == 4 || u16[A3 + 0x36] == 5 || u16[A3 + 0x36] == 6) && !tca.knux_route
-					D0.u16 += 2
-				if u16[A3 + 0x36] == 7
-					D0.u16 -= 6
-				if (u16[A3 + 0x36] >= 8) && tca.knux_route
+				if !tca.knux_route
+				{
+					if (u16[A3 + 0x36] == 4 || u16[A3 + 0x36] == 5 || u16[A3 + 0x36] == 6)
+						D0.u16 += 2
+					if u16[A3 + 0x36] == 7
+						D0.u16 -= 6
+				}
+				else if (u16[A3 + 0x36] >= 8)
 					D0.u16 -= 2
 
 				// Second digit (10, 20, etc)
