@@ -60,6 +60,19 @@ function void fn0193ec()
 	global.xtrachar = backupXtraChar
 }
 
+// Fix Special Stage Rendering
+function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
+{
+	u8 gameMode = global.game_mode & 0x7f
+	
+	if !(gameMode == 0x0c || gameMode == 0x08) && (objA0.update_address == 0x00903e)
+	{
+		py += (getScreenHeight() - 224)
+	}
+	
+	return base.Standalone.onWriteToSpriteTable(px, py, renderQueue)
+}
+
 //Make sure the sky is behind the palm trees
 //# address-hook(0x01c550) end(0x01c5c4)
 function void fn01c550()
