@@ -144,7 +144,7 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 			// DEZ1 Laser
 			if (objA0.update_address == 0x07ea3c)
 			{
-				Renderer.drawSprite(stringformat("laser_%d", level.framecounter % 3), px, 0xb0, 0x00, objA0.render_flags | (prioFlag ? SPRITE_FLAG_PRIO : 0), renderQueue, 0, 192)
+				Renderer.drawSprite(stringformat("laser_%d", level.framecounter % 3), px, 0xb0 + (getScreenHeight() - 224), 0x00, objA0.render_flags | (prioFlag ? SPRITE_FLAG_PRIO : 0), renderQueue, 0, 192)
 				
 				return true
 			}
