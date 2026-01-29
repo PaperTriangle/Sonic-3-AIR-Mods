@@ -2,6 +2,7 @@ global bool lsds.leftshift
 global bool lsds.noflicker
 global bool lsds.alphashadow
 global bool lsds.nodetail
+global bool lsds.backtotitle
 
 global u16 oldposy = 0
 
@@ -75,18 +76,21 @@ function void fn00d1fa()
 		// Back to the intro / title screen
 		global.game_mode = 0x04
 
-	#if STANDALONE
-		playSound(0xad)
-		DataSelect.drawCustomPlanes()	// Required here, otherwise we can have one frame without custom plane setup if returning already during the fade-in
-
-		u32 backupA0 = A0
-		FadeOutScreenBlocking()
-		A0 = backupA0
-
-		// Do not fade out music in this case, Data Select music is meant to keep playing
-		Game.returnToMainMenu()
-		yieldExecution()
-	#endif
+		if (!lsds.backtotitle)
+		{
+		#if STANDALONE
+			playSound(0xad)
+			DataSelect.drawCustomPlanes()	// Required here, otherwise we can have one frame without custom plane setup if returning already during the fade-in
+		
+			u32 backupA0 = A0
+			FadeOutScreenBlocking()
+			A0 = backupA0
+		
+			// Do not fade out music in this case, Data Select music is meant to keep playing
+			Game.returnToMainMenu()
+			yieldExecution()
+		#endif
+		}
 	}
 	else if (u16[0xffffeee2] == 0)
 	{
@@ -236,7 +240,7 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 {
 	u8 gameMode = global.game_mode & 0x7f
 
-	if (gameMode == 0x4c || gameMode == 0x0c)
+	if (gameMode == 0x4c || gameMode == 0x0c || gameMode == 0x04)
 	{
 		if (lsds.alphashadow && (objA0.mapping_offset == 0x00ce0e || objA0.mapping_offset == 0x20bd68))
 		{
