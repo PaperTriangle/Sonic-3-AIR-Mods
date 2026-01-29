@@ -1001,11 +1001,19 @@ function void fn05449a()
 // I also add the extra graphic to cover the jump with unlocked camera
 function void Renderer.drawCustomSprite(u64 key, s16 px, s16 py, u8 atex, u8 flags, u16 renderQueue)
 {
-	if (camera.position.x.u16 < 0x4340) && (key == "lbz2_death_egg_platform" || key == "lbz2_death_egg_platformsupport" || key == "lbz2_death_egg_platformsupport" || key == "lbz2_death_egg")
-		return
-		
+	if (key == "lbz2_death_egg_platform" || key == "lbz2_death_egg_platformsupport" || key == "lbz2_death_egg_platformsupport" || key == "lbz2_death_egg")
+		if (camera.position.x.u16 < 0x4340)
+			return
+		else if (unused.lives_counter.player2 >= 0x60)
+			renderQueue = 0x9e04
+
 	if (key == "lbz2_death_egg")
-		Renderer.drawSprite("death_egg_extension", px + 463, py - 56, u16(atex), SPRITE_FLAG_WORLDSPACE | SPRITE_FLAG_PRIO, renderQueue)
+	{
+		Renderer.drawSprite("death_egg_extension", px + 464, py - 56, u16(atex), SPRITE_FLAG_WORLDSPACE | SPRITE_FLAG_PRIO, renderQueue)
+		
+		if (flags != SPRITE_FLAG_WORLDSPACE)
+			py -= (getScreenHeight() - 224)/2
+	}
 	
 	Renderer.drawSprite(key, px, py, u16(atex), flags, renderQueue)
 }
