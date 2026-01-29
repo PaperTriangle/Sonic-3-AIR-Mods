@@ -65,7 +65,7 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 {
 	u8 gameMode = global.game_mode & 0x7f
 	
-	if !(gameMode == 0x0c || gameMode == 0x08) && (objA0.update_address == 0x00903e)
+	if (global.xtrachar > 0) && !(gameMode == 0x0c || gameMode == 0x08) && (objA0.update_address == 0x00903e)
 	{
 		py += (getScreenHeight() - 224)
 	}
@@ -2087,29 +2087,4 @@ function void TitleCard.Appear()
 
 	u16[A0 + 0x48] = 0
 	objA0.base_state += 2
-}
-
-
-//# address-hook(0x02d856) end(0x02d8dc)
-function void TitleCard.Show()
-{
-	if (!ort.tcgraphics)
-	{
-		base.TitleCard.Show()
-		return
-	}
-	
-	if (objA0.countdown_value != 0)
-	{
-		--objA0.countdown_value
-		return
-	}
-
-	if (u16[A0 + 0x30] != 0)
-	{
-		++objA0.value32
-		return
-	}
-	
-	UnloadObject()
 }
