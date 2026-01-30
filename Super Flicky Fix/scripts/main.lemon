@@ -735,3 +735,9 @@ function void fn018466()
 			u16[A0 + 0x3a] = 0
 	}
 }
+
+// Blue Glasses Eggman Always uses First Palette Line
+function u16 EggmanBlue.getDefaultPal()
+{
+	return 0x00
+}
