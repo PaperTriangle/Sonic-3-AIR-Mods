@@ -1069,6 +1069,35 @@ function void fn0311c4()
 	UnloadObject()
 }
 
+// HCZ Snake Blocks
+//# address-hook(0x0256be) end(0x02571e)
+function void fn0256be()
+{
+	objA0.mapping_offset = 0x025688
+	objA0.sprite_attributes = 0x0028
+	objA0.render_flags = render_flag.WORLD
+	objA0.sprite_priority = 0x0180
+	objA0.box_size.x = 0x10
+	objA0.box_size.y = 0x10
+	objA0.animation.sprite = 0x01
+	u16[A0 + 0x30] = objA0.position.x.u16
+	u16[A0 + 0x34] = objA0.position.y.u16
+	objA0.flags2e = objA0.flags2a
+
+	D0 = 0x01
+	D1.u8 = objA0.subtype2c
+	if (D1.s8 < 0)
+		D0.s16 = -D0.s16
+	u8[A0 + 0x40] = D0.u8
+	D1.u8 &= 0x7f
+	objA0.value26 = D1.u8
+	objA0.value42 = 0x0280 + (ort.spawnfix ? 0x80 : 0)
+	u16[A0 + 0x44] = objA0.position.x.u16
+
+	objA0.update_address = 0x025724
+	fn025724()
+}
+
 //-----//
 // MGZ //
 //-----//
@@ -1421,6 +1450,57 @@ function void fn085160()
 //-----//
 // LBZ //
 //-----//
+
+//# address-hook(0x024e3c) end(0x024eec)
+function void fn024e3c()
+{
+	objA0.mapping_offset = 0x025338
+	objA0.sprite_attributes = (sprite_attribute.PALETTE.LINE2 | 0x03c3)
+	objA0.render_flags = render_flag.WORLD
+	objA0.sprite_priority = 0x0180
+
+	if (objA0.subtype2c & 0x80)
+	{
+		u16[A0 + 0x38] = (objA0.subtype2c & 0x7f) << 4
+		objA0.subtype2c = 0x17
+	}
+
+	D0 = (objA0.subtype2c >> 2) & 0x1c
+	A2 = 0x024e34 + D0.u16
+	objA0.box_size.x = u8[(A2+=1)-1]
+	objA0.box_size.y = u8[(A2+=1)-1]
+	objA0.animation.sprite = u8[(A2+=1)-1]
+	u16[A0 + 0x30] = objA0.position.x.u16
+	objA0.value32 = objA0.position.x.u16
+	u16[A0 + 0x34] = objA0.position.y.u16
+	objA0.flags2e = objA0.flags2a
+	objA0.value42 = 0x0280 + (ort.spawnfix ? 0x80 : 0)
+	u16[A0 + 0x44] = objA0.position.x.u16
+
+	D0 = u16(objA0.subtype2c & 0x0f) - 8
+	if (D0.s16 > 0)
+	{
+		if (D0.u16 < 4)
+		{
+			D0.u16 <<= 2
+			A2 = 0xfffffe9a + D0.u16
+			if (s16[A2] < 0)
+			{
+				objA0.flags2e ^= 0x01
+			}
+		}
+		else
+		{
+			objA0.value42 = 0x0380
+			u16[A0 + 0x44] += 0x0100
+		}
+	}
+
+	objA0.subtype2c = (objA0.subtype2c & 0x0f) * 2
+
+	objA0.update_address = 0x024ef2
+	fn024ef2()
+}
 
 // LBZ Cup Elevator
 //# address-hook(0x026e78) end(0x026eae)
