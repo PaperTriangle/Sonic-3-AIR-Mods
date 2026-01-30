@@ -223,6 +223,18 @@
 					"2": "Override All HUD.draw*()",
 					"3": "Just Hide It"
 				}
+			},
+			{
+				"InternalName": "altlbz2cs.extratransition",
+				"DisplayName": "LBZ2 to MHZ1 Extra Layers",
+				"Variable": "altlbz2cs.extratransition",
+				"Category": "Mod Compatibility",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
 			}
 		]
 	}

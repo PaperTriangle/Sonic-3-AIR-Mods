@@ -1083,3 +1083,59 @@ function void fn073906()
 	}
 #endif
 }
+
+global bool altlbz2cs.extratransition
+global u8 altlbz2cs.skyfade
+global u16 altlbz2cs.layer3.autoscroll
+global u16 altlbz2cs.layer3.y_displacement
+
+// Draw some new layers in Launch Base Zone Act 2 now!
+//# address-hook(0x054444) end(0x054448)
+function void UpdateLevelScrolling.LBZ2()
+{
+	if (altlbz2cs.extratransition)
+	{
+		s16 altlbz2cs.layer3.x = -(altlbz2cs.layer3.autoscroll) % 512
+		s16 altlbz2cs.layer3.y = 242 + altlbz2cs.layer3.y_displacement
+
+		if System.getGlobalVariableValueByName("seamless.lbz2.to.mhz1.activated")
+		{
+			if (System.getGlobalVariableValueByName("seamless.lbz2.to.mhz1.timer") >= 192)
+			{
+				if (altlbz2cs.skyfade < 0x50)
+					altlbz2cs.skyfade++
+					
+				SpriteHandle multiply = Renderer.addSpriteHandle("lbz2_fading_sky", 0, 0, 0x4000)
+				multiply.setScale(getScreenWidth(), getScreenHeight())
+				multiply.setOpacity(System.getGlobalVariableValueByName("bigarmfade.steps") == 1 ? 1.0f * altlbz2cs.skyfade / 0x50 : altlbz2cs.skyfade / 0x10 * 0.20f)
+			}
+			else
+			{
+				altlbz2cs.skyfade = 0
+			}
+			
+			if (System.getGlobalVariableValueByName("seamless.lbz2.to.mhz1.timer") >= 290)
+			{
+				if ((global.framecounter % 1) == 0)
+					altlbz2cs.layer3.y_displacement--
+				
+				if ((global.framecounter % 20) == 0)
+					altlbz2cs.layer3.autoscroll++
+				
+				for (u16 i = 0; i < 12; i++)
+				{
+					s16 loop.offset.x = i * 512
+					Renderer.drawSprite("lbz2_clouds", altlbz2cs.layer3.x + loop.offset.x, altlbz2cs.layer3.y, 0x00, false, 0x4001)
+				}
+			}
+			else 
+			{
+				altlbz2cs.layer3.y_displacement = 0
+				altlbz2cs.layer3.y_displacement = 0
+			}
+			
+		}
+	}
+		
+	base.UpdateLevelScrolling.LBZ2()
+}

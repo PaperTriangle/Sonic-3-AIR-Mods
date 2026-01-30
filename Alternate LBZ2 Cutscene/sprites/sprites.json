@@ -1,3 +1,5 @@
 {
-    "death_egg_extension": { "File": "death_egg_extension.bmp"}
+    "death_egg_extension": { "File": "death_egg_extension.bmp"},
+	"lbz2_fading_sky": { "File": "sky.bmp", "Center": "0,0" },
+	"lbz2_clouds":  { "File": "clouds.bmp", "Rect": "0,0,512,151", "Center": "512,0" }
 }
