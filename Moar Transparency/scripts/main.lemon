@@ -200,7 +200,7 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 		System.setGlobalVariableValueByName("renderTransparentPlz", false)
 	
 	// Fix for debug monitor object 'cause why not?
-	if (debug_mode.state && debug_mode.selection == 0x01) && ((isMainCharacter(CHARACTER_TAILS) && objA0.update_address == 0x01365c) || objA0.update_address == 0x010a94 || objA0.update_address == 0x016444)
+	if ((debug_mode.state && debug_mode.state != 0x0002) && debug_mode.selection == 0x01) && ((isMainCharacter(CHARACTER_TAILS) && objA0.update_address == 0x01365c) || objA0.update_address == 0x010a94 || objA0.update_address == 0x016444)
 	{
 		u8 flags = ((objA0.render_flags & render_flag.FLIP_Y) ? SPRITE_FLAG_FLIP_Y : 0) | (prioFlag ? SPRITE_FLAG_PRIO : 0)
 		
