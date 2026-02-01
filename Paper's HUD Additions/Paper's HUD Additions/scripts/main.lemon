@@ -2,6 +2,7 @@ global bool phud.allowsuper
 global bool phud.allowsuperesu
 global bool phud.name
 global bool phud.lives
+global bool phud.button_style
 global u8 phud.livesborder
 global bool phud.transform
 global u8 phud.transformstyle
@@ -213,7 +214,7 @@ function void PHUD.RenderTransformButton()
 
 			HUD.drawSprite(PHUD.GetTransformIcon(phud.transformstyle != 0), getScreenWidth() - (baseX + 0x10 + HUD.useMobileLivesDisplay() * 0x28) + phud.offset, 0x10 + HUD.useMobileLivesDisplay() * 0x14, 0xe000)
 			
-			Renderer.drawCustomSprite("@input_icon_button_Y", getScreenWidth() - (baseX + 0x24) + phud.offset, 0x10 + HUD.useMobileLivesDisplay() * 0x14, 0, SPRITE_FLAG_PRIO, 0xe000, 0, fade)
+			Renderer.drawCustomSprite(phud.button_style ? "forever_y_button" : "@input_icon_button_Y", getScreenWidth() - (baseX + 0x24) + phud.offset, 0x10 + HUD.useMobileLivesDisplay() * 0x14, 0, SPRITE_FLAG_PRIO, 0xe000, 0, fade)
 			
 		}
 	}
@@ -490,4 +491,12 @@ function void PHUD.RenderDebug(u16 baseX, u16 baseY, u16 renderQueue)
 function void HUD.drawDebugPositions(u64 stringMask, u32 number, u16 px, u16 py, u16 renderQueue)
 {
 	base.HUD.drawDebugPositions(stringMask, number, px, py, renderQueue)
+}
+
+function bool NT.RenderTransparent(u64 key)
+{
+	if (key == "forever_y_button")
+		return true
+
+	return base.NT.RenderTransparent(key)
 }

@@ -4,7 +4,7 @@
 		"Name": "Paper's HUD Additions",
 		"Author": "PaperTriangle",
 		"Description": "Just adds some custom Lives Icons and a Super Transform button to the HUD.",
-		"ModVersion": "2.5"
+		"ModVersion": "2.6"
 	},
 	"OtherMods":
 	{
@@ -60,6 +60,18 @@
 					"0": "No Border",
 					"1": "Regular Border",
 					"2": "Ring Border"
+				}
+			},
+			{
+				"InternalName": "phud.button_style",
+				"DisplayName": "Transform Button Style",
+				"Variable": "phud.button_style",
+				"Category": "Super Transform HUD",
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Sonic 3 A.I.R.",
+					"1": "Team Forever"
 				}
 			},
 			{
