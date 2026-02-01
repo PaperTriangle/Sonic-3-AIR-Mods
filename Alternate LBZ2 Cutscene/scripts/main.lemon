@@ -1096,7 +1096,7 @@ function void UpdateLevelScrolling.LBZ2()
 	if (altlbz2cs.extratransition)
 	{
 		s16 altlbz2cs.layer3.x = -(altlbz2cs.layer3.autoscroll) % 512
-		s16 altlbz2cs.layer3.y = 242 + altlbz2cs.layer3.y_displacement
+		s16 altlbz2cs.layer3.y = 240 + altlbz2cs.layer3.y_displacement
 
 		if System.getGlobalVariableValueByName("seamless.lbz2.to.mhz1.activated")
 		{
@@ -1119,7 +1119,7 @@ function void UpdateLevelScrolling.LBZ2()
 				if ((global.framecounter % 1) == 0)
 					altlbz2cs.layer3.y_displacement--
 				
-				if ((global.framecounter % 20) == 0)
+				if ((global.framecounter % 40) == 0)
 					altlbz2cs.layer3.autoscroll++
 				
 				for (u16 i = 0; i < 12; i++)
