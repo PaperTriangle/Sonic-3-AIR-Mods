@@ -101,7 +101,7 @@ function void yieldExecution()
 		if (transition_state == 2)
 			System.loadExternalRawData("MGZ2_Palette", 0x0A8F5C)
 		
-		if ((camera.position.x.u16 > (!tca.fadespeed ? 0x27c0 : 0x2890) && camera.position.y.u16 > 0x0cc0) && transition_state == 0)
+		if ((camera.position.x.u16 > (!tca.fadespeed ? 0x27e8 : 0x28b8) - getScreenExtend() && camera.position.y.u16 > 0x0cc0) && transition_state == 0)
 		{
 			transition_state = 1
 			transition_time = 0
@@ -157,7 +157,7 @@ function void yieldExecution()
 	else if (tca.fbz && global.zone_act == 0x0401 && tca.intended) // FBZ Act 2 (Intended)
 	{
 
-		if (camera.position.x.u16 >= 0x2980)
+		if (camera.position.x.u16 >= 0x29a8 - getScreenExtend())
 			System.loadExternalRawData("FBZ_Palette_Boss", 0x052dd0)
 		else
 			System.loadExternalRawData(tca.fbz_bg ? "FBZ_Palette_Alt" : "FBZ_Palette", 0x052dd0)
@@ -178,7 +178,7 @@ function void yieldExecution()
 	else if (tca.fbz && global.zone_act == 0x0401 && !tca.intended) // FBZ Act 2 (As Released) ****
 	{
 
-		if (camera.position.x.u16 >= 0x2980)
+		if (camera.position.x.u16 >= 0x29a8 - getScreenExtend())
 			System.loadExternalRawData("FBZ_Palette_Boss_Released", 0x052dd0)
 		else
 			System.loadExternalRawData("FBZ_Palette_Released", 0x052dd0)
@@ -228,7 +228,7 @@ function void yieldExecution()
 				transition_time = 0
 			}
 			
-			if (tca.icz_trans_point && global.zone_act == 0x0501 && transition_state == 0 && camera.position.x.u16 > 0x3ab0)
+			if (tca.icz_trans_point && global.zone_act == 0x0501 && transition_state == 0 && camera.position.x.u16 > 0x3ad8 - getScreenExtend())
 			{
 				transition_state = tca.icz_trans_fade ? 1 : 2
 				transition_time = 0
@@ -256,7 +256,7 @@ function void yieldExecution()
 	}
 	else if (tca.mvz && global.zone_act == 0x0701 && tca.intended) // MVZ Act 2
 	{
-		if (!isKnucklesRoute() && camera.position.x.u16 > 0x3abd)
+		if (!isKnucklesRoute() && camera.position.x.u16 > 0x3ae5 - getScreenExtend())
 			System.loadExternalRawData("MVZ2_Palette_Sunset", 0x0A943C)
 	}
 	else if (tca.soz && global.zone_act == 0x0800) // SOZ Act 1
@@ -745,18 +745,18 @@ function void fn07092a()
 	
 	if (tca.intended || (!tca.intended && isKnucklesRoute()))
 	{
-		if (camera.position.x.u16 >= 0x30b0 && transition_state == 1)
+		if (camera.position.x.u16 >= 0x30d8 - getScreenExtend() && transition_state == 1)
 		{
 			transition_state = 2
 			requestLoadingPatterns(0x5a)
 			spawnChildObject(0x083f22, 0x00, 0, 0)
 		}
-		if (camera.position.x.u16 >= 0x3250 && transition_state == 2)
+		if (camera.position.x.u16 >= 0x3278 - getScreenExtend() && transition_state == 2)
 		{
 			transition_state = 3
 			spawnChildObject(0x083f22, 0x00, 0, 0)
 		}
-		if (camera.position.x.u16 >= 0x33f0 && transition_state == 3)
+		if (camera.position.x.u16 >= 0x3418 - getScreenExtend() && transition_state == 3)
 		{
 			transition_state = 4
 			spawnChildObject(0x083f22, 0x00, 0, 0)
@@ -896,7 +896,7 @@ function void fn23e20e()
 	
 	if (isKnucklesRoute())
 	{
-		if (tca.icz_trans_point && camera.position.x.u16 > 0x3ab0)
+		if (tca.icz_trans_point && camera.position.x.u16 > 0x3ad8 - getScreenExtend())
 		{
 			if (tca.icz_trans_fade)
 			{
@@ -1351,7 +1351,7 @@ function void TitleCard.Show()
 	else
 		tca.inssz1forreal = 0
 		
-	if (tca.icz_trans_point && isKnucklesRoute() && global.zone_act == 0x0501 && camera.position.x.u16 > 0x3ab0)
+	if (tca.icz_trans_point && isKnucklesRoute() && global.zone_act == 0x0501 && camera.position.x.u16 > 0x3ad8 - getScreenExtend())
 	{
 		transition_state = 1
 		transition_time = 0xff
