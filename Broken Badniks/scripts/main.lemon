@@ -660,29 +660,6 @@ function void fn068ee4()
 	objA0.velocity.y = 0x400
 }
 
-// Make explosions appear over more of screen width
-//# address-hook(0x083e90)
-function void fn083e90()
-{
-	if (!bb.cutsceneadjust2 || global.zone_act != 0x0000)
-	{
-		base.fn083e90()
-		return
-	}
-
-	GetRandomNumber()
-	D1 = objA0.value3a + Math.roundToInt( (D0 % 10) / 10.0f * getScreenExtend())
-	D2 = D1.u16 * 2 - 1
-	D0.u16 = (D0.u16 & D2.u16) - D1.u16
-	objA1.position.x.u16 += D0.u16 
-
-	D0 = (D0 << 16) + (D0 >> 16)
-	D1 = objA0.value3b
-	D2.u16 = D1.u16 * 2 - 1
-	D0.u16 = (D0.u16 & D2.u16) - D1.u16
-	objA1.position.y.u16 += D0.u16
-}
-
 // Fix bug where signpost can appear behind trees in AIZ1.
 //# address-hook(0x0837b2) end(0x0837c8)
 function void SignPost.BaseUpdate()
