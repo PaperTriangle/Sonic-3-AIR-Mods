@@ -512,19 +512,10 @@ function void DynamicObjectsLoading.UpdateDefault()
 	dynobjects.areastart.y = newAreaStartY
 }
 
-function bool shouldUnloadObjectAtPosition(u16 px)
-{
-	return shouldUnloadObjectAtPosition(px, 0x280 + (ort.spawnfix ? 0x80 : 0))
-}
-
+// Main check for if an object should unload
 function bool shouldUnloadObjectAtPosition(u16 px, u16 threshold)
 {
 	return ((px & 0xff80) - level.despawn_position.x > threshold + (ort.spawnfix ? 0x80 : 0))
-}
-
-function bool checkForUnloadObjectAtPosition(u16 px)
-{
-	return checkForUnloadObjectAtPosition(px, 0x280 + (ort.spawnfix ? 0x80 : 0))
 }
 
 //-----------------//
@@ -1539,7 +1530,16 @@ function void fn026588()
 	UnloadObject()
 }
 
-// LBZ Boos Cutscene
+// LBZ Springbooster
+//# address-hook(0x026130) end(0x02615e)
+function void fn026130()
+{
+	base.fn026130()
+	
+	objA0.box_size.y += (ort.spawnfix ? 0x10 : 0)
+}
+
+// LBZ Boss Cutscene
 //# address-hook(0x08cf1e) end(0x08cf5c)
 function void fn08cf1e()
 {
