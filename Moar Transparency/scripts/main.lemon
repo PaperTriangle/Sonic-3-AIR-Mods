@@ -178,7 +178,7 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 			{
 				u8 flags = ((objA0.render_flags & 0x01) ? SPRITE_FLAG_FLIP_X : 0) | ((objA0.render_flags & 0x02) ? SPRITE_FLAG_FLIP_Y : 0) | ((objA0.sprite_attributes & 0x8000) ? SPRITE_FLAG_PRIO : 0)
 				
-				Renderer.drawCustomSprite(stringformat("esu_smallhyper_%d", objA0.value26), px, py, 0, flags | u8[A0 + 0x2b], renderQueue, 0, 0xff - objA0.value26 * 0x30)
+				Renderer.drawCustomSprite(stringformat("esu_smallhyper_%d", objA0.value26), px, py, 0, flags | u8[A0 + 0x2b], renderQueue, 0, 0xff - objA0.value26 * 0x10)
 
 				return true
 			}
@@ -484,7 +484,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 			if (mt.esustars && Renderer.hasCustomSprite(stringformat("esu_smallhyper_%d", objA0.animation.sprite)))
 				return true
 				
-			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 0xff - 0x10 * objA0.animation.sprite)
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 0xff - 0x18 * (objA0.animation.sprite - 1))
 			
 			return true
 		}
