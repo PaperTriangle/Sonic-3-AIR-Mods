@@ -1,4 +1,6 @@
 define u8 global.xtrachar	= u8[0xffffe654]
+global u8 ort.titlecard
+global bool ort.esu_titlecard
 global bool ort.spawnfix
 global bool ort.tcgraphics
 
@@ -1921,6 +1923,9 @@ function void Iwamodoki.BaseUpdate()
 		D3 = 0x0b
 		D4.u16 = objA0.position.x.u16
 		fn01dc56()
+		
+		if Mods.isModActive("Broken Badniks") && System.getGlobalVariableValueByName("bb.hyper")
+			AddAsDynamicObject()
 
 		DrawObject()
 	}
@@ -2070,38 +2075,32 @@ function void fn047440()
 // Title Cards //
 //-------------//
 
+function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
+{	
+	if (global.xtrachar == 0 || ort.esu_titlecard) && (objA0.update_address == 0x02d8e2)
+	{
+		u64 key = (ort.titlecard == 1) ? "S3" : (ort.titlecard == 2) ? "S&K" : (ort.titlecard == 3) ? "S3&K" : "S3_air"
+		Renderer.drawCustomSprite(stringformat("regular_titleCard_%s", key), px - 0x20, py - 0x40, 0x00, SPRITE_FLAG_PRIO | SPRITE_FLAG_NO_GLOBAL_TINT, renderQueue)
+		return true
+	}
 
-//# address-hook(0x02d804) end(0x02d854)
-function void TitleCard.Appear()
+	return base.Standalone.onWriteToSpriteTable(px, py, renderQueue)
+}
+
+//# address-hook(0x02d76a) end(0x02d802)
+function void TitleCard.Wait()
 {
 	if (!ort.tcgraphics)
 	{
-		base.TitleCard.Appear()
+		base.TitleCard.Wait()
 		return
 	}
 	
-	if (u16[A0 + 0x34] != 0)
-	{
-		u16[A0 + 0x34] = 0
+	if (kosinski.waiting_modules)
 		return
-	}
-
-	if (objA0.value3e != 0)
-	{
-		timer.alldata = 0
-		ring_counter = 0
-		player.total_rings = 0
-		extra_lives_granted = 0
-		timer.alldata.player2 = 0
-		ring_counter.player2 = 0
-		unused.player2.total_rings = 0
-		hud.dirty.timer = 0xff
-		hud.dirty.rings = 0xff
-		u8[0xffffb000 + 0x2c] = 30
-		u8[0xffffb04a + 0x2c] = 30
-		PlayMusicAfterLevelResults()
-	}
-
+	
+	base.TitleCard.Wait()
+	
 	if (u8[A0 + 0x45] == 0)
 	{
 		if (global.zone_act == 0x0801)
@@ -2137,7 +2136,4 @@ function void TitleCard.Appear()
 			}
 		}
 	}
-
-	u16[A0 + 0x48] = 0
-	objA0.base_state += 2
 }

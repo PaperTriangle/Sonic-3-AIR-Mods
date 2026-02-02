@@ -25,5 +25,10 @@
 	"titleCards_SH_in_S3&K":  { "File": "shadow_title_cards.png", "Rect": "706,0,66,224", "Center": "0,46" },
 	"titleCards_SH_in_S3":  { "File": "shadow_title_cards.png", "Rect": "772,0,66,224", "Center": "0,46" },
 	"titleCards_SH_in_S&K":  { "File": "shadow_title_cards.png", "Rect": "838,0,66,224", "Center": "0,46" },
-	"titleCards_SH_in_DAGE_def":  { "File": "shadow_title_cards.png", "Rect": "904,0,66,224", "Center": "0,46" }
+	"titleCards_SH_in_DAGE_def":  { "File": "shadow_title_cards.png", "Rect": "904,0,66,224", "Center": "0,46" },
+	
+	"regular_titleCard_S3_air":  { "File": "regular_title_cards.png", "Rect": "0,0,66,224", "Center": "0,46" },
+	"regular_titleCard_S3&K":  { "File": "regular_title_cards.png", "Rect": "198,0,66,224", "Center": "0,46" },
+	"regular_titleCard_S&K":  { "File": "regular_title_cards.png", "Rect": "66,0,66,224", "Center": "0,46" },
+	"regular_titleCard_S3":  { "File": "regular_title_cards.png", "Rect": "132,0,66,224", "Center": "0,46" },
 }

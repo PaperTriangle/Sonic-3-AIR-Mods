@@ -37,6 +37,12 @@
 			"DisplayName": "Origins Screen Resolution",
 			"IsRequired": "0",
 			"Priority": "Lower"
+		},
+		"broken-badniks":
+		{
+			"DisplayName": "Broken Badniks",
+			"IsRequired": "0",
+			"Priority": "Lower"
 		}
 	},
 	"Settings":
@@ -44,8 +50,32 @@
 		"List":
   		[
 			{
+				"InternalName": "ort.titlecard",
+				"DisplayName": "Title Card Banner Text",
+				"Variable": "ort.titlecard",
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Sonic 3 A.I.R",
+					"1": "Sonic 3",
+					"2": "Sonic & Knuckles",
+					"3": "Sonic 3 & Knuckles"
+				}
+			},
+			{
+				"InternalName": "ort.esu_titlecard",
+				"DisplayName": "Prevent ESU Title Banners",
+				"Variable": "ort.esu_titlecard",
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
 				"InternalName": "ort.spawnfix",
-				"DisplayName": "Wider Spawning [IN TESTING]",
+				"DisplayName": "Wider Spawning Range",
 				"Variable": "ort.spawnfix",
 				"DefaultValue": "0",
 				"Options":
