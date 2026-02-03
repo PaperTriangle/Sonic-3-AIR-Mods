@@ -5,13 +5,19 @@
 		"UniqueID": "hydrocity-shake",
 		"Author": "PaperTriangle",
 		"Description": "Fixes the animation on tiles near HCZ1 boss and make the characters do their balance animation during the HCZ2 outro cutscene.",
-		"ModVersion": "1.5"
+		"ModVersion": "1.6"
 	},
 	"OtherMods":
 	{
 		"moar-transparency":
 		{
 			"DisplayName": "Moar Transparency",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		},
+		"thorn-originsresolution":
+		{
+			"DisplayName": "Origins Screen Resolution",
 			"IsRequired": "0",
 			"Priority": "Lower"
 		}

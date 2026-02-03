@@ -96,7 +96,7 @@ function void fn069eda()
 {
 	if ((objA0.flags38 & 0x01) == 0)
 	{
-		D0.u16 = 0x0638
+		D0.u16 = 0x0638 - (getScreenHeight() - 224)
 		if (D0.u16 <= camera.position.y.u16)
 		{
 			objA0.flags38 |= 0x01
