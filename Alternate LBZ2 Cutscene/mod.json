@@ -124,6 +124,18 @@
 				}
 			},
 			{
+				"InternalName": "altlbz2cs.eggmandebris",
+				"DisplayName": "Beam Rocket Debris Flicker",
+				"Variable": "altlbz2cs.eggmandebris",
+				"Category": "Mid-Fight Settings",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
 				"InternalName": "altlbz2cs.eggup",
 				"DisplayName": "Eggman's Defeat Movement",
 				"Variable": "altlbz2cs.eggup",

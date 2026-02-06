@@ -14,6 +14,7 @@ global bool altlbz2cs.tailsflight
 global bool altlbz2cs.eggchair
 global u8 altlbz2cs.knuxpipe
 global bool altlbz2cs.eggmanflames
+global bool altlbz2cs.eggmandebris
 
 // We cut a lot from this section as we are doing the winning poses later
 // We also skip straight to 0x072c0a, spawning 0x072d24 there instead!
@@ -480,6 +481,8 @@ function void yieldExecution()
 {
 	if (altlbz2cs.hudgobye && altlbz2cs.dangerhud == 0)
 		global.level_started = -0x7f
+		
+	altlbz2cs.byebye_chair = 0
 	
 	base.yieldExecution()	
 }
@@ -756,11 +759,21 @@ function void fn073e8e()
 	}
 }
 
+global bool altlbz2cs.byebye_chair
+
+// Extra function to try and remove chair?
+//# address-hook(0x0729ba) end(0x0729cc)
+function void fn0729ba()
+{
+	altlbz2cs.byebye_chair = 1
+	base.fn0729ba()
+}
+
 // Remove the chair once it passes boss arena
 //# address-hook(0x073e0e) end(0x073e22)
 function void fn073e0e()
 {
-	if (altlbz2cs.eggchair && objA0.position.x.u16 > 0x450a) // If we don't it will attach itself to a new object, like spilled rings!
+	if (altlbz2cs.eggchair && altlbz2cs.byebye_chair) // If we don't it will attach itself to a new object, like spilled rings!
 		Object.TriggerUnloading()
 		
 	base.fn073e0e()
@@ -791,6 +804,10 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 {
 	//LBZ2 Eggman Flames
 	if (altlbz2cs.eggmanflames && objA0.update_address == 0x073384)
+		return (level.framecounter & 1) ? base.Standalone.onDrawVdpSprite(px, py, size, index, renderQueue) : true
+		
+	//LBZ2 Eggman Flames
+	if (altlbz2cs.eggmandebris && objA0.update_address == 0x073152)
 		return (level.framecounter & 1) ? base.Standalone.onDrawVdpSprite(px, py, size, index, renderQueue) : true
 	
 	// Fix Big Arm's arm during drop
