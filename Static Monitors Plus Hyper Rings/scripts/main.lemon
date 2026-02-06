@@ -68,6 +68,19 @@ function void LevelObjectTableBuilder.addObject(u16 px, u16 py, u8 type, u8 subt
 			{
 				base.LevelObjectTableBuilder.addObject(0x1450, 0x01b0, OBJECTTABLE1_01, 0x0f, 0)
 			}
+			
+			// Knuckles Door
+			!isMainCharacter(CHARACTER_KNUCKLES)
+			{
+				if (px == 0x4780 && 0x0a38)
+				{
+					base.LevelObjectTableBuilder.addObject(0x4777, 0x0a20, OBJECTTABLE2_3c, 0x01, LVLOBJ_FLIP_X)
+					px += 0x18
+				}
+				else if (px == 0x47a0 && py == 0x0a2c)
+					px += 0x18
+			}
+			
 		}
 		else if (global.zone_act == 0x0400) // FBZ1
 		{
