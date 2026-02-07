@@ -245,16 +245,32 @@ function void fn044a0c()
 	base.fn044a0c()
 }
 
+// ES Mighty Height Restriction on Boss
+// Set screen lock appropriately when approaching Knuckles's AIZ2 boss.
+//# address-hook(0x01c81e) end(0x01c868)
+function void fn01c81e()
+{
+	
+	if (camera.position.x.u16 >= 0x3b80 && kosinski.waiting_modules == 0)
+	{
+		level.vertical_wrap = 0x05da - (getScreenHeight() - 224)
+	}
+
+	base.fn01c81e()
+}
+
 // ES Mighty Knuckles Route Adjustment
 // Match this water level change check to the above lower camera boundary.
 //# address-hook(0x006dde) end(0x006e6c)
 function void UpdateWaterSurfaceLevel.AIZ2()
 {
-	if (camera.position.y.u16 > 0x05c0)
+	if isMainCharacter(CHARACTER_KNUCKLES) || (global.xtrachar == 1)
 	{
 		if (move_area.bottom.target == 0x0820 - (getScreenHeight() - 224) || camera.position.x.u16 >= 0x3b60)
 			return
 	}
+	else if (System.getGlobalVariableValueByName("Mighty.KnuxStage") == 0x0001)
+		return
 
 	// Somewhere in here:
 	//  - Lower water level
