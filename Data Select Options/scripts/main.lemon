@@ -3,6 +3,9 @@ global bool lsds.noflicker
 global bool lsds.alphashadow
 global bool lsds.nodetail
 global bool lsds.backtotitle
+global bool lsds.noknuxtails
+global bool lsds.amyicon
+global bool lsds.esureorder
 
 global u16 oldposy = 0
 
@@ -236,6 +239,55 @@ function void DataSelect.update()
 	playSound(0xaf)
 }
 
+function bool Game.isSecretUnlocked(u32 secretId)
+{
+	if lsds.noknuxtails && (global.game_mode == 0x4c && secretId == SECRET_KNUX_AND_TAILS)
+		return false
+	
+	return base.Game.isSecretUnlocked(secretId)
+}
+
+// Data Select Order Swap ESU
+//# address-hook(0x00d6d0) end(0x00d70a)
+function void fn00d6d0()
+{
+	if !(lsds.esureorder && (Mods.isModActive("Extra Slot Amy") || Mods.isModActive("Extra Slot Amy SHC")) && (Mods.isModActive("Extra Slot Mighty") || Mods.isModActive("Extra Slot Mighty SHC")) && (Mods.isModActive("Extra Slot Ray") || Mods.isModActive("Extra Slot Ray SHC")))
+	{
+		base.fn00d6d0()
+		return
+	}
+	
+	u8 originalCharacter = D0.u8
+	u8 extraCharacter = objA0.animation.timer
+
+	
+	if (control.pad1.pressed & CONTROL_DOWN)
+	{
+		if (objA0.animation.timer == 0x01)
+			objA0.animation.timer = 0x04
+		else if (objA0.animation.timer == 0x03)
+			objA0.animation.timer = 0x01
+		else if (objA0.animation.timer > 0x03)
+			objA0.animation.timer = 0x03
+	}
+	else if (control.pad1.pressed & CONTROL_UP)
+	{
+		if (extraCharacter == 0x02)
+			objA0.animation.timer = 0x03
+	}
+	
+	base.fn00d6d0()
+
+	if (control.pad1.pressed & CONTROL_UP)
+	{
+		if (extraCharacter == 0x03)
+			objA0.animation.timer = 0x01
+		else if (extraCharacter == 0x00 && objA0.animation.timer == 0x01)
+			objA0.animation.timer = 0x03
+	}
+
+}
+
 function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 {
 	u8 gameMode = global.game_mode & 0x7f
@@ -258,6 +310,24 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 			{
 				Renderer.drawCustomSprite("small_border_frame", 0x3c8 - camera.foreground.x.u16, py - 16, 0x00, 0, renderQueue - 100)
 				Renderer.drawCustomSprite("small_border_shadow", 0x3c8 - camera.foreground.x.u16, py - 16, 0x00, 0, renderQueue - 100, 0, 0x80)
+			}
+		}
+		
+		// ES Amy Icon for regular charactersprite
+		if lsds.amyicon && (Mods.isModActive("Extra Slot Amy") || Mods.isModActive("Extra Slot Amy SHC")) && (u8[A0 + 0x38] == 0xff && objA0.animation.timer == 0 && u16[0xffffb04a + 0x30] == 0)
+		{
+			u64 portrait = 0
+			if (u8[A0 + 0x23] == 0x1b)
+				portrait = "Clear_slot3"
+			if (Renderer.hasCustomSprite(portrait))
+			{
+			#if GAMEAPP >= 0x22051500
+				Renderer.drawCustomSprite(portrait, px, py - (lsds.nodetail ? 0x10 : 0), 0, SPRITE_FLAG_PRIO, renderQueue)
+			#endif
+			#if GAMEAPP <= 0x22050800
+				Renderer.drawCustomSprite(portrait, px, py - (lsds.nodetail ? 0x10 : 0), 0, SPRITE_FLAG_PRIO, renderQueue)
+			#endif
+				u8[A0 + 0x23] = 0
 			}
 		}
 		

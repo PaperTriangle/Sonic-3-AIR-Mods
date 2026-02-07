@@ -74,6 +74,39 @@
 					"0": "Disabled",
 					"1": "Enabled"
 				}
+			},
+			{
+				"InternalName": "lsds.noknuxtails",
+				"DisplayName": "Disable Knuckles & Tails",
+				"Variable": "lsds.noknuxtails",	
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "lsds.esureorder",
+				"DisplayName": "Reorder ESU Characters",
+				"Variable": "lsds.esureorder",	
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "lsds.amyicon",
+				"DisplayName": "ES Amy Icon For All",
+				"Variable": "lsds.amyicon",	
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
 			}
 		]
 	}
