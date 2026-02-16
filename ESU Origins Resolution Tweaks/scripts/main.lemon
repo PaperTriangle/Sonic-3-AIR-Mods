@@ -23,7 +23,7 @@ function void fn0191a4()
 		return
 	}
 
-	if (!super.active.tails || super.active.tails == 0xff)
+	if !super.active.tails || (super.active.tails == 0xff && (global.xtrachar != 2 || System.getGlobalVariableValueByName("Ray_Hyper")))
 	{
 		UnloadObject()
 		return
@@ -67,7 +67,7 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 {
 	u8 gameMode = global.game_mode & 0x7f
 	
-	if (global.xtrachar > 0) && !(gameMode == 0x0c || gameMode == 0x08) && (objA0.update_address == 0x00903e)
+	if (global.xtrachar > 0) && !(gameMode == 0x0c || gameMode == 0x08) && (objA0.update_address == 0x00903e || objA0.update_address == 0x009488 || objA0.update_address == 0x00927a)
 	{
 		py += (getScreenHeight() - 224)
 	}
@@ -318,6 +318,86 @@ function void UpdateWaterSurfaceLevel.AIZ2()
 			water.height.target = 0x0618
 		}
 	}
+}
+
+// Fix tile placement issue with collapsing floor in MGZ2.
+//# address-hook(0x051762) end(0x0517c2)
+function void fn051762()
+{
+	--u16[0xffffeeda]
+	if (s16[0xffffeeda] < 0)
+	{
+		u16[0xffffeeda] = 6
+		D2.u16 = D0.u16
+		fn0517d6()
+
+		D0.u16 = u16[0xffffeedc] - camera.foreground.x.u16 + 0x80 - getScreenExtend()
+		if (D0.s16 >= 0 && D0.u16 < 0x01c0)
+		{
+			D0.u16 = u16[0xffffeede]
+			A1 = 0x23cfa0
+			D0.u16 += u16[A1 + D2.s16]
+			D2.u16 = u16[A1 + D2.s16 + 2]
+
+			while (D2.s16 >= 0)
+			{
+				D3.u16 = camera.foreground.y.u16 & level.height.tilemask
+				if (D0.u16 >= D3.u16)
+				{
+					D3.u16 += 0xf0
+					if (D0.u16 < D3.u16)
+					{
+						D1.u16 = u16[0xffffeedc]
+						D6 = 8
+						D2 = (D2 << 16) + (D2 >> 16)
+						LoadTileContentSingleLine()
+						D2 = (D2 << 16) + (D2 >> 16)
+					}
+				}
+				D0.u16 += 0x10
+				--D2.s16
+			}
+		}
+	}
+}
+
+// Prevents Amy from dying at the beginning of the fight
+//# address-hook(0x0162d8) end(0x016442)
+function void fn0162d8()
+{
+	if (global.xtrachar != 3)
+	{
+		base.fn0162d8()
+		return
+	}
+
+	objA0.position.x.u16 = camera.position.x.u16 + 0x40
+	objA0.position.y.u16 = camera.position.y.u16 + 0x0100 + (getScreenHeight() - 224)
+
+	// Amy
+	A1 = 0xffffb000
+
+	// Balloon
+	A2 = 0xffffb04a
+	if (s8[A2 + 0x04] >= 0)
+	{
+		u16[A2 + 0x10] = u16[A1 + 0x14]
+		u16[A2 + 0x14] = u16[A1 + 0x14] + camera.position.y.u16 // We don't want the balloon appearing out of thin air
+		u32[0xffffb04a] = 0x01365c
+
+		tails.ai_routine = 0x12
+		tails.carrying = 0
+		tails.catch_timeout = 0
+
+	#if STANDALONE
+		// This prevents a bug that makes Tails die just before the main boss fight starts
+		player2.control_override = 0
+	#endif
+	}
+
+	u16[A0 + 0x30] = 360
+	objA0.update_address = 0x016334
+	fn016334()
 }
 
 // Fix in testing for certain object pop in near screen edge.
@@ -2083,6 +2163,33 @@ function void fn047440()
 		}
 		A1 = 0xffff0000 + objA0.value3e
 		UnloadObjectA1()
+		UnloadObject()
+	}
+}
+
+// Wind effect
+
+//# address-hook(0x049602) end(0x049644)
+function void fn049602()
+{
+	A2 = A0 + 0x30
+	A1 = 0xffffb000
+	D4.u16 = control.player1
+	fn04964a()
+
+	A2 = A0 + 0x31
+	A1 = 0xffffb04a
+	D4.u16 = control.tails
+	fn04964a()
+
+	D0.u16 = ((objA0.position.x.u16 + 0x0400) & 0xff80) - level.despawn_position.x
+	if (D0.u16 > 0x0680 - (ort.spawnfix ? 0x80 : 0))
+	{
+		if (objA0.respawn_entry)
+		{
+			A2 = 0xffff0000 + objA0.respawn_entry
+			u8[A2] &= ~0x80
+		}
 		UnloadObject()
 	}
 }
