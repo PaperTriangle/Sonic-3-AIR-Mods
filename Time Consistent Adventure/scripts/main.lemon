@@ -663,7 +663,7 @@ function void fn01c96e()
 			// Trigger boss
 			objA1.update_address = 0x06c31a
 			objA1.position.x.u16 = 0x3d20 + getScreenWidth() / 2 - 0x2A
-			objA1.position.y.u16 = 0x0668
+			objA1.position.y.u16 = 0x0668 - (getScreenHeight() - 224)
 		}
 
 		camera.update_routine += 2

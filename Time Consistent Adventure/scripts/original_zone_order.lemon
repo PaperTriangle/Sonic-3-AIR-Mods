@@ -77,7 +77,7 @@ function void yieldExecution()
 
 function bool isSonicAndKnucklesZone()
 {
-	if (!tca.intended)
+	if (tca.intended)
 	{
 		u8 zone = global.zone
 		if (global.stage_type == 2)
