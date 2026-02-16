@@ -451,6 +451,12 @@ function void fn04964a()
 //# address-hook(0x0497c2) end(0x0497fe)
 function void fn0497c2()
 {
+	if global.zone_act != 0xb00 || !((camera.position.x.u16 >= 0x2480 && camera.position.x.u16 <= 0x2880) && (camera.position.y.u16 >= 0x0680 && camera.position.y.u16 <= 0x0a80))
+	{
+		base.fn0497c2()
+		return
+	}
+	
 	u8 anim1 = u8[char.ADDRESS_P1 + 0x27]
 	u8 anim2 = u8[char.ADDRESS_P2 + 0x27]
 	
@@ -495,6 +501,12 @@ function void fn0497c2()
 //# address-hook(0x049986) end(0x0499fc)
 function void fn049986()
 {
+	if global.zone_act != 0xb00 || !((camera.position.x.u16 >= 0x2480 && camera.position.x.u16 <= 0x2880) && (camera.position.y.u16 >= 0x0680 && camera.position.y.u16 <= 0x0a80))
+	{
+		base.fn049986()
+		return
+	}
+	
 	u8 anim1 = u8[char.ADDRESS_P1 + 0x27]
 	u8 anim2 = u8[char.ADDRESS_P2 + 0x27]
 	
