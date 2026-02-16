@@ -1,0 +1,15 @@
+function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.UpdatePaletteEffects.SuperForm.moddingVersion(characterVersion)
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.UpdatePaletteEffects.SuperForm.moddingVersion(characterVersion)
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}

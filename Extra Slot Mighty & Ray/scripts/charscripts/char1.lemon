@@ -1,0 +1,254 @@
+include renderHooks
+include palettes
+include mightyRendering
+include gameplaychanges
+include mightySkills
+include smashThrough
+include objectInteractions
+include mighty_Surfboard_intro
+
+// I don't know where to put this, so it goes here
+// whens global.xtrachar for p2? /j
+// ~ Lemons
+function bool isRayPartner()
+{
+	// going for readability here, sorry readability haters!
+	if (global.xtrachar == 4)
+		return true
+	
+	return base.isRayPartner()
+}
+
+function void ExtraChar.startup_char4()
+{
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	ExtraChar.startup_char1()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+	
+}
+
+function u64 getCharacterBonusTextIcon(u8 character)
+{
+	if (global.xtrachar != 0x04)
+	{
+		return base.getCharacterBonusTextIcon(character)
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	u64 returnVal = base.getCharacterBonusTextIcon(character)
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+	
+	return returnVal
+}
+
+function u64 ExtraChar.getIconSpriteKey_char4(u8 type)
+{
+	return ExtraChar.getIconSpriteKey_char1(type)
+}
+
+// Mighty doesn't need the boost bar
+function void RenderBoostBar()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.RenderBoostBar()
+		return
+	}
+}
+
+// Blue Spheres results screen
+//# address-hook(0x02ec80) end(0x02eca6)
+function void fn02ec80()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn02ec80()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn02ec80()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+//# address-hook(0x02dd3e) end(0x02dd92)
+function void LevelResults.UpdateCharacterNameDisplay()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.LevelResults.UpdateCharacterNameDisplay()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.LevelResults.UpdateCharacterNameDisplay()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+//# address-hook(0x00c154) end(0x00c260)
+function void InitSaveSlots()
+{
+	// Call the base function
+    base.InitSaveSlots()
+    
+	// Only run in the Data Select menu
+	//if (global.game_mode == 0x4c)
+		Mighty.saveSlots_solveDDZ2()
+}
+
+function void Mighty.saveSlots_solveDDZ2()
+{
+    // Call another function that defines the value for u8[A0 + 0x05]
+    fn00d7c0()
+    
+    // Loop simulates slots
+    for (u8 slot = 0x00; slot < 0x08; ++slot)
+    {
+        u32 slotAddress = 0xffffb128 + (0x4a * slot)
+        u32 dataAddress = 0xffffe6ac + (0x0a * slot)
+        bool isMighty = u8[slotAddress + 0x05] == 0x04
+        
+        if (isMighty && MightyDDZ == 0x01)
+        {
+           if (u8[dataAddress] == 0x00 && u8[dataAddress + 0x03] == 0x0d)
+           {               
+               bool isChaos = (u16[dataAddress + 0x06] == 0x5555)
+               bool isSuper = ((u16[dataAddress + 0x06] == 0xffff) || (u16[dataAddress + 0x06] == 0xfffc)) // No have idea why here actually 0xfffc
+               
+               u8[dataAddress] = (isChaos ? 0x02 : (isSuper ? 0x03 : 0x01))
+               u8[dataAddress + 0x03] = 0x0e
+               
+               SaveGameSlot()
+           }
+       }
+    }
+}
+
+//@ Function taken from sonic3air_dev/scripts/menus/dataselect.lemon
+//# address-hook(0x00d790) end(0x00d790)
+function void fn00d790()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn00d790()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn00d790()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+//@ Function taken from sonic3air_dev/scripts/menus/dataselect.lemon
+function bool fn00d458()
+{
+	if (global.xtrachar != 0x04)
+	{
+		return base.fn00d458()
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	u64 returnVal = base.fn00d458()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+	
+	return returnVal
+}
+
+//# address-hook(0x04e24c) end(0x04e25e)
+function void fn04e24c()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn04e24c()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn04e24c()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+function string ExtraChar.getCharacterName(u8 xtrachar)
+{
+	if (xtrachar == 4)
+		xtrachar = 1
+	return base.ExtraChar.getCharacterName(xtrachar)
+}
+
+function string RenderExtraCharIcon(u8 xtrachar)
+{
+	if (xtrachar == 4)
+		xtrachar = 1
+	return base.RenderExtraCharIcon(xtrachar)
+}
+
+// Sets the availability status of the character for selection in the Competition menu.
+function bool ExtraChar.CompetitionMode.isCharacterAvailable(u8 xtrachar)
+{
+	if (xtrachar == 4)
+		xtrachar = 1
+	return base.ExtraChar.CompetitionMode.isCharacterAvailable(xtrachar)
+}
+
+function string getCharacterLivesIcon(u8 character)
+{
+	if (global.xtrachar != 0x04)
+	{
+		return base.getCharacterLivesIcon(character)
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	u64 returnVal = base.getCharacterLivesIcon(character)
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+	
+	return returnVal
+}
+
+function string getCharacterHudNames(u8 character)
+{
+	if (global.xtrachar != 0x04)
+	{
+		return base.getCharacterHudNames(character)
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	u64 returnVal = base.getCharacterHudNames(character)
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+	
+	return returnVal
+}
+
+function string ExtraChar.getIconSpriteKey(u8 slot)
+{
+	if (slot == 4)
+		slot = 1
+	return base.ExtraChar.getIconSpriteKey(slot)
+}

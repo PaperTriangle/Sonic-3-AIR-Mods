@@ -1,0 +1,202 @@
+function bool ExtraChar.LevelManager.EnableCustomLevels(u8 extrachar)
+{
+	if (extrachar == 4)
+		extrachar = 1
+	return base.ExtraChar.LevelManager.EnableCustomLevels(extrachar)
+}
+
+// Here so that the chunks load in properly when you first go from act 1 to act 2 of LRZ
+//# address-hook(0x078ae6) end(0x078afa)
+function void fn078ae6()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn078ae6()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn078ae6()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+function void ExtraChar.LevelManager.LoadCustomChunks(u8 extrachar, u16 zoneAndAct)
+{
+	if (extrachar == 4)
+		extrachar = 1
+	base.ExtraChar.LevelManager.LoadCustomChunks(extrachar, zoneAndAct)
+}
+
+function u32 ExtraChar.LevelManager.loadRawLevelData(string format, u16 zoneAndAct, u32 targetAddress)
+{
+	if (global.xtrachar != 0x04)
+	{
+		return base.ExtraChar.LevelManager.loadRawLevelData(format, zoneAndAct, targetAddress)
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	u64 returnVal = base.ExtraChar.LevelManager.loadRawLevelData(format, zoneAndAct, targetAddress)
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+	
+	return returnVal
+}
+
+function u32 Game.getSetting(u32 settingId)
+{
+	if (global.xtrachar != 0x04)
+	{
+		return base.Game.getSetting(settingId)
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	u64 returnVal = base.Game.getSetting(settingId)
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+	
+	return returnVal
+}
+
+// Not quite a renderhook. Changes the waterfall sprites
+function void Renderer.drawVdpSprite(s16 px, s16 py, u8 encodedSize, u16 patternIndex, u16 renderQueue)
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.Renderer.drawVdpSprite(px, py, encodedSize, patternIndex, renderQueue)
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.Renderer.drawVdpSprite(px, py, encodedSize, patternIndex, renderQueue)
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+//# address-hook(0x02b928) end(0x02b962)
+function void fn02b928()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn02b928()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn02b928()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+function void UpdateLevelDisplay()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.UpdateLevelDisplay()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.UpdateLevelDisplay()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+//# address-hook(0x022ef4) end(0x022f40)
+function void SpringVertical.Update()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.SpringVertical.Update()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.SpringVertical.Update()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+//# address-hook(0x02131c) end(0x021560)
+function void fn02131c()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn02131c()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn02131c()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+// Cork floor that can only be broken by Mighty.
+//# address-hook(0x02a502) end(0x02a586)
+function void fn02a502()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn02a502()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn02a502()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+//# address-hook(0x01faf2) end(0x01fb4a)
+function void Rocks.Update()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.Rocks.Update()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.Rocks.Update()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+// fix for janky monitor code
+//# address-hook(0x01d696) end(0x01d6be)
+function void MonitorIntact.CheckBlocking()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.MonitorIntact.CheckBlocking()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.MonitorIntact.CheckBlocking()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}

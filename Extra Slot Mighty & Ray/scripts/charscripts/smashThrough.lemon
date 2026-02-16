@@ -1,0 +1,4 @@
+function bool ItBeMighty()
+{
+	return ((global.xtrachar == 1 || global.xtrachar == 4) && u8[A1 + 0x38] == CHARACTER_SONIC)
+}

@@ -1,0 +1,600 @@
+
+function void ExtraChar.Menu.actselect.updateControl()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.ExtraChar.Menu.actselect.updateControl()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.ExtraChar.Menu.actselect.updateControl()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+function void Init()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.Init()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.Init()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+function void Standalone.onLevelStart()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.Standalone.onLevelStart()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.Standalone.onLevelStart()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+// Victory after defeating a boss
+//# address-hook(0x085bda) end(0x085bf6)
+function void fn085bda()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn085bda()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn085bda()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+//v1.11 track knux path
+//v1.12 improved restart tracking
+//# address-hook(0x02d6a6) end(0x02d768)
+function void TitleCard.Init()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.TitleCard.Init()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.TitleCard.Init()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+global bool BubbleBounce
+//reset mighty's variables (and animations)
+//v1.11 simplified initialize function
+//# address-hook(0x006a76) end(0x006bd6)
+function void InitializeGameCharacters()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.InitializeGameCharacters()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.InitializeGameCharacters()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+function void ExtraChar.CompetitionMode.Character.setupPhysics(u8 xtrachar, u16 speedcap, u16 acceleration, u16 deceleration)
+{
+	if (xtrachar == 4)
+		xtrachar = 1
+	ExtraChar.CompetitionMode.Character.setupPhysics(xtrachar, speedcap, acceleration, deceleration)
+}
+
+// Fixed underwater muffle sound
+//# address-hook(0x018466) end(0x018680)
+function void fn018466()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn018466()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn018466()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+//start location and animation has to be fixed for HCZ1 and ICZ1
+//PART 2
+//# address-hook(0x0067ee) end(0x0069b6)
+function void fn0067ee()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn0067ee()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn0067ee()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+//# address-hook(0x074768) end(0x0747d0)
+function void fn074768()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn074768()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn074768()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+
+//PART1
+//# address-hook(0x01be46) end(0x01bfae)
+function void SetupCharacterAtStartPosition()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.SetupCharacterAtStartPosition()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.SetupCharacterAtStartPosition()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+//AIZ2 -- WATER RISING FIX ON KNUCKLES PATH IF NOT KNUCKLES (position dependant instead of character dependant)
+
+//v1.12 -- restart on checkpoints like knuckles
+//# address-hook(0x007892) end(0x007a48)
+function void Level.InitializeWater()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.Level.InitializeWater()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.Level.InitializeWater()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+//# address-hook(0x006dde) end(0x006e6c)
+function void UpdateWaterSurfaceLevel.AIZ2()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.UpdateWaterSurfaceLevel.AIZ2()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.UpdateWaterSurfaceLevel.AIZ2()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+function void AIZ2.LevelInitSpecialty()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.AIZ2.LevelInitSpecialty()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.AIZ2.LevelInitSpecialty()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+//-------------------------------------------------------//
+// Cutscene to Hydrocity				                 //
+//-------------------------------------------------------//
+//TRIGGER PROPERLY DEPENDING ON THE PATH:
+//UPPER PATH -> Cutscene knuckles drops you down
+//LOWER PATH -> "Suicidal" jump
+
+//# address-hook(0x069526) end(0x069586)
+function void fn069526()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn069526()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn069526()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+//Have Mighty keep the jump animation if he leaps down
+//# address-hook(0x0695ce) end(0x069610)
+function void fn0695ce()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn0695ce()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn0695ce()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+// Mighty jumps off the bridge in AIZ 2
+//# address-hook(0x069616) end(0x069620)
+function void fn069616()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn069616()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn069616()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+// Unlock Mighty_Partner movement if with Mighty
+//# address-hook(0x06c8f4) end(0x06c930)
+function void fn06c8f4()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn06c8f4()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn06c8f4()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+// TAILS SPAWN POINTS
+//I changed the starting point, tails needs a reset if he is with mighty
+//TAILS NEEDS A RESET IF PLAYING AS MIGHTY AND TAILS in ICZ
+//# address-hook(0x013a10) end(0x013b24)
+function void Character.TailsAI.Init()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.Character.TailsAI.Init()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.Character.TailsAI.Init()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+
+//ROCK BREAKING
+//Mighty breaks ROCKS (not walls though) this includes rocks in AIZ1 and LRZ
+//ALL ROCKS (not walls!)
+//# address-hook(0x01fd08) end(0x01ff1a)
+function void fn01fd08()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn01fd08()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn01fd08()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+//--------------------------
+//ICE CAP UNIQUE WALL
+//--------------------------
+//Mighty should be able to break these as well
+//# address-hook(0x08a280) end(0x08a2dc)
+function void fn08a280()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn08a280()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn08a280()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+//# address-hook(0x021818) end(0x021936)
+function void fn021818()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn021818()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn021818()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+//# address-hook(0x024280) end(0x0242b4)
+function void DamageCharacter()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.DamageCharacter()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.DamageCharacter()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+//Hidden palace skip (V1.7)
+//Mighty CAN skip knuckles in Lava Reef,
+//as such, he has to transition in hidden palace properly if he takes the high route
+// Object that allows Knuckles to just exit the level to the right
+//  -> Also used in LRZ Boss act for Sonic / Tails, and possibly elsewhere
+// We want it to save for everyone should they reach it
+//# address-hook(0x0863ec) end(0x086422)
+function void fn0863ec()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn0863ec()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn0863ec()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+//extend the area, no matter the access point, fight knuckles and go to sky sanctuary!
+//# address-hook(0x05a12e) end(0x05a152)
+function void InitLevelTiles.HPZ()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.InitLevelTiles.HPZ()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.InitLevelTiles.HPZ()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+//Determine next start location at zone completion
+global u8 EndLocation
+//# address-hook(0x085e3a) end(0x085e50)
+function void TriggerNextZone()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.TriggerNextZone()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.TriggerNextZone()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+function bool DEZFinalBoss3.canPlayerEnterDoomsday()
+{
+	if (global.xtrachar != 0x04)
+	{
+		return base.DEZFinalBoss3.canPlayerEnterDoomsday()
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	u64 returnVal = base.DEZFinalBoss3.canPlayerEnterDoomsday()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+	
+	return returnVal
+}
+
+function void fn0803d6()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn0803d6()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn0803d6()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+//-------------------------------------------------------//
+// Outro pilot                                           //
+//-------------------------------------------------------//
+global u8 Mighty_Pilot
+// Zoomed out sonic head
+//# address-hook(0x05ecb4) end(0x05ed0c)
+function void fn05ecb4()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn05ecb4()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn05ecb4()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+// Regular sized sonic head
+//# address-hook(0x05eb32) end(0x05eb66)
+function void fn05eb32()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn05eb32()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn05eb32()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+#if STANDALONE
+function bool onCharacterPressedJumpInMidAir(u8 input_state, u8 input_pressed)
+{
+	if (global.xtrachar != 0x04)
+	{
+		return base.onCharacterPressedJumpInMidAir(input_state, input_pressed)
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	u64 returnVal = base.onCharacterPressedJumpInMidAir(input_state, input_pressed)
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+	
+	return returnVal
+}
+#endif
+
+// SOZ Sandflow
+// All that's changed here is the addition of 1 value to both functions
+//# address-hook(0x03fd4e) end(0x03fe42)
+function void fn03fd4e()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn03fd4e()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn03fd4e()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+//# address-hook(0x03fe70) end(0x03ff7e)
+function void fn03fe70()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn03fe70()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn03fe70()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}

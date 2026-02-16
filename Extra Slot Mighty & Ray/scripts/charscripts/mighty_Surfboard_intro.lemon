@@ -1,0 +1,543 @@
+global bool Mighty_Intro_Type
+//# address-hook(0x067472) end(0x06748a)
+function void fn067472()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn067472()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn067472()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+//# address-hook(0x220B78)
+function void fn220B78()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn220B78()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn220B78()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+//# address-hook(0x220b8c)
+function void Obj_AIZSurfboardIntro_Main()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.Obj_AIZSurfboardIntro_Main()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.Obj_AIZSurfboardIntro_Main()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+//# address-hook(0x220BD0)
+function void fn220BD0()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn220BD0()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn220BD0()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+function void fn20C00()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn20C00()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn20C00()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+//# address-hook(0x220c06) end(0x220c86)
+function void fn220c06()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn220c06()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn220c06()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+//# address-hook(0x220C74) end(0x220C74)
+function void fn220C74()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn220C74()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn220C74()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+// Mighty is now on the beach, running into the jungle
+//# address-hook(0x220c94) end(0x220cfe)
+function void fn220c94()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn220c94()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn220c94()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+// Makes it so that Mighty doesn't flash when he's on the island
+//# address-hook(0x0679b8) end(0x067a06)
+function void fn0679b8()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn0679b8()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn0679b8()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+// Let's start the game
+//# address-hook(0x220d38)
+function void fn220d38()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn220d38()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn220d38()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+//# address-hook(0x220d3e) end(0x220dca)
+function void SurfboardIntro_Move()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.SurfboardIntro_Move()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.SurfboardIntro_Move()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+function void SurfboardIntro_LoadPLC()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.SurfboardIntro_LoadPLC()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.SurfboardIntro_LoadPLC()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+//# address-hook(0x220f74) end(0x220fe6)
+function void fn220f74()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn220f74()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn220f74()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+	
+//# address-hook(0x220fce)
+function void fn220fce()	
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn220fce()	
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn220fce()	
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+//# address-hook(0x220ffc) end(0x22102a)
+function void fn220ffc()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn220ffc()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn220ffc()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+
+//# address-hook(0x22102c) end(0x22106a)
+function void fn22102c()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn22102c()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn22102c()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+	
+function void fn22102c2()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn22102c2()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn22102c2()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+
+//# address-hook(0x22106c) end(0x2210cc)
+function void fn22106c()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn22106c()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn22106c()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+	
+function void fn2210c0()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn2210c0()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn2210c0()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+//# address-hook(0x2210e0) end(0x22113e)
+function void fn2210e0()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn2210e0()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn2210e0()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+	
+function void fn221132()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn221132()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn221132()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+//# address-hook(0x221152) end(0x221186)
+function void fn221152()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn221152()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn221152()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+//# address-hook(0x2212b2) end(0x22133c)
+function void fn2212b2()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn2212b2()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn2212b2()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+
+//# address-hook(0x2212ea)
+function void fn2212ea()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn2212ea()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn2212ea()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+function void initializeMainGame()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.initializeMainGame()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.initializeMainGame()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+//# address-hook(0x01c46e) end(0x01c4ce)
+function void fn01c46e()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn01c46e()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn01c46e()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+//# address-hook(0x01c4d0) end(0x01c54e)
+function void fn01c4d0()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn01c4d0()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn01c4d0()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+//# address-hook(0x018ea0) end(0x018f0a)
+function void fn018ea0()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn018ea0()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn018ea0()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+//# address-hook(0x018ede)
+function void fn018ede()	
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn018ede()	
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn018ede()	
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+	
+function void loc_18EF8()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.loc_18EF8()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.loc_18EF8()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+//# address-hook(0x018f10) end(0x018f3a)
+function void fn018f10()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn018f10()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn018f10()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+//# address-hook(0x018f76) end(0x018fc8)
+function void fn018f76()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.fn018f76()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.fn018f76()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}

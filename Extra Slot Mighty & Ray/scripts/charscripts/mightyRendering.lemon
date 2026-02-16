@@ -1,0 +1,123 @@
+
+function void ExtraChar.drawCharacterSprite_char4()
+{
+	ExtraChar.drawCharacterSprite_char1()
+}
+
+function bool Character_ESU_Err(u64 key, s16 px, s16 py, u8 flag, u16 renderQueue, u8 id)
+{
+	if (global.xtrachar != 0x04)
+	{
+		return base.Character_ESU_Err(key, px, py, flag, renderQueue, id)
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	u64 returnVal = base.Character_ESU_Err(key, px, py, flag, renderQueue, id)
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+	
+	return returnVal
+}
+
+function void loadCharacterPalette(u8 character, u32 targetAddress, u8 paletteVariant)
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.loadCharacterPalette(character, targetAddress, paletteVariant)
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.loadCharacterPalette(character, targetAddress, paletteVariant)
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+// Origins SSZ parity mod compatibility 
+
+function void XtraInClaw()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.XtraInClaw()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.XtraInClaw()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+function void XtraEscape()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.XtraEscape()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.XtraEscape()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+
+function bool XtraOnGround()
+{
+	if (global.xtrachar != 0x04)
+	{
+		return base.XtraOnGround()
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	u64 returnVal = base.XtraOnGround()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+	
+	return returnVal
+}
+
+function void Mightybreaksout()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.Mightybreaksout()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.Mightybreaksout()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+function string getESCharacterFallSpriteKey(u8 character, u8 extrachar)
+{
+	if (global.xtrachar != 0x04)
+	{
+		return base.getESCharacterFallSpriteKey(character, extrachar)
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	u64 returnVal = base.getESCharacterFallSpriteKey(character, 1)
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+	
+	return returnVal
+}

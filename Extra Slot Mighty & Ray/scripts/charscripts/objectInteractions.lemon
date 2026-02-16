@@ -1,0 +1,33 @@
+function void SpringVertical.updateInternal(bool flipY)
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.SpringVertical.updateInternal(flipY)
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.SpringVertical.updateInternal(flipY)
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+// Bounce Mighty when Hammer Dropping
+//# address-hook(0x01e490)
+function void LetSonicClimbOnObject()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.LetSonicClimbOnObject()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.LetSonicClimbOnObject()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}

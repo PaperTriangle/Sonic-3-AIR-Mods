@@ -1,0 +1,398 @@
+function bool ESS_drawChar_Es(s16 px, s16 py, bool no_save, u8 ES_val)
+{
+	if (ES_val == 0x04)
+		ES_val = 0x01
+	return base.ESS_drawChar_Es(px, py, no_save, ES_val)
+}
+function s32 ESS_saveBoxGetColor_Es(u8 ES_val)
+{
+	if (ES_val == 0x04)
+		ES_val = 0x01
+	return base.ESS_saveBoxGetColor_Es(ES_val)
+}
+
+//# address-hook(0x00db44) end(0x00dbb2)
+function void RenderHUD()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.RenderHUD()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.RenderHUD()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+function void ExtraChar.DataSelect.drawCharacterSprite(s16 px, s16 py, u16 renderQueue)
+{
+	if (objA0.animation.timer == 0x04)
+	{
+		u8 atex = getatex(0x01)
+		string key = Mods.isModActive("Mania Style Data Select") ? "dataSel_character_mighty" : getMightySprite()
+	
+		// Mighty
+		if (Renderer.hasCustomSprite(key))
+			Renderer.drawCustomSprite(key, px - 0x07, py, atex, SPRITE_FLAG_PRIO | SPRITE_FLAG_FLIP_X, renderQueue)
+	
+		atex = getatex(0x02)
+		key = Ray_menu_sprites()
+		Renderer.drawCustomSprite(key, px + 0x09, py, atex, SPRITE_FLAG_PRIO | SPRITE_FLAG_FLIP_X, renderQueue)
+		return
+	}
+	
+	// Call the base function
+	base.ExtraChar.DataSelect.drawCharacterSprite(px, py, renderQueue)
+}
+
+function void ExtraChar.DataSelect.drawCharacterIconsSprite(s16 px, s16 py, u16 renderQueue)
+{
+	if (objA0.animation.timer == 0x04)
+	{
+		u8 atex = getatex(0x01)
+		string key
+		if (Mods.isModActive("Data Select Character Sprites - MAIN"))
+		{
+			if (System.getGlobalVariableValueByName("MenuStyle.dataSelect") != 0)
+			{
+				if (System.getGlobalVariableValueByName("MenuStyle.noContinues") == 1)
+				{
+					key = (Mods.isModActive("Mania Style Data Select")) ? "dataSel_life_mighty" : (Mighty_Sprite_type == 0) ? "dataSel_life_slot1" : "dataSel_life_slot1_S3"
+				}
+				else
+				{
+					key = LivesandContinues()
+				}
+				if (Renderer.hasCustomSprite(key))
+				{
+					if (u8[A0 + 0x05] == 0x01 && u8[A0 + 0x08] != 0x01)
+					{
+						Renderer.drawCustomSprite(key, px-16, py + ((System.getGlobalVariableValueByName("MenuStyle.noContinues") == 1) ? 24 : 8), atex, SPRITE_FLAG_PRIO, renderQueue)
+					}
+				}
+			}
+		}
+		else
+		{
+			key = LivesandContinues()
+			if (Renderer.hasCustomSprite(key))
+			{
+				if (u8[A0 + 0x05] == 0x01 && u8[A0 + 0x08] != 0x01)
+				{
+					Renderer.drawCustomSprite(key, px-16, py + 8, atex, SPRITE_FLAG_PRIO, renderQueue)
+				}
+			}
+		}
+		
+		key = LivesandContinues()
+		if (Renderer.hasCustomSprite(key))
+		{
+			if (u8[A0 + 0x05] == 0x01 && u8[A0 + 0x08] != 0x01)
+			{
+				Renderer.drawCustomSprite(key, px-16, py + 8, atex, SPRITE_FLAG_PRIO, renderQueue)
+			}
+		}
+		return
+	}
+	
+	// Call the base function
+	base.ExtraChar.DataSelect.drawCharacterIconsSprite(px, py, renderQueue)
+}
+
+function void ExtraChar.Competition.drawCharacterSprite(s16 px, s16 py, u16 renderQueue)
+{
+	if (objA0.animation.timer == 0x04)
+	{
+		u8 atex = getatex(0x01)
+		string key = Mods.isModActive("Mania Style Data Select") ? "dataSel_character_mighty" : getMightySprite()
+		Renderer.drawCustomSprite(key, px, py, atex, SPRITE_FLAG_PRIO, renderQueue)
+		return
+	}
+	
+	// Call the base function
+	base.ExtraChar.Competition.drawCharacterSprite(px, py, renderQueue)
+}
+
+function void ExtraChar.Competition.drawCharacterContinueSprite(s16 px, s16 py, u16 renderQueue)
+{
+	if (objA0.animation.timer == 0x04)
+	{
+		u8 atex = getatex(0x01)
+		string key = Special_Continue_icons()
+		Renderer.drawCustomSprite(key, px, py, atex, 0x00, renderQueue)
+		return
+	}
+	
+	// Call the base function
+	base.ExtraChar.Competition.drawCharacterContinueSprite(px, py, renderQueue)
+}
+
+function u64 ESS_getCharLifeIcon(u64 name)
+{
+	if (u8[A3 + 0x24] == 0x04)
+		return (Mighty_Sprite_type) ? "ESS_Life_S3Mighty" : "ESS_Life_ManiaMighty"
+	return base.ESS_getCharLifeIcon(name)
+}
+
+function u64 ESS_getCharContIcon(u64 name)
+{
+
+	if (u8[A3 + 0x24] == 0x04)
+		return (Mighty_Sprite_type) ? "ESS_Cont_S3Mighty" : "ESS_Cont_ManiaMighty"
+	return base.ESS_getCharContIcon(name)
+}
+
+function void ExtraChar.Challenges.drawCharacterContinueSprite(u8 xtrachar, s16 px, s16 py, u8 flags, u16 renderQueue)
+{
+	if (xtrachar == 0x04)
+		xtrachar = 0x01
+	base.ExtraChar.Challenges.drawCharacterContinueSprite(xtrachar, px, py, flags, renderQueue)
+}
+
+// The function determines the special options of the character palettes, and loads them into memory.
+function void ExtraChar.loadSpecialPalettes(u8 xtrachar, u32 targetAddress, u8 paletteVariant)
+{
+	if (xtrachar == 0x04)
+		xtrachar = 0x01
+	base.ExtraChar.loadSpecialPalettes(xtrachar, targetAddress, paletteVariant)
+}
+
+//# address-hook(0x08555e) end(0x08558e)
+function void fn08555e()
+{
+    base.fn08555e()
+
+	if ((global.framecounter % 2) == 0x00 && global.xtrachar == 0x01)
+	{
+		if (objA0.update_address != 0x01abb6)
+			u8[0xffffb128 + 0x26] = 1
+	}
+}
+
+//# address-hook(0x05d9ee) end(0x05da4e)
+function void fn05d9ee()
+{
+	// Falling from space
+	if (global.xtrachar == 1 && Mods.isModActive("Extra Slot Ray") && Mighty_Pilot == 2 && (System.getGlobalVariableValueByName("Ray_Partner") <= 2))
+	{
+		ExtraChar.loadCharacterPalette(0x02, 0x802080 + u32(0x01 * 0x80), 0x00)
+		ExtraChar.loadSpecialPalettes(0x02, CHARACTER_TAILS, 0x802080 + u32(0x01 * 0x80), 0x00)
+	}
+	
+	base.fn05d9ee()
+}
+
+// Here so that Mighty's palette loads for Knuckles' ending
+//# address-hook(0x05b2d4) end(0x05b2d4)
+function void fn05b2d4()
+{
+	if (isMainCharacter(CHARACTER_KNUCKLES))
+	{
+		loadCharacterPalette(3, 0x802240, 0) // Mighty palette
+		Mightys_Grays()
+	}
+	base.fn05b2d4()
+}
+
+function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
+{
+	if (global.xtrachar != 0x04)
+	{
+		return base.Standalone.onWriteToSpriteTable(px, py, renderQueue)
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	u64 returnVal = base.Standalone.onWriteToSpriteTable(px, py, renderQueue)
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+	
+	return returnVal
+}
+
+function u64 GetXtraName(u8 xtrachar, u8 char)
+{
+	if (xtrachar == 0x04)
+		xtrachar = 0x01
+	return base.GetXtraName(xtrachar, char)
+}
+
+//Palette selection for Mighty
+//SET THE PALETTE -- REGULAR GAME HAS ITS OWN ENTRY
+function string getCharacterPaletteKey(u8 character)
+{
+	if (global.xtrachar != 0x04)
+	{
+		return base.getCharacterPaletteKey(character)
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	u64 returnVal = base.getCharacterPaletteKey(character)
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+	
+	return returnVal
+}
+
+// Returns the palette key of the specified extra character.
+function string getExtraCharacterPaletteKey(u8 xtrachar)
+{
+	if (xtrachar == 0x04)
+		xtrachar = 0x01
+	return base.getExtraCharacterPaletteKey(xtrachar)
+}
+
+#if STANDALONE
+
+function string getManiaInspSignpost(u8 character)
+{
+	if (global.xtrachar != 0x04)
+	{
+		return base.getManiaInspSignpost(character)
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	u64 returnVal = base.getManiaInspSignpost(character)
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+	
+	return returnVal
+}
+
+#endif
+
+// Ending pose fixes
+function string getCharacterEndPosePaletteKey(u8 character)
+{
+	if (global.xtrachar != 0x04)
+	{
+		return base.getCharacterEndPosePaletteKey(character)
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	u64 returnVal = base.getCharacterEndPosePaletteKey(character)
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+	
+	return returnVal
+}
+
+function u8 getModdedEndPosePaletteLine(u8 character, bool isHyperEffect)
+{
+	if (global.xtrachar != 0x04)
+	{
+		return base.getModdedEndPosePaletteLine(character, isHyperEffect)
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	u64 returnVal = base.getModdedEndPosePaletteLine(character, isHyperEffect)
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+	
+	return returnVal
+}
+
+function void loadCharacterEndPosePalette(u8 character, u32 targetAddress, u8 paletteVariant)
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.loadCharacterEndPosePalette(character, targetAddress, paletteVariant)
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.loadCharacterEndPosePalette(character, targetAddress, paletteVariant)
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+
+}
+
+function bool UpdatePaletteEffects.SuperForm.endpose()
+{
+	if (global.xtrachar != 0x04)
+	{
+		return base.UpdatePaletteEffects.SuperForm.endpose()
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	u64 returnVal = base.UpdatePaletteEffects.SuperForm.endpose()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+	
+	return returnVal
+}
+
+function void UpdatePaletteEffects.SuperForm.endpose.moddingVersion(u8 characterVersion)
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.UpdatePaletteEffects.SuperForm.endpose.moddingVersion(characterVersion)
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.UpdatePaletteEffects.SuperForm.endpose.moddingVersion(characterVersion)
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+//Bluespheres Palette --- it's in the first block of the special stage code!
+//# address-hook(0x0081c6) end(0x00858e)
+function void SpecialStage()
+{
+	if (global.xtrachar != 0x04)
+	{
+		base.SpecialStage()
+		return
+	}
+	Mighty_Partner = 1
+	Ray_Partner = 3
+	global.xtrachar = 1
+	base.SpecialStage()
+	Mighty_Partner = 0
+	Ray_Partner = 0
+	global.xtrachar = 4
+}
+
+function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 index, u16 renderQueue, u8 spriteCounter)
+{
+    if (objA0.update_address == 0x00d30c || objA0.update_address == 0x00d42c)
+    {
+        if (index == 0xab0b || index == 0xab17)    //Sonic icon
+        {
+            if (objA0.animation.sprite == 5 && objA0.animation.timer == 4)
+            {
+                u64 key
+				if (Mods.isModActive("Mania Style Data Select"))
+					key = "dataSel_character_mighty"
+				else
+					key = getMightySprite()
+                if (Renderer.hasCustomSprite(key))
+                {
+                    return true
+                }
+            }
+        }
+    }
+   
+    return base.Standalone.onDrawVdpSpriteCompound(px, py, size, index, renderQueue, spriteCounter)
+}
