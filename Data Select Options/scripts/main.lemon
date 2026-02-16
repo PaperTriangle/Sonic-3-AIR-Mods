@@ -264,26 +264,28 @@ function void fn00d6d0()
 	if (control.pad1.pressed & CONTROL_DOWN)
 	{
 		if (objA0.animation.timer == 0x01)
-			objA0.animation.timer = 0x04
+			objA0.animation.timer = Mods.isModActive("Extra Slot Mighty & Ray") ? 0x05 : 0x04
 		else if (objA0.animation.timer == 0x03)
 			objA0.animation.timer = 0x01
-		else if (objA0.animation.timer > 0x03)
+		else if (objA0.animation.timer > (Mods.isModActive("Extra Slot Mighty & Ray") ? 0x04 : 0x03))
 			objA0.animation.timer = 0x03
 	}
 	else if (control.pad1.pressed & CONTROL_UP)
 	{
 		if (extraCharacter == 0x02)
-			objA0.animation.timer = 0x03
+			objA0.animation.timer = (Mods.isModActive("Extra Slot Mighty & Ray") ? 0x04 : 0x03)
 	}
 	
 	base.fn00d6d0()
 
 	if (control.pad1.pressed & CONTROL_UP)
 	{
-		if (extraCharacter == 0x03)
+		if (extraCharacter == 0x03 && !Mods.isModActive("Extra Slot Mighty & Ray"))
 			objA0.animation.timer = 0x01
 		else if (extraCharacter == 0x00 && objA0.animation.timer == 0x01)
 			objA0.animation.timer = 0x03
+		else if (Mods.isModActive("Extra Slot Mighty & Ray") && extraCharacter == 0x04 && objA0.animation.timer > 0x04)
+			objA0.animation.timer = 0x01
 	}
 
 }
@@ -336,17 +338,18 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 		{
 			
 			if (u8[A0 + 0x38] == 0xff && objA0.animation.sprite == 5 && objA0.animation.timer != 0 && u16[0xffffb04a + 0x30] == 0)
-			{	
+			{
+				u8 xtrachar = (Mods.isModActive("Extra Slot Mighty & Ray") && objA0.animation.timer == 0x04) ? 0x01 : objA0.animation.timer
 				u64 portrait = 0
 				u64 portraitesp = 0
 				if (u8[A0 + 0x23] == 0x18)
-					portrait = stringformat("dataSel_savePortrait_slot%d", objA0.animation.timer)
+					portrait = stringformat("dataSel_savePortrait_slot%d", xtrachar)
 				else if (u8[A0 + 0x23] == 0x19)
-					portrait = stringformat("dataSel_savePortrait_superslot%d", objA0.animation.timer)
+					portrait = stringformat("dataSel_savePortrait_superslot%d", xtrachar)
 				else if (u8[A0 + 0x23] == 0x1b)
 				{
-					portrait = stringformat("dataSel_savePortrait_clear_slot%d", objA0.animation.timer)
-					portraitesp = stringformat("Clear_slot%d", objA0.animation.timer)
+					portrait = stringformat("dataSel_savePortrait_clear_slot%d", xtrachar)
+					portraitesp = stringformat("Clear_slot%d", xtrachar)
 				}
 
 				if (Renderer.hasCustomSprite(portrait))
@@ -362,14 +365,7 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 				}
 			}
 			
-			if (Renderer.hasCustomSprite(stringformat("dataSel_slot%d", objA0.animation.timer)))
-			{
-				u64 charactersprite = "dataSel_slot%d"
-				if (objA0.animation.timer == 1 && (Mods.isModActive("Extra Slot Mighty") || Mods.isModActive("Extra Slot Mighty SHC")) && System.getGlobalVariableValueByName("Mighty_Sprite_type") == 1)
-					charactersprite = "S3_portrait"
-					
-				Renderer.drawSprite(stringformat(charactersprite, objA0.animation.timer), px, py, (objA0.animation.timer > 0x03) ? 0xff : 0x40 + (objA0.animation.timer + 0x02) * 0x20, SPRITE_FLAG_PRIO, renderQueue)
-			}
+			ExtraChar.DataSelect.drawCharacterSprite(px, py, renderQueue)
 			
 			return false
 			
@@ -396,6 +392,11 @@ function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 in
 		}
 
 	return base.Standalone.onDrawVdpSpriteCompound(px, py, size, index, renderQueue, spriteCounter)
+}
+
+function void ExtraChar.DataSelect.drawCharacterSprite(s16 px, s16 py, u16 renderQueue)
+{
+	base.ExtraChar.DataSelect.drawCharacterSprite(px, py, renderQueue)
 }
 
 //# address-hook(0x001506) end(0x00da1c)
