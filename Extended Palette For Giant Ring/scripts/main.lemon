@@ -11,7 +11,10 @@ global bool override_giant_ring
 
 function bool EPFGR.isSuperRing()
 {
-	return  (((objA0.subtype2c & 0x80) || GiantRing.isSuperEmeraldStage()) && !(Mods.isModActive("Super Ring Glow") && global.super_emeralds == 7)) || (Mods.isModActive("Super Ring Glow") && global.super_emeralds != 7)
+	if (Mods.isModActive("Super Ring Glow"))
+		return (((objA0.subtype2c & 0x80) || GiantRing.isSuperEmeraldStage()) && global.super_emeralds != 7) || (global.chaos_emeralds != 7)
+
+	return ((objA0.subtype2c & 0x80) || GiantRing.isSuperEmeraldStage())
 }
 
 function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
