@@ -50,6 +50,11 @@ Some tweaks for ESU characters so they work with the Origins Resolution mod... M
 ## Extended Palette For Giant Ring
 Makes the Giant Ring operate using an extended palette line. Preventing the Super Rings from messing with stage / HUD palettes.
 
+## Extra Slot Mighty & Ray
+Adds a partnered Mighty & Ray as Slot 4. This requires **ES Mighty** and **ES Ray** to work.
+
+**PLEASE NOTE:** This mod is in an experimental and untested state!
+
 ## Flying Hold Frame Fix
 Makes the animation while holding on to Tails less jumpy. Should be placed below other sprite mods. Should work with ESU if placed below it.
 
