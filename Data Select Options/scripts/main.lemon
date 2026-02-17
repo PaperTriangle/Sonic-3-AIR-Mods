@@ -284,8 +284,16 @@ function void fn00d6d0()
 			objA0.animation.timer = 0x01
 		else if (extraCharacter == 0x00 && objA0.animation.timer == 0x01)
 			objA0.animation.timer = 0x03
-		else if (Mods.isModActive("Extra Slot Mighty & Ray") && extraCharacter == 0x04 && objA0.animation.timer > 0x04)
+		else if (Mods.isModActive("Extra Slot Mighty & Ray") && extraCharacter == 0x04 && (objA0.animation.timer > 0x04 || objA0.animation.timer == 0x00))
+		{
 			objA0.animation.timer = 0x01
+			D0.u8 = 0x01
+		}
+	}
+	else if (control.pad1.pressed & CONTROL_DOWN)
+	{
+		if Mods.isModActive("Extra Slot Mighty & Ray") && extraCharacter == 0x00 && objA0.animation.timer == 0x04
+			objA0.animation.timer = 0x02
 	}
 
 }
