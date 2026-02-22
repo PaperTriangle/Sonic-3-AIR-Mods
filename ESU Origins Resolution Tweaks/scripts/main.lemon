@@ -3,6 +3,7 @@ global u8 ort.titlecard
 global bool ort.esu_titlecard
 global bool ort.spawnfix
 global bool ort.tcgraphics
+global bool ort.originalcredits
 
 // Place this function here again to ensure it will function 
 // as expected when loaded above ESU characters.
@@ -79,10 +80,16 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 //# address-hook(0x01c550) end(0x01c5c4)
 function void fn01c550()
 {
+
+	u16 tempPalette = u16[0xfffffc5e]
+	
 	base.fn01c550()
 		
 	if Mods.isModActive("Origins Screen Resolution") && (global.xtrachar == 3)
 	{
+		if !((global.game_mode & 0x80) == 0 && global.fade_timer == 0 && camera.position.x.u16 >= 0x1c00)
+			u16[0xfffffc5e] = tempPalette
+			
 		s16 screenShift = getScreenHeight() - 224
 
 		if (level.vertical_wrap == 0x2e0)
@@ -1803,6 +1810,26 @@ function void fn08d6e6()
 // SOZ //
 //-----//
 
+// SOZ Sliding Blocks
+//# address-hook(0x0403b0) end(0x0403d6)
+function void fn0403b0()
+{
+	D0.u16 = (u16[A0 + 0x30] & 0xff80) - level.despawn_position.x
+	if (D0.u16 <= objA0.value32 + (ort.spawnfix ? 0x80 : 0))
+	{
+		DrawObject()
+	}
+	else
+	{
+		if (objA0.respawn_entry)
+		{
+			A2 = 0xffff0000 + objA0.respawn_entry
+			u8[A2] &= ~0x80
+		}
+		UnloadObject()
+	}
+}
+
 // SOZ Swinging Platform
 //# address-hook(0x0414fe) end(0x041546)
 function void fn0414fe()
@@ -2182,8 +2209,8 @@ function void fn049602()
 	D4.u16 = control.tails
 	fn04964a()
 
-	D0.u16 = ((objA0.position.x.u16 + 0x0400) & 0xff80) - level.despawn_position.x
-	if (D0.u16 > 0x0680 - (ort.spawnfix ? 0x80 : 0))
+	D0.u16 = ((objA0.position.x.u16 + 0x0400 - (ort.spawnfix ? 0x80 : 0)) & 0xff80) - level.despawn_position.x
+	if (D0.u16 > 0x0680)
 	{
 		if (objA0.respawn_entry)
 		{
@@ -2259,4 +2286,215 @@ function void TitleCard.Wait()
 			}
 		}
 	}
+}
+
+
+//------------------//
+// Original Credits //
+//------------------//
+
+function u32 CreditsDataGenerator.build(u8 creditsIndex)
+{
+	if (!ort.originalcredits)
+	{
+		return base.CreditsDataGenerator.build(creditsIndex)
+	}
+	
+	// This builds the credits data for S3&K
+	//  - credits index 0 originally starting at 0x05bc8a
+	//  - credits index 1 originally starting at 0x05bf48
+	//  - credits index 2 is the S3AIR-specific part
+
+	// Note on timing:
+	// Scrolling is exactly 3 lines per second
+
+	u32 startAddress = CreditsDataGenerator.startAddress
+
+	// First check if the data was written already
+	if (u32[startAddress + 0xfc] == 0xbadc0ffe && u8[startAddress + 0xfb] == creditsIndex)
+		return startAddress
+
+	u32 backupA0 = A0
+	u32 backupA1 = A1
+	A0 = startAddress
+	A1 = startAddress + 0x100
+
+	// Write the signature, so we know if the data was written already
+	u8[A0 + 0xfb] = creditsIndex
+	u32[A0 + 0xfc] = 0xbadc0ffe
+
+	if (creditsIndex == 0)
+	{
+		CreditsDataGenerator.addLine(0x0f, 0x03, 1, "EXECUTIVE PRODUCER")
+		CreditsDataGenerator.addLine(0x11, 0x07, 0, "HAYAO NAKAYAMA")
+
+		CreditsDataGenerator.addLine(0x21, 0x05, 1, "PROJECT MANAGERS")
+		CreditsDataGenerator.addLine(0x23, 0x08, 0, "HISASHI SUZUKI")
+		CreditsDataGenerator.addLine(0x24, 0x07, 0, "SHINOBU TOYODA")
+		CreditsDataGenerator.addLine(0x25, 0x07, 0, "MASAHARU YOSHII")
+
+		CreditsDataGenerator.addLine(0x35, 0x0c, 1, "PRODUCER")
+		CreditsDataGenerator.addLine(0x37, 0x0c, 0, "YUJI NAKA")
+
+		CreditsDataGenerator.addLine(0x47, 0x0d, 1, "DIRECTOR")
+		CreditsDataGenerator.addLine(0x49, 0x04, 0, "HIROKAZU YASUHARA")
+
+		CreditsDataGenerator.addLine(0x59, 0x04, 1, "LEAD GAME DESIGNER")
+		CreditsDataGenerator.addLine(0x5b, 0x04, 0, "HIROKAZU YASUHARA")
+
+		CreditsDataGenerator.addLine(0x6b, 0x01, 1, "SENIOR GAME DESIGNERS")
+		CreditsDataGenerator.addLine(0x6d, 0x05, 0, "HISAYOSHI YOSHIDA")
+		CreditsDataGenerator.addLine(0x6e, 0x08, 0, "TAKASHI IIZUKA")
+
+		CreditsDataGenerator.addLine(0x7e, 0x05, 1, "LEAD PROGRAMMER")
+		CreditsDataGenerator.addLine(0x80, 0x0c, 0, "YUJI NAKA")
+
+		CreditsDataGenerator.addLine(0x90, 0x03, 1, "SENIOR PROGRAMMERS")
+		CreditsDataGenerator.addLine(0x92, 0x06, 0, "TAKAHIRO HAMANO")
+		CreditsDataGenerator.addLine(0x93, 0x04, 0, "MASANOBU YAMAMOTO")
+
+		CreditsDataGenerator.addLine(0xa3, 0x03, 1, "CHARACTER DESIGNER")
+		CreditsDataGenerator.addLine(0xa5, 0x03, 0, "TAKASHI THOMAS YUDA")
+
+		CreditsDataGenerator.addLine(0xb5, 0x0b, 1, "C.G. ARTIST")
+		CreditsDataGenerator.addLine(0xb7, 0x09, 0, "KUNITAKE AOKI")
+
+		CreditsDataGenerator.addLine(0xc7, 0x09, 1, "ENEMY ARTIST")
+		CreditsDataGenerator.addLine(0xc9, 0x05, 0, "SATOSHI YOKOKAWA")
+
+		CreditsDataGenerator.addLine(0xd9, 0x08, 1, "SCENE ARTISTS")
+		CreditsDataGenerator.addLine(0xdb, 0x09, 0, "KUNITAKE AOKI")
+		CreditsDataGenerator.addLine(0xdc, 0x0a, 0, "CHIE YOSHIDA")
+		CreditsDataGenerator.addLine(0xdd, 0x09, 0, "TSUNEKO AOKI")
+		CreditsDataGenerator.addLine(0xde, 0x08, 0, "SHIGERU OKADA")
+		CreditsDataGenerator.addLine(0xdf, 0x03, 0, "TAKASHI THOMAS YUDA")
+		CreditsDataGenerator.addLine(0xe0, 0x05, 0, "SATOSHI YOKOKAWA")
+
+		CreditsDataGenerator.addLine(0xf0, 0x08, 1, "ART ASSISTANT")
+		CreditsDataGenerator.addLine(0xf2, 0x09, 0, "OSAMU OHASHI")
+
+		// Signal switch to second credits table (= credits index 1)
+		CreditsDataGenerator.addSignal(0xfff8)
+	}
+	else if (creditsIndex == 1)
+	{
+		CreditsDataGenerator.addLine(0x02, 0x06, 1, "MUSIC COMPOSERS")
+		CreditsDataGenerator.addLine(0x04, 0x0b, 0, "BRAD BUXER")
+		CreditsDataGenerator.addLine(0x05, 0x09, 0, "BOBBY BROOKS")
+		CreditsDataGenerator.addLine(0x06, 0x0a, 0, "DARRYL ROSS")
+		CreditsDataGenerator.addLine(0x07, 0x0a, 0, "GEOFF GRACE")
+		CreditsDataGenerator.addLine(0x08, 0x07, 0, "DOUG GRIGSBY III")
+		CreditsDataGenerator.addLine(0x09, 0x0d, 0, "SCIROCCO")
+		CreditsDataGenerator.addLine(0x0a, 0x07, 0, "HOWARD DROSSIN")
+
+		CreditsDataGenerator.addLine(0x1a, 0x06, 1, "SEGA SOUND TEAM")
+		CreditsDataGenerator.addLine(0x1c, 0x12, 0, "BO")
+		CreditsDataGenerator.addLine(0x1d, 0x09, 0, "SACHIO OGAWA")
+		CreditsDataGenerator.addLine(0x1e, 0x10, 0, "MILPO")
+		CreditsDataGenerator.addLine(0x1f, 0x05, 0, "MASARU SETSUMARU")
+		CreditsDataGenerator.addLine(0x20, 0x06, 0, "TATSUYUKI MAEDA")
+		CreditsDataGenerator.addLine(0x21, 0x06, 0, "TOMONORI SAWADA")
+		CreditsDataGenerator.addLine(0x22, 0x07, 0, "MASAYUKI NAGAO")
+		CreditsDataGenerator.addLine(0x23, 0x0b, 0, "JUN SENOUE")
+
+		CreditsDataGenerator.addLine(0x33, 0x04, 1, "SOUND COORDINATOR")
+		CreditsDataGenerator.addLine(0x35, 0x0a, 0, "HISAKI NIMIYA")
+
+		CreditsDataGenerator.addLine(0x45, 0x01, 1, "EXECUTIVE MANAGEMENT")
+		CreditsDataGenerator.addLine(0x47, 0x03, 0, "SHOUICHIROU IRIMAJIRI")
+		CreditsDataGenerator.addLine(0x48, 0x09, 0, "TOM KALINSKE")
+		CreditsDataGenerator.addLine(0x49, 0x0b, 0, "PAUL RIOUX")
+
+		CreditsDataGenerator.addLine(0x59, 0x06, 1, "PRODUCT MANAGER")
+		CreditsDataGenerator.addLine(0x5b, 0x09, 0, "PAMELA KELLY")
+
+		CreditsDataGenerator.addLine(0x6b, 0x01, 1, "EXECUTIVE COORDINATOR")
+		CreditsDataGenerator.addLine(0x6d, 0x07, 0, "MAMORU SHIGETA")
+		CreditsDataGenerator.addLine(0x6e, 0x0a, 0, "TOMIO TAKAMI")
+		CreditsDataGenerator.addLine(0x6f, 0x05, 0, "DIANE A. FORNASIER")
+		CreditsDataGenerator.addLine(0x70, 0x09, 0, "ROGER HECTOR")
+		CreditsDataGenerator.addLine(0x71, 0x02, 0, "TAKAHARU UTSUNOMIYA")
+
+		CreditsDataGenerator.addLine(0x81, 0x0d, 1, "TESTERS")
+		CreditsDataGenerator.addLine(0x83, 0x0b, 0, "JASON KUO")
+		CreditsDataGenerator.addLine(0x84, 0x0b, 0, "RICK GREER")
+		CreditsDataGenerator.addLine(0x85, 0x09, 0, "MIKE WILLIAMS")
+
+		CreditsDataGenerator.addLine(0x95, 0x02, 1, "SOUND SPECIAL THANKS")
+		CreditsDataGenerator.addLine(0x97, 0x03, 0, "MAYUMI NINA SAKAZAKI")
+		CreditsDataGenerator.addLine(0x98, 0x10, 0, "(MRM)")
+		CreditsDataGenerator.addLine(0x99, 0x0b, 0, "CUBE CORP.")
+		CreditsDataGenerator.addLine(0x9a, 0x0b, 0, "OPUS CORP.")
+		CreditsDataGenerator.addLine(0x9b, 0x04, 0, "MASANORI NAKAYAMA")
+		CreditsDataGenerator.addLine(0x9c, 0x0a, 0, "(STUDIO WHO)")
+
+		CreditsDataGenerator.addLine(0xac, 0x07, 1, "SPECIAL THANKS")
+		CreditsDataGenerator.addLine(0xae, 0x08, 0, "JINA ISHIWATARI")
+		CreditsDataGenerator.addLine(0xaf, 0x09, 0, "EMI KAWAMURA")
+		CreditsDataGenerator.addLine(0xb0, 0x04, 0, "DEBORAH MCCRACKEN")
+		CreditsDataGenerator.addLine(0xb1, 0x0a, 0, "TAKU MAKINO")
+
+		CreditsDataGenerator.addLine(0xc5, 1, "ORIGINAL GAME")
+		CreditsDataGenerator.addLine(0xc7, 0, "PRESENTED BY SEGA")
+
+		// Some spaces, then signal end
+		CreditsDataGenerator.addLine(0xd7, 0x10, 0, "   ")
+		CreditsDataGenerator.addSignal(0xfff4)
+	}
+	
+	A0 = backupA0
+	A1 = backupA1
+	return startAddress
+}
+
+//# address-hook(0x05b514) end(0x05b564)
+function void fn05b514()
+{
+	if (!ort.originalcredits)
+	{
+		base.fn05b514()
+		return
+	}
+	
+	D1 = 0
+	if (global.lock_on_state == 0)
+	{
+		D1.u16 += 0x24
+	}
+	if (global.region_code & 0x40)		// PAL region needs different timing
+	{
+		D1.u16 += 0x12
+	}
+
+	// Add 6 for Tails, 12 for Knuckles
+	if (isMainCharacter(CHARACTER_TAILS))
+	{
+		D1.u16 += 6
+	}
+	else if (isMainCharacter(CHARACTER_KNUCKLES))
+	{
+		D1.u16 += 12
+	}
+
+	// Add 4 for best ending, 2 for good ending, 0 for bad ending
+	D1.u16 += (outro.ending_type + 2)
+
+	// Set the credits scrolling speed
+	// Values for S3&K non-PAL:
+	//  - 0x00ce -> Sonic, Tails (bad & good endings)
+	//  - 0x00cf -> Sonic (best ending)
+	//  - 0x00cd -> Tails (best ending)
+	//  - 0x00c8 -> Knuckles (bad ending)
+	//  - 0x00bc -> Knuckles (good & best ending)
+	outro.scroll_speed = u32(u16[0x05b69e + D1.u16]) << 8
+
+	// Set the wait time until credits start
+	// Values for S3&K non-PAL:
+	//  - 0x02ee -> Sonic, Tails (bad ending)
+	//  - 0x0294 -> Sonic (good ending)
+	//  - 0x02ee -> Tails (good ending)
+	//  - 0x0000 -> Sonic, Tails (best ending)
+	//  - 0x00a5 -> Knuckles (bad ending)
+	//  - 0x0078 -> Knuckles (good & best ending)
+	outro.wait_time = u16[0x05b656 + D1.u16]
 }

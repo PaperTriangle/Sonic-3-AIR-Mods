@@ -94,6 +94,17 @@
 					"0": "Disabled",
 					"1": "Enabled"
 				}
+			},
+			{
+				"InternalName": "ort.originalcredits",
+				"DisplayName": "Original Game Credits",
+				"Variable": "ort.originalcredits",
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
 			}
 		]
 	}
