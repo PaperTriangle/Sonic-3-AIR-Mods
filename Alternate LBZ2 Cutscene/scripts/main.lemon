@@ -80,6 +80,13 @@ function void fn072dea()
 {
 
 	--objA0.countdown_value
+	
+	if Mods.isModActive("Origins Screen Resolution") && (objA0.countdown_value == 0)
+	{
+		VDP.setupVRAMWrite(0x0960)
+		VDP.zeroVRAM(0x95c0 - 0x0960)		
+	}
+	
 	if (objA0.countdown_value < 0)
 	{
 		++objA0.value39
@@ -134,6 +141,7 @@ function void fn072dea()
 		}
 	}
 }
+
 // make debris fall infront sometimes...
 //# address-hook(0x072e54) end(0x072e94)
 function void fn072e54()
@@ -481,9 +489,7 @@ function void yieldExecution()
 {
 	if (altlbz2cs.hudgobye && altlbz2cs.dangerhud == 0)
 		global.level_started = -0x7f
-		
-	altlbz2cs.byebye_chair = 0
-	
+
 	base.yieldExecution()	
 }
 
@@ -493,6 +499,7 @@ function void TitleCard.Show()
 {
 	altlbz2cs.hudgobye = 0
 	altlbz2cs.hudgobyedanger = 0
+	altlbz2cs.byebye_chair = 0
 
 	base.TitleCard.Show()
 }
@@ -746,19 +753,6 @@ function void fn08d29c()
 		spawnChildObject(0x073e0e, 0x00, 1, -28)	 // This is an element from the previous boss.
 }
 
-// Fix for Eggman's chair floating in the scaffold
-//# address-hook(0x073e8e) end(0x073e9c)
-function void fn073e8e()
-{
-	A1 = 0xffff0000 + u16[A0 + 0x46]
-	
-	// Added a check for y-coord otherwise the chair latches to the scaffold in the cutscene...
-	if (u8[A1 + 0x38] & 0x20 || objA0.position.y.u16 > 0x0680)
-	{
-		Object.TriggerUnloading()
-	}
-}
-
 global bool altlbz2cs.byebye_chair
 
 // Extra function to try and remove chair?
@@ -806,9 +800,9 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 	if (altlbz2cs.eggmanflames && objA0.update_address == 0x073384)
 		return (level.framecounter & 1) ? base.Standalone.onDrawVdpSprite(px, py, size, index, renderQueue) : true
 		
-	//LBZ2 Eggman Flames
-	if (altlbz2cs.eggmandebris && objA0.update_address == 0x073152)
-		return (level.framecounter & 1) ? base.Standalone.onDrawVdpSprite(px, py, size, index, renderQueue) : true
+	////LBZ2 Eggman Debris
+	//if (altlbz2cs.eggmandebris && objA0.update_address == 0x073152)
+	//	return (level.framecounter & 1) ? base.Standalone.onDrawVdpSprite(px, py, size, index, renderQueue) : true
 	
 	// Fix Big Arm's arm during drop
 	if (altlbz2cs.behind && (objA0.update_address == 0x074b36 || objA0.update_address == 0x0749d0))
@@ -825,6 +819,19 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 	}
 
 	return base.Standalone.onDrawVdpSprite(px, py, size, index, renderQueue)
+}
+
+//# address-hook(0x073152) end(0x07315e)
+function void fn073152()
+{
+	UpdateMovementSimple()
+	fn084f80()
+	
+	objA0.flags38 ^= 0x40
+	if ((objA0.flags38 & 0x40) == 0) || !altlbz2cs.eggmandebris
+	{
+		DrawObject()
+	}
 }
 
 // fix for Big Arm's arm during cutscene!
@@ -1100,6 +1107,26 @@ function void fn073906()
 	}
 #endif
 }
+
+global bool altlbz2cs.noclearvramplz
+
+//# address-hook(0x072d24) end(0x072d52)
+function void fn072d24()
+{
+	altlbz2cs.noclearvramplz = true
+	base.fn072d24()
+	altlbz2cs.noclearvramplz = false
+}
+
+function void VDP.zeroVRAM(u16 bytes)
+{
+	if altlbz2cs.noclearvramplz
+		return
+	
+	base.VDP.zeroVRAM(bytes)
+}
+
+// LBZ2 to MHZ1 Transition Compat
 
 global bool altlbz2cs.extratransition
 global u8 altlbz2cs.skyfade
