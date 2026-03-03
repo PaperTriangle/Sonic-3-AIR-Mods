@@ -1110,6 +1110,7 @@ function void fn073906()
 
 global bool altlbz2cs.noclearvramplz
 
+// Stop clearing VRAM here...
 //# address-hook(0x072d24) end(0x072d52)
 function void fn072d24()
 {
