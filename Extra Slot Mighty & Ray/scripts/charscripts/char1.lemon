@@ -19,6 +19,12 @@ function bool isRayPartner()
 	return base.isRayPartner()
 }
 
+// Fixes due to slot 4.
+function bool SDMD.canSmash(u32 AX)
+{
+	return (global.xtrachar == 4 && u8[AX + 0x0d] & 0x02) || base.SDMD.canSmash(AX)
+}
+
 function void ExtraChar.startup_char4()
 {
 	Mighty_Partner = 1
