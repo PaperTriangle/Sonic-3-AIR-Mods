@@ -1,0 +1,78 @@
+//# address-hook(0x090e3e) end(0x090e48)
+function void fn090e3e()
+{
+	DrawObject()
+}
+
+//# address-hook(0x02eaa6) end(0x02eac6)
+function void fn02eaa6()
+{
+	if (u8[0xffffffb2 + objA0.box_size.x] != 1)
+	{
+		UnloadObject()
+	}
+	else
+	{
+		DrawObject()
+	}
+}
+
+
+//# address-hook(0x09089e)
+function void fn09089e()
+{
+	if (u8[0xfffffac0] == (objA0.subtype2c | 0x80))
+	{
+		objA0.animation.sprite = 0x1e
+		objA0.sprite_attributes = (sprite_attribute.PRIORITY | 0x0477)
+	}
+	else
+	{
+		objA0.animation.sprite = objA0.subtype2c
+		objA0.sprite_attributes = u16[A0 + 0x3a]
+	}
+
+	fn0908de()
+}
+
+function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16 renderQueue)
+{
+	// Super Emerald when active
+	if (objA0.update_address == 0x09089e)
+	{
+		Renderer.drawVdpSprite(px, py, size, index, renderQueue)
+		return true
+	}
+	return base.Standalone.onDrawVdpSprite(px, py, size, index, renderQueue)
+}
+
+function void DataSelect.update()
+{
+	while (true)
+	{
+		global.frame_state = 0x1e
+		waitForNextFrame()
+	@EntryPoint:
+
+		DataSelect.drawCustomPlanes()
+
+
+		++level.framecounter
+		UpdateGameObjects()
+		u16[0xffffe002] = -camera.foreground.x.u16
+		RenderSprites()
+
+		A0 = 0xfffffc42
+		++emerald.animframe
+		if (emerald.animframe >= 3)
+			emerald.animframe = 0
+
+		copyMemory(A0, 0x00ca9a, 0x1e)
+
+		// Data Select
+		if (global.game_mode != 0x4c)
+			break
+	}
+
+	playSound(0xaf)
+}
