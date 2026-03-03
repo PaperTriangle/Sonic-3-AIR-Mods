@@ -401,7 +401,7 @@ function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 in
 // MF&T Compat
 function void Renderer.drawCustomSprite(u64 key, s16 px, s16 py, u8 atex, u8 flags, u16 renderQueue)
 {
-	if (global.xtrachar == 0x01)
+	if (global.xtrachar == 0x01 && global.zone_act == 0x1601)
 		if (key == "mft_character_tails_waving_0x00" || key == "character_tails_ending_0x00")
 			key = "MFTRayWaving_0x00"
 		else if (key == "mft_character_tails_waving_0x01" || key == "character_tails_ending_0x01")
