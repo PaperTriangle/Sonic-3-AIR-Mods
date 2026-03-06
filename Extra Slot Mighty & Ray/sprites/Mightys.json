@@ -1,3 +1,4 @@
 {
-	"dataSel_slot4":  { "File": "character_mighty.bmp", "Rect": "0,0,1,1"}
+	"dataSel_slot4":  { "File": "character_mighty.bmp", "Rect": "0,0,1,1"},
+	"dataSel_lifeContinue_slot4": { "File": "character_mighty.bmp", "Rect": "0,0,1,1"}
 }

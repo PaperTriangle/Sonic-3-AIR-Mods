@@ -69,7 +69,7 @@ function void ExtraChar.DataSelect.drawCharacterIconsSprite(s16 px, s16 py, u16 
 				}
 				if (Renderer.hasCustomSprite(key))
 				{
-					if (u8[A0 + 0x05] == 0x01 && u8[A0 + 0x08] != 0x01)
+					if (u8[A0 + 0x05] == 0x04 && u8[A0 + 0x08] != 0x01)
 					{
 						Renderer.drawCustomSprite(key, px-16, py + ((System.getGlobalVariableValueByName("MenuStyle.noContinues") == 1) ? 24 : 8), atex, SPRITE_FLAG_PRIO, renderQueue)
 					}
@@ -81,7 +81,7 @@ function void ExtraChar.DataSelect.drawCharacterIconsSprite(s16 px, s16 py, u16 
 			key = LivesandContinues()
 			if (Renderer.hasCustomSprite(key))
 			{
-				if (u8[A0 + 0x05] == 0x01 && u8[A0 + 0x08] != 0x01)
+				if (u8[A0 + 0x05] == 0x04 && u8[A0 + 0x08] != 0x01)
 				{
 					Renderer.drawCustomSprite(key, px-16, py + 8, atex, SPRITE_FLAG_PRIO, renderQueue)
 				}
@@ -91,7 +91,7 @@ function void ExtraChar.DataSelect.drawCharacterIconsSprite(s16 px, s16 py, u16 
 		key = LivesandContinues()
 		if (Renderer.hasCustomSprite(key))
 		{
-			if (u8[A0 + 0x05] == 0x01 && u8[A0 + 0x08] != 0x01)
+			if (u8[A0 + 0x05] == 0x04 && u8[A0 + 0x08] != 0x01)
 			{
 				Renderer.drawCustomSprite(key, px-16, py + 8, atex, SPRITE_FLAG_PRIO, renderQueue)
 			}
@@ -200,14 +200,45 @@ function void fn05b2d4()
 
 function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 {
-	if (global.xtrachar != 0x04)
+
+	//if (objA0.update_address == 0x00d42c && objA0.animation.timer == 4)
+	//{
+	//	if (objA0.animation.sprite == 0x05 && u8[A0 + 0x05] > 0x00)
+	//	{
+	//		ExtraChar.DataSelect.drawCharacterIconsSprite(px, py, 0x9fff)
+	//	}
+	//}
+
+	if (global.xtrachar != 0x04) || (global.game_mode == 0x4c && objA0.update_address == 0x00d42c && objA0.animation.timer != 4)
 	{
 		return base.Standalone.onWriteToSpriteTable(px, py, renderQueue)
 	}
+	else if (u8[A0 + 0x38] == 0xff && objA0.animation.sprite == 5 && objA0.animation.timer == 4 && u16[0xffffb04a + 0x30] == 0)
+	{	
+		u64 portrait = 0
+		if (u8[A0 + 0x23] == 0x18)
+			portrait = "dataSel_savePortrait_slot1"
+		else if (u8[A0 + 0x23] == 0x19)
+			portrait = "dataSel_savePortrait_superslot1"
+		else if (u8[A0 + 0x23] == 0x1b)
+			portrait = "Clear_slot1"
+		if (Renderer.hasCustomSprite(portrait))
+		{
+		#if GAMEAPP >= 0x22051500
+			Renderer.drawCustomSprite(portrait, px, py - ((Mods.isModActive("Data Select Character Sprites - MAIN") && System.getGlobalVariableValueByName("MenuStyle.dataSelect") == 0) ? 8 : 0), 0, SPRITE_FLAG_PRIO, renderQueue)
+		#endif
+		#if GAMEAPP <= 0x22050800
+			Renderer.drawCustomSprite(portrait, px, py, 0, SPRITE_FLAG_PRIO, renderQueue)
+		#endif
+			u8[A0 + 0x23] = 0
+		}
+	}
+
+
 	Mighty_Partner = 1
 	Ray_Partner = 3
 	global.xtrachar = 1
-	u64 returnVal = base.Standalone.onWriteToSpriteTable(px, py, renderQueue)
+	bool returnVal = base.Standalone.onWriteToSpriteTable(px, py, renderQueue)
 	Mighty_Partner = 0
 	Ray_Partner = 0
 	global.xtrachar = 4
