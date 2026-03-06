@@ -141,9 +141,7 @@ function void yieldExecution()
 	{
 		System.loadExternalRawData("FBZ_Palette", 0x052dd0)
 		
-		// I am checking a palette pixel here to decide if I am inside or not.
-		// I thought this may break with Hyper Sonic's dash... But it seems fine?
-		if (tca.infbz1forreal && tca.bg_stars && u16[0xfffffc00 + 0x39 * 2] != u16[0x00052dc0 + 0x07 * 2])
+		if (tca.infbz1forreal && tca.bg_stars && fbzInOutCheck())
 		{
 			TCA.RenderFix()
 			
@@ -707,6 +705,12 @@ function void fn067f1e()
 //-----------------------
 // FBZ Specific Functions
 //-----------------------
+
+function bool fbzInOutCheck()
+{
+	// Old method: u16[0xfffffc00 + 0x39 * 2] != u16[0x00052dc0 + 0x07 * 2]
+	return u8[0xffffeed6] ? 1 : 0
+}
 
 //# address-hook(0x070870) end(0x0708a4)
 function void fn070870()
