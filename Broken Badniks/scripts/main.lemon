@@ -85,6 +85,11 @@ function void BB.Particle.Update()
 	}
 }
 
+function bool BB.customBadniks()
+{
+	return Mods.isModActive("Badniks Customizer")
+}
+
 // Render Object
 function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 {
@@ -99,39 +104,45 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 		if (objA0.state == 1)																		// Spikebonker
 		{
 			flags |=  SPRITE_FLAG_PRIO
-			key = stringformat("bonker_%d", objA0.animation.sprite)
+			if BB.customBadniks()
+				key = stringformat("spikebonder_spike_%d", objA0.animation.sprite - 1)
+			else
+				key = stringformat("bonker_%d", objA0.animation.sprite)
 		}
 		else if (objA0.state == 2)																	// Ribot
 		{
-			key = stringformat("ribot_%d", objA0.animation.sprite)
+			if BB.customBadniks()
+				key =  objA0.animation.sprite ? "ribot_bigchain" : "ribot_smallchain"
+			else
+				key = stringformat("ribot_chain_%d", objA0.animation.sprite)
 		}
 		else if (objA0.state == 3)																	// Skorp Tail
 		{
-			key = "skorp_tail"
+			key = BB.customBadniks() ? "skorp_circle_0" : "skorp_tail"
 		}
 		else if (objA0.state == 4)																	// Skorp Tail Spike
 		{
-			key = "skorp_stinger"
+			key = BB.customBadniks() ? "skorp_circle_1" : "skorp_stinger"
 			if (objA0.animation.sprite == 1)
 				flags |=  SPRITE_FLAG_FLIP_X
 		}
 		else if (objA0.state == 5)																	// Turbospiker
 		{
-			key = "turbospiker_rocket"
+			key = BB.customBadniks() ? "turbo_spiker_rocket" : "turbospiker_rocket"
 			flags |=  SPRITE_FLAG_PRIO
-			if (objA0.animation.sprite == 0)
-				flags |=  SPRITE_FLAG_FLIP_X
+			if (objA0.animation.sprite == (BB.customBadniks() ? 1 : 0))
+				flags |= SPRITE_FLAG_FLIP_X
 		}
 		else if (objA0.state == 6)																	// Dragonfly Tail
 		{
-			key = "dragonfly_tail"
+			key = BB.customBadniks() ? "dragonfly_spikes_0" : "dragonfly_tail"
 			flags |=  SPRITE_FLAG_PRIO																// We give it priority for Origins parity
 			if (objA0.animation.sprite == 1)
 				flags |=  SPRITE_FLAG_FLIP_Y
 		}
 		else if (objA0.state == 7)																	// Dragonfly Tail Tip
 		{
-			key = "dragonfly_tip"
+			key = BB.customBadniks() ? "dragonfly_spikes_1" : "dragonfly_tip"
 			flags |=  SPRITE_FLAG_PRIO																// We give it priority for Origins parity
 			if (objA0.animation.sprite == 1)
 				flags |=  SPRITE_FLAG_FLIP_Y
@@ -188,6 +199,19 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 		
 		Renderer.drawCustomSprite(key, px, py, 0x00, flags, rq, 0x00, 0xff)						// High priority and renderQueue, to appear above most other things.
 		return true																					// Make sure to return after!
+	}
+	else if BB.customBadniks() && (objA0.update_address == 0x204300)
+	{
+		if (objA0.subtype2c == 0x01)
+		{
+			Renderer.drawCustomSprite("star_pointer_ice_0", px, py, 0x00, objA0.render_flags, renderQueue)
+			return true
+		}
+		else if (objA0.subtype2c == 0x05)
+		{
+			Renderer.drawCustomSprite("orbinaut_spike", px, py, 0x00, objA0.render_flags, renderQueue)
+			return true
+		}
 	}
 	
 	return base.Standalone.onWriteToSpriteTable(px, py, renderQueue)								// And then return the base.
