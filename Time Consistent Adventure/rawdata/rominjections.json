@@ -3,6 +3,10 @@
 	{
 		"File": "MGZ2_Palette.bin"
 	},
+	"MGZ2_Night_Palette":
+	{
+		"File": "MGZ2_Night_Palette.bin"
+	},
 	"MGZ_Palette_Original":
 	{
 		"File": "MGZ_Palette_Original.bin"
@@ -32,6 +36,18 @@
 	},
 	"FBZ_Palette_Boss_Released": {
 		"File": "FBZ_Outdoors_Palette_Boss_Released.bin"
+	},
+	"ICZ_Act1_Palette": {
+		"File": "ICZ_Act1_Palette.bin"
+	},
+	"ICZ_Dawn_Palette": {
+		"File": "ICZ_Dawn_Palette.bin"
+	},
+	"ICZ_Morning_Palette": {
+		"File": "ICZ_Morning_Palette.bin"
+	},
+	"ICZ_New_Palette": {
+		"File": "ICZ_New_Palette.bin"
 	},
 	"LBZ1_Palette": {
 		"File": "LBZ1_Palette.bin"

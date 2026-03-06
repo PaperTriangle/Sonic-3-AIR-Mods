@@ -38,23 +38,6 @@ global bool tca.knux_stars_off
 global bool tca.infbz1forreal
 global bool tca.inssz1forreal
 
-constant array<u16> NEW_MGZ_PALETTE = {0x4ae, 0x26c, 0x24a, 0x026, 0x004, 0x000, 0x0cc, 0x0a8, 0x064, 0x042, 0x6cc, 0xaee, 0x48a, 0x246, 0x024, 0x000, 0x6ce, 0x4ae, 0x28e, 0x24e, 0x22c, 0x488, 0x0a6, 0x084, 0x062, 0x042, 0xcac, 0xa8a, 0x868, 0x446, 0x224}
-constant array<u16> NEW_TRANSITION = {0x422, 0x402, 0x202, 0x200, 0x000, 0x682, 0x480, 0x460, 0x440, 0x220, 0x624, 0x624, 0x624, 0x422, 0x200}
-
-constant array<u16> FBZ_TRANSITION = {0xeec, 0xeea, 0xec8, 0xea6, 0xe82, 0xe60, 0xeee, 0xeea}
-constant array<u16> NEW_FBZ_PALETTE = {0xeee, 0xece, 0xeac, 0xe8a, 0xe68, 0xe48, 0xeae, 0xeac}
-
-constant array<u16> NEW_ICZ_PALETTE = {0xeee, 0xeea, 0xec8, 0xea4, 0xc82, 0xc60, 0xc40, 0xe20, 0xa00, 0xe00, 0x000, 0xec0, 0xa80, 0xc60, 0xea4}
-constant array<u16> MID_ICZ_PALETTE = {0xeee, 0xecc, 0xeaa, 0xe88, 0xc66, 0xc44, 0xc24, 0xe24, 0xa24, 0xc04, 0x000, 0xeca, 0xa86, 0xc64, 0xea8}
-constant array<u16> OLD_ICZ_PALETTE = {0xcee, 0xcca, 0xc86, 0xc64, 0xc44, 0xa44, 0x824, 0x624, 0x200, 0x604, 0x202, 0xec0, 0xa80, 0xc64, 0xea8}
-constant array<u16> OG_ICZ_PALETTE = {0xeec, 0xcc6, 0xc80, 0xc60, 0xc40, 0xa40, 0x820, 0x620, 0x200, 0x600, 0x600, 0xec0, 0xa80, 0xc60, 0xea4}
-
-constant array<u16> SSZ_SKY = {0xeee, 0xeea, 0xec8, 0xea6, 0xe84, 0xe42, 0xe60}
-constant array<u16> SSZ_SKY_MORNING = {0xeee, 0xaee, 0x68e, 0x66a, 0x646, 0x622, 0x424, 0xee0, 0x4c2, 0x482, 0x460, 0x408, 0x40c, 0x0042, 0x6a0, 0x000, 0xeee, 0xecc, 0xeaa, 0xe88, 0xe68, 0xc46, 0xe46}
-constant array<u16> SSZ_SKY_MORNING_PINK = {0xeee, 0xaee, 0x68e, 0x66a, 0x646, 0x622, 0x424, 0xee0, 0x4c2, 0x482, 0x460, 0x408, 0x40c, 0x0042, 0x6a0, 0x000, 0xeee, 0xaee, 0x8ce, 0x8ae, 0x6ae, 0xa8e, 0x88e}
-constant array<u16> SSZ_KNUX_END = {0xeee, 0xaee, 0x68e, 0x66a, 0x646, 0x622, 0x424, 0xee0, 0x4c2, 0x482, 0x460, 0x408, 0x40c, 0x0042, 0x6a0, 0x000, 0xeee, 0xeea, 0xec8, 0xea6, 0xe84, 0xe42, 0xe60, 0xcee, 0xaee, 0x2cc, 0x0c4, 0x080, 0x0a6, 0x064, 0x220}
-
-
 function bool isKnucklesRoute()
 {
 	if (global.characters == CHARS_KNUCKLES_ALONE)
@@ -108,13 +91,15 @@ function void yieldExecution()
 		}
 		
 		if (transition_state == 1 && transition_time <= 0x78)
-		{	
+		{
+			System.loadExternalRawData("MGZ2_Palette", 0x3fff30)
+			
 			transition_time += !tca.fadespeed ? 1 : 2
 			if (transition_time % (tca.fadespeed ? 30 : 24) == 0 || !tca.fadetype)
 			{
-				for (u8 i = 0; i < NEW_MGZ_PALETTE.length(); i++)
+				for (u8 i = 0; i < 31; i++)
 				{
-					u16[0xfffffc00 + (0x21 + i)*2] = blendColorsPacked(u16[0x0A8F3C + (0x21 + i)*2], NEW_MGZ_PALETTE[i], min(256, transition_time * 2 + transition_time / 8 + 1))
+					u16[0xfffffc00 + (0x21 + i)*2] = blendColorsPacked(u16[0x0A8F3C + (0x21 + i)*2], u16[0x3fff30 + (0x11 + i)*2], min(256, transition_time * 2 + transition_time / 8 + 1))
 				}
 			}
 		}
@@ -126,12 +111,14 @@ function void yieldExecution()
 		
 		if (transition_state == 1 && transition_time <= 0x78)
 		{	
+			System.loadExternalRawData("MGZ2_Night_Palette", 0x3fff30)
+			
 			transition_time++
 			if (transition_time % 20 == 0 || !tca.fadetype)
 			{
-				for (u8 i = 0; i < NEW_TRANSITION.length(); i++)
+				for (u8 i = 0; i < 15; i++)
 				{
-					u16[0xfffffc00 + (0x31 + i)*2] = blendColorsPacked(u16[0x0A8F3C + (0x31 + i)*2], NEW_TRANSITION[i], min(256, transition_time * 2 + transition_time / 8 + 1))
+					u16[0xfffffc00 + (0x31 + i)*2] = blendColorsPacked(u16[0x0A8F3C + (0x31 + i)*2], u16[0x3fff30 + i*2], min(256, transition_time * 2 + transition_time / 8 + 1))
 				}
 			}
 		}
@@ -162,13 +149,15 @@ function void yieldExecution()
 		
 		if (transition_state >= 1 && transition_time <= 0x78)
 		{	
+			System.loadExternalRawData("FBZ_Palette_Boss", 0x3fff30)
+			System.loadExternalRawData("FBZ_Palette_Released", 0x3fff60)
 			
 			transition_time += !tca.fadespeed ? 1 : 2
 			if (transition_time % (tca.fadespeed ? 30 : 24) == 0 || !tca.fadetype)
 			{
-				for (u8 i = 0; i < FBZ_TRANSITION.length(); i++)
+				for (u8 i = 0; i < 8; i++)
 				{
-					u16[0xfffffc00 + (0x32 + i)*2] = blendColorsPacked(NEW_FBZ_PALETTE[i], FBZ_TRANSITION[i], min(256, transition_time * 2 + transition_time / 8 + 1))
+					u16[0xfffffc00 + (0x32 + i)*2] = blendColorsPacked(u16[0x3fff30 + i*2], u16[0x3fff60 + i*2], min(256, transition_time * 2 + transition_time / 8 + 1))
 				}
 			}
 		}
@@ -186,34 +175,42 @@ function void yieldExecution()
 	{
 		if (transition_state == 1 && transition_time <= 0x78 && camera.position.y.u16 < 0x700)
 		{	
+			System.loadExternalRawData("ICZ_Dawn_Palette", 0x3fff30)
+			System.loadExternalRawData("ICZ_Morning_Palette", 0x3fff60)
 			transition_time += !tca.fadespeed ? 1 : 2
 			if (transition_time % (tca.fadespeed ? 30 : 24) == 0 || !tca.fadetype)
 			{
-				for (u8 i = 0; i < NEW_ICZ_PALETTE.length(); i++)
+				for (u8 i = 0; i < 15; i++)
 				{
-					u16[0xfffffc00 + (0x31 + i)*2] = blendColorsPacked(OLD_ICZ_PALETTE[i], MID_ICZ_PALETTE[i], min(0xff, transition_time * 2 + transition_time / 8 + 1))
+					u16[0xfffffc00 + (0x31 + i)*2] = blendColorsPacked(u16[0x3fff30 + i*2], u16[0x3fff60 + i*2], min(0xff, transition_time * 2 + transition_time / 8 + 1))
 				}
 			}
 		}
 		else if (tca.icz_trans_fade && transition_state == 2 && transition_time <= 0x78 && camera.position.y.u16 < 0x700)
-		{	
+		{
+			System.loadExternalRawData("ICZ_Morning_Palette", 0x3fff30)
+			System.loadExternalRawData("ICZ_New_Palette", 0x3fff60)
+			
 			transition_time += !tca.fadespeed ? 1 : 2
 			if (transition_time % (tca.fadespeed ? 30 : 24) == 0 || !tca.fadetype)
 			{
-				for (u8 i = 0; i < NEW_ICZ_PALETTE.length(); i++)
+				for (u8 i = 0; i < 15; i++)
 				{
-					u16[0xfffffc00 + (0x31 + i)*2] = blendColorsPacked(MID_ICZ_PALETTE[i], NEW_ICZ_PALETTE[i], min(0xff, transition_time * 2 + transition_time / 8 + 1))
+					u16[0xfffffc00 + (0x31 + i)*2] = blendColorsPacked(u16[0x3fff30 + i*2], u16[0x3fff60 + i*2], min(0xff, transition_time * 2 + transition_time / 8 + 1))
 				}
 			}
 		}
 		else if (!tca.icz_trans_fade && transition_state == 2 && transition_time <= 0x78 && camera.position.y.u16 < 0x700)
 		{	
+			System.loadExternalRawData("ICZ_Dawn_Palette", 0x3fff30)
+			System.loadExternalRawData("ICZ_New_Palette", 0x3fff60)
+			
 			transition_time += !tca.fadespeed ? 1 : 2
 			if (transition_time % (tca.fadespeed ? 30 : 24) == 0 || !tca.fadetype)
 			{
-				for (u8 i = 0; i < NEW_ICZ_PALETTE.length(); i++)
+				for (u8 i = 0; i < 15; i++)
 				{
-					u16[0xfffffc00 + (0x31 + i)*2] = blendColorsPacked(OLD_ICZ_PALETTE[i], NEW_ICZ_PALETTE[i], min(0xff, transition_time * 2 + transition_time / 8 + 1))
+					u16[0xfffffc00 + (0x31 + i)*2] = blendColorsPacked(u16[0x3fff30 + i*2], u16[0x3fff60 + i*2], min(0xff, transition_time * 2 + transition_time / 8 + 1))
 				}
 			}
 		}
@@ -237,12 +234,15 @@ function void yieldExecution()
 	{
 		if (transition_state == 1 && transition_time <= 0x78)
 		{	
+			System.loadExternalRawData("ICZ_Act1_Palette", 0x3fff30)
+			System.loadExternalRawData("ICZ_New_Palette", 0x3fff60)
+			
 			transition_time += !tca.fadespeed ? 1 : 2
 			if (transition_time % (tca.fadespeed ? 30 : 24) == 0 || !tca.fadetype)
 			{
-				for (u8 i = 0; i < NEW_ICZ_PALETTE.length(); i++)
+				for (u8 i = 0; i < 15; i++)
 				{
-					u16[0xfffffc00 + (0x31 + i)*2] = blendColorsPacked(OG_ICZ_PALETTE[i], NEW_ICZ_PALETTE[i], min(0xff, transition_time * 2 + transition_time / 8 + 1))
+					u16[0xfffffc00 + (0x31 + i)*2] = blendColorsPacked(u16[0x3fff30 + i*2], u16[0x3fff60 + i*2], min(0xff, transition_time * 2 + transition_time / 8 + 1))
 				}
 			}
 		}
@@ -288,9 +288,11 @@ function void yieldExecution()
 			transition_time += !tca.fadespeed ? 1 : 2
 			if (transition_time % (tca.fadespeed ? 30 : 24) == 0 || !tca.fadetype)
 			{
-				for (u8 i = 0; i < SSZ_SKY.length(); i++)
+				System.loadExternalRawData("SSZ1_Palette_Original", 0x3fff30)
+							
+				for (u8 i = 0; i < 7; i++)
 				{
-					u16[0xfffffc00 + (0x31 + i)*2] = blendColorsPacked(u16[0x0A971C + (0x31 + i)*2], SSZ_SKY[i], min(0xff, transition_time * 2 + transition_time / 8 + 1))
+					u16[0xfffffc00 + (0x31 + i)*2] = blendColorsPacked(u16[0x0A971C + (0x31 + i)*2], u16[0x3fff30 + (0x21 + i)*2], min(0xff, transition_time * 2 + transition_time / 8 + 1))
 				}
 			}
 		}	
@@ -320,12 +322,14 @@ function void yieldExecution()
 			{
 				if (transition_time % (tca.fadespeed ? 30 : 24) == 0 || !tca.fadetype)
 				{
-					for (u8 i = 0; i < SSZ_SKY_MORNING.length(); i++)
+					System.loadExternalRawData(tca.pal_ssz_dawn ? "SSZK_Palette_Morning_Pink" : "SSZK_Palette_Morning", 0x3fff30)
+					
+					for (u8 i = 0; i < 23; i++)
 					{
 						if (i != 13 && i != 14)
 						{
-							u16[0xfffffc00 + (0x21 + i)*2] = blendColorsPacked(u16[0x0A977C + (0x21 + i)*2], tca.pal_ssz_dawn ? SSZ_SKY_MORNING_PINK[i] : SSZ_SKY_MORNING[i], min(0xff, transition_time * 2 + transition_time / 8 + 1))
-							u16[0xfffffc00 + 0x80 + (0x21 + i)*2] = blendColorsPacked(u16[0x0A977C + (0x21 + i)*2], tca.pal_ssz_dawn ? SSZ_SKY_MORNING_PINK[i] : SSZ_SKY_MORNING[i], min(0xff, transition_time * 2 + transition_time / 8 + 1))
+							u16[0xfffffc00 + (0x21 + i)*2] = blendColorsPacked(u16[0x0A977C + (0x21 + i)*2], u16[0x3fff30 + (0x11 + i)*2], min(0xff, transition_time * 2 + transition_time / 8 + 1))
+							u16[0xfffffc00 + 0x80 + (0x21 + i)*2] = blendColorsPacked(u16[0x0A977C + (0x21 + i)*2], u16[0x3fff30 + (0x11 + i)*2], min(0xff, transition_time * 2 + transition_time / 8 + 1))
 						}
 					}
 				}
@@ -344,12 +348,14 @@ function void yieldExecution()
 			{
 				if (transition_time % (tca.fadespeed ? 30 : 24) == 0 || !tca.fadetype)
 				{
-					for (u8 i = 0; i < SSZ_KNUX_END.length(); i++)
+					System.loadExternalRawData("SSZK_Palette_Original", 0x3fff30)
+					
+					for (u8 i = 0; i < 31; i++)
 					{
 						if (i != 13 && i != 14)
 						{
-							u16[0xfffffc00 + (0x21 + i)*2] = blendColorsPacked(u16[0x0A977C + (0x21 + i)*2], SSZ_KNUX_END[i], min(0xff, transition_time * 2 + transition_time / 8 + 1))
-							u16[0xfffffc00 + 0x80 + (0x21 + i)*2] = blendColorsPacked(u16[0x0A977C + (0x21 + i)*2], SSZ_KNUX_END[i], min(0xff, transition_time * 2 + transition_time / 8 + 1))
+							u16[0xfffffc00 + (0x21 + i)*2] = blendColorsPacked(u16[0x0A977C + (0x21 + i)*2], u16[0x3fff30 + (0x11 + i)*2], min(0xff, transition_time * 2 + transition_time / 8 + 1))
+							u16[0xfffffc00 + 0x80 + (0x21 + i)*2] = blendColorsPacked(u16[0x0A977C + (0x21 + i)*2], u16[0x3fff30 + (0x11 + i)*2], min(0xff, transition_time * 2 + transition_time / 8 + 1))
 						}
 					}
 				}
@@ -368,12 +374,14 @@ function void yieldExecution()
 			transition_time += !tca.fadespeed ? 1 : 2
 			if (transition_time % (tca.fadespeed ? 30 : 24) == 0 || !tca.fadetype)
 			{
-				for (u8 i = 0; i < SSZ_KNUX_END.length(); i++)
+				System.loadExternalRawData("SSZK_Palette_Original", 0x3fff30)
+				
+				for (u8 i = 0; i < 31; i++)
 				{
 					if (i != 13 && i != 14)
 					{
-						u16[0xfffffc00 + (0x21 + i)*2] = blendColorsPacked(u16[0x0A977C + (0x21 + i)*2], SSZ_KNUX_END[i], min(256, transition_time * 2 + transition_time / 8 + 1))
-						u16[0xfffffc00 + 0x80 + (0x21 + i)*2] = blendColorsPacked(u16[0x0A977C + (0x21 + i)*2], SSZ_KNUX_END[i], min(256, transition_time * 2 + transition_time / 8 + 1))
+						u16[0xfffffc00 + (0x21 + i)*2] = blendColorsPacked(u16[0x0A977C + (0x21 + i)*2], u16[0x3fff30 + (0x11 + i)*2], min(256, transition_time * 2 + transition_time / 8 + 1))
+						u16[0xfffffc00 + 0x80 + (0x21 + i)*2] = blendColorsPacked(u16[0x0A977C + (0x21 + i)*2], u16[0x3fff30 + (0x11 + i)*2], min(256, transition_time * 2 + transition_time / 8 + 1))
 					}
 				}
 			}
