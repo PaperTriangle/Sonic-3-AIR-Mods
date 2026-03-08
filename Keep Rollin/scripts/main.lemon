@@ -196,6 +196,7 @@ function void fn039f7e()
 
 // Prevent rolling when in corckscrew animations.
 // Option for DEZ to prevent rolling in DEZ Tubes.
+
 //# address-hook(0x01174a) end(0x0117d8)
 //# address-hook(0x014f74) end(0x015000)
 function void Character.CheckForStartRolling()
@@ -206,6 +207,7 @@ function void Character.CheckForStartRolling()
 	else if kr.deztube && global.zone == 0x0b
 		if (char.animation.sprite >= 0x31 && char.animation.sprite <= 0x3c)
 			return
+
 
 	base.Character.CheckForStartRolling()
 }
@@ -219,6 +221,17 @@ function void fn048f12()
 		return
 #endif
 
+	D0.u16 = objA1.position.x.u16 - objA0.position.x.u16 + D4.u16
+	D1.u16 = objA1.position.y.u16 - objA0.position.y.u16 + objA0.value32
+	if (D0.u16 < D5.u16 && D1.u16 < objA0.value32 * 2)
+	{
+		if (u8[A1 + 0x2a] & char.flag.ROLLING) && (u8[A1 + 0x05] < base_state.DIED && debug_mode.state == 0)
+		{
+			u8[A1 + 0x2a] &= ~char.flag.ROLLING
+			objA1.animation.sprite = 0x31
+		}
+	}
+	
 	base.fn048f12()
 }
 
