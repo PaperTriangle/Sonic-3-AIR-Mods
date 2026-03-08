@@ -348,7 +348,7 @@ function void fn051762()
 
 			while (D2.s16 >= 0)
 			{
-				D3.u16 = camera.foreground.y.u16 & level.height.tilemask
+				D3.u16 = (camera.foreground.y.u16 + (getScreenHeight() - 224)) & level.height.tilemask
 				if (D0.u16 >= D3.u16)
 				{
 					D3.u16 += 0xf0
@@ -366,6 +366,21 @@ function void fn051762()
 			}
 		}
 	}
+}
+
+// Fixes the cut grass during the earthquake.
+//# address-hook(0x23d1fc) end(0x23d21c)
+function void fn23d1fc()
+{
+	base.fn23d1fc()
+	Renderer.drawCustomSprite("mgz2_grass", 0x36b9, 0x0af8 - camera.screenshake.offset  - u16[0xffffeed4], 0x20, SPRITE_FLAG_WORLDSPACE | SPRITE_FLAG_PRIO, 0x2001)
+	Renderer.drawCustomSprite("mgz2_grass", 0x3a39, 0x03e8 - camera.screenshake.offset  - u16[0xffffeed4], 0x20, SPRITE_FLAG_WORLDSPACE | SPRITE_FLAG_PRIO, 0x2001)
+}
+
+function void yieldExecution()
+{
+	
+	base.yieldExecution()
 }
 
 // Prevents Amy from dying at the beginning of the fight
