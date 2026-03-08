@@ -13,7 +13,7 @@ include mighty_Surfboard_intro
 function bool isRayPartner()
 {
 	// going for readability here, sorry readability haters!
-	if (global.xtrachar == 4)
+	if (global.xtrachar == 4) || (global.xtrachar == 1)
 		return true
 	
 	return base.isRayPartner()
