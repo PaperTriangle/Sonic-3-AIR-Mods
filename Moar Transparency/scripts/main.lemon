@@ -1076,7 +1076,7 @@ function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 in
 		// HCZ water waves effect
 		if (objA0.update_address == 0x0384b2)
 		{
-			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 0x80)
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
 			
 			return true
 		}
