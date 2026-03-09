@@ -181,6 +181,18 @@
 					"0": "Disabled",
 					"1": "Enabled"
 				}
+			},,
+			{
+				"InternalName": "bb.bounce",
+				"DisplayName": "Bounce Sounds",
+				"Variable": "bb.bounce",
+				"Category": "Extras",
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
 			},
 			{
 				"InternalName": "bb.claw",

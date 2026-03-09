@@ -12,6 +12,9 @@ global bool bb.twinhammer_breaks
 global bool bb.lbztriggers
 global bool bb.hyper
 global bool bb.claw
+global bool bb.bounce
+
+define u8 global.xtrachar = u8[0xffffe654]
 
 //----------------
 // Generic Methods
@@ -1005,4 +1008,110 @@ function void fn07cc26()
 	}
 	
 	base.fn07cc26()
+}
+
+//# address-hook(0x08dc6e) end(0x08dcc4)
+function void fn08dc6e()
+{
+	if (!bb.bounce)
+	{
+		base.fn08dc6e()
+		return
+	}
+	
+	if (global.xtrachar == 5) // For ES Shadow
+	{
+		if (objA0.state != 0)
+		{
+			--objA0.state
+			if (objA0.state != 0)
+				return
+
+			objA0.collision_attributes = (collision.flag.SPECIAL | collision.size.8x8_2)
+		}
+
+		fn085870()
+		if (!_equal())
+		{
+			fn0857c2()
+			if (_equal() && !(System.getGlobalVariableValueByName("shadow.isBoosting") || System.getGlobalVariableValueByName("shadow.DropDown")))
+			{
+				if (u8[A1 + 0x34] == 0)
+				{
+					Enemy.DamageCharacter()
+				}
+				return
+			}
+
+			--objA0.value39
+			if (objA0.value39 == 0 || System.getGlobalVariableValueByName("shadow.isBoosting") || System.getGlobalVariableValueByName("shadow.DropDown"))
+			{
+				fn085732()
+				return
+			}
+
+			playSound(0x6b)
+			u8[A0 + 0x28] = 0
+			u8[A0 + 0x29] = 0
+			objA0.state = 0x20
+			objA0.flags2a |= 0x40
+			if (System.getGlobalVariableValueByName("shadow.ForceHomingBounce") == 0)
+			{
+				objA1.velocity.x = -objA1.velocity.x
+				objA1.velocity.y = -objA1.velocity.y
+				objA1.groundspeed = -objA1.groundspeed
+			}
+
+		}
+	}
+	else
+	{
+		if (objA0.state != 0)
+		{
+			--objA0.state
+			if (objA0.state != 0)
+				return
+
+			objA0.collision_attributes = (collision.flag.SPECIAL | collision.size.8x8_2)
+		}
+
+		fn085870()
+		if (!_equal())
+		{
+			fn0857c2()
+			if (_equal())
+			{
+				if (u8[A1 + 0x34] == 0)
+				{
+					Enemy.DamageCharacter()
+				}
+				return
+			}
+
+			--objA0.value39
+			if (objA0.value39 == 0)
+			{
+				fn085732()
+				return
+			}
+
+			playSound(0x6b)
+			u8[A0 + 0x28] = 0
+			u8[A0 + 0x29] = 0
+			objA0.state = 0x20
+			objA0.flags2a |= 0x40
+			objA1.velocity.x = -objA1.velocity.x
+			objA1.velocity.y = -objA1.velocity.y
+			objA1.groundspeed = -objA1.groundspeed
+		}
+	}
+}
+
+//# address-hook(0x00ffd4) end(0x010214)
+function void Character.OnCollisionWithDynamicObject()
+{
+	if bb.bounce && (u32[A1] == addressof(SnailBlaster.BaseUpdate) && objA1.base_state != 0x02) && (char.flags & char.flag.ROLLING)
+		playSound(0x6b)
+	
+	base.Character.OnCollisionWithDynamicObject()
 }
