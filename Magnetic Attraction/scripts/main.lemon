@@ -380,19 +380,23 @@ function void fn01dffe()
 
 	if (fbz.magnet > 0) && (A1 == 0xffffb000)
 	{
-		if (objA0.update_address == 0x03b3fa)
+		if (objA1.position.x.u16 < objA0.position.x.u16 - 0x17) || (objA1.position.x.u16 > objA0.position.x.u16 + 0x17) || (objA1.position.y.u16 > objA0.position.y.u16)
+		{
+			base.fn01dffe()
+			return
+		}
+		else if (objA0.update_address == 0x03b3fa) //&& (objA1.position.y + 0x18 < objA0.position.y)
 		{
 			s16[A1 + 0x1a] = -objA0.velocity.y
+			objA1.flags2a |= char.flag.IN_AIR
+			objA1.flags2a &= ~char.flag.ON_OBJECT
 		}
 		else
 		{
 			u16[A1 + 0x14] -= 0x01
-			s16[A1 + 0x1a] = 0
+			s16[A1 + 0x1a] = 0x1
 		}
 		
-		objA1.flags2a |= char.flag.IN_AIR
-		objA1.flags2a &= ~char.flag.ON_OBJECT
-
 		return
 	}
 	
