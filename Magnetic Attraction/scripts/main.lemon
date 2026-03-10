@@ -245,7 +245,7 @@ function void fn03b1fc()
 		s32 diffX = abs(u16[0xffffb000 + 0x10] - objA0.position.x.u16)
 		s32 diffY = u16[0xffffb000 + 0x14] - objA0.position.y.u16
 
-		if (diffX < 0x40 && diffY > 0 && diffY < 0xa0) && (u8[0xffffb000 + 0x2b] & char.bonus.SHIELD_LIGHTNING)
+		if (diffX < 0x41 && diffY > 0 && diffY < 0xa0) && (u8[0xffffb000 + 0x2b] & char.bonus.SHIELD_LIGHTNING)
 		{
 			if !fbz.magnet
 			{
