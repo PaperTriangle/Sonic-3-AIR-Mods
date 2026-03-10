@@ -1,0 +1,10 @@
+{
+	"fbz_chunks":
+	{
+		"File": "fbz_chunks.bin"
+	},
+	"fbz_chunks_outside":
+	{
+		"File": "fbz_chunks_outside.bin"
+	}
+}

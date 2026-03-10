@@ -1,0 +1,400 @@
+global bool fbz.magnet
+
+//------------------------------------------------------------//
+// Hooks for each character to flip gravity then flip it back //
+//------------------------------------------------------------//
+
+//# address-hook(0x010a94) end(0x010ae8)
+function void Character.BaseUpdate.Sonic()
+{
+	if !fbz.magnet || global.zone != 0x04
+	{
+		base.Character.BaseUpdate.Sonic()
+		return
+	}
+	
+	u8 gravbackup = global.inv_gravity
+	if fbz.magnet && (A0 == 0xffffb000)
+	{
+		global.inv_gravity = 0x01
+	}
+	base.Character.BaseUpdate.Sonic()
+	global.inv_gravity = gravbackup
+}
+
+//# address-hook(0x01365c) end(0x0136b8)
+function void Character.BaseUpdate.Tails()
+{
+	if !fbz.magnet || global.zone != 0x04
+	{
+		base.Character.BaseUpdate.Tails()
+		return
+	}
+	
+	u8 gravbackup = global.inv_gravity
+	if fbz.magnet && (A0 == 0xffffb000)
+	{
+		global.inv_gravity = 0x01
+	}
+	base.Character.BaseUpdate.Tails()
+	global.inv_gravity = gravbackup
+}
+
+//# address-hook(0x0160d2)
+function void TailsTails.Update()
+{
+	if !fbz.magnet || global.zone != 0x04
+	{
+		base.TailsTails.Update()
+		return
+	}
+	
+	u8 gravbackup = global.inv_gravity
+	if fbz.magnet && (isMainCharacter(CHARACTER_TAILS))
+	{
+		global.inv_gravity = 0x01
+	}
+	base.TailsTails.Update()
+	global.inv_gravity = gravbackup
+}
+
+//# address-hook(0x016444) end(0x016498)
+function void Character.BaseUpdate.Knuckles()
+{
+	if !fbz.magnet || global.zone != 0x04
+	{
+		base.Character.BaseUpdate.Knuckles()
+		return
+	}
+	
+	u8 gravbackup = global.inv_gravity
+	if fbz.magnet && (A0 == 0xffffb000)
+	{
+		global.inv_gravity = 0x01
+	}
+	base.Character.BaseUpdate.Knuckles()
+	global.inv_gravity = gravbackup
+}
+
+//-------------------------------------------------------//
+// Only player 1 had shields, flip their drawing as well //
+//-------------------------------------------------------//
+
+function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
+{
+	u8 gravbackup = global.inv_gravity
+	if fbz.magnet && ( (A0 == 0xffffb000) || (isMainCharacter(CHARACTER_TAILS) && A0 == 0xffffcc0a) || (objA0.update_address == 0x018b3e && objA0.dustcloud.character_address == 0xb000))
+	{
+		py++
+		global.inv_gravity = 0x01
+	}
+	
+	bool returnVal = base.Standalone.onWriteToSpriteTable(px, py, renderQueue)
+	global.inv_gravity = gravbackup
+	
+	return returnVal
+}
+
+//----------------//
+// Super Flickies //
+//----------------//
+
+//# address-hook(0x01a228) end(0x01a270)
+function void fn01a228()
+{
+	if !fbz.magnet || global.zone != 0x04
+	{
+		base.fn01a228()
+		return
+	}
+	
+	u8 gravbackup = global.inv_gravity
+	if fbz.magnet
+	{
+		global.inv_gravity = 0x01
+	}
+	base.fn01a228()
+	global.inv_gravity = gravbackup
+}
+
+//# address-hook(0x01a292) end(0x01a31c)
+function void fn01a292()
+{
+	if !fbz.magnet || global.zone != 0x04
+	{
+		base.fn01a292()
+		return
+	}
+	
+	u8 gravbackup = global.inv_gravity
+	if fbz.magnet
+	{
+		global.inv_gravity = 0x01
+	}
+	base.fn01a292()
+	global.inv_gravity = gravbackup
+}
+
+//------------//
+// Dustclouds //
+//------------//
+
+//# address-hook(0x018b3e) end(0x018b48)
+function void fn018b3e()
+{
+	if !fbz.magnet || global.zone != 0x04 || objA0.dustcloud.character_address != 0xb000
+	{
+		base.fn018b3e()
+		return
+	}
+	
+	u8 gravbackup = global.inv_gravity
+	if fbz.magnet 
+	{
+		global.inv_gravity = 0x01
+	}
+	base.fn018b3e()
+	global.inv_gravity = gravbackup
+}
+
+//---------//
+// Shields //
+//---------//
+
+//# address-hook(0x01952a) end(0x0195a4)
+function void InstaShield.Update()
+{
+	if !fbz.magnet || global.zone != 0x04
+	{
+		base.InstaShield.Update()
+		return
+	}
+	
+	u8 gravbackup = global.inv_gravity
+	if fbz.magnet
+	{
+		global.inv_gravity = 0x01
+	}
+	base.InstaShield.Update()
+	global.inv_gravity = gravbackup
+}
+
+//# address-hook(0x019602) end(0x0196c0)
+function void FireShield.Update()
+{
+	if !fbz.magnet || global.zone != 0x04
+	{
+		base.FireShield.Update()
+		return
+	}
+	
+	u8 gravbackup = global.inv_gravity
+	if fbz.magnet
+	{
+		global.inv_gravity = 0x01
+	}
+	base.FireShield.Update()
+	global.inv_gravity = gravbackup
+}
+
+//# address-hook(0x019732) end(0x01980a)
+function void LightningShield.Update()
+{
+	if !fbz.magnet || global.zone != 0x04
+	{
+		base.LightningShield.Update()
+		return
+	}
+	
+	u8 gravbackup = global.inv_gravity
+	if fbz.magnet
+	{
+		global.inv_gravity = 0x01
+	}
+	base.LightningShield.Update()
+	global.inv_gravity = gravbackup
+}
+
+//# address-hook(0x019922) end(0x019998)
+function void BubbleShield.Update()
+{
+	if !fbz.magnet || global.zone != 0x04
+	{
+		base.BubbleShield.Update()
+		return
+	}
+	
+	u8 gravbackup = global.inv_gravity
+	if fbz.magnet && (A0 == 0xffffb000)
+	{
+		global.inv_gravity = 0x01
+	}
+	base.BubbleShield.Update()
+	global.inv_gravity = gravbackup
+}
+
+//-------------------------------------------------------------//
+// Use the electricity object to check if the player is nearby //
+//-------------------------------------------------------------//
+
+//# address-hook(0x03b1fc) end(0x03b232)
+function void fn03b1fc()
+{
+	if (u8[0xfffff7c1] != 0)
+	{
+		s32 diffX = abs(u16[0xffffb000 + 0x10] - objA0.position.x.u16)
+		s32 diffY = u16[0xffffb000 + 0x14] - objA0.position.y.u16
+
+		if (diffX < 0x40 && diffY > 0 && diffY < 0xa0) && (u8[0xffffb000 + 0x2b] & char.bonus.SHIELD_LIGHTNING)
+		{
+			if !fbz.magnet
+			{
+				s16[0xffffb000 + 0x1a] = -s16[0xffffb000 + 0x1a]
+				if (u8[0xffffb000 + 0x2a] & char.flag.ON_OBJECT)
+				{
+					u8[0xffffb000 + 0x2a] &= ~char.flag.ON_OBJECT
+					u8[0xffffb000 + 0x2a] |= char.flag.IN_AIR
+					u16[0xffffb000 + 0x14] -= 0x08
+					u8[0xffff0000 + u16[0xffffb000 + 0x42] + 0x2a] &= ~(1 << 3)
+				}
+			}
+			fbz.magnet = 2
+		}
+	}
+	
+	base.fn03b1fc()
+}
+
+//--------------------------------------------------//
+// Load rawdata chunks and decrease the magnet flag //
+//--------------------------------------------------//
+
+function void yieldExecution()
+{
+	if (global.zone == 0x04)
+	{
+		if Mods.isModActive("FBZ's outside borders")
+			System.loadExternalRawData("fbz_chunks_outside", 0x001974a2)
+		else
+			System.loadExternalRawData("fbz_chunks", 0x001974a2)
+	}
+	
+	if (fbz.magnet > 0)
+	{
+		fbz.magnet--
+		if (fbz.magnet == 0)
+			s16[0xffffb000 + 0x1a] = -s16[0xffffb000 + 0x1a]
+	}
+	
+	base.yieldExecution()
+}
+
+//-------------------------------------//
+// A bunch of dang collision checks... //
+//-------------------------------------//
+
+//# address-hook(0x01e44c)
+function void CheckCharacterClimbOnObjectInner()
+{
+	if !fbz.magnet || global.zone != 0x04
+	{
+		base.CheckCharacterClimbOnObjectInner()
+		return
+	}
+	
+	u8 gravbackup = global.inv_gravity
+	if fbz.magnet && (A1 == 0xffffb000)
+	{
+		global.inv_gravity = 0x01
+	}
+	base.CheckCharacterClimbOnObjectInner()
+	global.inv_gravity = gravbackup
+}
+
+//# address-hook(0x00f61c) end(0x00f6b0)
+function void fn00f61c()
+{
+	if !fbz.magnet || global.zone != 0x04
+	{
+		base.fn00f61c()
+		return
+	}
+	
+	u8 gravbackup = global.inv_gravity
+	if fbz.magnet && (A1 == 0xffffb000)
+	{
+		global.inv_gravity = 0x01
+	}
+	base.fn00f61c()
+	global.inv_gravity = gravbackup
+}
+
+//# address-hook(0x01df90)
+function void fn01df90()
+{
+	if !fbz.magnet || global.zone != 0x04
+	{
+		base.fn01df90()
+		return
+	}
+	
+	u8 gravbackup = global.inv_gravity
+	if fbz.magnet && (A1 == 0xffffb000)
+	{
+		global.inv_gravity = 0x01
+	}
+	base.fn01df90()
+	global.inv_gravity = gravbackup
+}
+
+//# address-hook(0x01e19c) end(0x01e1b0)
+function void UpdateSonicPositionOnMovingObject()
+{
+	if !fbz.magnet || global.zone != 0x04
+	{
+		base.UpdateSonicPositionOnMovingObject()
+		return
+	}
+	
+	u8 gravbackup = global.inv_gravity
+	if fbz.magnet && (A1 == 0xffffb000)
+	{
+		global.inv_gravity = 0x01
+	}
+	base.UpdateSonicPositionOnMovingObject()
+	global.inv_gravity = gravbackup
+}
+
+//--------------------------------------------------//
+// Had to make this one special to prevent death... //
+//--------------------------------------------------//
+
+//# address-hook(0x01dffe)
+function void fn01dffe()
+{
+	if !fbz.magnet || global.zone != 0x04
+	{
+		base.fn01dffe()
+		return
+	}
+
+	if (fbz.magnet > 0) && (A1 == 0xffffb000)
+	{
+		if (objA0.update_address == 0x03b3fa)
+		{
+			s16[A1 + 0x1a] = -objA0.velocity.y
+		}
+		else
+		{
+			u16[A1 + 0x14] -= 0x01
+			s16[A1 + 0x1a] = 0
+		}
+		
+		objA1.flags2a |= char.flag.IN_AIR
+		objA1.flags2a &= ~char.flag.ON_OBJECT
+
+		return
+	}
+	
+	base.fn01dffe()
+}

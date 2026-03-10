@@ -87,6 +87,9 @@ Makes characters keep rolling when passing from dynamic object to ground object.
 
 **PLEASE NOTE:** This mod is pretty poorly coded and could be much more efficient...
 
+## Magnetic Attraction
+Makes the electromagnets in FBZ attract Player 1 while they have the Lightning Shield.
+
 ## Moar Transparency
 Adds transparency effects to more objects in the game. The effects can be *incredibly subtle* at some points and will bypass tranparency removal from **Moar Transparency**.
 

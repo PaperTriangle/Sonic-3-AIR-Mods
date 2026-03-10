@@ -1,0 +1,10 @@
+{
+	"Metadata":
+	{
+		"Name": "Magnetic Attraction",
+		"Author": "PaperTriangle",
+		"UniqueID": "magnetic-attraction",
+		"Description": "Magnets in FBZ attract Player 1 if they have the Lightning Shield.",
+		"ModVersion": "1.0"
+	}
+}
