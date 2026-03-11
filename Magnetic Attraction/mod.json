@@ -6,5 +6,24 @@
 		"UniqueID": "magnetic-attraction",
 		"Description": "Magnets in FBZ attract Player 1 if they have the Lightning Shield.",
 		"ModVersion": "1.0"
+	},
+	"Settings":
+	{
+		"List":
+		[
+			{
+				"InternalName": "fbz.magnet.attract",
+				"DisplayName": "Magnet Style",
+				"Variable": "fbz.magnet.attract",
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "No Roll",
+					"1": "Force Roll If Not Jumping",
+					"2": "Mania Style",
+					"3": "Mania Style (Equality)"
+				}
+			}
+		]
 	}
 }
