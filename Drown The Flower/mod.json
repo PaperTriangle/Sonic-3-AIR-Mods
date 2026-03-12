@@ -1,0 +1,32 @@
+{
+	"Metadata":
+	{
+		"Name": "Drown The Flower",
+		"UniqueID": "drown-the-flower",
+		"Author": "PaperTriangle",
+		"Description": "I don't normally hate flowers, but I want to drown this one...",
+		"ModVersion": "1.0"
+	},
+	"Settings":
+	{
+		"List":
+		[
+			{
+				"InternalName": "flower_palette_line",
+				"DisplayName": "Red Flower's Palette Line",
+				"Variable": "flower_palette_line",
+				"DefaultValue": "5",
+				"Options":
+				{
+					"0": "10",
+					"1": "11",
+					"2": "12",
+					"3": "13",
+					"4": "14",
+					"5": "15"
+				}
+			}
+		]
+	}
+}
+

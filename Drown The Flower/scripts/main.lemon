@@ -1,0 +1,24 @@
+global u8 flower_palette_line
+
+//# address-hook(0x01c550) end(0x01c5c4)
+function void fn01c550()
+{
+	base.fn01c550()
+	
+	u16 offset = 3 * 0x40 + flower_palette_line * 0x20
+	u16[0x802000 + offset + 0x04] = u16[0xfffffc5e]
+	u16[0x802300  + offset + 0x04] = DTF.underwaterColour()
+}
+
+function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16 renderQueue)
+{
+	if (objA0.update_address == 0x02c2dc || objA0.update_address == 0x02c312) && (index == 0xc3be)
+		Renderer.drawCustomSprite("aiz_red_flower", px, py + 2, 0xa0 + flower_palette_line * 0x10, SPRITE_FLAG_PRIO, renderQueue + 1)
+
+	return base.Standalone.onDrawVdpSprite(px, py, size, index, renderQueue)
+}
+
+function u16 DTF.underwaterColour()
+{
+	return 0xa6c
+}
