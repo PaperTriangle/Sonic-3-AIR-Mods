@@ -612,7 +612,7 @@ function void fn01f6d0()
 	D4.u16 = objA0.position.x.u16
 	CheckCharacterOnClimbableObject()
 	
-	System.writeDisplayLine(stringformat("value: %d, %06x",  fbz.killvalue, u32[0xffff0000 + u16[char.ADDRESS_P1 + 0x42]]))
+	//System.writeDisplayLine(stringformat("value: %d, %06x",  fbz.killvalue, u32[0xffff0000 + u16[char.ADDRESS_P1 + 0x42]]))
 
 	if (fbz.killvalue > 5 && fbz.killvalue < 35)
 		u16[char.ADDRESS_P1 + 0x14] += 0x03
