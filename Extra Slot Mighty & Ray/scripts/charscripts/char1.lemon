@@ -19,6 +19,16 @@ function bool isRayPartner()
 	return base.isRayPartner()
 }
 
+global bool esmr.fangfight
+
+function bool FangBoss.FightFangTheSniper()
+{
+	if esmr.fangfight
+		return (global.xtrachar == 4) || (global.xtrachar == 1) || (global.xtrachar == 2)
+			
+	return FangBoss.FightFangTheSniper()
+}
+
 // Fixes due to slot 4.
 function bool SDMD.canSmash(u32 AX)
 {

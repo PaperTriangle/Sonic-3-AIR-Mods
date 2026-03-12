@@ -6,5 +6,22 @@
 		"UniqueID": "esu-mighty-and-ray",
 		"Description": "Slot 4 acts as a dedicated partner slot of Mighty and Ray.",
 		"ModVersion": "1.0"
+	},
+	"Settings":
+	{
+		"List":
+		[
+			{
+				"InternalName": "esmr.fangfight",
+				"DisplayName": "Fang Fight Override",
+				"Variable": "esmr.fangfight",
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			}
+		]
 	}
 }
