@@ -415,6 +415,16 @@ function void yieldExecution()
 		else
 			fbz.magnet = 0
 	}
+
+	if (fbz.killtimer > 0)
+	{
+		fbz.killtimer--
+		
+		if (fbz.killtimer == 0)
+			fbz.killvalue = 0
+	}
+	
+
 	
 	base.yieldExecution()
 }
@@ -508,8 +518,14 @@ function void fn01dffe()
 		return
 	}
 
-	if (fbz.magnet > 0) && (A1 == char.ADDRESS_P1)
+	if (fbz.magnet > 0) && (A1 == char.ADDRESS_P1) && !(u8[char.ADDRESS_P1 + 0x20] == char.state.DIED || u8[char.ADDRESS_P1 + 0x20] == char.state.GOT_HURT)
 	{
+		if u32[0xffff0000 + u16[char.ADDRESS_P1]] == 0 && (objA1.position.x.u16 > objA0.position.x.u16 - 0x17) && (objA1.position.x.u16 < objA0.position.x.u16 + 0x17)
+		{
+			fbz.killvalue = (objA1.position.y.u16 - objA0.position.y.u16) == 0 ? fbz.killvalue : abs(objA1.position.y.u16 - objA0.position.y.u16)
+			fbz.killtimer = 2
+		}
+		
 		if (objA1.position.x.u16 < objA0.position.x.u16 - 0x17) || (objA1.position.x.u16 > objA0.position.x.u16 + 0x17) || (objA1.position.y.u16 > objA0.position.y.u16)
 		{
 			base.fn01dffe()
@@ -548,4 +564,53 @@ function void fn01dffe()
 	}
 	
 	base.fn01dffe()
+}
+
+//----------------------//
+// Adjust death objects //
+//----------------------//
+
+function void LevelObjectTableBuilder.addObject(u16 px, u16 py, u8 type, u8 subtype, u8 flags)
+{
+
+	if global.zone_act == 0x0400
+	{
+		if py == 0x031c && (px == 0x10c0 || px == 0x12c0)
+			py -= 1
+	}
+
+	base.LevelObjectTableBuilder.addObject(px, py, type, subtype, flags)
+}
+
+global s16 fbz.killvalue
+global s16 fbz.killtimer
+
+//# address-hook(0x01f6d0) end(0x01f732)
+function void fn01f6d0()
+{
+	if !fbz.magnet || global.zone != 0x04
+	{
+		base.fn01f6d0()
+		return
+	}
+	
+	D1 = objA0.box_size.x + 11
+	D2 = objA0.box_size.y + 2
+	D3.u16 = D2.u16 + 1
+	D4.u16 = objA0.position.x.u16
+	CheckCharacterOnClimbableObject()
+	
+	D6 = (D6 << 16) + (D6 >> 16)
+	if (objA0.flags2a & object.flag.P1_ON_OBJECT) && (fbz.killvalue > 5 && fbz.killvalue < 35)
+	{
+		A1 = 0xffffb000
+		BlockerElement.KillCharacter()
+	}
+	if (D6.u8 & 0x08)
+	{
+		A1 = 0xffffb04a
+		BlockerElement.KillCharacter()
+	}
+	
+	BlockerElement.checkForUnloadAndDebugRender(0xffffff80)
 }
