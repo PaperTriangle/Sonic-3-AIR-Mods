@@ -520,10 +520,10 @@ function void fn01dffe()
 
 	if (fbz.magnet > 0) && (A1 == char.ADDRESS_P1) && !(u8[char.ADDRESS_P1 + 0x20] == char.state.DIED || u8[char.ADDRESS_P1 + 0x20] == char.state.GOT_HURT)
 	{
-		if u32[0xffff0000 + u16[char.ADDRESS_P1]] == 0 && (objA1.position.x.u16 > objA0.position.x.u16 - 0x17) && (objA1.position.x.u16 < objA0.position.x.u16 + 0x17)
+		if u32[0xffff0000 + u16[char.ADDRESS_P1 + 0x42]] == 0x01f6d0 && (objA1.position.x.u16 > objA0.position.x.u16 - 0x18) && (objA1.position.x.u16 < objA0.position.x.u16 + 0x18)
 		{
-			fbz.killvalue = (objA1.position.y.u16 - objA0.position.y.u16) == 0 ? fbz.killvalue : abs(objA1.position.y.u16 - objA0.position.y.u16)
-			fbz.killtimer = 2
+			fbz.killvalue = abs(objA1.position.y.u16 - objA0.position.y.u16)
+			fbz.killtimer = 0x04
 		}
 		
 		if (objA1.position.x.u16 < objA0.position.x.u16 - 0x17) || (objA1.position.x.u16 > objA0.position.x.u16 + 0x17) || (objA1.position.y.u16 > objA0.position.y.u16)
@@ -578,6 +578,15 @@ function void LevelObjectTableBuilder.addObject(u16 px, u16 py, u8 type, u8 subt
 		if py == 0x031c && (px == 0x10c0 || px == 0x12c0)
 			py -= 1
 	}
+	else if global.zone_act == 0x0401
+	{
+		if py == 0x0b18 && (px == 0x27c0 || px == 0x2840)
+			py += 3
+		else if py == 0x0718 && (px == 0x1c40 || px == 0x1cc0)
+			py += 3
+		else if py == 0x0898 && (px == 0x1cc0 || px == 0x1d40)
+			py += 3
+	}
 
 	base.LevelObjectTableBuilder.addObject(px, py, type, subtype, flags)
 }
@@ -594,14 +603,22 @@ function void fn01f6d0()
 		return
 	}
 	
+	if (fbz.killvalue > 5 && fbz.killvalue < 30)
+		u16[char.ADDRESS_P1 + 0x14] -= 0x03
+
 	D1 = objA0.box_size.x + 11
 	D2 = objA0.box_size.y + 2
 	D3.u16 = D2.u16 + 1
 	D4.u16 = objA0.position.x.u16
 	CheckCharacterOnClimbableObject()
 	
+	System.writeDisplayLine(stringformat("value: %d, %06x",  fbz.killvalue, u32[0xffff0000 + u16[char.ADDRESS_P1 + 0x42]]))
+
+	if (fbz.killvalue > 5 && fbz.killvalue < 35)
+		u16[char.ADDRESS_P1 + 0x14] += 0x03
+
 	D6 = (D6 << 16) + (D6 >> 16)
-	if (objA0.flags2a & object.flag.P1_ON_OBJECT) && (fbz.killvalue > 5 && fbz.killvalue < 35)
+	if (objA0.flags2a & object.flag.P1_ON_OBJECT) && (fbz.killvalue > 0 && fbz.killvalue < 30)
 	{
 		A1 = 0xffffb000
 		BlockerElement.KillCharacter()
