@@ -1,4 +1,4 @@
-global bool fbz.magnet
+global u8 fbz.magnet
 global u8 fbz.magnet.attract
 
 define u32 char.ADDRESS_P1 = 0xffffb000
@@ -340,8 +340,8 @@ function void fn03b1fc()
 				{
 					if (u8[char.ADDRESS_P1 + 0x40] == 0 && fbz.magnet.attract == 1) || (fbz.magnet.attract > 1)
 					{
-						u8[char.ADDRESS_P1 + 0x1e] = char.hitbox.x.ROLLING
-						u8[char.ADDRESS_P1 + 0x1f] = char.hitbox.y.ROLLING
+						//u8[char.ADDRESS_P1 + 0x1e] = char.hitbox.x.ROLLING
+						//u8[char.ADDRESS_P1 + 0x1f] = char.hitbox.y.ROLLING
 						u8[char.ADDRESS_P1 + 0x20] = char.state.ROLLING
 						u8[char.ADDRESS_P1 + 0x2a] |= char.flag.ROLLING
 						if (u8[char.ADDRESS_P1 + 0x2a] & char.flag.IN_AIR) == 0
@@ -372,6 +372,8 @@ function void fn03b1fc()
 
 function void yieldExecution()
 {
+	base.yieldExecution()
+	
 	if (global.zone == 0x04)
 	{
 		if Mods.isModActive("FBZ's outside borders")
@@ -379,54 +381,59 @@ function void yieldExecution()
 		else
 			System.loadExternalRawData("fbz_chunks", 0x001974a2)
 	}
+}
+
+//# post-update-hook
+function void PostFrameUpdate()
+{
+	base.PostFrameUpdate()
 	
-	if (fbz.magnet > 0)
+	if !global.game.paused
 	{
-		if !(u8[char.ADDRESS_P1 + 0x20] == char.state.DIED || u8[char.ADDRESS_P1 + 0x20] == char.state.GOT_HURT)
+		if (fbz.magnet > 0)
 		{
-			fbz.magnet--
-			if (fbz.magnet == 0)
+			if !(u8[char.ADDRESS_P1 + 0x20] == char.state.DIED || u8[char.ADDRESS_P1 + 0x20] == char.state.GOT_HURT)
 			{
-				s16[char.ADDRESS_P1 + 0x1a] = -s16[char.ADDRESS_P1 + 0x1a]
-				
-				if (fbz.magnet.attract > 0)
+				fbz.magnet--
+				if (fbz.magnet == 0)
 				{
-					if (u8[char.ADDRESS_P1 + 0x40] == 0 && fbz.magnet.attract == 1) ||  (fbz.magnet.attract > 1)
+					s16[char.ADDRESS_P1 + 0x1a] = -s16[char.ADDRESS_P1 + 0x1a]
+					
+					if (fbz.magnet.attract > 0)
 					{
-						u8[char.ADDRESS_P1 + 0x1e] = char.hitbox.x.ROLLING
-						u8[char.ADDRESS_P1 + 0x1f] = char.hitbox.y.ROLLING
-						u8[char.ADDRESS_P1 + 0x20] = char.state.ROLLING
-						u8[char.ADDRESS_P1 + 0x2a] |= char.flag.ROLLING
-						if (u8[char.ADDRESS_P1 + 0x2a] & char.flag.IN_AIR) == 0
+						if (u8[char.ADDRESS_P1 + 0x40] == 0 && fbz.magnet.attract == 1) ||  (fbz.magnet.attract > 1)
 						{
-								u16[char.ADDRESS_P1 + 0x14] += 0x05
-								u8[char.ADDRESS_P1 + 0x2a] |= char.flag.IN_AIR
-						}
-							
-						if (fbz.magnet.attract > 1)
-						{
-							u8[char.ADDRESS_P1 + 0x40] = 0
-							u8[char.ADDRESS_P1 + 0x2f] = 0
+							//u8[char.ADDRESS_P1 + 0x1e] = char.hitbox.x.ROLLING
+							//u8[char.ADDRESS_P1 + 0x1f] = char.hitbox.y.ROLLING
+							u8[char.ADDRESS_P1 + 0x20] = char.state.ROLLING
+							u8[char.ADDRESS_P1 + 0x2a] |= char.flag.ROLLING
+							if (u8[char.ADDRESS_P1 + 0x2a] & char.flag.IN_AIR) == 0
+							{
+									u16[char.ADDRESS_P1 + 0x14] += 0x05
+									u8[char.ADDRESS_P1 + 0x2a] |= char.flag.IN_AIR
+							}
+								
+							if (fbz.magnet.attract > 1)
+							{
+								u8[char.ADDRESS_P1 + 0x40] = 0
+								u8[char.ADDRESS_P1 + 0x2f] = 0
+							}
 						}
 					}
 				}
 			}
+			else
+				fbz.magnet = 0
 		}
-		else
-			fbz.magnet = 0
-	}
 
-	if (fbz.killtimer > 0)
-	{
-		fbz.killtimer--
-		
-		if (fbz.killtimer == 0)
-			fbz.killvalue = 0
+		if (fbz.killtimer > 0)
+		{
+			fbz.killtimer--
+			
+			if (fbz.killtimer == 0)
+				fbz.killvalue = 0
+		}
 	}
-	
-
-	
-	base.yieldExecution()
 }
 
 //-------------------------------------//
@@ -540,8 +547,8 @@ function void fn01dffe()
 			{
 				if (u8[A1 + 0x40] == 0 && fbz.magnet.attract == 1) ||  (fbz.magnet.attract > 1)
 				{
-					u8[A1 + 0x1e] = char.hitbox.x.ROLLING
-					u8[A1 + 0x1f] = char.hitbox.y.ROLLING
+					//u8[A1 + 0x1e] = char.hitbox.x.ROLLING
+					//u8[A1 + 0x1f] = char.hitbox.y.ROLLING
 					u8[A1 + 0x20] = char.state.ROLLING
 					u8[A1 + 0x2a] |= char.flag.ROLLING
 					u16[A1 + 0x14] -= 0x05
