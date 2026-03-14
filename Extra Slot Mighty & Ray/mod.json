@@ -21,6 +21,18 @@
 					"0": "Disabled",
 					"1": "Enabled"
 				}
+			},
+			{
+				"InternalName": "esmr.fangmusic",
+				"DisplayName": "Fang Fight Music",
+				"Variable": "esmr.fangmusic",
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Default (TT 16-Bit)",
+					"1": "Louder (TT 16-Bit)",
+					"2": "Superstars"
+				}
 			}
 		]
 	}
