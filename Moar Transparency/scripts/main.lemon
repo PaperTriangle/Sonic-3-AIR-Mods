@@ -182,7 +182,6 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 
 				return true
 			}
-		}
 		
 		// Hyper Dash Stars
 		if (objA0.update_address == 0x019874 && mt.esustars)
@@ -195,6 +194,7 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 				return true
 			}
 		}
+	}
 	
 	if (Mods.isModActive("No Transparency"))
 		System.setGlobalVariableValueByName("renderTransparentPlz", false)
@@ -1044,6 +1044,13 @@ function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 in
 		if (objA0.update_address == 0x0188e8)
 		{
 			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 0xff - u8[A0 + 0x36] * 0x20)
+			return true
+		}
+
+		if (global.zone_act == 0x1701 && objA0.mapping_offset == 0x018aea)
+		{
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 208)
+		
 			return true
 		}
 	}
