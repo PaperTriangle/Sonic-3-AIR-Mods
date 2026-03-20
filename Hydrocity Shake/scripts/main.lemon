@@ -6,6 +6,9 @@ global bool hs.bubble_shrink
 //# address-hook(0x06b7bc) end(0x06b7ea)
 function void fn06b7bc()
 {
+	if (s16[0xffffb000 + 0x1a] != 0) || (u32[0xffffb04a] != 0 && s16[0xffffb04a + 0x1a] != 0)
+		return
+	
 	// Set balance animation and lock character.
 	if (!isMainCharacter(CHARACTER_KNUCKLES))
 	{
