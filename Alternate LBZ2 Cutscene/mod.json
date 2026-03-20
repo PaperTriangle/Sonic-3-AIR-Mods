@@ -241,7 +241,7 @@
 				"DisplayName": "LBZ2 to MHZ1 Extra Layers",
 				"Variable": "altlbz2cs.extratransition",
 				"Category": "Mod Compatibility",	
-				"DefaultValue": "1",
+				"DefaultValue": "0",
 				"Options":
 				{
 					"0": "Disabled",
