@@ -90,7 +90,7 @@ function void Character.updateJumpMoves()
 	{
 		if (fbz.magnet.attract == 2)
 		{
-			bool charCheck = global.xtrachar == 0 && (global.characters == CHARS_SONIC_AND_TAILS || global.characters == CHARS_SONIC_ALONE)			
+			bool charCheck = global.xtrachar == 0 && (global.characters == CHARS_SONIC_AND_TAILS || global.characters == CHARS_SONIC_ALONE)	&& (!(char.bonus_effect & char.bonus.INVINCIBLE) || (super.active == 0x01 && Game.getSetting(SETTING_SUPER_SONIC_ABILITY) == 1))
 		#if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
 			charCheck = isECFCharP1("") ? charCheck : 0
 		#endif
@@ -116,7 +116,7 @@ function void UpdateSonicJumpMoves()
 	{
 		if (fbz.magnet.attract == 2)
 		{
-			bool charCheck = global.xtrachar == 0 && (global.characters == CHARS_SONIC_AND_TAILS || global.characters == CHARS_SONIC_ALONE)			
+			bool charCheck = global.xtrachar == 0 && (global.characters == CHARS_SONIC_AND_TAILS || global.characters == CHARS_SONIC_ALONE)	&& (!(char.bonus_effect & char.bonus.INVINCIBLE) || (super.active == 0x01 && Game.getSetting(SETTING_SUPER_SONIC_ABILITY) == 1))
 		#if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
 			charCheck = isECFCharP1("") ? charCheck : 0
 		#endif
@@ -344,6 +344,8 @@ function void fn03b1fc()
 						//u8[char.ADDRESS_P1 + 0x1f] = char.hitbox.y.ROLLING
 						u8[char.ADDRESS_P1 + 0x20] = char.state.ROLLING
 						u8[char.ADDRESS_P1 + 0x2a] |= char.flag.ROLLING
+						u8[char.ADDRESS_P1 + 0x3d] = 0
+						u8[char.ADDRESS_P1 + 0x3e] = 0	
 						if (u8[char.ADDRESS_P1 + 0x2a] & char.flag.IN_AIR) == 0
 						{
 							u16[char.ADDRESS_P1 + 0x14] -= 0x05
@@ -407,6 +409,8 @@ function void PostFrameUpdate()
 							//u8[char.ADDRESS_P1 + 0x1f] = char.hitbox.y.ROLLING
 							u8[char.ADDRESS_P1 + 0x20] = char.state.ROLLING
 							u8[char.ADDRESS_P1 + 0x2a] |= char.flag.ROLLING
+							u8[char.ADDRESS_P1 + 0x3d] = 0
+							u8[char.ADDRESS_P1 + 0x3e] = 0	
 							if (u8[char.ADDRESS_P1 + 0x2a] & char.flag.IN_AIR) == 0
 							{
 									u16[char.ADDRESS_P1 + 0x14] += 0x05
@@ -553,6 +557,8 @@ function void fn01dffe()
 					//u8[A1 + 0x1f] = char.hitbox.y.ROLLING
 					u8[A1 + 0x20] = char.state.ROLLING
 					u8[A1 + 0x2a] |= char.flag.ROLLING
+					u8[A1 + 0x3d] = 0
+					u8[A1 + 0x3e] = 0	
 					u16[A1 + 0x14] -= 0x05
 				}
 						
