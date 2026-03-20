@@ -166,4 +166,29 @@
 	
 	"biimu_special":  { "File": "biimu_special.bmp", "Rect": "0,0,32,16", "Center": "0,-16" },
 	"master_emerald_cave": { "File": "master_emerald.bmp", "Rect": "0,0,64,48", "Center": "0,0"},
+	
+	"fireball_0": { "File": "fireball_0.bmp", "Rect": "0,0,24,11", "Center": "0,-2"},
+	"fireball_1": { "File": "fireball_1.bmp", "Rect": "0,0,31,28", "Center": "-1,-3"},
+	"fireball_2": { "File": "fireball_2.bmp", "Rect": "0,0,30,18", "Center": "-1,0"},
+	"fireball_3": { "File": "fireball_3.bmp", "Rect": "0,0,23,24", "Center": "0,0"},
+	
+	"ice_cloud_0": { "File": "ice_cloud_0.bmp", "Rect": "0,0,24,11", "Center": "0,-2"},
+	"ice_cloud_1": { "File": "ice_cloud_1.bmp", "Rect": "0,0,31,28", "Center": "-1,-3"},
+	"ice_cloud_2": { "File": "ice_cloud_2.bmp", "Rect": "0,0,16,15", "Center": "0,-1"},
+	
+	"dragonfly_wing": { "File": "dragonfly_wing.bmp", "Rect": "0,0,24,8", "Center": "0,0"},
+	"bug_wing_big": { "File": "bug_wing_big.bmp", "Rect": "0,0,16,11", "Center": "0,-5"},
+	"bug_wing_small": { "File": "bug_wing_small.bmp", "Rect": "0,0,11,8", "Center": "0,0"},
+	
+	"lrz_missile_smoke": { "File": "lrz_missile_smoke.bmp", "Rect": "0,0,16,11", "Center": "0,-4"},
+	"lrz_boss_smoke_0": { "File": "lrz_boss_smoke_0.bmp", "Rect": "0,0,32,20", "Center": "0,0"},
+	"lrz_boss_smoke_1": { "File": "lrz_boss_smoke_1.bmp", "Rect": "0,0,16,11", "Center": "0,-4"},
+	
+	"ddz_smoke": { "File": "ddz_smoke.bmp", "Rect": "0,0,15,15", "Center": "-1,-1"},
+
+	"hpz_dust_0": { "File": "hpz_dust_0.bmp", "Rect": "0,0,22,21", "Center": "-2,0"},
+	"hpz_dust_1": { "File": "hpz_dust_1.bmp", "Rect": "0,0,15,14", "Center": "-1,-1"},
+	
+	"cloud_large": { "File": "cloud_large.bmp"},
+	"cloud_small": { "File": "cloud_small.bmp"},
 }

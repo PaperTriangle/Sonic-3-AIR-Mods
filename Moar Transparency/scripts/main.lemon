@@ -7,10 +7,11 @@ global bool mt.stars
 
 global bool mt.watersurface
 global bool mt.snowfall
-global bool mt.clouds
+global u8 mt.clouds
 
 global bool mt.flames
-global bool mt.dust
+global u8 mt.flameplumes
+global u8 mt.dust
 global bool mt.electricity
 global bool mt.bubbles
 
@@ -18,15 +19,18 @@ global bool mt.lasers
 global bool mt.energyballs
 global bool mt.lighttunnel
 global bool mt.fbzlaser
-global bool mt.icz2boss
+global u8 mt.icz2boss
 global bool mt.lrz2boss
+global u8 mt.lrz2boss_smoke
 global bool mt.sszs2laser
 global bool mt.dez1laser
 global bool mt.dez2laser
+global bool mt.dez2fire
+global u8 mt.ddzsmoke
 global bool mt.supermecha
 
-global bool mt.bugernaught
-global bool mt.dragonfly
+global u8 mt.bugernaught
+global u8 mt.dragonfly
 global bool mt.ghosts
 global bool mt.toxomister
 
@@ -230,7 +234,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		System.setGlobalVariableValueByName("renderTransparentPlz", true)
 
 	// Dithered Plume Effects
-	if (mt.flames)
+	if (mt.flameplumes)
 	{
 		// Explosions from AIZ2 Green Bomber Bombs
 		if (objA0.mapping_offset == 0x23c1b2)
@@ -241,18 +245,39 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 			}
 			else if (objA0.animation.frame == 0x05)
 			{
-				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 160)
-				if (index != 0x0577)
-					Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 160)
+				if (index == 0x0577)
+					Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 160)
+				else if (index != 0x0577)
+				{	
+					if (mt.flameplumes == 2)
+					{
+						bool prioFlag = (objA0.sprite_attributes & sprite_attribute.PRIORITY) != 0
+						Renderer.drawSprite("fireball_2", px, py, 0x00, (prioFlag ? SPRITE_FLAG_PRIO : 0), renderQueue, 0, 160)
+						return true
+					}
+					else
+					{
+						Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 160)
+						Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 160)
+					}
+				}
 			}
 			else if (objA0.animation.frame == 0x06)
 			{
-				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 144)
-				Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 144)
+				if (mt.flameplumes == 2)
+				{
+					bool prioFlag = (objA0.sprite_attributes & sprite_attribute.PRIORITY) != 0
+					Renderer.drawSprite("fireball_0", px, py, 0x00, (prioFlag ? SPRITE_FLAG_PRIO : 0), renderQueue, 0, 144)
+				}
+				else
+				{
+					Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 144)
+					Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 144)
+				}
 			}
 			else
 			{
-				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 255)
+				return false
 			}
 			return true
 		}
@@ -262,9 +287,16 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		{
 			if (objA0.animation.sprite == 0x04)
 			{
-				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 144)
-				Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 144)
-				
+				if (mt.flameplumes == 2)
+				{
+					bool prioFlag = (objA0.sprite_attributes & sprite_attribute.PRIORITY) != 0
+					Renderer.drawSprite("fireball_1", (objA0.render_flags & SPRITE_FLAG_FLIP_X) ? px + 32 : px, py, 0x00, (objA0.render_flags & (SPRITE_FLAG_FLIP_X | SPRITE_FLAG_FLIP_Y)) | (prioFlag ? SPRITE_FLAG_PRIO : 0), renderQueue, 0, 144)
+				}
+				else
+				{
+					Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 144)
+					Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 144)
+				}
 				return true
 			}
 		}
@@ -278,13 +310,53 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 			}
 			else if (objA0.animation.sprite == 0x05)
 			{
-				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 144)
-				Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 144)
+				if (mt.flameplumes == 2)
+				{
+					bool prioFlag = (objA0.sprite_attributes & sprite_attribute.PRIORITY) != 0
+					Renderer.drawSprite("fireball_0", px, py, 0x00, (prioFlag ? SPRITE_FLAG_PRIO : 0), renderQueue, 0, 144)
+				}
+				else
+				{
+					Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 144)
+					Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 144)
+				}
+				return true
+			}
+		}
+	}
+	
+	if (mt.dez2fire)
+	{
+		// DEZ2 Huge Eggman Robot Flame Thrower
+		if (objA0.mapping_offset == 0x187888)
+		{
+			if (objA0.animation.sprite == 0x12)
+			{
+				if (mt.dez2fire == 2)
+				{
+					bool prioFlag = (objA0.sprite_attributes & sprite_attribute.PRIORITY) != 0
+					Renderer.drawSprite("fireball_3", px, py, 0x10, (prioFlag ? SPRITE_FLAG_PRIO : 0), renderQueue, 0, 160)
+				}
+				else
+				{
+					Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 160)
+					Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 160)
+				}
+				
+				return true
+			}
+			else if (objA0.animation.sprite == 0x11 || objA0.animation.sprite == 0x0b)
+			{
+				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 128)
 				
 				return true
 			}
 		}
-				
+	}
+	
+	// Regular Fire
+	if (mt.flames)
+	{
 		// AIZ2 Boss Fire Ball Trails
 		if (objA0.update_address == 0x06998a)
 		{
@@ -316,33 +388,49 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 			
 			return true
 		}
-
-		// DEZ2 Huge Eggman Robot Flame Thrower
-		if (objA0.mapping_offset == 0x187888)
+	}
+	
+	// Dust (Only for HPZ)
+	if (mt.dust)
+	{
+		// HPZ Dust
+		if (global.zone == 0x16 && (objA0.update_address == 0x01abb6 || objA0.update_address == 0x06520a))
 		{
-			if (objA0.animation.sprite == 0x12)
+			if (objA0.animation.sprite == 0x16 || objA0.animation.sprite == 0x17) && (index == 0x8465 || index == 0x846e)
 			{
-				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 160)
-				Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 160)
-				
-				return true
+				if (mt.dust == 2)
+				{
+					bool prioFlag = (objA0.sprite_attributes & sprite_attribute.PRIORITY) != 0
+					if (index == 0x8465)
+						Renderer.drawSprite("hpz_dust_0", px, py, 0x10, (prioFlag ? SPRITE_FLAG_PRIO : 0), renderQueue, 0, 144)
+					else if (index == 0x846e)
+						Renderer.drawSprite("hpz_dust_1", px, py, 0x10, (prioFlag ? SPRITE_FLAG_PRIO : 0), renderQueue, 0, 128)
+				}
+				else
+				{
+					Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 160)
+					Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 160)
+				}
 			}
-			else if (objA0.animation.sprite == 0x11 || objA0.animation.sprite == 0x0b)
-			{
-				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 144)
-				
-				return true
-			}
+			return true
 		}
 	}
 	
-	if (mt.dust)
+	if (mt.lrz2boss_smoke)
 	{
 		// LRZ Boss Missile
 		if (global.zone_act == 0x1600 && (objA0.update_address == 0x0793c6 || objA0.update_address == 0x01abb6) && index == 0x2472)
 		{
-			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 144)
-			Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 144)
+			if (mt.lrz2boss_smoke == 2)
+			{
+				bool prioFlag = (objA0.sprite_attributes & sprite_attribute.PRIORITY) != 0
+				Renderer.drawSprite("lrz_missile_smoke", px, py, 0x10, (prioFlag ? SPRITE_FLAG_PRIO : 0), renderQueue, 0, 144)
+			}
+			else
+			{
+				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 144)
+				Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 144)
+			}
 			
 			return true
 		}
@@ -356,9 +444,19 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		// LRZ Boss Shots
 		if (global.zone_act == 0x1600 && (objA0.update_address == 0x079b96 || objA0.update_address == 0x01abb6 || objA0.update_address == 0x079bca) && (index == 0x245a || index == 0x2473))
 		{
-			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 144)
-			Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 144)
-			
+			if (mt.lrz2boss_smoke == 2)
+			{
+				bool prioFlag = (objA0.sprite_attributes & sprite_attribute.PRIORITY) != 0
+				if (index == 0x245a)
+					Renderer.drawSprite("lrz_boss_smoke_0", px, py, 0x10, (prioFlag ? SPRITE_FLAG_PRIO : 0), renderQueue, 0, 144)
+				else if (index == 0x2473)
+					Renderer.drawSprite("lrz_boss_smoke_1", px, py, 0x10, (prioFlag ? SPRITE_FLAG_PRIO : 0), renderQueue, 0, 144)
+			}
+			else
+			{
+				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 144)
+				Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 144)
+			}
 			return true
 		}
 		else if (global.zone_act == 0x1600 && (objA0.update_address == 0x079bca && index == 0x246f))
@@ -367,30 +465,31 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 			
 			return true
 		}
-		
-		// HPZ Dust
-		if (global.zone == 0x16 && (objA0.update_address == 0x01abb6 || objA0.update_address == 0x06520a))
-		{
-			if (objA0.animation.sprite == 0x16 || objA0.animation.sprite == 0x17)
-			{
-				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 160)
-				Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 160)
-				return true
-			}
-		}
-		
+	}
+	
+	if (mt.ddzsmoke)
+	{
 		// DDZ Missile Smoke
 		if (global.zone == 0x0c && (objA0.update_address == 0x0821c2 || objA0.update_address == 0x01abb6))
 		{
 			if (index == 0xc42f || index == 0x442f)
 			{
-				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 144)
-				Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 144)
+				if (mt.ddzsmoke == 2)
+				{
+					bool prioFlag = (objA0.sprite_attributes & sprite_attribute.PRIORITY) != 0
+
+					Renderer.drawSprite("ddz_smoke", px, py, 0x20, (prioFlag ? SPRITE_FLAG_PRIO : 0), renderQueue, 0, 144)
+				}
+				else
+				{
+					Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 144)
+					Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 144)
+				}
 				return true
 			}
 			else if (index == 0xc433 || index == 0x4433)
 			{
-				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 192)
+				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 128)
 				return true
 			}
 		}
@@ -402,9 +501,22 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 	{
 		if (objA0.animation.sprite == 0x0f || objA0.animation.sprite == 0x0a || objA0.animation.sprite == 0x15)
 		{
-			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 144)
-			Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 144)
-			
+			if (mt.icz2boss == 2)
+			{
+				bool prioFlag = (objA0.sprite_attributes & sprite_attribute.PRIORITY) != 0
+						
+				if (objA0.animation.sprite == 0x0a)
+					Renderer.drawSprite("ice_cloud_0", px, py, 0x10, (prioFlag ? SPRITE_FLAG_PRIO : 0), renderQueue, 0, 144)
+				else if (objA0.animation.sprite == 0x0f)
+					Renderer.drawSprite("ice_cloud_1", (objA0.render_flags & SPRITE_FLAG_FLIP_X) ? px + 32 : px, py, 0x10, (objA0.render_flags & (SPRITE_FLAG_FLIP_X)) | (prioFlag ? SPRITE_FLAG_PRIO : 0), renderQueue, 0, 144)
+				else if (objA0.animation.sprite == 0x15)
+					Renderer.drawSprite("ice_cloud_2", (objA0.render_flags & SPRITE_FLAG_FLIP_X) ? px + 16 : px, py, 0x10, (objA0.render_flags & (SPRITE_FLAG_FLIP_X)) | (prioFlag ? SPRITE_FLAG_PRIO : 0), renderQueue, 0, 160)
+			}
+			else			
+			{
+				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 144)
+				Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 144)
+			}
 			return true
 		}
 		else if (objA0.animation.sprite == 0x09)
@@ -819,24 +931,123 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 	{
 		if (objA0.update_address == 0x087a2a && (index == 0xac52 || index == 0xa452 || index == 0xb452 || index == 0xbc52))
 		{
-			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 128)
-			Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 128)
+			if (mt.bugernaught == 2)
+			{
+				bool newFlag = (objA0.sprite_attributes & sprite_attribute.PRIORITY) != 0 ? SPRITE_FLAG_PRIO : 0
+				
+				newFlag |= (objA0.render_flags & SPRITE_FLAG_FLIP_X)
+				
+				if newFlag & SPRITE_FLAG_FLIP_X && (index == 0xa452)
+				{
+					newFlag &= ~SPRITE_FLAG_FLIP_X
+				}
+				else if (index == 0xac52)
+				{
+					if !(newFlag & SPRITE_FLAG_FLIP_X)
+						newFlag |= SPRITE_FLAG_FLIP_X
+					px += 0x10
+				}
+				if newFlag & SPRITE_FLAG_FLIP_X && (index == 0xbc52)
+				{
+					newFlag |= SPRITE_FLAG_FLIP_Y
+					px += 0x10
+					py += 0x10
+				}
+				if !(newFlag & SPRITE_FLAG_FLIP_X) && (index == 0xb452)
+				{
+					newFlag |= SPRITE_FLAG_FLIP_Y
+					py += 0x10
+				}
+				
+				Renderer.drawSprite("bug_wing_big", px, py, 0x10, newFlag, renderQueue, 0, 144)
+			}
+			else
+			{
+				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 128)
+				Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 128)
+			}
+			
 			return true
 		}
 		else if (objA0.update_address == 0x087abc && (index == 0xa45a || index == 0xac5a || index == 0xb45a || index == 0xbc5a))
 		{
-			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 128)
-			Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 128)
+			if (mt.bugernaught == 2)
+			{
+				bool newFlag = (objA0.sprite_attributes & sprite_attribute.PRIORITY) != 0 ? SPRITE_FLAG_PRIO : 0
+				
+				newFlag |= (objA0.render_flags & SPRITE_FLAG_FLIP_X)
+				
+				if (index == 0xac5a)
+				{
+					if !(newFlag & SPRITE_FLAG_FLIP_X)
+						newFlag |= SPRITE_FLAG_FLIP_X
+					px += 0x0b
+				}
+				else if (index == 0xa45a)
+				{
+					if newFlag & SPRITE_FLAG_FLIP_X 
+						newFlag &= !SPRITE_FLAG_FLIP_X
+					px += 0x05
+				}
+				else if (index == 0xbc5a)
+				{
+					newFlag |= SPRITE_FLAG_FLIP_Y
+					if !(newFlag & SPRITE_FLAG_FLIP_X) 
+						newFlag |= SPRITE_FLAG_FLIP_X
+					px += 0x0b
+					py += 0x08
+				}				
+				else if (index == 0xb45a)
+				{
+					newFlag |= SPRITE_FLAG_FLIP_Y
+					if newFlag & SPRITE_FLAG_FLIP_X
+						newFlag &= ~SPRITE_FLAG_FLIP_X
+					px += 0x05
+					py += 0x08
+				}
+				
+				Renderer.drawSprite("bug_wing_small", px, py, 0x10, newFlag, renderQueue, 0, 144)
+			}
+			else
+			{
+				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 128)
+				Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 128)
+			}
+			
 			return true
 		}
+		
+		//return true
 	}
 	
 	// MHZ Dragonfly
 	// Dragonfly wing rendering code adapted from Raine's A.I.R. Freshener branch of Sonic 3 A.I.R. - Credit goes to Useott to Raine
 	if (mt.dragonfly && objA0.update_address == 0x08df52)
 	{
-		Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 128)
-		Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 128)
+		if (mt.dragonfly == 2)
+		{
+			bool newFlag = (objA0.sprite_attributes & sprite_attribute.PRIORITY) != 0 ? SPRITE_FLAG_PRIO : 0
+			
+			if (index == 0xa542 || index == 0xb542)
+			{
+				newFlag |= SPRITE_FLAG_FLIP_X
+				px += 0x18
+			}
+			if (index == 0xb542 || index == 0xbd42)
+			{
+				newFlag |= SPRITE_FLAG_FLIP_Y
+				py += 0x08
+			}
+			
+			Renderer.drawSprite("dragonfly_wing", px, py, 0x10, newFlag, renderQueue, 0, 144)
+		}
+		else
+		{
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 144)
+			Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 144)
+		}
+		
+		
 		return true
 	}
 	
@@ -1094,14 +1305,35 @@ function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 in
 		// SSZ clouds effect
 		if (objA0.update_address == 0x057bf6)
 		{
-			Renderer.drawVdpSpriteWithAlpha(px,   py, size, index, 0xd000, 160)
-			Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, 0xd000, 160)
-
-			if (getScreenWidth() > 400)
+			if (mt.clouds == 2)
 			{
-				// Draw an additional copy of the cloud one loop further to the right
-				Renderer.drawVdpSpriteWithAlpha(px+512, py, size, index, 0xd000, 160)
-				Renderer.drawVdpSpriteWithAlpha(px+513, py, size, index, 0xd000, 160)
+				bool prioFlag = (objA0.sprite_attributes & sprite_attribute.PRIORITY) != 0
+				if (index == 0xe310)
+				{
+					Renderer.drawSprite("cloud_large", px, py, 0x30, (prioFlag ? SPRITE_FLAG_PRIO : 0), renderQueue, 0, 160)
+					
+					if (getScreenWidth() > 400)
+						Renderer.drawSprite("cloud_large", px+512, py, 0x30, (prioFlag ? SPRITE_FLAG_PRIO : 0), renderQueue, 0, 160)
+				}
+				else if (index == 0xe330)
+				{
+					Renderer.drawSprite("cloud_small", px, py, 0x30, (prioFlag ? SPRITE_FLAG_PRIO : 0), renderQueue, 0, 160)
+					
+					if (getScreenWidth() > 400)
+						Renderer.drawSprite("cloud_small", px+512, py, 0x30, (prioFlag ? SPRITE_FLAG_PRIO : 0), renderQueue, 0, 160)
+				}
+			}
+			else
+			{
+				Renderer.drawVdpSpriteWithAlpha(px,   py, size, index, 0xd000, 160)
+				Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, 0xd000, 160)
+
+				if (getScreenWidth() > 400)
+				{
+					// Draw an additional copy of the cloud one loop further to the right
+					Renderer.drawVdpSpriteWithAlpha(px+512, py, size, index, 0xd000, 160)
+					Renderer.drawVdpSpriteWithAlpha(px+513, py, size, index, 0xd000, 160)
+				}
 			}
 			return true
 		}
@@ -1590,7 +1822,7 @@ function void Bugernaut.BaseUpdate()
 		base.Bugernaut.BaseUpdate()
 		return
 	}
-	
+
 	// Targets:
 	//  - 0x087a42	-> objA0.base_state = 0x00
 	//  - 0x087a74	-> objA0.base_state = 0x02

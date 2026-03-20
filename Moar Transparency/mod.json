@@ -5,7 +5,7 @@
 		"UniqueID": "moar-transparency",
 		"Author": "PaperTriangle",
 		"Description": "Adds varying levels of transparency to more objects! Credit to Useott and Raine for some code that was adapted from A.I.R. Freshener.",
-		"ModVersion": "1.7-h2"
+		"ModVersion": "1.9"
 	},
 	"OtherMods": {
 		"time-consistent-adventure":
@@ -101,11 +101,12 @@
 				"DisplayName": "HCZ Bugernaught",
 				"Variable": "mt.bugernaught",
 				"Category": "Badniks",	
-				"DefaultValue": "1",
+				"DefaultValue": "2",
 				"Options":
 				{
 					"0": "Disabled",
-					"1": "Enabled"
+					"1": "Enabled (Dither Duplicate)",
+					"2": "Enabled (Custom Graphic)"
 				}
 			},
 			{
@@ -113,11 +114,12 @@
 				"DisplayName": "MHZ Dragonfly",
 				"Variable": "mt.dragonfly",
 				"Category": "Badniks",	
-				"DefaultValue": "1",
+				"DefaultValue": "2",
 				"Options":
 				{
 					"0": "Disabled",
-					"1": "Enabled"
+					"1": "Enabled (Dither Duplicate)",
+					"2": "Enabled (Custom Graphic)"
 				}
 			},
 			{
@@ -145,6 +147,19 @@
 				}
 			},
 			{
+				"InternalName": "mt.flameplumes",
+				"DisplayName": "Flame Plumes",
+				"Variable": "mt.flameplumes",
+				"Category": "Effects",	
+				"DefaultValue": "2",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled (Dither Duplicate)",
+					"2": "Enabled (Custom Graphic)"
+				}
+			},
+			{
 				"InternalName": "mt.flames",
 				"DisplayName": "Flames",
 				"Variable": "mt.flames",
@@ -158,14 +173,15 @@
 			},
 			{
 				"InternalName": "mt.dust",
-				"DisplayName": "Dust / Smoke",
+				"DisplayName": "Dust",
 				"Variable": "mt.dust",
 				"Category": "Effects",	
-				"DefaultValue": "1",
+				"DefaultValue": "2",
 				"Options":
 				{
 					"0": "Disabled",
-					"1": "Enabled"
+					"1": "Enabled (Dither Duplicate)",
+					"2": "Enabled (Custom Graphic)"
 				}
 			},
 			{
@@ -221,11 +237,12 @@
 				"DisplayName": "Foreground Clouds",
 				"Variable": "mt.clouds",
 				"Category": "Effects",	
-				"DefaultValue": "1",
+				"DefaultValue": "2",
 				"Options":
 				{
 					"0": "Disabled",
-					"1": "Enabled"
+					"1": "Enabled (Dither Duplicate)",
+					"2": "Enabled (Custom Graphic)"
 				}
 			},
 			{
@@ -305,23 +322,12 @@
 				"DisplayName": "ICZ2 Freezer Mobile",
 				"Variable": "mt.icz2boss",
 				"Category": "Boss Effects",	
-				"DefaultValue": "1",
+				"DefaultValue": "2",
 				"Options":
 				{
 					"0": "Disabled",
-					"1": "Enabled"
-				}
-			},
-			{
-				"InternalName": "mt.icz2boss",
-				"DisplayName": "ICZ2 Freezer Mobile",
-				"Variable": "mt.icz2boss",
-				"Category": "Boss Effects",	
-				"DefaultValue": "1",
-				"Options":
-				{
-					"0": "Disabled",
-					"1": "Enabled"
+					"1": "Enabled (Dither Duplicate)",
+					"2": "Enabled (Custom Graphic)"
 				}
 			},
 			{
@@ -334,6 +340,19 @@
 				{
 					"0": "Disabled",
 					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "mt.lrz2boss_smoke",
+				"DisplayName": "LRZ2 Hot Mobile (Smoke)",
+				"Variable": "mt.lrz2boss_smoke",
+				"Category": "Boss Effects",	
+				"DefaultValue": "2",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled (Dither Duplicate)",
+					"2": "Enabled (Custom Graphic)"
 				}
 			},
 			{
@@ -374,7 +393,7 @@
 			},
 			{
 				"InternalName": "mt.dez2laser",
-				"DisplayName": "Boss DEZ2 Huge Eggman Robo",
+				"DisplayName": "DEZ Huge Eggman Robo (Beam)",
 				"Variable": "mt.dez2laser",
 				"Category": "Boss Effects",	
 				"DefaultValue": "1",
@@ -382,6 +401,32 @@
 				{
 					"0": "Disabled",
 					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "mt.dez2fire",
+				"DisplayName": "DEZ Huge Eggman Robo (Fire)",
+				"Variable": "mt.dez2fire",
+				"Category": "Boss Effects",	
+				"DefaultValue": "2",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled (Dither Duplicate)",
+					"2": "Enabled (Custom Graphic)"
+				}
+			},
+			{
+				"InternalName": "mt.ddzsmoke",
+				"DisplayName": "DDZ Missile Smoke",
+				"Variable": "mt.ddzsmoke",
+				"Category": "Boss Effects",	
+				"DefaultValue": "2",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled (Dither Duplicate)",
+					"2": "Enabled (Custom Graphic)"
 				}
 			},
 			{
