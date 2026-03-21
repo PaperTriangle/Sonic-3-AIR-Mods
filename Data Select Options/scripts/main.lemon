@@ -8,9 +8,11 @@ global bool lsds.amyicon
 global bool lsds.esureorder
 
 global u16 oldposy = 0
+global bool inDataSelect
 
 function void DataSelect.setup()
 {
+	inDataSelect = true
 	base.DataSelect.setup()
 	
 	if (lsds.leftshift)
@@ -19,7 +21,24 @@ function void DataSelect.setup()
 		u16[0xffffe002] -= getScreenExtend()
 		u16[0xffffb000 + 0x14] += 0x05
 	}
+	
+	if Mods.isModActive("Origins Screen Resolution")
+		u16[0xffffb000 + 0x14] += 0x06
 
+}
+
+//# address-hook(0x003be4) end(0x003c02)
+function void FadeOutScreenBlocking()
+{
+	base.FadeOutScreenBlocking()
+	inDataSelect = false
+}
+
+function void EntryFunctions.dataSelect()
+{
+	if Mods.isModActive("Origins Screen Resolution")
+		Renderer.setScreenSize(System.getGlobalVariableValueByName("screen_width"), 240)
+	base.EntryFunctions.dataSelect()
 }
 
 //# address-hook(0x00d1b6) end(0x00d1f4)
@@ -298,28 +317,60 @@ function void fn00d6d0()
 
 }
 
+#if STANDALONE
+function void DataSelect.drawCustomPlanes()
+{
+	if Mods.isModActive("Origins Screen Resolution")
+	{
+		// Draw our own widescreen version of the background
+		// TODO: The actual background still gets rendered, though it's not visible at all
+		//  -> Maybe the plane W is used here?
+		Renderer.drawCustomSprite("wide_bg_dataselect", getScreenExtend() - 96, 0, 0x00, 0, 0x2000)
+
+		// Custom rendering of plane B (which is not the background here) to ignore the wrapping
+		s16 px = s16(camera.foreground.x.u16)
+		if (px < 0)
+		{
+			Renderer.enableDefaultPlane(2, false)
+			Renderer.setupPlane(-px, 0, getScreenWidth() + px, getScreenHeight(), 0x10, 0, 0x3000)
+		}
+		else if (px > 0x400 - getScreenWidth())
+		{
+			Renderer.enableDefaultPlane(2, false)
+			Renderer.setupPlane(0, 0, 0x400 - px, getScreenHeight(), 0x10, 0, 0x3000)
+		}
+		return
+	}
+	
+	base.DataSelect.drawCustomPlanes()
+}
+#endif
+
 function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 {
 	u8 gameMode = global.game_mode & 0x7f
 
-	if (gameMode == 0x4c || gameMode == 0x0c || gameMode == 0x04)
+	if (inDataSelect)
 	{
-		if (lsds.alphashadow && (objA0.mapping_offset == 0x00ce0e || objA0.mapping_offset == 0x20bd68))
+		if Mods.isModActive("Origins Screen Resolution")
+			py += 8
+		
+		if ((objA0.mapping_offset == 0x00ce0e || objA0.mapping_offset == 0x20bd68))
 		{
 			if (objA0.update_address == 0x00d42c)
 			{
 				Renderer.drawCustomSprite("large_border_frame", px, (lsds.nodetail) ? py - 0x10 : py, 0x00, 0, renderQueue - 100)
-				Renderer.drawCustomSprite("large_border_shadow", px, (lsds.nodetail) ? py - 0x10 : py, 0x00, 0, renderQueue - 100, 0, 0x80)
+				Renderer.drawCustomSprite(lsds.alphashadow ? "large_border_shadow" : "large_regular_border_shadow" , px, (lsds.nodetail) ? py - 0x10 : py, 0x00, 0, renderQueue - 100, 0, lsds.alphashadow ? 0x80 : 0xff)
 			}
 			else if (objA0.update_address == 0x00d30c)
 			{
 				Renderer.drawCustomSprite("small_border_frame", px, py, 0x00, 0, renderQueue - 100)
-				Renderer.drawCustomSprite("small_border_shadow", px, py, 0x00, 0, renderQueue - 100, 0, 0x80)
+				Renderer.drawCustomSprite(lsds.alphashadow ? "small_border_shadow" : "small_regular_border_shadow", px, py, 0x00, 0, renderQueue - 100, 0, lsds.alphashadow ? 0x80 : 0xff)
 			}
 			else if (objA0.update_address == 0x00d782)
 			{
 				Renderer.drawCustomSprite("small_border_frame", 0x3c8 - camera.foreground.x.u16, py - 16, 0x00, 0, renderQueue - 100)
-				Renderer.drawCustomSprite("small_border_shadow", 0x3c8 - camera.foreground.x.u16, py - 16, 0x00, 0, renderQueue - 100, 0, 0x80)
+				Renderer.drawCustomSprite(lsds.alphashadow ? "small_border_shadow" : "small_regular_border_shadow", 0x3c8 - camera.foreground.x.u16, py - 16, 0x00, 0, renderQueue - 100, 0, lsds.alphashadow ? 0x80 : 0xff)
 			}
 		}
 		
@@ -390,14 +441,42 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 	return base.Standalone.onWriteToSpriteTable(px, py, renderQueue)
 }
 
+function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16 renderQueue)
+{
+	u8 gameMode = global.game_mode & 0x7f
+
+	if (inDataSelect) && Mods.isModActive("Origins Screen Resolution")
+	{
+		Renderer.drawVdpSprite(px, py + 0x08, size, index, renderQueue)
+		return true
+	}
+	
+	return base.Standalone.onDrawVdpSprite(px, py, size, index, renderQueue)
+}
+
 function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 index, u16 renderQueue, u8 spriteCounter)
 {
+	u8 gameMode = global.game_mode & 0x7f
+
+	if (inDataSelect)
+	{
 		// New Save Slot Arrows
 		if (lsds.nodetail && objA0.update_address == 0x00d42c && (index == 0x93bd || index == 0x83bd) && u8[A0 + 0x38] == 0)
 		{
-			Renderer.drawVdpSprite(px, py + 0x10, size, index, renderQueue)
+			Renderer.drawVdpSprite(px, py + (Mods.isModActive("Origins Screen Resolution") ? 0x18 : 0x10), size, index, renderQueue)
 			return true
 		}
+		
+		if Mods.isModActive("Origins Screen Resolution")
+		{
+			if Mods.isModActive("Time Consistent Adventure") && (objA0.update_address == 0x00d42c && (index == 0x93bd || index == 0x83bd))
+				return base.Standalone.onDrawVdpSpriteCompound(px, py + 0x08, size, index, renderQueue, spriteCounter)
+				
+			if index != 0xab0b
+				Renderer.drawVdpSprite(px, py + 0x08, size, index, renderQueue)
+			return true
+		}
+	}
 
 	return base.Standalone.onDrawVdpSpriteCompound(px, py, size, index, renderQueue, spriteCounter)
 }
@@ -410,19 +489,20 @@ function void ExtraChar.DataSelect.drawCharacterSprite(s16 px, s16 py, u16 rende
 //# address-hook(0x001506) end(0x00da1c)
 function void fn001506()
 {
-	if (lsds.alphashadow && ((D0.u16 == D7.u16 - 2) && (A2 != 0x200000 + u32[0x3a216a + D0.s16])))
+	if ((D0.u16 == D7.u16 - 2) && (A2 != 0x200000 + u32[0x3a216a + D0.s16]))
 		return
 
-	if (lsds.alphashadow && (A1.u16 == 0x00 || A1.u16 == 0x104 || A1.u16 == 0x222))
+	if (A1.u16 == 0x00 || A1.u16 == 0x104 || A1.u16 == 0x222)
 		return
-
+	
 	base.fn001506()
 }
 
 //# address-hook(0x00d9f4) end(0x00da1c)
 function void fn00d9f4()
 {
-	if (lsds.alphashadow && A1 == 0x00db36)
+
+	if (A1 == 0x00db36)
 	{
 		D0 -= 1
 		// Render empty tiles
@@ -436,7 +516,7 @@ function void fn00d9f4()
 		
 		return
 	}
-	else if (lsds.alphashadow && A1 == 0x00db2b)
+	else if (A1 == 0x00db2b)
 	{
 		// Render empty tiles
 		A1 = 0x00db2b
@@ -449,6 +529,9 @@ function void fn00d9f4()
 		return
 	}
 
+	if Mods.isModActive("Origins Screen Resolution") && (A1 != 0x00db31)
+		D0.u16 += 0x100
+
 	base.fn00d9f4()
 }
 
@@ -458,7 +541,78 @@ function void fn00c97a()
 	if (lsds.nodetail)
 		return
 	
-	base.fn00c97a()
+	if Mods.isModActive("Origins Screen Resolution")
+	{
+		A2 = 0x00da8a
+		A3 = 0xffffb128
+		D7.u16 = 0xd220 + 0x100
+		A0 = 0xffffe6ac
+		for (u8 slot = 0; slot < 8; ++slot)
+		{
+			bool saveGameSlotUsed = (u8[A0] & 0x80) == 0
+			u16 characters = u16[A3 + 0x34]
+			if (!saveGameSlotUsed)
+			{
+				characters = CHARS_SONIC_AND_TAILS
+			}
+			else if (characters == CHARS_SONIC_AND_TAILS)	// Handle Sonic & Tails - show Sonic's icons
+			{
+				characters = CHARS_SONIC_ALONE
+			}
+		#if STANDALONE
+			else
+			{
+				characters = min(characters, 3)		// Handle Knuckles & Tails - show Knuckles' icons
+			}
+		#endif
+
+			// Draw icons for lives & continues
+			if (!(u8[A3 + 0x05] > 0x00 && Renderer.hasCustomSprite(stringformat("dataSel_lifeContinue_slot%d", u8[A3 + 0x05]))))
+			{
+				A1 = A2 + characters * 32
+				D0 = VDPHelper.getDirectVRAMWriteCode(D7.u16)
+				D1 = 2
+				D2 = 4
+				fn001506()
+			}
+			
+			// Draw lives & continues numbers
+			if (!saveGameSlotUsed)
+			{
+				A1 = 0x00db08
+				D0 = VDPHelper.getDirectVRAMWriteCode(D7.u16 + 6)
+				D1 = 1
+				D2 = 4
+				fn001506()
+			}
+			else
+			{
+				// Render lives digits
+				D0.u8 = u8[A3 + 0x3e]	// Get lives data from save file
+				fn00ca14()
+
+				D0 = VDPHelper.getDirectVRAMWriteCode(D7.u16 + 6)
+				D1 = 1
+				D2 = 1
+				fn001506()
+
+				// Render continues digits
+				D0.u8 = u8[A3 + 0x3f]	// Get continues data from save file
+				fn00ca14()
+
+				D0 = VDPHelper.getDirectVRAMWriteCode(D7.u16 + 0x306)
+				D1 = 1
+				D2 = 1
+				fn001506()
+			}
+
+			D7.u16 += 0x1a
+			A0 += 10
+			A3 += 0x4a
+		}
+	}
+	else
+		base.fn00c97a()
 }
 
 //# address-hook(0x00d42c) end(0x00d69a)
@@ -485,4 +639,110 @@ function void MISC.drawLifeContSprite(s16 px, s16 py, u16 renderQueue, u8 slotnu
 		return
 
 	base.MISC.drawLifeContSprite( px, py, renderQueue, slotnum)
+}
+
+//# address-hook(0x00c890) end(0x00c95c)
+function void fn00c890()
+{
+	// Render "New" or static noise for the slots
+	D0.u16 = level.framecounter & 0x0c
+	A2 = 0x200000 + u32[0x3a216a + D0.u16]
+	D7.u16 = Mods.isModActive("Origins Screen Resolution") ? 0xc31a : 0xc21a
+	A0 = 0xffffe6ac
+	for (u8 slot = 0; slot < 8; ++slot)
+	{
+		A1 = (s8[A0] >= 0) ? A2 : 0x3a20de
+		D0 = VDPHelper.getDirectVRAMWriteCode(D7.u16)
+		D1 = 9
+		D2 = 6
+		fn001506()
+
+		D7.u16 += 0x1a
+		A0 += 10
+	}
+
+	A3 = 0xffffb128
+	D7.u16 = Mods.isModActive("Origins Screen Resolution") ? 0xcb20 : 0xca20
+	A0 = 0xffffe6ac
+	for (u8 slot = 0; slot < 8; ++slot)
+	{
+		D0.u16 = D7.u16 - 2
+		VDP.setupVRAMWrite(D0)
+		VDP.writeData16(sprite_attribute.PRIORITY | 0x02b1)		// Render a small black bar to complete the save slot graphic
+
+		if (s8[A0] >= 0)
+		{
+			if (u8[A3 + 0x3a] == u8[A3 + 0x37] && u8[A3 + 0x3b] != 0)
+			{
+				// Render "CLEAR" label
+				A1 = 0x00db36
+				D0.u16 = D7.u16
+				fn00d9f4()
+			}
+			else
+			{
+				// Render "ZONE" label
+				A1 = 0x00db31
+				D0.u16 = D7.u16 - 2
+				fn00d9f4()
+
+				// Render zone number
+				D0.u16 = u16[A3 + 0x36] * 2
+
+				// Second digit (10, 20, etc)
+				D1 = u8[0x00c95e + D0.s16]
+				if (D1.s8 < 0)
+				{
+					D1.u16 = (sprite_attribute.PRIORITY | 0)
+				}
+				else
+				{
+					D1.u16 += (sprite_attribute.PRIORITY | sprite_attribute.PALETTE.LINE1 | (DataSelect.TextTiles.targetInVRAM >> 5))
+				}
+				VDP.writeData16(D1.u16)
+
+				// First digit (1, 2, etc)
+				D1 = (sprite_attribute.PRIORITY | sprite_attribute.PALETTE.LINE1 | (DataSelect.TextTiles.targetInVRAM >> 5)) + u8[0x00c95f + D0.s16]
+				VDP.writeData16(D1.u16)
+			}
+		}
+		else
+		{
+			// Render empty tiles
+			A1 = 0x00db2b
+			D0.u16 = D7.u16
+			fn00d9f4()
+		}
+
+		D7.u16 += 0x1a
+		A0 += 10
+		A3 += 0x4a
+	}
+
+	fn00c97a()
+}
+
+//# address-hook(0x00d69e) end(0x00d6ca)
+function void fn00d69e()
+{
+	// Used by all character icons, the zone preview image, and Robotnik
+	objA0.position.x.u16 = u16[A0 + 0x12] - camera.foreground.x.u16
+	objA0.compound.sprite1.position.x = objA0.position.x.u16
+	objA0.compound.sprite1.position.y = objA0.position.y.u16
+	objA0.compound.sprite2.position.x = objA0.position.x.u16
+	objA0.compound.sprite2.position.y = objA0.position.y.u16
+	if (objA0.compound.sprite1.animation.sprite == 0x1a)
+	{
+		objA0.compound.sprite1.position.y -= 8
+	}
+
+#if STANDALONE
+	// Prevent too early clipping
+	objA0.box_size.x = 0x28
+#endif
+
+	// Note that "Knuckles & Tails" uses objA0.animation.sprite == 8
+	//  -> We handle that in Standalone.onDrawVdpSpriteCompound
+
+	DrawObject()
 }
