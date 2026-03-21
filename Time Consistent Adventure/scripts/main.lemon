@@ -430,9 +430,10 @@ function void fn00d96a()
 	else if (tca.ds_char > 4) && MISC.getAllowedZones(tca.ds_char - 1) == 0x0b
 		tca.knux_route = true
 		
+	u16 posY = 0x10 + ((Mods.isModActive("Data Select Options") && Mods.isModActive("Origins Screen Resolution")) ? 0x08 : 0x00)
 	
 	if (tca.zone_icons && tca.intended)
-	{
+	{		
 		if tca.knux_route
 		{
 			if (tca.soz)
@@ -462,7 +463,7 @@ function void fn00d96a()
 		{
 			if (tca.fbz)
 			{
-				SpriteHandle dataselpreview = Renderer.addSpriteHandle("fbz_icon", (objA0.position.x.u16 + getScreenExtend() - 208) - getScreenExtend() + 40, 16, 0x9ff9)
+				SpriteHandle dataselpreview = Renderer.addSpriteHandle("fbz_icon", (objA0.position.x.u16 + getScreenExtend() - 208) - getScreenExtend() + 40, posY, 0x9ff9)
 				dataselpreview.setFlags(0x40)
 			}
 		}
@@ -474,7 +475,7 @@ function void fn00d96a()
 				if (tca.ds_char == 0x03 || tca.ds_char == 0x04)
 					lbzkey = "lbz_icon_knux"
 					
-				SpriteHandle dataselpreview = Renderer.addSpriteHandle(lbzkey, (objA0.position.x.u16 + getScreenExtend() - 208) - getScreenExtend() + 40, 16, 0x9ff9)
+				SpriteHandle dataselpreview = Renderer.addSpriteHandle(lbzkey, (objA0.position.x.u16 + getScreenExtend() - 208) - getScreenExtend() + 40, posY, 0x9ff9)
 				dataselpreview.setFlags(0x40)
 			}
 		}
@@ -482,7 +483,7 @@ function void fn00d96a()
 		{
 			if (tca.soz)
 			{
-				SpriteHandle dataselpreview = Renderer.addSpriteHandle("soz_icon", (objA0.position.x.u16 + getScreenExtend() - 208) - getScreenExtend() + 40, 16, 0x9ff9)
+				SpriteHandle dataselpreview = Renderer.addSpriteHandle("soz_icon", (objA0.position.x.u16 + getScreenExtend() - 208) - getScreenExtend() + 40, posY, 0x9ff9)
 				dataselpreview.setFlags(0x40)
 			}
 		}
@@ -490,17 +491,17 @@ function void fn00d96a()
 		{
 			if (tca.ssz_knux && tca.knux_route)
 			{
-				SpriteHandle dataselpreview = Renderer.addSpriteHandle("ssz_icon_knux", (objA0.position.x.u16 + getScreenExtend() - 208) - getScreenExtend() + 40, 16, 0x9ff9)
+				SpriteHandle dataselpreview = Renderer.addSpriteHandle("ssz_icon_knux", (objA0.position.x.u16 + getScreenExtend() - 208) - getScreenExtend() + 40, posY, 0x9ff9)
 				dataselpreview.setFlags(0x40)
 			}
 			else if (tca.ssz_icon && tca.ssz_sonic)
 			{
-				SpriteHandle dataselpreview = Renderer.addSpriteHandle("ssz_icon_dawn", (objA0.position.x.u16 + getScreenExtend() - 208) - getScreenExtend() + 40, 16, 0x9ff9)
+				SpriteHandle dataselpreview = Renderer.addSpriteHandle("ssz_icon_dawn", (objA0.position.x.u16 + getScreenExtend() - 208) - getScreenExtend() + 40, posY, 0x9ff9)
 				dataselpreview.setFlags(0x40)
 			}
 			else if (tca.ssz_sonic && Mods.isModActive("Moar Transparency") && System.getGlobalVariableValueByName("mt.teleframe"))
 			{
-				SpriteHandle dataselpreview = Renderer.addSpriteHandle("ssz_icon_compat", (objA0.position.x.u16 + getScreenExtend() - 208) - getScreenExtend() + 40, 16, 0x9ff9)
+				SpriteHandle dataselpreview = Renderer.addSpriteHandle("ssz_icon_compat", (objA0.position.x.u16 + getScreenExtend() - 208) - getScreenExtend() + 40, posY, 0x9ff9)
 				dataselpreview.setFlags(0x40)
 			}
 		}
@@ -532,7 +533,7 @@ function void fn00d96a()
 				if (tca.knux_route)
 					lbzkey = "lbz_icon_knux"
 					
-				SpriteHandle dataselpreview = Renderer.addSpriteHandle(lbzkey, (objA0.position.x.u16 + getScreenExtend() - 208) - getScreenExtend() + 40, 16, 0x9ff9)
+				SpriteHandle dataselpreview = Renderer.addSpriteHandle(lbzkey, (objA0.position.x.u16 + getScreenExtend() - 208) - getScreenExtend() + 40, posY, 0x9ff9)
 				dataselpreview.setFlags(0x40)
 			}
 		}
@@ -540,7 +541,7 @@ function void fn00d96a()
 		{
 			if (tca.soz)
 			{
-				SpriteHandle dataselpreview = Renderer.addSpriteHandle("soz_icon", (objA0.position.x.u16 + getScreenExtend() - 208) - getScreenExtend() + 40, 16, 0x9ff9)
+				SpriteHandle dataselpreview = Renderer.addSpriteHandle("soz_icon", (objA0.position.x.u16 + getScreenExtend() - 208) - getScreenExtend() + 40, posY, 0x9ff9)
 				dataselpreview.setFlags(0x40)
 			}
 		}
@@ -548,12 +549,12 @@ function void fn00d96a()
 		{
 			if (tca.ssz_knux && tca.knux_route)
 			{
-				SpriteHandle dataselpreview = Renderer.addSpriteHandle("ssz_icon_knux_released", (objA0.position.x.u16 + getScreenExtend() - 208) - getScreenExtend() + 40, 16, 0x9ff9)
+				SpriteHandle dataselpreview = Renderer.addSpriteHandle("ssz_icon_knux_released", (objA0.position.x.u16 + getScreenExtend() - 208) - getScreenExtend() + 40, posY, 0x9ff9)
 				dataselpreview.setFlags(0x40)
 			}
 			else if (tca.ssz_sonic && Mods.isModActive("Moar Transparency") && System.getGlobalVariableValueByName("mt.teleframe"))
 			{
-				SpriteHandle dataselpreview = Renderer.addSpriteHandle("ssz_icon_compat", (objA0.position.x.u16 + getScreenExtend() - 208) - getScreenExtend() + 40, 16, 0x9ff9)
+				SpriteHandle dataselpreview = Renderer.addSpriteHandle("ssz_icon_compat", (objA0.position.x.u16 + getScreenExtend() - 208) - getScreenExtend() + 40, posY, 0x9ff9)
 				dataselpreview.setFlags(0x40)
 			}
 		}
