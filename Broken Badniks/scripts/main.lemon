@@ -613,7 +613,7 @@ function void fn068a46()
 #endif
 }
 
-//# address-hook(0x068b92) end(0x068bb8)
+//# address-hook(0x068b92) end(0x068bb8)
 function void fn068b92()
 {
 	if (!bb.firebreath)
