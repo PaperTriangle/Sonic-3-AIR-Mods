@@ -56,7 +56,7 @@ function void fn018b3e()
 				System.setGlobalVariableValueByName("maniadustanimtimer", 0)
 			}
 		}
-		else if (objA0.state == 0x01) && (objA0.animation.sprite > 0)
+		else if (objA0.state != 0x00) && (objA0.animation.sprite > 0)
 		{
 			System.setGlobalVariableValueByName("maniadustframe", 0)
 			System.setGlobalVariableValueByName("maniadustanimtimer", 0)
