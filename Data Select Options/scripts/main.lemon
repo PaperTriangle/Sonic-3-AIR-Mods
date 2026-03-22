@@ -472,7 +472,7 @@ function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 in
 			if Mods.isModActive("Time Consistent Adventure") && (objA0.update_address == 0x00d42c && (index == 0x93bd || index == 0x83bd))
 				return base.Standalone.onDrawVdpSpriteCompound(px, py + 0x08, size, index, renderQueue, spriteCounter)
 				
-			if index != 0xab0b
+			if index != 0xab0b && index != 0xab17
 				Renderer.drawVdpSprite(px, py + 0x08, size, index, renderQueue)
 			return true
 		}
