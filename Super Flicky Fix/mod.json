@@ -5,7 +5,7 @@
 		"UniqueID": "super-flicky-fix",
 		"Author": "PaperTriangle",
 		"Description": "Fixes handling of the super flicky to use Sonic's extended palette.",
-		"ModVersion": "1.10"
+		"ModVersion": "1.11"
 	},
 	"OtherMods":
 	{
@@ -24,6 +24,12 @@
 		"wonder-power-blue-glasses-eggman":
 		{
 			"DisplayName": "Blue Glasses Eggman",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		},
+		"break-that-pipe":
+		{
+			"DisplayName": "Break That Pipe!",
 			"IsRequired": "0",
 			"Priority": "Lower"
 		}
@@ -103,6 +109,19 @@
 				{
 					"0": "Disabled",
 					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "sff.super_breaks_stuff",
+				"DisplayName": "Super Tails Breaks Stuff",
+				"Variable": "sff.super_breaks_stuff",
+				"Category": "Tails Settings",
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled",
+					"2": "Enabled (Tails & Ray)"
 				}
 			}
 		]

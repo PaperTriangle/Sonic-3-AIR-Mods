@@ -4,6 +4,7 @@ global bool sff.super_sonic_palette
 global bool sff.super_stars
 global bool sff.tails_flight
 global bool sff.super_drown
+global u8 sff.super_breaks_stuff
 
 define u8 global.xtrachar = u8[0xffffe654]
 
@@ -523,7 +524,7 @@ function void fn022040()
 //# address-hook(0x018466) end(0x018680)
 function void fn018466()
 {
-	if (!sff.super_drown || !(global.xtrachar == 0 & isMainCharacter(CHARACTER_TAILS)))
+	if (!sff.super_drown || !(global.xtrachar == 0 && isMainCharacter(CHARACTER_TAILS)))
 	{
 		base.fn018466()
 		return
@@ -740,4 +741,43 @@ function void fn018466()
 function u16 EggmanBlue.getDefaultPal()
 {
 	return 0x00
+}
+
+// Super breaks stuff
+//# address-hook(0x021568) end(0x021690)
+function void fn021568()
+{
+	if !((sff.super_breaks_stuff && super.active.tails && global.xtrachar == 0 && isMainCharacter(CHARACTER_TAILS)) || (sff.super_breaks_stuff && super.active.tails && global.xtrachar == 2 && sff.super_breaks_stuff == 2))
+	{
+		base.fn021568()
+		return
+	}
+	
+	u8 backupSuper = super.active
+	super.active = 1
+	base.fn021568()
+	super.active = backupSuper
+}
+
+//# address-hook(0x01fd08) end(0x01ff1a)
+function void fn01fd08()
+{
+	if !((sff.super_breaks_stuff && super.active.tails && global.xtrachar == 0 && isMainCharacter(CHARACTER_TAILS)) || (sff.super_breaks_stuff && super.active.tails && global.xtrachar == 2 && sff.super_breaks_stuff == 2))
+	{
+		base.fn01fd08()
+		return
+	}
+	
+	u8 backupSuper = super.active
+	super.active = 1
+	base.fn01fd08()
+	super.active = backupSuper
+}
+
+function bool BTP.canBreak(u8 state.in)
+{
+	if !((sff.super_breaks_stuff && super.active.tails && global.xtrachar == 0 && isMainCharacter(CHARACTER_TAILS)) || (sff.super_breaks_stuff && super.active.tails && global.xtrachar == 2 && sff.super_breaks_stuff == 2))
+		return base.BTP.canBreak(state.in)
+		
+	return true
 }
