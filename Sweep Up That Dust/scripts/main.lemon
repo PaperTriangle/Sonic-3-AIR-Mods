@@ -39,7 +39,8 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 	
 	if (objA0.update_address == 0x251200)
 	{
-		Renderer.drawCustomSprite(stringformat(sutd.newgraphic ? "dropdash_dust_new_%d" : "dropdash_dust_%d", objA0.animation.sprite), px, py, 0x00, objA0.render_flags, renderQueue)
+		u8 renderFlags = (char.render_flags & (SPRITE_FLAG_FLIP_X | SPRITE_FLAG_FLIP_Y)) | ((objA0.sprite_attributes & sprite_attribute.PRIORITY) != 0 ? SPRITE_FLAG_PRIO : 0)
+		Renderer.drawCustomSprite(stringformat(sutd.newgraphic ? "dropdash_dust_new_%d" : "dropdash_dust_%d", objA0.animation.sprite), px, py, 0x00, renderFlags, renderQueue)
 		return true
 	}
 	
@@ -87,7 +88,8 @@ function void SUTD.SpawnDust()
 	if (allocDynamicObjectStd())
 	{
 		objA1.update_address = 0x251200
-		objA1.render_flags = (render_flag.WORLD | render_flag.VISIBLE | (char.render_flags & (SPRITE_FLAG_FLIP_X | SPRITE_FLAG_FLIP_Y)))
+		objA1.render_flags = objA0.render_flags
+		objA1.sprite_attributes = objA0.sprite_attributes
 
 		objA1.box_size.x = 0x20
 		objA1.box_size.y = 0x20
