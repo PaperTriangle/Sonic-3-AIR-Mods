@@ -126,7 +126,7 @@ Makes the Super Flickies render using Sonic's player palette line. Meaning game 
 Has some other options like Super/Hyper Stars for Super/Hyper Tails. Also has some compatibility with **Classic Hyper Trails** to make the OG Super Tails more "Super".
 
 ## Sweep Up That Dust
-Removes the dust from the Spindash while the character is in the air and starts it again once they hit the ground. Also has an option for some more detailed spindash dust sprites.
+Removes the dust from the Spindash while the character is in the air and starts it again once they hit the ground. Also has options for dropdash animations, dust, screenclear while super and to add slightly more detailed dust sprites.
 
 ## Time Consistent Adventure
 This mod adjusts the palettes and some stage art for many zones to provide a more consistent passage of time with the Sonic & Tails and the Knuckles adventures.
