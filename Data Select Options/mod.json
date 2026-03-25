@@ -83,7 +83,8 @@
 				"Options":
 				{
 					"0": "Disabled",
-					"1": "Enabled"
+					"1": "Enabled (Excl. Level Select)",
+					"2": "Enabled"
 				}
 			},
 			{
@@ -99,8 +100,19 @@
 			},
 			{
 				"InternalName": "lsds.amyicon",
-				"DisplayName": "ES Amy Icon For All",
+				"DisplayName": "ES Amy Clear For All",
 				"Variable": "lsds.amyicon",	
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "lsds.levelselect",
+				"DisplayName": "ES Amy Clear For All",
+				"Variable": "lsds.levelselect",	
 				"DefaultValue": "0",
 				"Options":
 				{

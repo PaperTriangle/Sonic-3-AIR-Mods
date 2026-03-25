@@ -3,9 +3,12 @@ global bool lsds.noflicker
 global bool lsds.alphashadow
 global bool lsds.nodetail
 global bool lsds.backtotitle
-global bool lsds.noknuxtails
+global u8 lsds.noknuxtails
 global bool lsds.amyicon
 global bool lsds.esureorder
+global bool lsds.levelselect
+
+define u8 global.xtrachar = u8[0xffffe654]
 
 global u16 oldposy = 0
 global bool inDataSelect
@@ -260,7 +263,7 @@ function void DataSelect.update()
 
 function bool Game.isSecretUnlocked(u32 secretId)
 {
-	if lsds.noknuxtails && (global.game_mode == 0x4c && secretId == SECRET_KNUX_AND_TAILS)
+	if lsds.noknuxtails && (global.game_mode == 0x4c || lsds.noknuxtails == 2) && secretId == SECRET_KNUX_AND_TAILS
 		return false
 	
 	return base.Game.isSecretUnlocked(secretId)
@@ -643,7 +646,7 @@ function void MISC.drawLifeContSprite(s16 px, s16 py, u16 renderQueue, u8 slotnu
 
 //# address-hook(0x00c890) end(0x00c95c)
 function void fn00c890()
-{
+{		
 	// Render "New" or static noise for the slots
 	D0.u16 = level.framecounter & 0x0c
 	A2 = 0x200000 + u32[0x3a216a + D0.u16]
@@ -672,38 +675,96 @@ function void fn00c890()
 
 		if (s8[A0] >= 0)
 		{
-			if (u8[A3 + 0x3a] == u8[A3 + 0x37] && u8[A3 + 0x3b] != 0)
+			if (Mods.isModActive("Time Consistent Adventure") && System.getGlobalVariableValueByName("tca.intended") || Mods.isModActive("Useott's Original Zone Order"))
 			{
-				// Render "CLEAR" label
-				A1 = 0x00db36
-				D0.u16 = D7.u16
-				fn00d9f4()
-			}
-			else
-			{
-				// Render "ZONE" label
-				A1 = 0x00db31
-				D0.u16 = D7.u16 - 2
-				fn00d9f4()
-
-				// Render zone number
-				D0.u16 = u16[A3 + 0x36] * 2
-
-				// Second digit (10, 20, etc)
-				D1 = u8[0x00c95e + D0.s16]
-				if (D1.s8 < 0)
+				u16 tca.ds_char = u16[A3 + 0x34]
+		
+				bool tca.knux_route = false
+				
+				if (tca.ds_char == 3 || tca.ds_char == 4)
+					tca.knux_route = true
+				else if (tca.ds_char > 4) && MISC.getAllowedZones(tca.ds_char - 1) == 0x0b
+					tca.knux_route = true
+			
+				if (u8[A3 + 0x3a] == u8[A3 + 0x37] && u8[A3 + 0x3b] != 0)
 				{
-					D1.u16 = (sprite_attribute.PRIORITY | 0)
+					// Render "CLEAR" label
+					A1 = 0x00db36
+					D0.u16 = D7.u16
+					fn00d9f4()
 				}
 				else
 				{
-					D1.u16 += (sprite_attribute.PRIORITY | sprite_attribute.PALETTE.LINE1 | (DataSelect.TextTiles.targetInVRAM >> 5))
-				}
-				VDP.writeData16(D1.u16)
+					// Render "ZONE" label
+					A1 = 0x00db31
+					D0.u16 = D7.u16 - 2
+					fn00d9f4()
 
-				// First digit (1, 2, etc)
-				D1 = (sprite_attribute.PRIORITY | sprite_attribute.PALETTE.LINE1 | (DataSelect.TextTiles.targetInVRAM >> 5)) + u8[0x00c95f + D0.s16]
-				VDP.writeData16(D1.u16)
+					//This is the modified content, everything else should be untouched.
+					// Render zone number
+					D0.u16 = u16[A3 + 0x36] * 2
+					if !tca.knux_route
+					{
+						if (u16[A3 + 0x36] == 4 || u16[A3 + 0x36] == 5 || u16[A3 + 0x36] == 6)
+							D0.u16 += 2
+						if u16[A3 + 0x36] == 7
+							D0.u16 -= 6
+					}
+					else if (u16[A3 + 0x36] >= 8)
+						D0.u16 -= 2
+
+					// Second digit (10, 20, etc)
+					D1 = u8[0x00c95e + D0.s16]
+					if (D1.s8 < 0)
+					{
+						D1.u16 = (sprite_attribute.PRIORITY | 0)
+					}
+					else
+					{
+						D1.u16 += (sprite_attribute.PRIORITY | sprite_attribute.PALETTE.LINE1 | (DataSelect.TextTiles.targetInVRAM >> 5))
+					}
+					VDP.writeData16(D1.u16)
+
+					// First digit (1, 2, etc)
+					D1 = (sprite_attribute.PRIORITY | sprite_attribute.PALETTE.LINE1 | (DataSelect.TextTiles.targetInVRAM >> 5)) + u8[0x00c95f + D0.s16]
+					VDP.writeData16(D1.u16)
+				}
+			}
+			else
+			{
+				if (u8[A3 + 0x3a] == u8[A3 + 0x37] && u8[A3 + 0x3b] != 0)
+				{
+					// Render "CLEAR" label
+					A1 = 0x00db36
+					D0.u16 = D7.u16
+					fn00d9f4()
+				}
+				else
+				{
+					// Render "ZONE" label
+					A1 = 0x00db31
+					D0.u16 = D7.u16 - 2
+					fn00d9f4()
+
+					// Render zone number
+					D0.u16 = u16[A3 + 0x36] * 2
+
+					// Second digit (10, 20, etc)
+					D1 = u8[0x00c95e + D0.s16]
+					if (D1.s8 < 0)
+					{
+						D1.u16 = (sprite_attribute.PRIORITY | 0)
+					}
+					else
+					{
+						D1.u16 += (sprite_attribute.PRIORITY | sprite_attribute.PALETTE.LINE1 | (DataSelect.TextTiles.targetInVRAM >> 5))
+					}
+					VDP.writeData16(D1.u16)
+
+					// First digit (1, 2, etc)
+					D1 = (sprite_attribute.PRIORITY | sprite_attribute.PALETTE.LINE1 | (DataSelect.TextTiles.targetInVRAM >> 5)) + u8[0x00c95f + D0.s16]
+					VDP.writeData16(D1.u16)
+				}
 			}
 		}
 		else
@@ -745,4 +806,128 @@ function void fn00d69e()
 	//  -> We handle that in Standalone.onDrawVdpSpriteCompound
 
 	DrawObject()
+}
+
+// What route is the character on?
+function u8 MISC.getAllowedZones(u8 slotnum)
+{
+    // add exceptions for your individual character like this:
+    // if (slotnum == CHARACTER_CUSTOM)
+    //    return 0x0d
+	// 
+	// for reference:
+	// 0x0d - Sonic zones (includes doomsday)
+	// 0x0c - Tails zones (excludes doomsday)
+	// 0x0b - Knux zones (ends at ssz)
+
+	return base.MISC.getAllowedZones(slotnum)
+}
+
+// Level Select Changes!
+
+// Start in full screen
+//# address-hook(0x007a74) end(0x007d20)
+//# translated(0x007d64) end(0x007d6a)
+function void LevelSelect()
+{
+	if Mods.isModActive("Origins Screen Resolution")
+		Renderer.setScreenSize(System.getGlobalVariableValueByName("screen_width"), 240)
+		
+	Renderer.resetSprites()
+	base.LevelSelect()
+}
+
+// Render extra char slots lower...
+function void Renderer.drawCustomSprite(u64 key, s16 px, s16 py, u8 atex, u8 flags, u16 renderQueue)
+{
+	if Mods.isModActive("Origins Screen Resolution")
+	{
+		if (global.game_mode == 0x28 || global.game_mode == 0x1c)
+			py += 8
+		
+	#if EXTRA_CHARACTERS_UNLIMITED
+		if (global.xtrachar == 0x04) && (key == "level_select_S3C_M_Mighty" || key == "level_select_S3C_S3_Mighty")
+		{
+			base.Renderer.drawCustomSprite(key, px, py, atex, flags, renderQueue)
+			base.Renderer.drawCustomSprite(RenderExtraCharIcon(0x02), px + 0x10, py, atex, flags, renderQueue)
+			return
+		}
+	#endif
+	}
+	
+	base.Renderer.drawCustomSprite(key, px, py, atex, flags, renderQueue)
+}
+
+// Push text down!
+function void LevelSelect.init()
+{
+	base.LevelSelect.init()
+	Renderer.drawCustomSprite("custom_ls_bg", (getScreenWidth() - 426)/2, -8, 0, 0, 0x1000)
+	
+	if Mods.isModActive("Origins Screen Resolution")
+		scrolloffset.y.planeA -= 8
+}
+
+// Fix up Extra Slot Character Selection
+//# address-hook(0x007e64) end(0x007f1e)
+//# translated(0x007f46) end(0x007f60)
+function void fn007e64()
+{
+	u8 oldXtraChar = global.xtrachar
+	
+	base.fn007e64()
+	
+#if EXTRA_CHARACTERS_UNLIMITED
+	if lsds.esureorder
+	{
+		if (global.xtrachar == 0x01 && oldXtraChar == 0)
+			global.xtrachar = 0x03
+		else if (global.xtrachar > 0x04 && oldXtraChar == (Mods.isModActive("Extra Slot Mighty & Ray") ? 0x04 : 0x03))
+			global.xtrachar = 0x01
+		else if (global.xtrachar == 0x03 && oldXtraChar == 0x02)
+		{
+			global.xtrachar = 0x04
+			
+			if (global.xtrachar < ExtraChar.getHighestSlot())
+			{
+				for (u8 A = 0x01; A <= 0xff; ++A)
+				{
+					if (Renderer.hasCustomSprite(stringformat("dataSel_slot%d", A)) && A > global.xtrachar)
+					{
+						global.xtrachar = A
+						levelselect.characters = CHARS_SONIC_ALONE
+						ExtraChar.startupWithExtraChar()
+						break
+					}
+				}
+			}
+			// If the extra variable is equal to the highest slot, then reset the variables and go to the next default slot
+			else
+			{
+				global.xtrachar = 0x00
+				levelselect.characters = 0x00
+				levelselect.xtrachar = false
+			}
+		}
+	}
+#endif
+}
+
+// Draw background and quit out!
+function bool LevelSelect.innerUpdate()
+{
+	Renderer.drawCustomSprite("custom_ls_bg", (getScreenWidth() - 426)/2, -8, 0, 0, 0x1000)
+	
+	if lsds.backtotitle && ((control.pad1.pressed & CONTROL_B || Input.buttonPressed(BUTTON_BACK)) || (levelselect.selection == 0x22 && (control.pad1.pressed | control.pad2.pressed) & CONTROL_START))
+	{
+		playSound(0xad)
+		FadeOutScreenBlocking()
+
+		global.game_mode = 0x04
+		Audio.fadeOutChannel(0, 0x40)
+		return false
+	}
+	
+	
+	return base.LevelSelect.innerUpdate()
 }

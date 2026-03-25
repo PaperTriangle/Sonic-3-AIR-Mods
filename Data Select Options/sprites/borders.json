@@ -8,4 +8,5 @@
 	"small_regular_border_shadow":  { "File": "small_regular_border_shadow.bmp", "Center": "40,64" },
 	
 	"wide_bg_dataselect": { "File": "wide_dataselect_bg.bmp", "Center": "-43,0" },
+	"custom_ls_bg":  { "File": "custom_ls_bg.png", "Center": "0,0" }
 }
