@@ -6,7 +6,6 @@ global bool lsds.backtotitle
 global u8 lsds.noknuxtails
 global bool lsds.amyicon
 global bool lsds.esureorder
-global bool lsds.levelselect
 
 define u8 global.xtrachar = u8[0xffffe654]
 

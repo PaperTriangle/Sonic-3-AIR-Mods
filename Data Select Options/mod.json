@@ -108,17 +108,6 @@
 					"0": "Disabled",
 					"1": "Enabled"
 				}
-			},
-			{
-				"InternalName": "lsds.levelselect",
-				"DisplayName": "ES Amy Clear For All",
-				"Variable": "lsds.levelselect",	
-				"DefaultValue": "0",
-				"Options":
-				{
-					"0": "Disabled",
-					"1": "Enabled"
-				}
 			}
 		]
 	}
