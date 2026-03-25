@@ -1,0 +1,51 @@
+{
+	"Metadata":
+	{
+		"Name": "Paper's Pause",
+		"UniqueID": "papers-pause",
+		"Author": "PaperTriangle",
+		"Description": "Pause Menu based on my imagining of what it may be like in a 90's re-release.",
+		"ModVersion": "1.0",
+		"GameVersion": "25.02.15.0"
+		
+	},
+	"Settings":
+	{
+		"List":
+		[
+			{
+				"InternalName": "pp.texttype",
+				"DisplayName": "Text Style",
+				"Variable": "pp.texttype",
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Level Select",
+					"1": "Sonic 3 Complete"
+				}
+			},
+			{
+				"InternalName": "pp.exittotitle",
+				"DisplayName": "Exit To Title Screen",
+				"Variable": "pp.exittotitle",
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "pp.darkentype",
+				"DisplayName": "Darken Type",
+				"Variable": "pp.darkentype",
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Black",
+					"1": "Blue"
+				}
+			}
+		]
+	}
+}

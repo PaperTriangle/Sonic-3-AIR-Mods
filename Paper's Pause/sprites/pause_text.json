@@ -1,0 +1,21 @@
+{
+    "pause_text": { "File": "menu_assets.png", "Rect": "1,1,86,24", "Center": "43,12" },
+	
+    "resume_text_s": { "File": "menu_assets.png", "Rect": "1,26,48,8", "Center": "24,4"},
+    "checkpoint_text_s": { "File": "menu_assets.png", "Rect": "1,53,80,8", "Center": "40,4"},
+    "restart_text_s": { "File": "menu_assets.png", "Rect": "1,44,56,8", "Center": "28,4"},
+    "exit_text_s": { "File": "menu_assets.png", "Rect": "1,35,32,8", "Center": "16,4"},
+    "resume_text_selected_s": { "File": "menu_assets.png", "Rect": "1,62,48,8", "Center": "24,4"},
+    "checkpoint_text_selected_s": { "File": "menu_assets.png", "Rect": "1,89,80,8", "Center": "40,4"},
+    "restart_text_selected_s": { "File": "menu_assets.png", "Rect": "1,80,56,8", "Center": "28,4"},
+    "exit_text_selected_s": { "File": "menu_assets.png", "Rect": "1,71,32,8", "Center": "16,4"},
+	
+    "resume_text_c": { "File": "complete_assets.png", "Rect": "1,26,47,8", "Center": "24,4"},
+    "checkpoint_text_c": { "File": "complete_assets.png", "Rect": "1,53,76,8", "Center": "38,4"},
+    "restart_text_c": { "File": "complete_assets.png", "Rect": "1,44,54,8", "Center": "27,4"},
+    "exit_text_c": { "File": "complete_assets.png", "Rect": "1,35,27,8", "Center": "14,4"},
+    "resume_text_selected_c": { "File": "complete_assets.png", "Rect": "1,62,47,8", "Center": "24,4"},
+    "checkpoint_text_selected_c": { "File": "complete_assets.png", "Rect": "1,89,76,8", "Center": "38,4"},
+    "restart_text_selected_c": { "File": "complete_assets.png", "Rect": "1,80,54,8", "Center": "27,4"},
+    "exit_text_selected_c": { "File": "complete_assets.png", "Rect": "1,71,27,8", "Center": "14,4"},
+}

@@ -1,0 +1,4 @@
+{
+	"shading_pixel": { "File": "shading.png", "Center": "0,0" },
+	"shading_pixel_black": { "File": "shading_black.png", "Center": "0,0" }
+}

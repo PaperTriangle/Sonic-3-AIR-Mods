@@ -1,0 +1,328 @@
+global bool pp.exittotitle
+global bool pp.texttype
+global bool pp.darkentype
+
+constant u16 GamePause.NUM_ENTRIES = 4
+
+function void GamePause.Menu()
+{
+	// Script implementation of game pause
+	GamePause.hasRestart = !global.pause_disabled && (global.game_mode == 0x0c && global.stage_type == 0 && u8[0xffffb000 + 0x05] <= base_state.HURT) && !competition_mode.active
+	GamePause.hasOptions = !Game.isTimeAttack()
+
+
+
+#if GAMEAPP
+	// Handle skippable cutscene
+	bool wasInSkippableCutscene = Game.isInSkippableCutscene()
+	Game.endSkippableCutscene()
+#endif
+
+	constant float KEY_REPEAT_TIMEOUT = 0.4f
+	constant float KEY_REPEAT_DELAY   = 0.125f
+	float keyRepeatTimer = KEY_REPEAT_TIMEOUT
+	s8 lastPressedInput = -1
+
+	GamePause.visibility = 0.0f
+	GamePause.selectedEntry = 0
+	float totalTime = 0.0f
+	bool screenshotModeActive = false
+
+	Audio.pauseContext(AudioContext.CONTEXT_MUSIC)
+	Audio.pauseContext(AudioContext.CONTEXT_SOUND)
+
+
+	Audio.playAudio(0x89)
+	while (true)
+	{
+		// Inner loop will be exited once the player selected an entry in the menu
+		while (true)
+		{
+			float deltaSeconds = 1.0f / 60.0f
+			totalTime += deltaSeconds
+
+			if (!screenshotModeActive)
+			{	
+				GamePause.DrawMenu(totalTime)
+			}
+			else
+				Renderer.resetLifetimeContext(1)
+
+			enableCustomPlaneReset = false	// Maintain custom planes that were set before the pause
+			waitForNextFrame()
+		
+			// Undo increase of global framecounter (see "VInt.InnerUpdate"), to avoid messing up animations that rely on it
+			--global.framecounter
+
+			if (screenshotModeActive)
+			{
+				if (Input.buttonPressed(0, BUTTON_Y))
+					screenshotModeActive = false
+			}
+			else
+			{
+				if (Input.buttonPressed(0, BUTTON_Y))
+					screenshotModeActive = true
+
+				// Open selected entry
+				if (Input.buttonPressed(0, BUTTON_START) || Input.buttonPressed(0, BUTTON_A) || Input.buttonPressed(0, BUTTON_X))
+				{
+					if GamePause.selectedEntry != 0
+						Audio.playAudio(0xad)
+					else
+						Audio.playAudio(0x89)
+					break
+				}
+				else if (Input.buttonPressed(0, BUTTON_B))
+				{
+					Audio.playAudio(0xad)
+					GamePause.selectedEntry = 0 // We set this to zero because it'll still select the selected entry anyway.
+					break
+				}
+				else
+
+				// Handle key repeat
+				s8 currentInput = -1
+				{
+					if (Input.buttonPressed(BUTTON_UP))
+						currentInput = BUTTON_UP
+					else if (Input.buttonPressed(BUTTON_DOWN))
+						currentInput = BUTTON_DOWN
+					else if (lastPressedInput >= 0 && Input.buttonDown(lastPressedInput))
+						currentInput = lastPressedInput
+
+					lastPressedInput = currentInput
+
+					if (currentInput == -1)
+					{
+						// No input at all, so reset key repeat
+						keyRepeatTimer = KEY_REPEAT_TIMEOUT
+					}
+					else if (Input.buttonPressed(currentInput))
+					{
+						// Input pressed for the first frame now
+						keyRepeatTimer = KEY_REPEAT_TIMEOUT
+					}
+					else
+					{
+						// Input held down
+						currentInput = -1
+					}
+				}
+
+				s8 entryChange = (currentInput == BUTTON_UP) ? -1 : (currentInput == BUTTON_DOWN) ? 1 : 0
+				if (entryChange != 0)
+				{
+					while (true)
+					{
+						GamePause.selectedEntry = (GamePause.selectedEntry + GamePause.NUM_ENTRIES + entryChange) % GamePause.NUM_ENTRIES
+						if (GamePause.IsValidEntry(GamePause.selectedEntry))
+						{
+							Audio.playAudio(0x5b)
+							break
+						}
+					}
+				}
+			}
+		}
+
+			// Player chose a normal entry
+			if (GamePause.selectedEntry == 0)
+			{
+				// Leave this menu again and continue gameplay
+				break
+			}
+			else if (GamePause.selectedEntry == 1)
+			{
+				overlayOn = 1
+				
+				if (Game.isTimeAttack())
+				{
+					global.game.paused = false	// Done here already so the menu can fade out during the following screen fade
+					Audio.resumeContext(AudioContext.CONTEXT_MUSIC)
+					Audio.resumeContext(AudioContext.CONTEXT_SOUND)
+					restartTimeAttack()
+					break
+				}
+				else
+				{
+					// First open the dialog menu for Restart
+					restartAtCheckpoint()
+					player.score = checkpointScore
+					break
+				}
+			}
+			else if (GamePause.selectedEntry == 2)
+			{
+				overlayOn = 1
+				
+			#if GAMEAPP
+				if (Game.isTimeAttack())
+				{
+					global.game.paused = false	// Done here already so the menu can fade out during the following screen fade
+					Audio.resumeContext(AudioContext.CONTEXT_MUSIC)
+					Audio.resumeContext(AudioContext.CONTEXT_SOUND)
+					restartTimeAttack()
+					break
+				}
+				else
+				{
+					// First open the dialog menu for Restart
+					restartLevel()
+					player.score = zoneActScore
+					break
+				}
+			#endif
+			}
+			else if (GamePause.selectedEntry == 3)
+			{
+				overlayOn = 2
+				restartOn = 1
+				// First open the dialog menu for Exit Game
+				if (pp.exittotitle)
+				{
+					global.game_mode = 0x04
+					FadeOutScreenBlocking()
+				}
+				else
+				{
+					FadeOutScreenBlocking()
+					Game.returnToMainMenu()
+					yieldExecution()
+				}
+
+				break
+			}
+	}
+
+	Renderer.resetLifetimeContext(1)
+
+	// Resume game audio
+	if (GamePause.selectedEntry != 3)
+	{ 
+		Audio.resumeContext(AudioContext.CONTEXT_MUSIC)
+		Audio.resumeContext(AudioContext.CONTEXT_SOUND)
+	}
+#if GAMEAPP
+	if (wasInSkippableCutscene)
+		Game.startSkippableCutscene()
+#endif
+}
+
+function void GamePause.DrawMenu(float time)
+{
+	u16 py = -17
+	// Use lifetime context 1 for everything rendered by the pause menu
+	//  -> This allows for selectively clearing these sprites, texts, etc. in each frame without touching the game's rendered content
+	Renderer.resetLifetimeContext(1)
+	Renderer.setLifetimeContext(1)
+
+	Renderer.setViewport(0, 0, getScreenWidth(), getScreenHeight(), 0xfeff) // Fix for Competition Mode not having the upper bar visible
+
+	SpriteHandle darken = Renderer.addSpriteHandle(pp.darkentype ? "shading_pixel" : "shading_pixel_black", 0, 0, 0xfff0)
+	darken.setScale(getScreenWidth(), getScreenHeight())
+	darken.setFlags(SPRITE_FLAG_PRIO | SPRITE_FLAG_NO_GLOBAL_TINT)
+	darken.setBlendMode(BlendMode.SUBTRACTIVE)
+	
+	Renderer.drawSprite("pause_text", getScreenWidth()/2, getScreenHeight()/2 - 42, 0, SPRITE_FLAG_PRIO | SPRITE_FLAG_NO_GLOBAL_TINT, 0xfff8)
+	Renderer.drawSprite(GamePause.selectedEntry == 0 ? stringformat("resume_text_selected_%s", pp.texttype ? "c" : "s") : stringformat("resume_text_%s", pp.texttype ? "c" : "s"), getScreenWidth()/2, getScreenHeight()/2 - 13 - (pp.texttype ? 0 : 2), 0, SPRITE_FLAG_PRIO | SPRITE_FLAG_NO_GLOBAL_TINT, 0xfff8)
+	if(!competition_mode.active && GamePause.hasRestart)
+	{
+		if (checkpoint.number > 0) && !validCheckpoint()
+			Renderer.drawSprite(GamePause.selectedEntry == 1 ? stringformat("checkpoint_text_selected_%s", pp.texttype ? "c" : "s") : stringformat("checkpoint_text_%s", pp.texttype ? "c" : "s"), getScreenWidth()/2, getScreenHeight()/2 +2 - (pp.texttype ? 0 : 2), 0, SPRITE_FLAG_PRIO | SPRITE_FLAG_NO_GLOBAL_TINT, 0xfff8)
+		Renderer.drawSprite(GamePause.selectedEntry == 2 ? stringformat("restart_text_selected_%s", pp.texttype ? "c" : "s") : stringformat("restart_text_%s", pp.texttype ? "c" : "s"), getScreenWidth()/2, getScreenHeight()/2 +(GamePause.hasRestart ? (checkpoint.number > 0 && !validCheckpoint() ? 18 : 2) : 2) - (pp.texttype ? 0 : 2) , 0, SPRITE_FLAG_PRIO | SPRITE_FLAG_NO_GLOBAL_TINT, 0xfff8)
+	}
+	Renderer.drawSprite(GamePause.selectedEntry == 3 ? stringformat("exit_text_selected_%s", pp.texttype ? "c" : "s") : stringformat("exit_text_%s", pp.texttype ? "c" : "s"), getScreenWidth()/2, getScreenHeight()/2 +(GamePause.hasRestart ? (checkpoint.number > 0  && !validCheckpoint() ? 34 : 18) : 2) - (pp.texttype ? 0 : 2), 0, SPRITE_FLAG_PRIO | SPRITE_FLAG_NO_GLOBAL_TINT, 0xfff8)
+}
+
+
+function bool GamePause.IsValidEntry(u8 selected)
+{
+	if selected == 1 && (!GamePause.hasRestart || validCheckpoint())
+		return false
+	if (selected == 2 && !GamePause.hasRestart)
+		return false
+	return true
+}
+
+global u8 lastCheckpoint
+global u16 lastZoneAct
+global u8 levelResultsCheck
+
+global u32 checkpointScore
+global u32 zoneActScore
+
+global bool overlayOn
+global bool restartOn
+
+function void yieldExecution()
+{
+	if (checkpoint.number != lastCheckpoint)
+	{
+		checkpointScore = player.score
+		lastCheckpoint = checkpoint.number
+	}
+	
+	if (global.zone_act != 0x1701 && global.zone != 0x13 && global.zone != 0x14 && global.zone != 15)
+	{
+		if (lastZoneAct != global.zone_act)
+		{
+			zoneActScore = player.score
+			lastZoneAct = global.zone_act
+		}
+		
+		if (level.results_done == 0xff)
+		{
+			zoneActScore = player.score
+		}
+	}
+	
+	if overlayOn
+	{
+		Renderer.resetLifetimeContext(1)
+		Renderer.setLifetimeContext(1)
+
+		Renderer.setViewport(0, 0, getScreenWidth(), getScreenHeight(), 0xfeff) // Fix for Competition Mode not having the upper bar visible
+
+		SpriteHandle darken = Renderer.addSpriteHandle(pp.darkentype ? "shading_pixel" : "shading_pixel_black", 0, 0, 0xfff0)
+		darken.setScale(getScreenWidth(), getScreenHeight())
+		darken.setFlags(SPRITE_FLAG_PRIO | SPRITE_FLAG_NO_GLOBAL_TINT)
+		darken.setBlendMode(BlendMode.SUBTRACTIVE)
+	}
+	else if restartOn == 2
+	{
+		Renderer.resetLifetimeContext(1)
+		Renderer.setLifetimeContext(1)
+
+		Renderer.setViewport(0, 0, getScreenWidth(), getScreenHeight(), 0xfeff) // Fix for Competition Mode not having the upper bar visible
+		Renderer.drawRect(0, 0, getScreenWidth(), getScreenHeight(), 0x000000ff, 0xffff, false)
+		Audio.stopContext(AudioContext.CONTEXT_SOUND)
+	}
+
+	base.yieldExecution()
+}
+
+function bool validCheckpoint()
+{
+	return checkpoint.number == 0x00 || (checkpoint.number == 0x01 && (global.zone_act == 0x0000 || global.zone_act == 0x0a00 || global.zone_act == 0x0700)) || (checkpoint.number == 0x07 && global.zone_act == 0x0701)
+}
+
+//# address-hook(0x003be4) end(0x003c02)
+function void FadeOutScreenBlocking()
+{
+	base.FadeOutScreenBlocking()
+	if (overlayOn)
+	{
+		overlayOn = false
+		if restartOn
+			restartOn = 2
+		Audio.stopContext(AudioContext.CONTEXT_SOUND)
+	}
+}
+
+//# address-hook(0x003af0) end(0x003b12)
+function void Menu.FadeInAfterInit()
+{
+	restartOn = 0
+	base.Menu.FadeInAfterInit()
+}
