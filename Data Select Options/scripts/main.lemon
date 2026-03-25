@@ -40,7 +40,11 @@ function void FadeOutScreenBlocking()
 function void EntryFunctions.dataSelect()
 {
 	if Mods.isModActive("Origins Screen Resolution")
+	{
 		Renderer.setScreenSize(System.getGlobalVariableValueByName("screen_width"), 240)
+		System.setGlobalVariableValueByName("set_screen_size", 1)
+	}
+	
 	base.EntryFunctions.dataSelect()
 }
 
@@ -824,17 +828,17 @@ function u8 MISC.getAllowedZones(u8 slotnum)
 }
 
 // Level Select Changes!
-
-// Start in full screen
-//# address-hook(0x007a74) end(0x007d20)
-//# translated(0x007d64) end(0x007d6a)
-function void LevelSelect()
+function void EntryFunctions.levelSelect()
 {
 	if Mods.isModActive("Origins Screen Resolution")
+	{
 		Renderer.setScreenSize(System.getGlobalVariableValueByName("screen_width"), 240)
-		
+		System.setGlobalVariableValueByName("set_screen_size", 1)
+	}
+
 	Renderer.resetSprites()
-	base.LevelSelect()
+
+	base.EntryFunctions.levelSelect()
 }
 
 // Render extra char slots lower...
@@ -862,7 +866,7 @@ function void Renderer.drawCustomSprite(u64 key, s16 px, s16 py, u8 atex, u8 fla
 function void LevelSelect.init()
 {
 	base.LevelSelect.init()
-	Renderer.drawCustomSprite("custom_ls_bg", (getScreenWidth() - 426)/2, -8, 0, 0, 0x1000)
+	Renderer.drawCustomSprite("custom_ls_bg", s16(getScreenWidth() - 426)/2, -8, 0, 0, 0x1000)
 	
 	if Mods.isModActive("Origins Screen Resolution")
 		scrolloffset.y.planeA -= 8
@@ -880,7 +884,13 @@ function void fn007e64()
 #if EXTRA_CHARACTERS_UNLIMITED
 	if lsds.esureorder
 	{
-		if (global.xtrachar == 0x01 && oldXtraChar == 0)
+		if (global.xtrachar == 0x00 && oldXtraChar == 0x04)
+		{
+			levelselect.characters = CHARS_SONIC_ALONE
+			global.xtrachar = 0x01
+			levelselect.xtrachar = true
+		}
+		else if (global.xtrachar == 0x01 && oldXtraChar == 0)
 			global.xtrachar = 0x03
 		else if (global.xtrachar > 0x04 && oldXtraChar == (Mods.isModActive("Extra Slot Mighty & Ray") ? 0x04 : 0x03))
 			global.xtrachar = 0x01
@@ -916,7 +926,7 @@ function void fn007e64()
 // Draw background and quit out!
 function bool LevelSelect.innerUpdate()
 {
-	Renderer.drawCustomSprite("custom_ls_bg", (getScreenWidth() - 426)/2, -8, 0, 0, 0x1000)
+	Renderer.drawCustomSprite("custom_ls_bg", s16(getScreenWidth() - 426)/2, -8, 0, 0, 0x1000)
 	
 	if lsds.backtotitle && ((control.pad1.pressed & CONTROL_B || Input.buttonPressed(BUTTON_BACK)) || (levelselect.selection == 0x22 && (control.pad1.pressed | control.pad2.pressed) & CONTROL_START))
 	{
