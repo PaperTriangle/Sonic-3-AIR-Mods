@@ -1,0 +1,18 @@
+{
+	"big_sega": { "File": "big_sega.bmp"},
+	"big_intro_1": { "File": "big_intro_1.bmp", "Center": "0,0" },
+	"big_intro_2": { "File": "big_intro_2.bmp", "Center": "0,0" },
+	"big_intro_3": { "File": "big_intro_3.bmp", "Center": "0,0" },
+	"big_intro_4": { "File": "big_intro_4.bmp", "Center": "0,0" },
+	"big_intro_5": { "File": "big_intro_5.bmp", "Center": "0,0" },
+	"big_intro_6": { "File": "big_intro_6.bmp", "Center": "0,0" },
+	"big_intro_7": { "File": "big_intro_7.bmp", "Center": "0,0" },
+	"big_intro_8": { "File": "big_intro_8.bmp", "Center": "0,0" },
+	"big_intro_9": { "File": "big_intro_9.bmp", "Center": "0,0" },
+	"big_intro_10": { "File": "big_intro_10.bmp", "Center": "0,0" },
+	"big_intro_11": { "File": "big_intro_11.bmp", "Center": "0,0" },
+	"big_title_screen":    { "File": "big_title_background.bmp", "Center": "40,0" },
+	"water_wave":  { "File": "big_title_background.bmp", "Rect": "0,208,480,32", "Center": "40,32" },
+	"sonic_the_hedgehog":  { "File": "sonic_the_hedgehog.bmp", "Rect": "0,0,112,10", "Center": "56,9" },
+	"complete_press_start":  { "File": "complete_press_start.bmp", "Rect": "0,0,90,9", "Center": "40,4" },
+}

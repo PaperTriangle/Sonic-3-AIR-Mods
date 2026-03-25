@@ -100,12 +100,22 @@ Remove the transparency effects from Sonic 3 AIR. This can be used with **Moar T
 
 **PLEASE NOTE:** This mod will not remove any transparency baked into a PNG file or render effects applied to a `SpriteHandle`.
 
+## Origins Resolution Title Screen
+Updates the titlescreen to run in an Origins Resolution. Also includes a few other options.
+
+If you have enabled the bypass A.I.R. Menu option, holding Y and BACK while pressing start will take you to the A.I.R. Menu.
+
+**PLEASE NOTE:** The old school codes option will not work if you use the Sonic 3 A.I.R. main menu. This has been designed to use with mods like **Data Select Options** and **Paper's Pause**.
+
 ## Paper's HUD Additions
 Adds a new Sonic CD inspired life icon and a Transform button. Should work with regular and mobile views.
 
 There is also an option to clone the player palette to an extended palette line, allow the lives icon to render above water super palette rotations while below water.
 
 Hud Elements have compatibility with **Haru's Forever-esque HUD**. Lives icon has compatibility with **Plush's Ariff Tails**, **Extra Sloy Mighty, Ray & Amy** and **Extra Slot 3D in 2D Shadow**. The transform button has compatibility with **Characters Go Super Then Hyper** and **Easy Super**.
+
+## Paper's Pause
+Adds a new pause menu that is how I may have imagined it if the game was re-released in the '90s.
 
 ## Rotate
 Makes player rotation worse... Made this as a test— I do not recommend using...

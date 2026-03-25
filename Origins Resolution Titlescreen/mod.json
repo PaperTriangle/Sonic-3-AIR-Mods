@@ -1,0 +1,102 @@
+{
+	"Metadata": 
+	{
+		"Name": "Origins Resolution Title",
+		"UniqueID": "origins-resolution-Title",
+		"Author": "PaperTriangle",
+		"Description": "Simple intro and titlescreen mod to work with Origins Screen Resolution.",
+		"ModVersion": "1.0"
+	},
+	"OtherMods":
+	{
+		"thorn-originsresolution":
+		{
+			"DisplayName": "Origins Screen Resolution",
+			"IsRequired": "1",
+			"Priority": "Lower"
+		}
+	},
+	"Settings":
+	{
+		"List":
+  		[
+			{
+				"InternalName": "orts.title_type",
+				"DisplayName": "Title Screen Style",
+				"Variable": "orts.title_type",
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Sonic 3 A.I.R.",
+					"1": "Sonic 3 & Knuckles"
+				}
+			},
+			{
+				"InternalName": "orts.press_start",
+				"DisplayName": "Press Start Style",
+				"Variable": "orts.press_start",
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Default",
+					"1": "Custom"
+				}
+			},
+			{
+				"InternalName": "orts.wave",
+				"DisplayName": "Animated Water",
+				"Variable": "orts.wave",
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "orts.bypass_menu",
+				"DisplayName": "Paypass A.I.R. Menu",
+				"Variable": "orts.bypass_menu",
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "orts.crash_sound",
+				"DisplayName": "Play Crash Sound",
+				"Variable": "orts.crash_sound",
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "orts.oldschool_codes",
+				"DisplayName": "Original Cheat Codes",
+				"Variable": "orts.oldschool_codes",
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "orts.no_skip_cutscene",
+				"DisplayName": "Prevent Cutscene Skipping",
+				"Variable": "orts.no_skip_cutscene",
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			}
+		]
+	}
+}
