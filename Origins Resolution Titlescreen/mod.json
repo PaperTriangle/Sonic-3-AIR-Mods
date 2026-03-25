@@ -1,8 +1,8 @@
 {
 	"Metadata": 
 	{
-		"Name": "Origins Resolution Title",
-		"UniqueID": "origins-resolution-Title",
+		"Name": "Origins Resolution Title Screen",
+		"UniqueID": "origins-resolution-title-screen",
 		"Author": "PaperTriangle",
 		"Description": "Simple intro and titlescreen mod to work with Origins Screen Resolution.",
 		"ModVersion": "1.0"
@@ -12,7 +12,7 @@
 		"thorn-originsresolution":
 		{
 			"DisplayName": "Origins Screen Resolution",
-			"IsRequired": "1",
+			"IsRequired": "0",
 			"Priority": "Lower"
 		}
 	},
@@ -39,7 +39,7 @@
 				"Options":
 				{
 					"0": "Default",
-					"1": "Custom"
+					"1": "Sonic 3 Complete"
 				}
 			},
 			{
@@ -55,7 +55,7 @@
 			},
 			{
 				"InternalName": "orts.bypass_menu",
-				"DisplayName": "Paypass A.I.R. Menu",
+				"DisplayName": "Bypass A.I.R. Menu",
 				"Variable": "orts.bypass_menu",
 				"DefaultValue": "0",
 				"Options":
