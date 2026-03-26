@@ -103,10 +103,15 @@ function bool fn00d458()
 	
 	bool tca.knux_route = false
 	
-	if (tca.ds_char == 3 || tca.ds_char == 4)
-		tca.knux_route = true
-	else if (tca.ds_char > 4) && MISC.getAllowedZones(tca.ds_char) == 0x0b
-		tca.knux_route = true
+#if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
+	if !ECF_dataselect_getStr()
+#endif
+	{
+		if (tca.ds_char == 3 || tca.ds_char == 4)
+			tca.knux_route = true
+		else if (tca.ds_char > 4) && MISC.getAllowedZones(tca.ds_char) == 0x0b
+			tca.knux_route = true	
+	}
 
 	if (tca.intended && objA0.value3b != 0) // complete save
 	{
@@ -184,11 +189,16 @@ function void fn00c890()
 	
 			bool tca.knux_route = false
 			
-			if (tca.ds_char == 3 || tca.ds_char == 4)
-				tca.knux_route = true
-			else if (tca.ds_char > 4) && MISC.getAllowedZones(tca.ds_char - 1) == 0x0b
-				tca.knux_route = true
-		
+		#if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
+			if !ECF_dataselect_getStr(A3)
+		#endif
+			{
+				if (tca.ds_char == 3 || tca.ds_char == 4)
+					tca.knux_route = true
+				else if (tca.ds_char > 4) && MISC.getAllowedZones(tca.ds_char - 1) == 0x0b
+					tca.knux_route = true
+			}
+			
 			if (u8[A3 + 0x3a] == u8[A3 + 0x37] && u8[A3 + 0x3b] != 0)
 			{
 				// Render "CLEAR" label

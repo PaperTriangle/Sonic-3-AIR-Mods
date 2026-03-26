@@ -425,10 +425,15 @@ function void fn00d96a()
 	
 	bool tca.knux_route = false
 	
-	if (tca.ds_char == 3 || tca.ds_char == 4)
-		tca.knux_route = true
-	else if (tca.ds_char > 4) && MISC.getAllowedZones(tca.ds_char - 1) == 0x0b
-		tca.knux_route = true
+#if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
+	if !ECF_dataselect_getStr()
+#endif
+	{
+		if (tca.ds_char == 3 || tca.ds_char == 4)
+			tca.knux_route = true
+		else if (tca.ds_char > 4) && MISC.getAllowedZones(tca.ds_char - 1) == 0x0b
+			tca.knux_route = true
+	}
 		
 	u16 posY = 0x10 + ((Mods.isModActive("Data Select Options") && Mods.isModActive("Origins Screen Resolution")) ? 0x08 : 0x00)
 	
