@@ -65,6 +65,19 @@
 				}
 			},
 			{
+				"InternalName": "lsds.amyicon",
+				"DisplayName": "Amy Clear For Base Trio",
+				"Variable": "lsds.amyicon",	
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Extra Slot Amy",
+					"2": "Amy Galore",
+					"3": "JUWL Amy"
+				}
+			},
+			{
 				"InternalName": "lsds.backtotitle",
 				"DisplayName": "Back Out To Title Screen",
 				"Variable": "lsds.backtotitle",	
@@ -83,7 +96,7 @@
 				"Options":
 				{
 					"0": "Disabled",
-					"1": "Enabled (Excl. Level Select)",
+					"1": "Only Data Select",
 					"2": "Enabled"
 				}
 			},
@@ -91,17 +104,6 @@
 				"InternalName": "lsds.esureorder",
 				"DisplayName": "Reorder ESU Characters",
 				"Variable": "lsds.esureorder",	
-				"DefaultValue": "0",
-				"Options":
-				{
-					"0": "Disabled",
-					"1": "Enabled"
-				}
-			},
-			{
-				"InternalName": "lsds.amyicon",
-				"DisplayName": "ES Amy Clear For All",
-				"Variable": "lsds.amyicon",	
 				"DefaultValue": "0",
 				"Options":
 				{

@@ -4,7 +4,7 @@ global bool lsds.alphashadow
 global bool lsds.nodetail
 global bool lsds.backtotitle
 global u8 lsds.noknuxtails
-global bool lsds.amyicon
+global u8 lsds.amyicon
 global bool lsds.esureorder
 
 define u8 global.xtrachar = u8[0xffffe654]
@@ -380,23 +380,78 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 			}
 		}
 		
+		u8 slotnum = max(s16(u16[A0 + 0x34] - 1), 0) // Character selection AFTER Knuckles & Tails
+		bool ecf_slot = false
+	#if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
+		if ECF_dataselect_getStr()
+			ecf_slot = true
+	#endif
+		
 		// ES Amy Icon for regular charactersprite
-		if lsds.amyicon && (Mods.isModActive("Extra Slot Amy") || Mods.isModActive("Extra Slot Amy SHC")) && (u8[A0 + 0x38] == 0xff && objA0.animation.timer == 0 && u16[0xffffb04a + 0x30] == 0)
+		if lsds.amyicon && u8[A0 + 0x23] == 0x1b && (slotnum < 4) && !ecf_slot && (u8[A0 + 0x38] == 0xff && objA0.animation.timer == 0 && u16[0xffffb04a + 0x30] == 0)
 		{
-			u64 portrait = 0
-			if (u8[A0 + 0x23] == 0x1b)
-				portrait = "Clear_slot3"
+			u64 portrait = "Clear_slot3"
+			u16 py_shift = 0
+			if (lsds.amyicon == 2)
+				portrait = "dataSel_savePortrait_clear_char4"
+			else if (lsds.amyicon == 3)
+			{
+				portrait = "saveimage_JUWL-Amy_3"
+				py_shift += 0x78
+			}
+			
 			if (Renderer.hasCustomSprite(portrait))
 			{
-			#if GAMEAPP >= 0x22051500
-				Renderer.drawCustomSprite(portrait, px, py - (lsds.nodetail ? 0x10 : 0), 0, SPRITE_FLAG_PRIO, renderQueue)
-			#endif
-			#if GAMEAPP <= 0x22050800
-				Renderer.drawCustomSprite(portrait, px, py - (lsds.nodetail ? 0x10 : 0), 0, SPRITE_FLAG_PRIO, renderQueue)
-			#endif
+				Renderer.drawCustomSprite(portrait, px, py - py_shift - (lsds.nodetail ? 0x10 : 0), 0, SPRITE_FLAG_PRIO, renderQueue)
 				u8[A0 + 0x23] = 0
 			}
 		}
+		
+	#if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
+		if lsds.nodetail && (objA0.update_address == 0x00d30c || objA0.update_address == 0x00d42c)
+		{
+			string name = ECF_dataselect_getStr()
+			string id = ECF_dataselect_getNum()
+
+			if (name)
+			{
+				ECF_drawCharSelectSpr(name, id, px, py - 20, renderQueue)
+				if (objA0.update_address == 0x00d42c && u8[u32[A0 + 0x30]] != 0x80 && u8[A0 + 0x1d] < 0x1d && u8[A0 + 0x1d] != 0x0f)
+					ECF_drawCharSelectSprIcons(name, id, px, py, renderQueue)
+				objA0.animation.sprite = 0
+				
+				if (objA0.compound.count >= 2 && objA0.value26 && objA0.update_address == 0x00d42c)
+				{
+					u64 key = stringformat("saveimage_%s_%d", name, objA0.value26)
+					if (!Renderer.hasCustomSprite(key))
+						key = "saveimage_unknown"
+						
+					SpriteHandle zone = Renderer.addSpriteHandle(key, px, py - 136, renderQueue)
+					zone.setFlags(SPRITE_FLAG_PRIO)
+					zone.setPaletteOffset(0x30)
+					objA0.compound.count = 1
+					return false
+				}
+				return false
+			}
+		}
+	#endif
+		
+	#if MISC_ACTIVE
+		if (slotnum > 3)
+		{
+			if (objA0.update_address == 0x00d42c && objA0.animation.frame > 0x17 && u8[A0 + 0x38] == 0xff && u16[0xffffb04a + 0x30] == 0)
+			{
+				px = (objA0.position.x.u16 - 0xa8) + 40
+				string key = MISC.getClearPortrait(objA0.value3b, slotnum)
+				if (Renderer.hasCustomSprite(key))
+				{
+					MISC.drawPortraitSprite(key, px, py - (lsds.nodetail ? 0x10 : 0), 0x00, SPRITE_FLAG_PRIO, renderQueue - 1, slotnum)
+					u8[A0 + 0x23] = 0
+				}
+			}
+		}
+	#endif
 		
 		// Hackey way to handle extra slot compat...
 		if (lsds.nodetail && Mods.isModActive("Extra Character Slots") && objA0.update_address == 0x00d42c && objA0.animation.sprite == 0x05 && objA0.animation.timer > 0x00)
@@ -572,8 +627,14 @@ function void fn00c97a()
 			}
 		#endif
 
+			u8 ecf_slot = false
+
+		#if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
+			ecf_slot = Renderer.hasCustomSprite(getECFCharacterSelectSpriteKey(ECF_dataselect_getStr(A3)))
+		#endif		
+			
 			// Draw icons for lives & continues
-			if (!(u8[A3 + 0x05] > 0x00 && Renderer.hasCustomSprite(stringformat("dataSel_lifeContinue_slot%d", u8[A3 + 0x05]))))
+			if (!(u8[A3 + 0x05] > 0x00 && Renderer.hasCustomSprite(stringformat("dataSel_lifeContinue_slot%d", u8[A3 + 0x05]))) && !ecf_slot)
 			{
 				A1 = A2 + characters * 32
 				D0 = VDPHelper.getDirectVRAMWriteCode(D7.u16)
@@ -638,6 +699,15 @@ function void fn00d42c()
 	objA0.position.y.u16 += 0x10
 }
 
+// ECF Compat?
+function void ECF_drawCharSelectSprIcons(string name, u16 id, s16 px, s16 py, u16 renderQueue)
+{
+	if (lsds.nodetail)
+		return
+
+	base.ECF_drawCharSelectSprIcons(name, id, px, py, renderQueue)
+}
+
 // Amy Galore Compat?
 function void MISC.drawLifeContSprite(s16 px, s16 py, u16 renderQueue, u8 slotnum)
 {
@@ -684,10 +754,15 @@ function void fn00c890()
 		
 				bool tca.knux_route = false
 				
-				if (tca.ds_char == 3 || tca.ds_char == 4)
-					tca.knux_route = true
-				else if (tca.ds_char > 4) && MISC.getAllowedZones(tca.ds_char - 1) == 0x0b
-					tca.knux_route = true
+			#if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
+				if !ECF_dataselect_getStr(A3)
+			#endif
+				{
+					if (tca.ds_char == 3 || tca.ds_char == 4)
+						tca.knux_route = true
+					else if (tca.ds_char > 4) && MISC.getAllowedZones(tca.ds_char - 1) == 0x0b
+						tca.knux_route = true
+				}
 			
 				if (u8[A3 + 0x3a] == u8[A3 + 0x37] && u8[A3 + 0x3b] != 0)
 				{
