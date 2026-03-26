@@ -14,6 +14,12 @@
 			"DisplayName": "Origins Screen Resolution",
 			"IsRequired": "0",
 			"Priority": "Lower"
+		},
+		"papers-pause":
+		{
+			"DisplayName": "Paper's Pause",
+			"IsRequired": "0",
+			"Priority": "Higher"
 		}
 	},
 	"Settings":

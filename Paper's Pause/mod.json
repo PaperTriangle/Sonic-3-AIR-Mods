@@ -7,7 +7,15 @@
 		"Description": "Pause Menu based on my imagining of what it may be like in a 90's re-release.",
 		"ModVersion": "1.0",
 		"GameVersion": "25.02.15.0"
-		
+	},
+	"OtherMods":
+	{
+		"origins-resolution-title-screen":
+		{
+			"DisplayName": "Origins Resolution Title Screen",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		}
 	},
 	"Settings":
 	{
