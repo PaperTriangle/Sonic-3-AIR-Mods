@@ -6,6 +6,7 @@ global bool lsds.backtotitle
 global u8 lsds.noknuxtails
 global u8 lsds.amyicon
 global bool lsds.esureorder
+global bool lsds.levelselect
 
 define u8 global.xtrachar = u8[0xffffe654]
 
@@ -940,7 +941,9 @@ function void Renderer.drawCustomSprite(u64 key, s16 px, s16 py, u8 atex, u8 fla
 function void LevelSelect.init()
 {
 	base.LevelSelect.init()
-	Renderer.drawCustomSprite("custom_ls_bg", s16(getScreenWidth() - 426)/2, -8, 0, 0, 0x1000)
+	
+	if (lsds.levelselect)
+		Renderer.drawCustomSprite("custom_ls_bg", s16(getScreenWidth() - 426)/2, -8, 0, 0, 0x1000)
 	
 	if Mods.isModActive("Origins Screen Resolution")
 		scrolloffset.y.planeA -= 8
@@ -1000,7 +1003,8 @@ function void fn007e64()
 // Draw background and quit out!
 function bool LevelSelect.innerUpdate()
 {
-	Renderer.drawCustomSprite("custom_ls_bg", s16(getScreenWidth() - 426)/2, -8, 0, 0, 0x1000)
+	if (lsds.levelselect)
+		Renderer.drawCustomSprite("custom_ls_bg", s16(getScreenWidth() - 426)/2, -8, 0, 0, 0x1000)
 	
 	if lsds.backtotitle && ((control.pad1.pressed & CONTROL_B || Input.buttonPressed(BUTTON_BACK)) || (levelselect.selection == 0x22 && (control.pad1.pressed | control.pad2.pressed) & CONTROL_START))
 	{
