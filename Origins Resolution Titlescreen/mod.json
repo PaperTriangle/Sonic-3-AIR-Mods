@@ -52,11 +52,12 @@
 				"InternalName": "orts.wave",
 				"DisplayName": "Animated Water",
 				"Variable": "orts.wave",
-				"DefaultValue": "1",
+				"DefaultValue": "2",
 				"Options":
 				{
 					"0": "Disabled",
-					"1": "Enabled"
+					"1": "Slow",
+					"2": "Fast"
 				}
 			},
 			{

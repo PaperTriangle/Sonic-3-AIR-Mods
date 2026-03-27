@@ -504,7 +504,7 @@ function void fn0048dc()
 		else
 		{
 			if (orts.flash < 17)
-				Renderer.drawCustomSprite("complete_press_start", getScreenWidth() / 2, (orts.title_type? 224 : 208), 0x00, 0, 0x9f7e)
+				Renderer.drawCustomSprite("complete_press_start", getScreenWidth() / 2, (orts.title_type? 220 : 208), 0x00, 0, 0x9f7e)
 		}
 		
 		if orts.flash > 32
@@ -517,7 +517,7 @@ function void fn0048dc()
 		Renderer.drawCustomSprite("title_screen_cr", getScreenWidth() - 88, 220, 0x00, 0, 0x9f7e)
 	
 	if (orts.title_type)
-		Renderer.drawCustomSprite("sonic_the_hedgehog", px, py - 1, 0x30, SPRITE_FLAG_PRIO, 0xa000)
+		Renderer.drawCustomSprite("sonic_the_hedgehog", px, py + 1, 0x30, SPRITE_FLAG_PRIO, 0xa000)
 
 	// Clear "Sonic The Hedgehog" text in VRAM
 	for (u16 x = 0xb000; x < 0xb700; x += 0x80)
@@ -612,6 +612,14 @@ function void fn00496a()
 	fn00499c()
 }
 
+//# address-hook(0x00499c) end(0x0049a8)
+function void fn00499c()
+{
+	D0.u16 = u16[0xffffb000 + 0x14] + 0x5c
+	objA0.position.y.u16 = D0.u16 - 0x02
+	DrawObject()
+}
+
 // Copyright
 //# address-hook(0x004a1e) end(0x004a50)
 function void fn004a1e()
@@ -664,7 +672,7 @@ function void fn00486c()
 	objA0.position.y.u16 = D0.u16
 #if STANDALONE
 	// Move it down
-	objA0.position.y.u16 += orts.title_type ? 0x12 : 0x1c
+	objA0.position.y.u16 += orts.title_type ? 0x0e : 0x1c
 #else
 
 	// Movement of Sonic and the ring around him
@@ -674,7 +682,7 @@ function void fn00486c()
 	}
 #endif
 
-	if (orts.title_type) && (scrolloffset.y.planeA != 0x00) && (global.framecounter & 0x01)
+	if (orts.title_type) && (scrolloffset.y.planeA != 0x02) && (global.framecounter & 0x01)
 	{
 		++scrolloffset.y.planeA
 	}
@@ -830,7 +838,11 @@ function void yieldExecution()
 		{
 			float wave1 = Math.lerp(0.125f, 0.875f, float(i) / float(limit))
 			s16 px = s16(getScreenWidth() - 426)/2
-			px += Math.roundToInt((3.25f * wave1) * Math.sin(2.0f * 3.1415f * 384 * float(i * 5) + float(u16(global.framecounter.low) / 41.0f)))
+			
+			if orts.wave == 2
+				px += Math.roundToInt((3.25f * wave1) * Math.sin(6.0f * 3.1415f * 384 * float(i * 5) + 5 * float(u16(global.framecounter.low) / 41.0f)))
+			else
+				px += Math.roundToInt((3.25f * wave1) * Math.sin(2.0f * 3.1415f * 384 * float(i * 5) + float(u16(global.framecounter.low) / 41.0f)))
 
 			Renderer.setViewport(0, py - limit + i, getScreenWidth(), 2, renderQueue)
 			Renderer.drawSpriteTinted("water_wave", px, py, 0, 0, renderQueue + 1, 0, 0xffffffff, 1.0f, 1.0f)
