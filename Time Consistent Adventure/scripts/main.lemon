@@ -1399,3 +1399,36 @@ function void TitleCard.Show()
 	
 	base.TitleCard.Show()
 }
+
+// Sonic 3 Complete Level Select Plus Compat
+function void Renderer.drawCustomSprite(u64 key, s16 px, s16 py, u8 atex, u8 flags, u16 renderQueue)
+{
+	if tca.intended && (key == "S3CompleteSelect_Zone8" || key == "S3CompleteSelect_Zone8_alt")
+	{
+		if (!tca.fbz_s3_icon && tca.fbz)
+			key = "S3CompleteSelect_FBZ"
+		else if (tca.fbz_s3_icon)
+			key = "S3CompleteSelect_FBZ_S3"
+	}
+	else if (key == "S3CompleteSelect_Zone9")
+	{
+		if (tca.soz)
+			key = tca.intended && (levelselect.characters == 3 || levelselect.characters == 4) ? "S3CompleteSelect_SOZ_Knux" : "S3CompleteSelect_SOZ"
+	}
+	else if (key == "S3CompleteSelect_Zone6")
+	{
+		if (tca.lbz)
+			key = (levelselect.characters == 3 || levelselect.characters == 4) ? "S3CompleteSelect_LBZ_Knux" : "S3CompleteSelect_LBZ"
+	}
+	else if (key == "S3CompleteSelect_Zone12")
+	{
+		if (tca.intended && tca.ssz_icon && tca.ssz_sonic) && (levelselect.selection == 0x16)
+			key = tca.pal_ssz_dawn ? "S3CompleteSelect_SSZ_Dawn_Pink" : "S3CompleteSelect_SSZ_Dawn"
+		else if (tca.ssz_knux) && (levelselect.selection == 0x17)
+			key = tca.intended ? "S3CompleteSelect_SSZ_Knux" : "S3CompleteSelect_SSZ_Knux_Released"
+		else if (Mods.isModActive("Moar Transparency") && System.getGlobalVariableValueByName("mt.teleframe"))
+			key = "S3CompleteSelect_SSZ_C"
+	}
+	
+	base.Renderer.drawCustomSprite(key, px, py, atex, flags, renderQueue)
+}

@@ -1,0 +1,13 @@
+{
+	"S3CompleteSelect_FBZ": { "File": "fbz_icon.png"},	
+	"S3CompleteSelect_FBZ_S3": { "File": "fbz_icon_s3.png"},	
+	"S3CompleteSelect_LBZ": { "File": "lbz_icon.png"},	
+	"S3CompleteSelect_LBZ_Knux": { "File": "lbz_icon_knux.png"},	
+	"S3CompleteSelect_SOZ": { "File": "soz_icon.png"},	
+	"S3CompleteSelect_SOZ_Knux": { "File": "soz_icon_knux.png"},	
+	"S3CompleteSelect_SSZ_C": { "File": "ssz_icon_compat.png"},	
+	"S3CompleteSelect_SSZ_Dawn": { "File": "ssz_icon_dawn.png"},	
+	"S3CompleteSelect_SSZ_Dawn_Pink": { "File": "ssz_icon_dawn_pink.png"},	
+	"S3CompleteSelect_SSZ_Knux": { "File": "ssz_icon_knux.png"},
+	"S3CompleteSelect_SSZ_Knux_Released": { "File": "ssz_icon_knux_released.png"}
+}
