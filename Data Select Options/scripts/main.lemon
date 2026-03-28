@@ -925,7 +925,7 @@ function void Renderer.drawCustomSprite(u64 key, s16 px, s16 py, u8 atex, u8 fla
 			py += 8
 		
 	#if EXTRA_CHARACTERS_UNLIMITED
-		if (global.xtrachar == 0x04) && (key == "level_select_S3C_M_Mighty" || key == "level_select_S3C_S3_Mighty")
+		if Mods.isModActive("Sonic 3 Complete Level Select+") && (global.xtrachar == 0x04) && (key == "level_select_S3C_M_Mighty" || key == "level_select_S3C_S3_Mighty")
 		{
 			base.Renderer.drawCustomSprite(key, px, py, atex, flags, renderQueue)
 			base.Renderer.drawCustomSprite(RenderExtraCharIcon(0x02), px + 0x10, py, atex, flags, renderQueue)
@@ -949,7 +949,9 @@ function void LevelSelect.init()
 	base.LevelSelect.init()
 	
 	if (lsds.levelselect)
-		Renderer.drawCustomSprite((lsds.levelselect == 2) ? "custom_ls_bg" : "wide_bg_dataselect", s16(getScreenWidth() - 426)/2 - 43, -8, 0x10, 0, 0x1000)
+	{
+		Renderer.drawCustomSprite("custom_ls_bg", s16(getScreenWidth() - 426)/2 - 43, -8, 0x10, 0, 0x1000)
+	}
 	
 	if Mods.isModActive("Origins Screen Resolution")
 		scrolloffset.y.planeA -= 8
@@ -1009,8 +1011,10 @@ function void fn007e64()
 // Draw background and quit out!
 function bool LevelSelect.innerUpdate()
 {
-	if (lsds.levelselect)
-		Renderer.drawCustomSprite((lsds.levelselect == 2) ? "custom_ls_bg" : "wide_bg_dataselect", s16(getScreenWidth() - 426)/2 - 43, -8, 0x10, 0, 0x1000)
+	if (lsds.levelselect && Mods.isModActive("Sonic 3 Complete Level Select+"))
+	{
+		Renderer.drawCustomSprite("custom_ls_bg", s16(getScreenWidth() - 426)/2 - 43, -8, 0x10, 0, 0x1000)
+	}
 	
 	if lsds.backtotitle && ((control.pad1.pressed & CONTROL_B || Input.buttonPressed(BUTTON_BACK)) || (levelselect.selection == 0x22 && (control.pad1.pressed | control.pad2.pressed) & CONTROL_START))
 	{
@@ -1024,4 +1028,157 @@ function bool LevelSelect.innerUpdate()
 	
 	
 	return base.LevelSelect.innerUpdate()
+}
+
+// NEW function returns the icon of the Extra character
+function string RenderExtraCharIcon(u8 xtrachar)
+{
+	return base.RenderExtraCharIcon(xtrachar)
+}
+
+// Continue Screen
+
+//# address-hook(0x05c2e0) end(0x05c4d4)
+function void fn05c2e0()
+{
+	if Mods.isModActive("Origins Screen Resolution")
+	{
+		Renderer.setScreenSize(System.getGlobalVariableValueByName("screen_width"), 240)
+		System.setGlobalVariableValueByName("set_screen_size", 1)
+	}
+
+	base.fn05c2e0()
+}
+
+// Sonic & Tails
+
+//# address-hook(0x05c52a) end(0x05c59c)
+function void fn05c52a()
+{
+	if !Mods.isModActive("Origins Screen Resolution")
+	{
+		base.fn05c52a()
+		return
+	}
+	
+	objA0.mapping_offset = 0x05cc4a
+	objA0.sprite_attributes = (ContinueScreen.Characters.targetInVRAM >> 5)
+	objA0.sprite_priority = 0x0280
+	objA0.box_size.x = 0x0c
+	objA0.box_size.y = 0x14
+	objA0.position.x.u16 = 0x0118 + getScreenExtend()
+	objA0.position.y.u16 = 0x0120 + 0x10
+
+	objA0.update_address = 0x05c55c
+	fn05c55c()
+}
+
+//# address-hook(0x05c684) end(0x05c6b0)
+function void fn05c684()
+{
+	if !Mods.isModActive("Origins Screen Resolution")
+	{
+		base.fn05c684()
+		return
+	}
+	
+	// Sonic running after Knuckles when continuing
+
+	objA0.base_state = 0x02
+	objA0.mapping_offset = 0x146620
+	objA0.sprite_attributes = (Char.Player1.targetInVRAM >> 5)
+	objA0.sprite_priority = 0x0280
+	objA0.box_size.x = 0x0c
+	objA0.box_size.y = 0x14
+	objA0.position.x.u16 = 0x0120 + getScreenExtend()
+	objA0.position.y.u16 = 0x0120 + 0x10
+
+	fn05c6b6()
+}
+
+// Tails
+
+//# address-hook(0x05c718) end(0x05c7a4)
+function void fn05c718()
+{
+	if !Mods.isModActive("Origins Screen Resolution")
+	{
+		base.fn05c718()
+		return
+	}
+	
+	objA0.mapping_offset = 0x05cc4a
+	objA0.sprite_attributes = (ContinueScreen.Characters.targetInVRAM >> 5)
+	objA0.sprite_priority = 0x0200
+	objA0.box_size.x = 0x10
+	objA0.box_size.y = 0x14
+	objA0.position.x.u16 = 0x012c + getScreenExtend()
+	objA0.position.y.u16 = 0x0120 + 0x10
+
+	objA0.update_address = 0x05c74a
+	fn05c74a()
+}
+
+// Knuckles
+
+//# address-hook(0x05c838) end(0x05c886)
+function void fn05c838()
+{
+	if !Mods.isModActive("Origins Screen Resolution")
+	{
+		base.fn05c838()
+		return
+	}
+	
+	if (!isMainCharacter(CHARACTER_KNUCKLES))
+	{
+		A1 = 0x05c8c8
+		objA0.position.x.u16 = 0x40
+		objA0.position.y.u16 = 0x0120 + 0x10
+
+		objA0.update_address = 0x05c8c8
+		fn05c8c8()
+	}
+	else
+	{
+		A1 = 0x05c85a
+		objA0.mapping_offset = 0x05cc4a
+		objA0.sprite_attributes = (sprite_attribute.PALETTE.LINE3 | (ContinueScreen.Characters.targetInVRAM >> 5))
+		objA0.sprite_priority = 0x0200
+		objA0.box_size.x = 0x10
+		objA0.box_size.y = 0x18
+		objA0.position.x.u16 = 0x011c + getScreenExtend()
+		objA0.position.y.u16 = 0x0120 + 0x10
+
+		objA0.update_address = 0x05c88c
+		fn05c88c()
+	}
+}
+
+// Egg Robo (only when playing as Knuckles)
+
+//# address-hook(0x05c972) end(0x05c9be)
+function void fn05c972()
+{
+	if !Mods.isModActive("Origins Screen Resolution")
+	{
+		base.fn05c972()
+		return
+	}
+	
+	setupObjectAttributesFull(0x0919a6)
+
+	objA0.render_flags &= ~render_flag.WORLD
+	objA0.render_flags |= render_flag.FLIP_X
+	objA0.update_address = 0x05c9c4
+	objA0.position.x.u16 = 0x60
+	objA0.position.y.u16 = 0xf0 + 0x10
+	objA0.velocity.x = 0x0600
+	fn0685e2()
+
+	// "spawnChildObjects(0x0919d0)" replaced by:
+	spawnChildObject(0x0916a8, 0x00, -12, 28)
+	spawnChildObject(0x0916ee, 0x02, -28, -4)
+
+	Kosinski.addToDMAQueue(0x17b17e, 0xa000)		// Egg Robo badnik sprites
 }

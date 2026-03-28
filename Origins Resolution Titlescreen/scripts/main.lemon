@@ -332,8 +332,12 @@ function void TitleScreen()
 			continue
 	#endif
 
-		if (!orts.no_demo && global.demo_countdown == 0)
-			break
+		if (global.demo_countdown == 0)
+		{
+			playMusic(MUSIC_CTRL_STOP)
+			if (!orts.no_demo)
+				break
+		}
 
 		if ((control.pad1.pressed | control.pad2.pressed) & CONTROL_START)
 		{
@@ -370,7 +374,7 @@ function void TitleScreen()
 						EntryFunctions.levelSelect()
 					else
 						EntryFunctions.dataSelect()
-						
+
 					//yieldExecution()
 				}
 			}
@@ -505,7 +509,7 @@ function void fn0048dc()
 		else
 		{
 			if (orts.flash < 17)
-				Renderer.drawCustomSprite("complete_press_start", getScreenWidth() / 2, (orts.title_type? 220 : 208), 0x00, 0, 0x9f7e)
+				Renderer.drawCustomSprite("complete_press_start", getScreenWidth() / 2, 220, 0x00, 0, 0x9f7e)
 		}
 		
 		if orts.flash > 32
@@ -837,7 +841,7 @@ function void yieldExecution()
 		
 		for (u16 i = 0; i < limit; ++i)
 		{
-			float wave1 = Math.lerp(0.125f, 1.25f, float(i) / float(limit))
+			float wave1 = Math.lerp(0.00f, 1.15f, float(i) / float(limit))
 			s16 px = s16(getScreenWidth() - 426)/2
 			
 			if orts.wave == 2
@@ -851,7 +855,6 @@ function void yieldExecution()
 			renderQueue += 3
 		}
 	}
-	
 	
 	base.yieldExecution()
 }
