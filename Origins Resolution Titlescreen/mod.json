@@ -61,6 +61,17 @@
 				}
 			},
 			{
+				"InternalName": "orts.no_demo",
+				"DisplayName": "Prevent Demo Playback",
+				"Variable": "orts.no_demo",
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
 				"InternalName": "orts.bypass_menu",
 				"DisplayName": "Bypass A.I.R. Menu",
 				"Variable": "orts.bypass_menu",

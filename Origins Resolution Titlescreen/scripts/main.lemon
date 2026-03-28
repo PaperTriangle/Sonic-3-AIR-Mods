@@ -5,6 +5,7 @@ global bool orts.crash_sound
 global bool orts.bypass_menu
 global bool orts.oldschool_codes
 global bool orts.no_skip_cutscene
+global bool orts.no_demo
 
 global u8 orts.flash
 global u8 orts.waveon
@@ -331,7 +332,7 @@ function void TitleScreen()
 			continue
 	#endif
 
-		if (global.demo_countdown == 0)
+		if (!orts.no_demo && global.demo_countdown == 0)
 			break
 
 		if ((control.pad1.pressed | control.pad2.pressed) & CONTROL_START)
@@ -836,11 +837,11 @@ function void yieldExecution()
 		
 		for (u16 i = 0; i < limit; ++i)
 		{
-			float wave1 = Math.lerp(0.125f, 0.875f, float(i) / float(limit))
+			float wave1 = Math.lerp(0.125f, 1.25f, float(i) / float(limit))
 			s16 px = s16(getScreenWidth() - 426)/2
 			
 			if orts.wave == 2
-				px += Math.roundToInt((3.25f * wave1) * Math.sin(6.0f * 3.1415f * 384 * float(i * 5) + 5 * float(u16(global.framecounter.low) / 41.0f)))
+				px += Math.roundToInt((4.25f * wave1) * Math.sin(7.0f * 3.1415f * 384 * float(i * 4) + 4 * float(((global.framecounter >> 1) % 385) / 61.5f)))
 			else
 				px += Math.roundToInt((3.25f * wave1) * Math.sin(2.0f * 3.1415f * 384 * float(i * 5) + float(u16(global.framecounter.low) / 41.0f)))
 
