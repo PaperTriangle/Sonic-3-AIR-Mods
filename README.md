@@ -141,9 +141,9 @@ Removes the dust from the Spindash while the character is in the air and starts 
 ## Time Consistent Adventure
 This mod adjusts the palettes and some stage art for many zones to provide a more consistent passage of time with the Sonic & Tails and the Knuckles adventures.
 
-An option has been added to run this using the released zone order, however this does disable many features of the mod.
+Thanks to Useott this mod also includes the logic to run it as either the originally intended zone order or the as released zone order!
 
-**PLEASE NOTE:** The GitHub version of this mod comes with the related zone order code from **Useott's Original Zone Order** baked into the mod.
+**PLEASE NOTE:** If you use the "as released"  order this does disable many features of the mod.
 
 ## Underwater Super/Hyper Palettes
 Adds an underwater palette for Hyper Sonic, underwater palette options for Tails and Knuckles, and also has some options to make the flash less white to align with some of the ESU characters.

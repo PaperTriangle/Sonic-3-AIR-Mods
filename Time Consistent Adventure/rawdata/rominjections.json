@@ -147,6 +147,10 @@
 	{
 		"File": "FBZ_Zone_Card.bin"
 	},
+	"FBZ_Zone_Card_S3":
+	{
+		"File": "FBZ_Zone_Card_S3.bin"
+	},
 	"LBZ_Zone_Card":
 	{
 		"File": "LBZ_Zone_Card.bin"

@@ -8,6 +8,7 @@
 	"fbz_stars_2":  { "File": "fbz_sky_3.bmp", "Rect": "0,0,128,164", "Center": "128,132" },
 	"fbz_stars_3":  { "File": "fbz_sky_4.bmp", "Rect": "0,0,128,164", "Center": "128,132" },
 	"fbz_icon": { "File": "fbz_icon.bmp", "Rect": "0,0,80,56"},
+	"fbz_icon_s3": { "File": "fbz_icon_s3.bmp", "Rect": "0,0,80,56"},
 	"lbz_icon": { "File": "lbz_icon.bmp", "Rect": "0,0,80,56"},
 	"lbz_icon_knux": { "File": "lbz_icon_knux.bmp", "Rect": "0,0,80,56"},
 	"soz_icon": { "File": "soz_icon.bmp", "Rect": "0,0,80,56"},

@@ -220,6 +220,18 @@
 				}
 			},
 			{
+				"InternalName": "tca.fbz_s3_icon",
+				"DisplayName": "FBZ Original Zone Icon",
+				"Variable": "tca.fbz_s3_icon",
+				"Category": "Extra Settings",	
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
 				"InternalName": "tca.fbz_bg",
 				"DisplayName": "FBZ2 Outdoor Palette",
 				"Variable": "tca.fbz_bg",

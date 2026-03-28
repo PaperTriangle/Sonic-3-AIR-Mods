@@ -15,6 +15,7 @@ global bool tca.fadetype
 global bool tca.fadespeed
 global bool tca.mgz2boss
 global bool tca.leftescape
+global bool tca.fbz_s3_icon
 global bool tca.fbz_bg
 global bool tca.fbz_explosions
 global bool tca.icz_trans_point
@@ -459,16 +460,24 @@ function void fn00d96a()
 				System.loadExternalRawData("SSZ_Zone_Card_Sonic", 0x00CC78)
 		}
 		
-		if (tca.fbz)
+		if (!tca.fbz_s3_icon && tca.fbz)
 			System.loadExternalRawData("FBZ_Zone_Card", 0x00CBF8)
+		else if (tca.fbz_s3_icon)
+			System.loadExternalRawData("FBZ_Zone_Card_S3", 0x00CBF8)
+
 		if (tca.lbz)
 			System.loadExternalRawData("LBZ_Zone_Card", 0x00CBB8)
 
 		if (u16[A0 + 0x36] == 0x007 && s16[0xffffb04a + 0x2e] == 0)
 		{
-			if (tca.fbz)
+			if (!tca.fbz_s3_icon && tca.fbz)
 			{
 				SpriteHandle dataselpreview = Renderer.addSpriteHandle("fbz_icon", (objA0.position.x.u16 + getScreenExtend() - 208) - getScreenExtend() + 40, posY, 0x9ff9)
+				dataselpreview.setFlags(0x40)
+			}
+			else if (tca.fbz_s3_icon)
+			{
+				SpriteHandle dataselpreview = Renderer.addSpriteHandle("fbz_icon_s3", (objA0.position.x.u16 + getScreenExtend() - 208) - getScreenExtend() + 40, posY, 0x9ff9)
 				dataselpreview.setFlags(0x40)
 			}
 		}
@@ -527,6 +536,8 @@ function void fn00d96a()
 		
 		if (tca.soz)
 			System.loadExternalRawData("SOZ_Zone_Card_Sonic", 0x00CC18)
+		if (tca.fbz_s3_icon)
+			System.loadExternalRawData("FBZ_Zone_Card_S3", 0x00CBF8)
 		if (tca.lbz)
 			System.loadExternalRawData("LBZ_Zone_Card", 0x00CBB8)
 	
@@ -539,6 +550,14 @@ function void fn00d96a()
 					lbzkey = "lbz_icon_knux"
 					
 				SpriteHandle dataselpreview = Renderer.addSpriteHandle(lbzkey, (objA0.position.x.u16 + getScreenExtend() - 208) - getScreenExtend() + 40, posY, 0x9ff9)
+				dataselpreview.setFlags(0x40)
+			}
+		}
+		if (u16[A0 + 0x36] == 0x007 && s16[0xffffb04a + 0x2e] == 0)
+		{
+			if (tca.fbz_s3_icon)
+			{
+				SpriteHandle dataselpreview = Renderer.addSpriteHandle("fbz_icon_s3", (objA0.position.x.u16 + getScreenExtend() - 208) - getScreenExtend() + 40, posY, 0x9ff9)
 				dataselpreview.setFlags(0x40)
 			}
 		}
