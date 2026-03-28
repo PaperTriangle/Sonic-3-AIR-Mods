@@ -934,6 +934,12 @@ function void Renderer.drawCustomSprite(u64 key, s16 px, s16 py, u8 atex, u8 fla
 	#endif
 	}
 	
+	if lsds.alphashadow && (key == "S3CompleteSelect_Border")
+	{
+		key = "s3cls_border"
+		Renderer.drawCustomSprite("s3cls_border_shadow" , px, py, 0x00, 0, renderQueue, 0, 0x80)
+	}
+	
 	base.Renderer.drawCustomSprite(key, px, py, atex, flags, renderQueue)
 }
 
@@ -943,7 +949,7 @@ function void LevelSelect.init()
 	base.LevelSelect.init()
 	
 	if (lsds.levelselect)
-		Renderer.drawCustomSprite("custom_ls_bg", s16(getScreenWidth() - 426)/2, -8, 0, 0, 0x1000)
+		Renderer.drawCustomSprite((lsds.levelselect == 2) ? "custom_ls_bg" : "wide_bg_dataselect", s16(getScreenWidth() - 426)/2 - 43, -8, 0x10, 0, 0x1000)
 	
 	if Mods.isModActive("Origins Screen Resolution")
 		scrolloffset.y.planeA -= 8
@@ -1004,7 +1010,7 @@ function void fn007e64()
 function bool LevelSelect.innerUpdate()
 {
 	if (lsds.levelselect)
-		Renderer.drawCustomSprite("custom_ls_bg", s16(getScreenWidth() - 426)/2, -8, 0, 0, 0x1000)
+		Renderer.drawCustomSprite((lsds.levelselect == 2) ? "custom_ls_bg" : "wide_bg_dataselect", s16(getScreenWidth() - 426)/2 - 43, -8, 0x10, 0, 0x1000)
 	
 	if lsds.backtotitle && ((control.pad1.pressed & CONTROL_B || Input.buttonPressed(BUTTON_BACK)) || (levelselect.selection == 0x22 && (control.pad1.pressed | control.pad2.pressed) & CONTROL_START))
 	{
