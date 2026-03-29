@@ -845,7 +845,7 @@ function void yieldExecution()
 			s16 px = s16(getScreenWidth() - 426)/2
 			
 			if orts.wave == 2
-				px += Math.roundToInt((4.25f * wave1) * Math.sin(7.0f * 3.1415f * 384 * float(i * 4) + 4 * float(((global.framecounter >> 1) % 385) / 61.5f)))
+				px += Math.roundToInt((4.25f * wave1) * Math.sin(6.0f * 3.1415f * 384 * float(i * 4) + 4 * float(u16((global.framecounter >> 1) & 0xff) / 41.0f)))
 			else
 				px += Math.roundToInt((3.25f * wave1) * Math.sin(2.0f * 3.1415f * 384 * float(i * 5) + float(u16(global.framecounter.low) / 41.0f)))
 
