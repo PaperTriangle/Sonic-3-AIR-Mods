@@ -1403,9 +1403,9 @@ function void TitleCard.Show()
 // Sonic 3 Complete Level Select Plus Compat
 function void Renderer.drawCustomSprite(u64 key, s16 px, s16 py, u8 atex, u8 flags, u16 renderQueue)
 {
-	if tca.intended && (key == "S3CompleteSelect_Zone8" || key == "S3CompleteSelect_Zone8_alt")
+	if tca.fbz && (key == "S3CompleteSelect_Zone8" || key == "S3CompleteSelect_Zone8_alt")
 	{
-		if (!tca.fbz_s3_icon && tca.fbz)
+		if (!tca.fbz_s3_icon && tca.intended)
 			key = "S3CompleteSelect_FBZ"
 		else if (tca.fbz_s3_icon)
 			key = "S3CompleteSelect_FBZ_S3"
