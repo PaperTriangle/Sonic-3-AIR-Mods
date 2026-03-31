@@ -4,6 +4,7 @@ global bool sff.super_sonic_palette
 global bool sff.super_stars
 global bool sff.tails_flight
 global bool sff.super_drown
+global bool sff.no_up
 global u8 sff.super_breaks_stuff
 
 define u8 global.xtrachar = u8[0xffffe654]
@@ -403,11 +404,6 @@ function void yieldExecution()
 
 function bool UpdateTailsFlight_innerA()
 {
-	if (sff.tails_flight == 0) || (sff.tails_flight == 1 && super.active.tails == 0) || !(sff.tails_flight == 2 && super.active.tails == 0xff && Game.getSetting(SETTING_HYPER_TAILS))
-	{
-		return base.UpdateTailsFlight_innerA()
-	}
-	
 	// Flight countdown
 	if (level.framecounter.low & 0x01)
 	{
@@ -415,11 +411,12 @@ function bool UpdateTailsFlight_innerA()
 			--tails.flight_countdown
 	}
 
-	bool canAscend = (char.velocity.y >= -0x200 && tails.flight_countdown > 0 && ((char.flags & char.flag.UNDERWATER) == 0 || !tails.carrying))
+	bool fastFlight = (sff.tails_flight == 1 && super.active.tails) || (sff.tails_flight == 2 && super.active.tails == 0xff && Game.getSetting(SETTING_HYPER_TAILS))
+	bool canAscend = (char.velocity.y >= (fastFlight ? -0x200 : -0x100) && tails.flight_countdown > 0 && ((char.flags & char.flag.UNDERWATER) == 0 || !tails.carrying))
 
 #if STANDALONE
 	// Allow for holding [up] to gain height
-	if ((control.tails.state & CONTROL_UP) && canAscend && char.velocity.y >= -0xf8)
+	if !sff.no_up && ((control.tails.state & CONTROL_UP) && canAscend && char.velocity.y >= (fastFlight ? -0x1f8 : -0x0f8))
 	{
 		char.double_jump_state = 0x1f
 	}
@@ -442,7 +439,7 @@ function bool UpdateTailsFlight_innerA()
 	//  -> Press jump to fly higher, and it starts counting up until 0x20, as a timer for the upwards flight effect
 	if (char.double_jump_state != 1)
 	{
-		if (char.velocity.y >= -0x200)
+		if (char.velocity.y >= (fastFlight ? -0x200 : -0x100))
 		{
 			// Fly up
 			char.velocity.y -= 0x20

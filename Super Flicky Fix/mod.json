@@ -5,7 +5,7 @@
 		"UniqueID": "super-flicky-fix",
 		"Author": "PaperTriangle",
 		"Description": "Fixes handling of the super flicky to use Sonic's extended palette.",
-		"ModVersion": "1.11"
+		"ModVersion": "1.12"
 	},
 	"OtherMods":
 	{
@@ -97,6 +97,18 @@
 					"0": "Disabled",
 					"1": "When Super & Hyper",
 					"2": "When Hyper"
+				}
+			},
+			{
+				"InternalName": "sff.no_up",
+				"DisplayName": "Prevent Holding Up Ascention",
+				"Variable": "sff.no_up",
+				"Category": "Tails Settings",
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
 				}
 			},
 			{
