@@ -1148,7 +1148,6 @@ function void fn07305a()
 function void UpdateLevelScrolling.SOZ1()
 {
 	move_area.right = 0x4438 - 0x128
-	move_area.right.target = 0x4438 - 0x128
 	base.UpdateLevelScrolling.SOZ1()
 }
 
