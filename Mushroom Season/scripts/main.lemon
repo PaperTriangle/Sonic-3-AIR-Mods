@@ -1,4 +1,4 @@
-global bool mh.mhzfade
+global bool ms.mhzfade
 
 //# address-hook(0x055008) end(0x055038)
 function void fn055008()
@@ -46,7 +46,7 @@ function void mushroomFade(s16 width, u16 centrePoint, u32 palA1, u32 palA2)
 	float fadeVal
 	u16 camPos = camera.position.x.u16 + getScreenWidth() / 2
 	
-	System.writeDisplayLine(stringformat("%d", width))
+	//System.writeDisplayLine(stringformat("%d", width))
 	
 	if (width > 0)
 	{
@@ -58,9 +58,9 @@ function void mushroomFade(s16 width, u16 centrePoint, u32 palA1, u32 palA2)
 		fadeVal = camPos > centrePoint ? 256 : 0
 	}
 
-	if mh.mhzfade && (fadeVal > 0 && fadeVal < 256) 
+	if ms.mhzfade && (fadeVal > 0 && fadeVal < 256) 
 	{
-		if (mh.mhzfade == 2)
+		if (ms.mhzfade == 2)
 			fadeVal = 128
 		else
 			fadeVal = (fadeVal < 128 ? Math.ceil(fadeVal / 64) : Math.floor(fadeVal / 64) ) * 64

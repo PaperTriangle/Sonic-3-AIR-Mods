@@ -1,8 +1,8 @@
 {
 	"Metadata":
 	{
-		"Name": "Mushroom Hunting",
-		"UniqueID": "mushroom-hunting",
+		"Name": "Mushroom Season",
+		"UniqueID": "mushroom-season",
 		"Author": "PaperTriangle",
 		"Description": "Adds a fade effect to the horizontal palette swaps in MHZ2.",
 		"ModVersion": "1.0"
@@ -21,9 +21,9 @@
 		"List":
   		[
 			{
-				"InternalName": "mh.mhzfade",
+				"InternalName": "ms.mhzfade",
 				"DisplayName": "MHZ2 Season Fade",
-				"Variable": "mh.mhzfade",
+				"Variable": "ms.mhzfade",
 				"DefaultValue": "0",
 				"Options":
 				{
