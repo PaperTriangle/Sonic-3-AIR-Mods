@@ -1,7 +1,6 @@
 define u8 global.xtrachar	= u8[0xffffe654]
 global u8 ort.titlecard
 global bool ort.esu_titlecard
-global bool ort.mhzfade
 global bool ort.spawnfix
 global bool ort.tcgraphics
 global bool ort.originalcredits
@@ -418,73 +417,15 @@ function void fn0162d8()
 	fn016334()
 }
 
-//# address-hook(0x055008) end(0x055038)
-function void fn055008()
+//Emerald cave missing tiles... Why?
+//# address-hook(0x05aa02) end(0x05aa2e)
+function void InitLevelTiles.EC()
 {
-	D0.u16 = camera.position.x.u16 + getScreenWidth() / 2 //u16[0xffffb000 + 0x10]
-	D1.u16 = u16[0xffffb000 + 0x14]
-
-	if ((D0.u16 >= 0x0970 && D0.u16 <= 0x0a00 && D1.u16 >= 0x0700 && D1.u16 <= 0x800))
-	{
-		mushroomFade(true)
-		return
-	}
-	else if (D0.u16 >= 0x2af0 && D0.u16 <= 0x2b80 && D1.u16 >= 0x0500 && D1.u16 <= 0x600) || (D0.u16 >= 0x28f0 && D0.u16 <= 0x2980 && D1.u16 >= 0x0200 && D1.u16 <= 0x380)
-	{
-		mushroomFade(false)
-		return
-	}
-
-	for (u8 i = 0; i < 5; ++i)
-	{
-		A1 = 0x05513e + i * 10
-		u16 minX = u16[A1]
-		u16 maxX = u16[A1+2]
-		u16 minY = u16[A1+4]
-		u16 maxY = u16[A1+6]
-		A5 = A1 + 8
-		if (D0.u16 >= minX && D0.u16 <= maxX && D1.u16 >= minY && D1.u16 < maxY)
-		{
-			call 0x05503c + i * 4
-			return
-		}
-	}
-}
-
-// New function for MVZ Palette transition
-function void mushroomFade(bool isKnuckles)
-{
-	float fadeVal
-	u32 palA1 = 0x0a94bc
-	u32 palA2 = 0x0550fe
-	u16 camPos = camera.position.x.u16 + getScreenWidth() / 2
+	base.InitLevelTiles.EC()
 	
-	if (isKnuckles)
-	{
-		palA1 = 0x0a945c
-		palA2 = 0x0a94bc
-		fadeVal = min((min(max(camPos, 0x09ab), 0x09d5) - 0x09ab) * 6.1, 256)
-	}
-	else
-	{
-		if (u16[0xffffb000 + 0x14] > 0x0500)
-			fadeVal = min((min(max(camPos, 0x2b2b), 0x2b55) - 0x2b2b) * 6.1, 256)
-		else
-			fadeVal = min((min(max(camPos, 0x292b), 0x2955) - 0x292b) * 6.1, 256)
-	}
-
-	if ort.mhzfade && (fadeVal > 0 && fadeVal < 256) 
-	{
-		if (ort.mhzfade == 2)
-			fadeVal = 128
-		else
-			fadeVal = (fadeVal < 128 ? Math.ceil(fadeVal / 64) : Math.floor(fadeVal / 64) ) * 64
-	}
-	
-	for (u8 i = 0; i < 31; i++)
-	{
-		u16[0xfffffc40 + i*2] = blendColorsPacked(u16[palA1 + i*2], u16[palA2 + i*2], Math.roundToInt(fadeVal))
-	}
+	u8[0xffff81b5] = 0x47
+	u8[0xffff8181] = 0x04
+	u8[0xffff8183] = 0x46
 }
 
 // Fix in testing for certain object pop in near screen edge.

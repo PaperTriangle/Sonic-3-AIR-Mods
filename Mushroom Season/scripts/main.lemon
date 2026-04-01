@@ -1,0 +1,73 @@
+global bool mh.mhzfade
+
+//# address-hook(0x055008) end(0x055038)
+function void fn055008()
+{
+	D0.u16 = camera.position.x.u16 + getScreenWidth() / 2
+	D1.u16 = u16[0xffffb000 + 0x14]
+
+	s16 extraPixels = max(s16(getScreenWidth() - 384), 0) / 2
+	
+	if ((D0.u16 >= 0x9c0 - extraPixels - 0x60 && D0.u16 <= 0x9c0 + extraPixels + 0x60 && D1.u16 >= 0x0700 && D1.u16 <= 0x800))
+	{
+		mushroomFade(extraPixels, 0x09c0, 0x0a945c, 0x0a94bc)
+		return
+	}
+	else if (D0.u16 >= 0x2b40 - extraPixels - 0x60 && D0.u16 <= 0x2b40 + extraPixels + 0x60 && D1.u16 >= 0x0500 && D1.u16 <= 0x600)
+	{
+		mushroomFade(extraPixels, 0x2b40, 0x0a94bc, 0x0550fe)
+		return
+	}
+	else if (D0.u16 >= 0x2940 - extraPixels - 0x60 && D0.u16 <= 0x2940 + extraPixels + 0x60 && D1.u16 >= 0x0200 && D1.u16 <= 0x380)
+	{
+		mushroomFade(extraPixels, 0x2940, 0x0a94bc, 0x0550fe)
+		return
+	}
+
+	for (u8 i = 0; i < 5; ++i)
+	{
+		A1 = 0x05513e + i * 10
+		u16 minX = u16[A1]
+		u16 maxX = u16[A1+2]
+		u16 minY = u16[A1+4]
+		u16 maxY = u16[A1+6]
+		A5 = A1 + 8
+		if (D0.u16 >= minX && D0.u16 <= maxX && D1.u16 >= minY && D1.u16 < maxY)
+		{
+			call 0x05503c + i * 4
+			return
+		}
+	}
+}
+
+// New function for MVZ Palette transition
+function void mushroomFade(s16 width, u16 centrePoint, u32 palA1, u32 palA2)
+{
+	float fadeVal
+	u16 camPos = camera.position.x.u16 + getScreenWidth() / 2
+	
+	System.writeDisplayLine(stringformat("%d", width))
+	
+	if (width > 0)
+	{
+		float fadeMult = 256.0f / (2.0f * width)
+		fadeVal = min((min(max(camPos, centrePoint - width), centrePoint + width) - (centrePoint - width)) * fadeMult, 256)
+	}
+	else
+	{
+		fadeVal = camPos > centrePoint ? 256 : 0
+	}
+
+	if mh.mhzfade && (fadeVal > 0 && fadeVal < 256) 
+	{
+		if (mh.mhzfade == 2)
+			fadeVal = 128
+		else
+			fadeVal = (fadeVal < 128 ? Math.ceil(fadeVal / 64) : Math.floor(fadeVal / 64) ) * 64
+	}
+	
+	for (u8 i = 0; i < 31; i++)
+	{
+		u16[0xfffffc40 + i*2] = blendColorsPacked(u16[palA1 + i*2], u16[palA2 + i*2], Math.roundToInt(fadeVal))
+	}
+}

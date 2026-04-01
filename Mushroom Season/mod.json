@@ -1,0 +1,37 @@
+{
+	"Metadata":
+	{
+		"Name": "Mushroom Hunting",
+		"UniqueID": "mushroom-hunting",
+		"Author": "PaperTriangle",
+		"Description": "Adds a fade effect to the horizontal palette swaps in MHZ2.",
+		"ModVersion": "1.0"
+	},
+	"OtherMods":
+	{
+		"thorn-originsresolution":
+		{
+			"DisplayName": "Origins Screen Resolution",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		}
+	},
+	"Settings":
+	{
+		"List":
+  		[
+			{
+				"InternalName": "mh.mhzfade",
+				"DisplayName": "MHZ2 Season Fade",
+				"Variable": "mh.mhzfade",
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Smooth Fade",
+					"1": "Stepped Fade",
+					"2": "Single Palette"
+				}
+			}
+		]
+	}
+}

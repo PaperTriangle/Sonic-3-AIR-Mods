@@ -74,18 +74,6 @@
 				}
 			},
 			{
-				"InternalName": "ort.mhzfade",
-				"DisplayName": "MHZ2 Season Fade",
-				"Variable": "ort.mhzfade",
-				"DefaultValue": "0",
-				"Options":
-				{
-					"0": "Smooth Fade",
-					"1": "Stepped Fade",
-					"2": "Single Palette"
-				}
-			},
-			{
 				"InternalName": "ort.spawnfix",
 				"DisplayName": "Wider Spawning Range",
 				"Variable": "ort.spawnfix",
