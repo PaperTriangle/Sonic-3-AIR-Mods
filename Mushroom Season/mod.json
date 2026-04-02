@@ -24,7 +24,7 @@
 				"InternalName": "ms.mhzfade",
 				"DisplayName": "MHZ2 Season Fade",
 				"Variable": "ms.mhzfade",
-				"DefaultValue": "0",
+				"DefaultValue": "1",
 				"Options":
 				{
 					"0": "Smooth Fade",
