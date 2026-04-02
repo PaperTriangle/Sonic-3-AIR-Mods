@@ -253,10 +253,12 @@ function void yieldExecution()
 		System.loadExternalRawData("LBZ1_Palette", 0x0A929C)
 		System.loadExternalRawData("LBZ2_Palette", 0x0A92FC)
 	}
-	else if (tca.mvz && global.zone_act == 0x0701 && tca.intended) // MVZ Act 2
+	else if (tca.mvz && global.zone == 0x07 && tca.intended) // MVZ Act 2
 	{
-		if (!isKnucklesRoute() && camera.position.x.u16 > 0x3ae5 - getScreenExtend())
+		if (!isKnucklesRoute() && global.act == 0x01 && camera.position.x.u16 > 0x3ae5 - getScreenExtend())
 			System.loadExternalRawData("MVZ2_Palette_Sunset", 0x0A943C)
+		else
+			System.loadExternalRawData("MVZ2_Palette_Day", 0x0A943C)
 	}
 	else if (tca.soz && global.zone_act == 0x0800) // SOZ Act 1
 	{	

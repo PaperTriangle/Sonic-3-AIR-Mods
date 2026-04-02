@@ -55,6 +55,10 @@
 	"LBZ2_Palette": {
 		"File": "LBZ2_Palette.bin"
 	},
+	"MVZ2_Palette_Day":
+	{
+		"File": "MVZ2_Palette_Day.bin"
+	},
 	"MVZ2_Palette_Sunset":
 	{
 		"File": "MVZ2_Palette_Sunset.bin"
