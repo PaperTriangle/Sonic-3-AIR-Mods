@@ -284,42 +284,59 @@ function void fn00d6d0()
 	}
 	
 	u8 originalCharacter = D0.u8
-	u8 extraCharacter = objA0.animation.timer
-
-	
-	if (control.pad1.pressed & CONTROL_DOWN)
-	{
-		if (objA0.animation.timer == 0x01)
-			objA0.animation.timer = Mods.isModActive("Extra Slot Mighty & Ray") ? 0x05 : 0x04
-		else if (objA0.animation.timer == 0x03)
-			objA0.animation.timer = 0x01
-		else if (objA0.animation.timer > (Mods.isModActive("Extra Slot Mighty & Ray") ? 0x04 : 0x03))
-			objA0.animation.timer = 0x03
-	}
-	else if (control.pad1.pressed & CONTROL_UP)
-	{
-		if (extraCharacter == 0x02)
-			objA0.animation.timer = (Mods.isModActive("Extra Slot Mighty & Ray") ? 0x04 : 0x03)
-	}
+	u8 oldXtraChar = objA0.animation.timer
 	
 	base.fn00d6d0()
-
-	if (control.pad1.pressed & CONTROL_UP)
+	
+	if lsds.esureorder
 	{
-		if (extraCharacter == 0x03 && !Mods.isModActive("Extra Slot Mighty & Ray"))
-			objA0.animation.timer = 0x01
-		else if (extraCharacter == 0x00 && objA0.animation.timer == 0x01)
-			objA0.animation.timer = 0x03
-		else if (Mods.isModActive("Extra Slot Mighty & Ray") && extraCharacter == 0x04 && (objA0.animation.timer > 0x04 || objA0.animation.timer == 0x00))
+		if (objA0.animation.timer == 0x00 && oldXtraChar == (Mods.isModActive("Extra Slot Mighty & Ray") ? 0x04 : 0x03))
 		{
-			objA0.animation.timer = 0x01
 			D0.u8 = 0x01
+			objA0.animation.timer = 0x01
 		}
-	}
-	else if (control.pad1.pressed & CONTROL_DOWN)
-	{
-		if Mods.isModActive("Extra Slot Mighty & Ray") && extraCharacter == 0x00 && objA0.animation.timer == 0x04
+		else if (objA0.animation.timer == 0x00 && oldXtraChar == 0x01)
+		{
+			D0.u8 = 0x01
+			objA0.animation.timer = Mods.isModActive("Extra Slot Mighty & Ray") ? 0x04 : 0x03
+		}
+		else if (objA0.animation.timer == 0x01 && oldXtraChar == 0)
+			objA0.animation.timer = 0x03
+		else if (objA0.animation.timer > 0x04 && oldXtraChar == (Mods.isModActive("Extra Slot Mighty & Ray") ? 0x04 : 0x03))
+			objA0.animation.timer = 0x01
+		else if Mods.isModActive("Extra Slot Mighty & Ray") && (objA0.animation.timer == 0x04 && oldXtraChar == 0)
 			objA0.animation.timer = 0x02
+		else if (objA0.animation.timer == 0x03 && oldXtraChar == 0x00)
+			objA0.animation.timer = 0x02
+		else if (objA0.animation.timer == 0x02 && oldXtraChar == 0x03)
+		{
+			objA0.animation.timer = 0x00
+			D0.u8 = Game.isSecretUnlocked(SECRET_KNUX_AND_TAILS) ? 0x04 : 0x03
+		}
+		else if (objA0.animation.timer == (Mods.isModActive("Extra Slot Mighty & Ray") ? 0x04 : 0x03) && oldXtraChar > 0x04)
+			objA0.animation.timer = 0x02
+		else if (objA0.animation.timer == 0x03 && oldXtraChar == 0x02)
+		{
+			objA0.animation.timer = 0x04
+			
+			if (objA0.animation.timer < ExtraChar.getHighestSlot())
+			{
+				for (u8 A = 0x01; A <= 0xff; ++A)
+				{
+					if (Renderer.hasCustomSprite(stringformat("dataSel_slot%d", A)) && A > objA0.animation.timer)
+					{
+						objA0.animation.timer = A
+						break
+					}
+				}
+			}
+			// If the extra variable is equal to the highest slot, then reset the variables and go to the next default slot
+			else
+			{
+				objA0.animation.timer = 0x00
+				D0.u8 = 0x00
+			}
+		}
 	}
 
 }
