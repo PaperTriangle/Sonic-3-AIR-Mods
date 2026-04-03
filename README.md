@@ -41,8 +41,6 @@ Makes Hyper Sonic have a Drop Dash function like the **Hyper Mania** mod for Son
 
 Also has options for dropdash animations, dust, screenclear while super and to add slightly more detailed dust sprites. Has compatibility with MF&T's Mania Dropdash sound override.
 
-**PLEASE NOTE:** Permissions not obtained for **Accurate Sonic 3 Dropdash** sprite so expect errors unless you provide your own data.
-
 ## Data Select Options
 Adds some options to the data select like adding semi-transparent shadows, removing the emerald glint and shifting everything to the left a bit for less wasted screen space.
 
