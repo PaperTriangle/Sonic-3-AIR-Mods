@@ -135,11 +135,11 @@ function void AIZ1a.checkPreBossArea()
 
 	if (isOnUpperPath)
 	{
-		D0.u16 = (camera.position.x.u16 >= 0x0ed0) ? 0x02b8 : 0x0590
+		D0.u16 = (camera.position.x.u16 >= 0x0ed0) ? 0x02b8 - (getScreenHeight() - 224) : 0x0590
 	}
 	else
 	{
-		D0.u16 = (camera.position.x.u16 >= 0x0e80) ? 0x0450 : 0x0590
+		D0.u16 = (camera.position.x.u16 >= 0x0e80) ? 0x0450 - (getScreenHeight() - 224) : 0x0590
 	}
 	move_area.bottom.current = D0.u16
 	move_area.bottom.target = D0.u16
