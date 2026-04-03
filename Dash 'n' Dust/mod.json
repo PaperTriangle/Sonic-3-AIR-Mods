@@ -20,12 +20,6 @@
 			"DisplayName": "Extra Character Framework",
 			"IsRequired": "0",
 			"Priority": "Lower"
-		},
-		"Accurate Sonic 3 Dropdash":
-		{
-			"DisplayName": "Accurate Sonic 3 Dropdash",
-			"IsRequired": "0",
-			"Priority": "Higher"
 		}
 	},
 	"Settings":
