@@ -1,7 +1,110 @@
-global bool sutd.newgraphic
-global bool sutd.dropdash_dust
-global bool sutd.dropdash_animation
-global bool sutd.super_screenclear
+global u8 dd.hyper_dash
+global bool dd.newgraphic
+global bool dd.dropdash_dust
+global bool dd.dropdash_animation
+global bool dd.super_screenclear
+
+//-----------------------------//
+// Hyper Dash Dropdash Charge! //
+//-----------------------------//
+
+function void SonicPressedJumpInMidAir()
+{
+	if (!dd.hyper_dash || !super.active)
+	{
+		base.SonicPressedJumpInMidAir()
+	}
+	
+	// Remove control lock
+	char.flags &= ~char.flag.CONTROL_LOCK
+	char.double_jump_state = 1	// Always set this flag; needed for Drop Dash
+
+	if ((super.active && Game.getSetting(SETTING_SUPER_SONIC_ABILITY) != 1) || (super.active & 0x80))
+	{
+		bool isHyperSonic = (super.active & 0x80)			// Hyper Sonic active
+		bool performHyperDash = isHyperSonic
+		u8 input = control.player1.state & CONTROL_DPAD		// Only directions
+
+		if (Game.getSetting(SETTING_SUPER_SONIC_ABILITY) == 2)
+		{
+			performHyperDash = (super.active)				// This allows Super Sonic to use the dash as well
+		}
+
+		if (performHyperDash && Game.getSetting(SETTING_HYPER_DASH_CONTROLS) == 1)
+		{
+			// Hyper Dash requires also pressing D-pad in any direction
+			//  -> To allow for Drop Dashing without activating the Hyper Dash before
+			performHyperDash = (input != 0)
+		}
+
+		if (performHyperDash)
+		{
+			if (isHyperSonic)	// Super Sonic's dash does not cause a screen flash
+			{
+				Character.ClearEnemiesOnScreen()
+			}
+
+			camera.locktime.player1 = 0x2000
+			ClearPositionBackup()
+
+			char.double_jump_state = 1
+		#if STANDALONE
+			if (!isHyperSonic)
+				u8[0xffffcbc0 + 0x20] = 1
+			else
+		#endif
+				u8[0xffffcd7c + 0x20] = 1
+
+			playSound(SFX_SPINDASH_RELEASE)
+
+			if (input != 0 && input < 0x0b)		// Not left and right at the same time
+			{
+				// Perform Hyper Dash
+				A1 = 0x011afa + input * 4
+				char.velocity.x = s16[A1]
+				char.velocity.y = s16[A1+2]
+			}
+			else
+			{
+				char.velocity.x = (char.flags & char.flag.FACING_LEFT) ? -0x800 : 0x800
+				char.velocity.y = 0
+			}
+
+			if (!isHyperSonic)
+			{
+				// Reduce dash speed for Super Sonic
+				char.velocity.x = (char.velocity.x > 0) ? (char.velocity.x - 0x200) : (char.velocity.x < 0) ? (char.velocity.x + 0x200) : 0
+				char.velocity.y = (char.velocity.y > 0) ? (char.velocity.y - 0x200) : (char.velocity.y < 0) ? (char.velocity.y + 0x200) : 0
+			}
+		
+			if (Game.getSetting(SETTING_DROPDASH) && (isHyperSonic || dd.hyper_dash == 2))
+			{
+				sonic.dropdash_counter = DROPDASH_FULLCHARGE
+				char.state = char.state.SONIC_DROPDASH
+				
+				u64 key = "hyper_dropdash_charge"
+				
+				if Mods.isModActive("Misc. Fixes and Tweaks")
+					key = "MFT_hyper_dropdash_charge"
+				
+				Audio.playAudio(key, AudioContext.CONTEXT_SOUND)
+			}
+			
+			char.groundspeed = char.velocity.x
+		}
+		else
+		{
+			char.double_jump_state = 1
+		}
+		return
+	}
+	
+	base.SonicPressedJumpInMidAir()
+}
+
+//---------------------------------------//
+// Remove Spindash Dust while in the air //
+//---------------------------------------//
 
 //# translated(0x011bde) end(0x011cf0)
 //# translated(0x011d16) end(0x011da4)
@@ -31,16 +134,16 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 {
 	u8 gameMode = global.game_mode & 0x7f
 	
-	if (sutd.newgraphic && (gameMode == 0x0c || gameMode == 0x08) && ((objA0.update_address == 0x018b3e && objA0.state == 0x02) || (objA0.update_address == 0x064c24)))
+	if (dd.newgraphic && (gameMode == 0x0c || gameMode == 0x08) && ((objA0.update_address == 0x018b3e && objA0.state == 0x02) || (objA0.update_address == 0x064c24)))
 	{
-		Renderer.drawCustomSprite(stringformat("spindash_%d", objA0.animation.sprite - 10), px, py, 0x00, objA0.render_flags, renderQueue)
+		Renderer.drawCustomSprite(stringformat("spindash_dust_new_%d", objA0.animation.sprite - 10), px, py, 0x00, objA0.render_flags, renderQueue)
 		return true
 	}
 	
 	if (objA0.update_address == 0x251200)
 	{
 		u8 renderFlags = (char.render_flags & (SPRITE_FLAG_FLIP_X | SPRITE_FLAG_FLIP_Y)) | ((objA0.sprite_attributes & sprite_attribute.PRIORITY) != 0 ? SPRITE_FLAG_PRIO : 0)
-		Renderer.drawCustomSprite(stringformat(sutd.newgraphic ? "dropdash_dust_new_%d" : "dropdash_dust_%d", objA0.animation.sprite), px, py, 0x00, renderFlags, renderQueue)
+		Renderer.drawCustomSprite(stringformat(dd.newgraphic ? "dropdash_dust_new_%d" : "dropdash_dust_%d", objA0.animation.sprite), px, py, 0x00, renderFlags, renderQueue)
 		return true
 	}
 	
@@ -50,8 +153,19 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 // This function is here only for script mods that want to change or extend the character sprites
 function u64 Standalone.getModdedAnimationSpriteKey(u8 character, u16 animationSpriteEx)
 {
-	if (sutd.dropdash_animation && char.state == char.state.SONIC_DROPDASH && character == CHARACTER_SONIC)
-		return stringformat("character_sonic_dropdash_%d", level.framecounter & 0x0f)
+
+#if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
+	if getECFCharBufferName(A0)
+		return base.Standalone.getModdedAnimationSpriteKey(character, animationSpriteEx)
+#endif
+
+	if (dd.dropdash_animation && char.state == char.state.SONIC_DROPDASH && character == CHARACTER_SONIC)
+	{
+		if (dd.dropdash_animation == 2)
+			return stringformat("origins_dropdash_%d", level.framecounter & 0x0f)
+		else
+			return stringformat("sonic3_dropdash_%d", (level.framecounter >> 1) & 7)
+	}
 	else
 		return base.Standalone.getModdedAnimationSpriteKey(character, animationSpriteEx)
 }
@@ -62,7 +176,7 @@ function u64 Standalone.getModdedAnimationSpriteKey(u8 character, u16 animationS
 
 // The Object's update_address
 //# address-hook(0x251200)
-function void SUTD.Dust.Update()
+function void DD.Dust.Update()
 {
 	if (objA0.animation.timer > 0)
 		objA0.animation.timer--
@@ -83,7 +197,7 @@ function void SUTD.Dust.Update()
 }
 
 // Spawn Object
-function void SUTD.SpawnDust()
+function void DD.SpawnDust()
 {
 	if (allocDynamicObjectStd())
 	{
@@ -108,8 +222,8 @@ function void releaseDropDash()
 	// Release drop dash!
 
 	// Show dust cloud
-	if (sutd.dropdash_dust)
-		SUTD.SpawnDust()
+	if (dd.dropdash_dust)
+		DD.SpawnDust()
 	else if (char.drown_countdown >= 12 && abs(s8(char.rotation)) < 0x1c)
 	{
 		u8[A6 + 0x20] = 0x02
@@ -142,11 +256,11 @@ function void releaseDropDash()
 	if (A0 == 0xffffb000)
 	{
 		ClearPositionBackup()
-		camera.locktime.player1 = 0x0c00
+		camera.locktime.player1 = 0x1400
 	}
 	else
 	{
-		camera.locktime.player2 = 0x0c00
+		camera.locktime.player2 = 0x1400
 	}
 
 	s16 baseSpeed = super.active ? 0x0c00 : 0x0800
@@ -188,7 +302,7 @@ function void releaseDropDash()
 		// Using upper byte to signal the difference between Hyper Knuckles hitting the wall and Super/Hyper Sonic's drop dash
 		camera.hyper_knux_shake = 0x0114
 
-		if (sutd.super_screenclear)
+		if (dd.super_screenclear)
 			Character.ClearEnemiesOnScreen()
 			
 		playSound(0x49)

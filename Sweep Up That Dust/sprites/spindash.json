@@ -1,9 +1,0 @@
-{
-	"spindash_0":  { "File": "spindash.bmp", "Rect": "1,1,32,23", "Center": "32,3" },
-	"spindash_1":  { "File": "spindash.bmp", "Rect": "34,1,32,23", "Center": "32,3" },
-	"spindash_2":  { "File": "spindash.bmp", "Rect": "67,1,32,23", "Center": "32,3" },
-	"spindash_3":  { "File": "spindash.bmp", "Rect": "100,1,32,23", "Center": "32,3" },
-	"spindash_4":  { "File": "spindash.bmp", "Rect": "133,1,32,23", "Center": "32,3" },
-	"spindash_5":  { "File": "spindash.bmp", "Rect": "166,1,32,23", "Center": "32,3" },
-	"spindash_6":  { "File": "spindash.bmp", "Rect": "199,1,32,23", "Center": "32,3" }
-}

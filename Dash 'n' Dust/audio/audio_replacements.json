@@ -1,0 +1,4 @@
+{
+	"hyper_dropdash_charge": { "File": "s3air_hyper_dropdash_charge.ogg",	"Type": "Sound", "Channel": "AB" },
+	"MFT_hyper_dropdash_charge": { "File": "MFT_hyper_dropdash_charge.ogg",	"Type": "Sound", "Channel": "AB" },
+}
