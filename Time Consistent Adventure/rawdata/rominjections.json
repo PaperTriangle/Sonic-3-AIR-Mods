@@ -1,162 +1,218 @@
 {
 	"MGZ2_Palette":
 	{
-		"File": "MGZ2_Palette.bin"
+		"File": "MGZ/MGZ2_Palette.bin"
 	},
 	"MGZ2_Night_Palette":
 	{
-		"File": "MGZ2_Night_Palette.bin"
+		"File": "MGZ/MGZ2_Night_Palette.bin"
 	},
 	"MGZ_Palette_Original":
 	{
-		"File": "MGZ_Palette_Original.bin"
+		"File": "MGZ/MGZ_Palette_Original.bin"
 	},
 	"MGZ_Mountain_Fix_1":
 	{
-		"File": "MGZ_Mountain_Fix_1.bin"
+		"File": "MGZ/MGZ_Mountain_Fix_1.bin"
 	},
 	"MGZ_Mountain_Fix_2":
 	{
-		"File": "MGZ_Mountain_Fix_2.bin"
+		"File": "MGZ/MGZ_Mountain_Fix_2.bin"
 	},
-	"FBZ_Cloud_Fix": {
-		"File": "FBZ_Cloud_Fix.bin"
+	"FBZ_Cloud_Fix":
+	{
+		"File": "FBZ/FBZ_Cloud_Fix.bin"
 	},
-	"FBZ_Palette": {
-		"File": "FBZ_Outdoors_Palette.bin"
+	"FBZ_Palette":
+	{
+		"File": "FBZ/FBZ_Outdoors_Palette.bin"
 	},
-	"FBZ_Palette_Alt": {
-		"File": "FBZ_Outdoors_Palette_Alt.bin"
+	"FBZ_Palette_Alt":
+	{
+		"File": "FBZ/FBZ_Outdoors_Palette_Alt.bin"
 	},
-	"FBZ_Palette_Boss": {
-		"File": "FBZ_Outdoors_Palette_Boss.bin"
+	"FBZ_Palette_Boss":
+	{
+		"File": "FBZ/FBZ_Outdoors_Palette_Boss.bin"
 	},
-	"FBZ_Palette_Released": {
-		"File": "FBZ_Outdoors_Palette_Released.bin"
+	"FBZ_Palette_Released":
+	{
+		"File": "FBZ/FBZ_Outdoors_Palette_Released.bin"
 	},
-	"FBZ_Palette_Boss_Released": {
-		"File": "FBZ_Outdoors_Palette_Boss_Released.bin"
+	"FBZ_Palette_Boss_Released":
+	{
+		"File": "FBZ/FBZ_Outdoors_Palette_Boss_Released.bin"
 	},
-	"ICZ_Act1_Palette": {
-		"File": "ICZ_Act1_Palette.bin"
+	"ICZ_Act1_Palette":
+	{
+		"File": "ICZ/ICZ_Act1_Palette.bin"
 	},
-	"ICZ_Dawn_Palette": {
-		"File": "ICZ_Dawn_Palette.bin"
+	"ICZ_Dawn_Palette":
+	{
+		"File": "ICZ/ICZ_Dawn_Palette.bin"
 	},
-	"ICZ_Morning_Palette": {
-		"File": "ICZ_Morning_Palette.bin"
+	"ICZ_Morning_Palette":
+	{
+		"File": "ICZ/ICZ_Morning_Palette.bin"
 	},
-	"ICZ_New_Palette": {
-		"File": "ICZ_New_Palette.bin"
+	"ICZ_New_Palette":
+	{
+		"File": "ICZ/ICZ_New_Palette.bin"
 	},
-	"LBZ1_Palette": {
-		"File": "LBZ1_Palette.bin"
+	"LBZ1_Palette":
+	{
+		"File": "LBZ/LBZ1_Palette.bin"
 	},
-	"LBZ2_Palette": {
-		"File": "LBZ2_Palette.bin"
+	"LBZ2_Palette":
+	{
+		"File": "LBZ/LBZ2_Palette.bin"
 	},
 	"MVZ2_Palette_Day":
 	{
-		"File": "MVZ2_Palette_Day.bin"
+		"File": "MVZ/MVZ2_Palette_Day.bin"
 	},
 	"MVZ2_Palette_Sunset":
 	{
-		"File": "MVZ2_Palette_Sunset.bin"
+		"File": "MVZ/MVZ2_Palette_Sunset.bin"
 	},
 	"SOZ_Day_Fix":
 	{
-		"File": "SOZ_Day_Fix.bin"
+		"File": "SOZ/SOZ_Day_Fix.bin"
+	},
+	"SOZ_Original":
+	{
+		"File": "SOZ/SOZ_Original.bin"
 	},
 	"SOZ1_Palette_Day":
 	{
-		"File": "SOZ1_Palette_Day.bin"
+		"File": "SOZ/SOZ1_Palette_Day.bin"
 	},
 	"SOZ1_Palette_Arvo":
 	{
-		"File": "SOZ1_Palette_Arvo.bin"
+		"File": "SOZ/SOZ1_Palette_Arvo.bin"
 	},
 	"HPZ_Roof_Fix_1":
 	{
-		"File": "HPZ_Roof_Fix_1.bin"
+		"File": "HPZ/HPZ_Roof_Fix_1.bin"
 	},
 	"HPZ_Roof_Fix_2":
 	{
-		"File": "HPZ_Roof_Fix_2.bin"
+		"File": "HPZ/HPZ_Roof_Fix_2.bin"
+	},
+	"HPZ_Roof_Original_1":
+	{
+		"File": "HPZ/HPZ_Roof_Original_1.bin"
+	},
+	"HPZ_Roof_Original_2":
+	{
+		"File": "HPZ/HPZ_Roof_Original_2.bin"
 	},
 	"SSZ1_Palette_Original":
 	{
-		"File": "SSZ1_Palette_Original.bin"
+		"File": "SSZ/SSZ1_Palette_Original.bin"
 	},
 	"SSZ1_Palette_Morning":
 	{
-		"File": "SSZ1_Palette_Morning.bin"
+		"File": "SSZ/SSZ1_Palette_Morning.bin"
 	},
 	"SSZ1_Palette_Morning_Pink":
 	{
-		"File": "SSZ1_Palette_Morning_Pink.bin"
+		"File": "SSZ/SSZ1_Palette_Morning_Pink.bin"
 	},
 	"SSZK_Palette_Original":
 	{
-		"File": "SSZK_Palette_Original.bin"
+		"File": "SSZ/SSZK_Palette_Original.bin"
 	},
 	"SSZK_Palette_Morning":
 	{
-		"File": "SSZK_Palette_Morning.bin"
+		"File": "SSZ/SSZK_Palette_Morning.bin"
 	},
 	"SSZK_Palette_Morning_Pink":
 	{
-		"File": "SSZK_Palette_Morning_Pink.bin"
+		"File": "SSZ/SSZK_Palette_Morning_Pink.bin"
 	},
 	"SSZK_Palette_Pre_Dawn":
 	{
-		"File": "SSZK_Palette_Pre_Dawn.bin"
+		"File": "SSZ/SSZK_Palette_Pre_Dawn.bin"
 	},
 	"SSZK_Palette_Night":
 	{
-		"File": "SSZK_Palette_Night.bin"
+		"File": "SSZ/SSZK_Palette_Night.bin"
 	},
 	"SOZ_Zone_Card_Knux":
 	{
-		"File": "SOZ_Zone_Card_Knux.bin"
+		"File": "ZoneCards/SOZ_Zone_Card_Knux.bin"
 	},
 	"SOZ_Zone_Card_Sonic":
 	{
-		"File": "SOZ_Zone_Card_Sonic.bin"
+		"File": "ZoneCards/SOZ_Zone_Card_Sonic.bin"
 	},
 	"SSZ_Zone_Card_Knux":
 	{
-		"File": "SSZ_Zone_Card_Knux.bin"
+		"File": "ZoneCards/SSZ_Zone_Card_Knux.bin"
 	},
 	"SSZ_Zone_Card_Knux_Released":
 	{
-		"File": "SSZ_Zone_Card_Knux_Released.bin"
+		"File": "ZoneCards/SSZ_Zone_Card_Knux_Released.bin"
 	},
 	"SSZ_Zone_Card_Sonic":
 	{
-		"File": "SSZ_Zone_Card_Sonic.bin"
+		"File": "ZoneCards/SSZ_Zone_Card_Sonic.bin"
 	},
 	"SSZ_Zone_Card_Sonic_Dawn":
 	{
-		"File": "SSZ_Zone_Card_Sonic_Dawn.bin"
+		"File": "ZoneCards/SSZ_Zone_Card_Sonic_Dawn.bin"
 	},
 	"SSZ_Zone_Card_Sonic_Dawn_Pink":
 	{
-		"File": "SSZ_Zone_Card_Sonic_Dawn_Pink.bin"
+		"File": "ZoneCards/SSZ_Zone_Card_Sonic_Dawn_Pink.bin"
 	},
 	"SSZ_Zone_Card_Sonic_Compat":
 	{
-		"File": "SSZ_Zone_Card_Sonic_Compat.bin"
+		"File": "ZoneCards/SSZ_Zone_Card_Sonic_Compat.bin"
 	},
 	"FBZ_Zone_Card":
 	{
-		"File": "FBZ_Zone_Card.bin"
+		"File": "ZoneCards/FBZ_Zone_Card.bin"
 	},
 	"FBZ_Zone_Card_S3":
 	{
-		"File": "FBZ_Zone_Card_S3.bin"
+		"File": "ZoneCards/FBZ_Zone_Card_S3.bin"
 	},
 	"LBZ_Zone_Card":
 	{
-		"File": "LBZ_Zone_Card.bin"
+		"File": "ZoneCards/LBZ_Zone_Card.bin"
+	},
+	"LBZ2_Chunks":
+	{
+		"File": "LBZ/LBZ2_Chunks.bin"
+	},
+	"LBZ2_Blocks": 
+	{
+		"File": "LBZ/LBZ2_Blocks.bin"
+	},
+	"LBZ2_Tiles":
+	{
+		"File": "LBZ/LBZ2_Tiles.bin"
+	},
+	"LBZ2_Collision":
+	{
+		"File": "LBZ/LBZ2_Collision.bin"
+	},
+	"LBZ2_Boss_Chunks":
+	{
+		"File": "LBZ/LBZ2_Boss_Chunks.bin"
+	},
+	"LBZ2_Boss_Blocks":
+	{
+		"File": "LBZ/LBZ2_Boss_Blocks.bin"
+	},
+	"LBZ2_Boss_Tiles":
+	{
+		"File": "LBZ/LBZ2_Boss_Tiles.bin"
+	},
+	"LBZ2_Boss_Tiles2":
+	{
+		"File": "LBZ/LBZ2_Boss_Tiles2.bin"
 	}
 }

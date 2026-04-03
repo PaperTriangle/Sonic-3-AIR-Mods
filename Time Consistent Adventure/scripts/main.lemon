@@ -20,6 +20,7 @@ global bool tca.fbz_bg
 global bool tca.fbz_explosions
 global bool tca.icz_trans_point
 global bool tca.icz_trans_fade
+global bool tca.lbz_clouds
 global u8 tca.ssz_trans_point
 global bool tca.ssz_knux_csfix
 global bool tca.ssz_knux_fade
@@ -61,16 +62,26 @@ function void yieldExecution()
 	if (tca.fbz)
 		System.loadExternalRawData("FBZ_Cloud_Fix", 0x195040)
 	
-	if (isKnucklesRoute() && tca.intended)
+	
+	if (tca.soz)
 	{
-		
-		if (tca.soz)
+		if (isKnucklesRoute() && tca.intended)
 			System.loadExternalRawData("SOZ_Day_Fix", 0x1AA36A)
-		
-		if (tca.hpz && global.zone_act == 0x1601)
+		else
+			System.loadExternalRawData("SOZ_Original", 0x1AA36A)
+	}
+	
+	if (tca.hpz && global.zone_act == 0x1601)
+	{
+		if (isKnucklesRoute() && tca.intended)
 		{
 			System.loadExternalRawData("HPZ_Roof_Fix_1", 0x1BEE58)
 			System.loadExternalRawData("HPZ_Roof_Fix_2", 0x1C3F2C)
+		}
+		else
+		{
+			System.loadExternalRawData("HPZ_Roof_Original_1", 0x1BEE58)
+			System.loadExternalRawData("HPZ_Roof_Original_2", 0x1C3F2C)
 		}
 	}
 	
@@ -252,6 +263,19 @@ function void yieldExecution()
 	{
 		System.loadExternalRawData("LBZ1_Palette", 0x0A929C)
 		System.loadExternalRawData("LBZ2_Palette", 0x0A92FC)
+		
+		if (tca.lbz_clouds)
+		{
+			System.loadExternalRawData("LBZ2_Chunks", 0x3EAF04)
+			System.loadExternalRawData("LBZ2_Blocks", 0x3E5F70)
+			System.loadExternalRawData("LBZ2_Tiles", 0x3E77D0)
+			System.loadExternalRawData("LBZ2_Collision", 0x27BF60)
+			System.loadExternalRawData("LBZ2_Boss_Chunks", 0x3ED3D4)
+			System.loadExternalRawData("LBZ2_Boss_Blocks", 0x3E69B0)
+			System.loadExternalRawData("LBZ2_Boss_Tiles", 0x3E8F72)
+			System.loadExternalRawData("LBZ2_Boss_Tiles2", 0x37F6EE)
+		}
+		
 	}
 	else if (tca.mvz && global.zone == 0x07 && tca.intended) // MVZ Act 2
 	{
