@@ -101,12 +101,13 @@
 				"DisplayName": "HCZ Bugernaught",
 				"Variable": "mt.bugernaught",
 				"Category": "Badniks",	
-				"DefaultValue": "2",
+				"DefaultValue": "3",
 				"Options":
 				{
 					"0": "Disabled",
-					"1": "Enabled (Dither Duplicate)",
-					"2": "Enabled (Custom Graphic)"
+					"1": "Enabled (Dithered)",
+					"2": "Enabled (Dither Duplicate)",
+					"3": "Enabled (Custom Graphic)"
 				}
 			},
 			{
@@ -114,12 +115,13 @@
 				"DisplayName": "MHZ Dragonfly",
 				"Variable": "mt.dragonfly",
 				"Category": "Badniks",	
-				"DefaultValue": "2",
+				"DefaultValue": "3",
 				"Options":
 				{
 					"0": "Disabled",
-					"1": "Enabled (Dither Duplicate)",
-					"2": "Enabled (Custom Graphic)"
+					"1": "Enabled (Dithered)",
+					"2": "Enabled (Dither Duplicate)",
+					"3": "Enabled (Custom Graphic)"
 				}
 			},
 			{
@@ -151,12 +153,13 @@
 				"DisplayName": "Flame Plumes",
 				"Variable": "mt.flameplumes",
 				"Category": "Effects",	
-				"DefaultValue": "2",
+				"DefaultValue": "3",
 				"Options":
 				{
 					"0": "Disabled",
-					"1": "Enabled (Dither Duplicate)",
-					"2": "Enabled (Custom Graphic)"
+					"1": "Enabled (Dithered)",
+					"2": "Enabled (Dither Duplicate)",
+					"3": "Enabled (Custom Graphic)"
 				}
 			},
 			{
@@ -176,12 +179,13 @@
 				"DisplayName": "Dust",
 				"Variable": "mt.dust",
 				"Category": "Effects",	
-				"DefaultValue": "2",
+				"DefaultValue": "3",
 				"Options":
 				{
 					"0": "Disabled",
-					"1": "Enabled (Dither Duplicate)",
-					"2": "Enabled (Custom Graphic)"
+					"1": "Enabled (Dithered)",
+					"2": "Enabled (Dither Duplicate)",
+					"3": "Enabled (Custom Graphic)"
 				}
 			},
 			{
@@ -237,12 +241,13 @@
 				"DisplayName": "Foreground Clouds",
 				"Variable": "mt.clouds",
 				"Category": "Effects",	
-				"DefaultValue": "2",
+				"DefaultValue": "3",
 				"Options":
 				{
 					"0": "Disabled",
-					"1": "Enabled (Dither Duplicate)",
-					"2": "Enabled (Custom Graphic)"
+					"1": "Enabled (Dithered)",
+					"2": "Enabled (Dither Duplicate)",
+					"3": "Enabled (Custom Graphic)"
 				}
 			},
 			{
@@ -322,12 +327,13 @@
 				"DisplayName": "ICZ2 Freezer Mobile",
 				"Variable": "mt.icz2boss",
 				"Category": "Boss Effects",	
-				"DefaultValue": "2",
+				"DefaultValue": "3",
 				"Options":
 				{
 					"0": "Disabled",
-					"1": "Enabled (Dither Duplicate)",
-					"2": "Enabled (Custom Graphic)"
+					"1": "Enabled (Dithered)",
+					"2": "Enabled (Dither Duplicate)",
+					"3": "Enabled (Custom Graphic)"
 				}
 			},
 			{
@@ -347,12 +353,13 @@
 				"DisplayName": "LRZ2 Hot Mobile (Smoke)",
 				"Variable": "mt.lrz2boss_smoke",
 				"Category": "Boss Effects",	
-				"DefaultValue": "2",
+				"DefaultValue": "3",
 				"Options":
 				{
 					"0": "Disabled",
-					"1": "Enabled (Dither Duplicate)",
-					"2": "Enabled (Custom Graphic)"
+					"1": "Enabled (Dithered)",
+					"2": "Enabled (Dither Duplicate)",
+					"3": "Enabled (Custom Graphic)"
 				}
 			},
 			{
@@ -408,12 +415,13 @@
 				"DisplayName": "DEZ Huge Eggman Robo (Fire)",
 				"Variable": "mt.dez2fire",
 				"Category": "Boss Effects",	
-				"DefaultValue": "2",
+				"DefaultValue": "3",
 				"Options":
 				{
 					"0": "Disabled",
-					"1": "Enabled (Dither Duplicate)",
-					"2": "Enabled (Custom Graphic)"
+					"1": "Enabled (Dithered)",
+					"2": "Enabled (Dither Duplicate)",
+					"3": "Enabled (Custom Graphic)"
 				}
 			},
 			{
@@ -421,12 +429,13 @@
 				"DisplayName": "DDZ Missile Smoke",
 				"Variable": "mt.ddzsmoke",
 				"Category": "Boss Effects",	
-				"DefaultValue": "2",
+				"DefaultValue": "3",
 				"Options":
 				{
 					"0": "Disabled",
-					"1": "Enabled (Dither Duplicate)",
-					"2": "Enabled (Custom Graphic)"
+					"1": "Enabled (Dithered)",
+					"2": "Enabled (Dither Duplicate)",
+					"3": "Enabled (Custom Graphic)"
 				}
 			},
 			{

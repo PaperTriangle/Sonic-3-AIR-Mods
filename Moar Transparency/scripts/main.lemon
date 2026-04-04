@@ -249,7 +249,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 					Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 160)
 				else if (index != 0x0577)
 				{	
-					if (mt.flameplumes == 2)
+					if (mt.flameplumes == 3)
 					{
 						bool prioFlag = (objA0.sprite_attributes & sprite_attribute.PRIORITY) != 0
 						Renderer.drawSprite("fireball_2", px, py, 0x00, (prioFlag ? SPRITE_FLAG_PRIO : 0), renderQueue, 0, 160)
@@ -258,13 +258,15 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 					else
 					{
 						Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 160)
-						Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 160)
+						
+						if (mt.flameplumes == 2)
+							Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 160)
 					}
 				}
 			}
 			else if (objA0.animation.frame == 0x06)
 			{
-				if (mt.flameplumes == 2)
+				if (mt.flameplumes == 3)
 				{
 					bool prioFlag = (objA0.sprite_attributes & sprite_attribute.PRIORITY) != 0
 					Renderer.drawSprite("fireball_0", px, py, 0x00, (prioFlag ? SPRITE_FLAG_PRIO : 0), renderQueue, 0, 144)
@@ -272,7 +274,9 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 				else
 				{
 					Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 144)
-					Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 144)
+					
+					if (mt.flameplumes == 2)
+						Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 144)
 				}
 			}
 			else
@@ -287,7 +291,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		{
 			if (objA0.animation.sprite == 0x04)
 			{
-				if (mt.flameplumes == 2)
+				if (mt.flameplumes == 3)
 				{
 					bool prioFlag = (objA0.sprite_attributes & sprite_attribute.PRIORITY) != 0
 					Renderer.drawSprite("fireball_1", (objA0.render_flags & SPRITE_FLAG_FLIP_X) ? px + 32 : px, py, 0x00, (objA0.render_flags & (SPRITE_FLAG_FLIP_X | SPRITE_FLAG_FLIP_Y)) | (prioFlag ? SPRITE_FLAG_PRIO : 0), renderQueue, 0, 144)
@@ -295,7 +299,9 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 				else
 				{
 					Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 144)
-					Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 144)
+					
+					if (mt.flameplumes == 2)
+						Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 144)
 				}
 				return true
 			}
@@ -310,7 +316,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 			}
 			else if (objA0.animation.sprite == 0x05)
 			{
-				if (mt.flameplumes == 2)
+				if (mt.flameplumes == 3)
 				{
 					bool prioFlag = (objA0.sprite_attributes & sprite_attribute.PRIORITY) != 0
 					Renderer.drawSprite("fireball_0", px, py, 0x00, (prioFlag ? SPRITE_FLAG_PRIO : 0), renderQueue, 0, 144)
@@ -318,7 +324,9 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 				else
 				{
 					Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 144)
-					Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 144)
+					
+					if (mt.flameplumes == 2)
+						Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 144)
 				}
 				return true
 			}
@@ -332,7 +340,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		{
 			if (objA0.animation.sprite == 0x12)
 			{
-				if (mt.dez2fire == 2)
+				if (mt.dez2fire == 3)
 				{
 					bool prioFlag = (objA0.sprite_attributes & sprite_attribute.PRIORITY) != 0
 					Renderer.drawSprite("fireball_3", px, py, 0x10, (prioFlag ? SPRITE_FLAG_PRIO : 0), renderQueue, 0, 160)
@@ -340,7 +348,9 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 				else
 				{
 					Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 160)
-					Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 160)
+					
+					if (mt.dez2fire == 2)
+						Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 160)
 				}
 				
 				return true
@@ -398,7 +408,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		{
 			if (objA0.animation.sprite == 0x16 || objA0.animation.sprite == 0x17) && (index == 0x8465 || index == 0x846e)
 			{
-				if (mt.dust == 2)
+				if (mt.dust == 3)
 				{
 					bool prioFlag = (objA0.sprite_attributes & sprite_attribute.PRIORITY) != 0
 					if (index == 0x8465)
@@ -409,7 +419,9 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 				else
 				{
 					Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 160)
-					Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 160)
+					
+					if (mt.dust == 2)
+						Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 160)
 				}
 			}
 			return true
@@ -421,7 +433,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		// LRZ Boss Missile
 		if (global.zone_act == 0x1600 && (objA0.update_address == 0x0793c6 || objA0.update_address == 0x01abb6) && index == 0x2472)
 		{
-			if (mt.lrz2boss_smoke == 2)
+			if (mt.lrz2boss_smoke == 3)
 			{
 				bool prioFlag = (objA0.sprite_attributes & sprite_attribute.PRIORITY) != 0
 				Renderer.drawSprite("lrz_missile_smoke", px, py, 0x10, (prioFlag ? SPRITE_FLAG_PRIO : 0), renderQueue, 0, 144)
@@ -429,7 +441,9 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 			else
 			{
 				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 144)
-				Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 144)
+				
+				if (mt.lrz2boss_smoke == 2)
+					Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 144)
 			}
 			
 			return true
@@ -444,7 +458,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		// LRZ Boss Shots
 		if (global.zone_act == 0x1600 && (objA0.update_address == 0x079b96 || objA0.update_address == 0x01abb6 || objA0.update_address == 0x079bca) && (index == 0x245a || index == 0x2473))
 		{
-			if (mt.lrz2boss_smoke == 2)
+			if (mt.lrz2boss_smoke == 3)
 			{
 				bool prioFlag = (objA0.sprite_attributes & sprite_attribute.PRIORITY) != 0
 				if (index == 0x245a)
@@ -455,7 +469,9 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 			else
 			{
 				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 144)
-				Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 144)
+				
+				if (mt.lrz2boss_smoke == 2)
+					Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 144)
 			}
 			return true
 		}
@@ -474,7 +490,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		{
 			if (index == 0xc42f || index == 0x442f)
 			{
-				if (mt.ddzsmoke == 2)
+				if (mt.ddzsmoke == 3)
 				{
 					bool prioFlag = (objA0.sprite_attributes & sprite_attribute.PRIORITY) != 0
 
@@ -483,7 +499,9 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 				else
 				{
 					Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 144)
-					Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 144)
+					
+					if (mt.ddzsmoke == 2)
+						Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 144)
 				}
 				return true
 			}
@@ -501,7 +519,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 	{
 		if (objA0.animation.sprite == 0x0f || objA0.animation.sprite == 0x0a || objA0.animation.sprite == 0x15)
 		{
-			if (mt.icz2boss == 2)
+			if (mt.icz2boss == 3)
 			{
 				bool prioFlag = (objA0.sprite_attributes & sprite_attribute.PRIORITY) != 0
 						
@@ -515,7 +533,9 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 			else			
 			{
 				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 144)
-				Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 144)
+				
+				if (mt.icz2boss == 2)
+					Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 144)
 			}
 			return true
 		}
@@ -931,7 +951,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 	{
 		if (objA0.update_address == 0x087a2a && (index == 0xac52 || index == 0xa452 || index == 0xb452 || index == 0xbc52))
 		{
-			if (mt.bugernaught == 2)
+			if (mt.bugernaught == 3)
 			{
 				bool newFlag = (objA0.sprite_attributes & sprite_attribute.PRIORITY) != 0 ? SPRITE_FLAG_PRIO : 0
 				
@@ -964,14 +984,16 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 			else
 			{
 				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 128)
-				Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 128)
+				
+				if (mt.bugernaught == 2)
+					Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 128)
 			}
 			
 			return true
 		}
 		else if (objA0.update_address == 0x087abc && (index == 0xa45a || index == 0xac5a || index == 0xb45a || index == 0xbc5a))
 		{
-			if (mt.bugernaught == 2)
+			if (mt.bugernaught == 3)
 			{
 				bool newFlag = (objA0.sprite_attributes & sprite_attribute.PRIORITY) != 0 ? SPRITE_FLAG_PRIO : 0
 				
@@ -1011,7 +1033,9 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 			else
 			{
 				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 128)
-				Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 128)
+				
+				if (mt.bugernaught == 2)
+					Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 128)
 			}
 			
 			return true
@@ -1024,7 +1048,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 	// Dragonfly wing rendering code adapted from Raine's A.I.R. Freshener branch of Sonic 3 A.I.R. - Credit goes to Useott to Raine
 	if (mt.dragonfly && objA0.update_address == 0x08df52)
 	{
-		if (mt.dragonfly == 2)
+		if (mt.dragonfly == 3)
 		{
 			bool newFlag = (objA0.sprite_attributes & sprite_attribute.PRIORITY) != 0 ? SPRITE_FLAG_PRIO : 0
 			
@@ -1044,7 +1068,9 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		else
 		{
 			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 144)
-			Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 144)
+			
+			if (mt.dragonfly == 2)
+				Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, renderQueue, 144)
 		}
 		
 		
@@ -1305,7 +1331,7 @@ function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 in
 		// SSZ clouds effect
 		if (objA0.update_address == 0x057bf6)
 		{
-			if (mt.clouds == 2)
+			if (mt.clouds == 3)
 			{
 				bool prioFlag = (objA0.sprite_attributes & sprite_attribute.PRIORITY) != 0
 				if (index == 0xe310)
@@ -1326,13 +1352,17 @@ function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 in
 			else
 			{
 				Renderer.drawVdpSpriteWithAlpha(px,   py, size, index, 0xd000, 160)
-				Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, 0xd000, 160)
+				
+				if (mt.clouds == 2)
+					Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, 0xd000, 160)
 
 				if (getScreenWidth() > 400)
 				{
 					// Draw an additional copy of the cloud one loop further to the right
 					Renderer.drawVdpSpriteWithAlpha(px+512, py, size, index, 0xd000, 160)
-					Renderer.drawVdpSpriteWithAlpha(px+513, py, size, index, 0xd000, 160)
+					
+					if (mt.clouds == 2)
+						Renderer.drawVdpSpriteWithAlpha(px+513, py, size, index, 0xd000, 160)
 				}
 			}
 			return true
@@ -1817,7 +1847,7 @@ function void fn08086c()
 //# alias(fn087a2a) deprecated
 function void Bugernaut.BaseUpdate()
 {
-	if (!mt.bugernaught)
+	if (mt.bugernaught < 2)
 	{
 		base.Bugernaut.BaseUpdate()
 		return
@@ -1837,7 +1867,7 @@ function void Bugernaut.BaseUpdate()
 //# address-hook(0x087abc) end(0x087aca)
 function void fn087abc()
 {
-	if (!mt.bugernaught)
+	if (mt.bugernaught < 2)
 	{
 		base.fn087abc()
 		return
@@ -1859,7 +1889,7 @@ function void fn087abc()
 //# address-hook(0x08df52) end(0x08df62)
 function void fn08df52()
 {
-	if (!mt.dragonfly)
+	if (mt.dragonfly < 2)
 	{
 		base.fn08df52()
 		return
