@@ -167,7 +167,7 @@ function u64 Standalone.getModdedAnimationSpriteKey(u8 character, u16 animationS
 		if (dd.dropdash_animation == 2)
 			return stringformat("origins_dropdash_%d", level.framecounter & 0x0f)
 		else
-			return stringformat("sonic3_dropdash_%d", (level.framecounter >> 1) & 7)
+			return stringformat(super.active ? "super_sonic3_dropdash_%d" : "sonic3_dropdash_%d", (level.framecounter >> 1) & 7)
 	}
 	else
 		return base.Standalone.getModdedAnimationSpriteKey(character, animationSpriteEx)
