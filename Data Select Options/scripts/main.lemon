@@ -288,7 +288,8 @@ function void fn00d6d0()
 	
 	base.fn00d6d0()
 	
-	if lsds.esureorder
+#if EXTRA_CHARACTERS_UNLIMITED
+	if (lsds.esureorder)
 	{
 		if (objA0.animation.timer == 0x00 && oldXtraChar == (Mods.isModActive("Extra Slot Mighty & Ray") ? 0x04 : 0x03))
 		{
@@ -338,6 +339,7 @@ function void fn00d6d0()
 			}
 		}
 	}
+#endif
 
 }
 
@@ -406,7 +408,7 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 	#endif
 		
 		// ES Amy Icon for regular charactersprite
-		if lsds.amyicon && u8[A0 + 0x23] == 0x1b && (slotnum < 4) && !ecf_slot && (u8[A0 + 0x38] == 0xff && objA0.animation.timer == 0 && u16[0xffffb04a + 0x30] == 0)
+		if (lsds.amyicon && u8[A0 + 0x23] == 0x1b && (slotnum < 4) && !ecf_slot && (u8[A0 + 0x38] == 0xff && objA0.animation.timer == 0 && u16[0xffffb04a + 0x30] == 0))
 		{
 			u64 portrait = "Clear_slot3"
 			u16 py_shift = 0
@@ -426,7 +428,7 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 		}
 		
 	#if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
-		if lsds.nodetail && (objA0.update_address == 0x00d30c || objA0.update_address == 0x00d42c)
+		if (lsds.nodetail && (objA0.update_address == 0x00d30c || objA0.update_address == 0x00d42c))
 		{
 			string name = ECF_dataselect_getStr()
 			string id = ECF_dataselect_getNum()
@@ -471,8 +473,9 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 		}
 	#endif
 		
+	#if EXTRA_CHARACTERS_UNLIMITED
 		// Hackey way to handle extra slot compat...
-		if (lsds.nodetail && Mods.isModActive("Extra Character Slots") && objA0.update_address == 0x00d42c && objA0.animation.sprite == 0x05 && objA0.animation.timer > 0x00)
+		if (lsds.nodetail && objA0.update_address == 0x00d42c && objA0.animation.sprite == 0x05 && objA0.animation.timer > 0x00)
 		{
 			
 			if (u8[A0 + 0x38] == 0xff && objA0.animation.sprite == 5 && objA0.animation.timer != 0 && u16[0xffffb04a + 0x30] == 0)
@@ -508,15 +511,13 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 			return false
 			
 		}
-		else if (Mods.isModActive("Extra Character Slots") && objA0.animation.sprite == 5 && objA0.animation.timer != 0)
+		else if (objA0.animation.sprite == 5 && objA0.animation.timer != 0)
 		{
 			renderQueue -= 100
 		}
+	#endif
 	}
 
-	
-
-	
 	return base.Standalone.onWriteToSpriteTable(px, py, renderQueue)
 }
 
@@ -984,7 +985,7 @@ function void fn007e64()
 	base.fn007e64()
 	
 #if EXTRA_CHARACTERS_UNLIMITED
-	if lsds.esureorder
+	if (lsds.esureorder)
 	{
 		if (global.xtrachar == 0x00 && oldXtraChar == 0x04)
 		{
