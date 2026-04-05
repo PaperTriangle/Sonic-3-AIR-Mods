@@ -5,7 +5,7 @@
 		"UniqueID": "papers-pause",
 		"Author": "PaperTriangle",
 		"Description": "Pause Menu based on my imagining of what it may be like in a 90's re-release. (Thanks to SammyGoesHowdy for the base code.)",
-		"ModVersion": "1.0",
+		"ModVersion": "1.1",
 		"GameVersion": "25.02.15.0"
 	},
 	"OtherMods":
@@ -52,6 +52,17 @@
 				{
 					"0": "Black",
 					"1": "Blue"
+				}
+			},
+			{
+				"InternalName": "pp.prevent",
+				"DisplayName": "Pause Prevention",
+				"Variable": "pp.prevent",
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
 				}
 			}
 		]

@@ -1,8 +1,29 @@
 global bool pp.exittotitle
 global bool pp.texttype
 global bool pp.darkentype
+global bool pp.prevent
+global bool pp.knuxcredits
 
 constant u16 GamePause.NUM_ENTRIES = 4
+
+//# address-hook(0x0013e4) end(0x0014e4)
+function void UpdateGamePause()
+{
+	if pp.prevent && (level.wait_for_results || !hud.dirty.timer || global.level_started < 0 || global.zone == 0x0d || pp.knuxcredits)
+	{
+		global.game.paused = false
+		return
+	}
+
+	base.UpdateGamePause()
+}
+
+//# address-hook(0x05e70e) end(0x05e804)
+function void fn05e70e()
+{
+	pp.knuxcredits = true
+	base.fn05e70e()
+}
 
 function void GamePause.Menu()
 {
@@ -324,5 +345,6 @@ function void FadeOutScreenBlocking()
 function void Menu.FadeInAfterInit()
 {
 	restartOn = 0
+	pp.knuxcredits = false
 	base.Menu.FadeInAfterInit()
 }
