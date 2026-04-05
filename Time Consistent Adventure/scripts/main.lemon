@@ -32,6 +32,12 @@ global bool tca.bg_twinkle
 global bool tca.zone_icons
 global bool tca.ssz_icon
 
+global bool tca.mgz_mountains
+global bool tca.soz_bg
+global bool tca.knux_fbz
+global bool tca.fbz_intro
+global bool tca.fbz_clouds
+
 global bool tca.pal_ssz_dawn
 
 global u8 transition_state = 0
@@ -53,19 +59,19 @@ function bool isKnucklesRoute()
 function void yieldExecution()
 {
 	//Tile Data
-	if (tca.mgz)
+	if (tca.mgz && tca.mgz_mountains)
 	{
 		System.loadExternalRawData("MGZ_Mountain_Fix_1", 0x3C8A70)
 		System.loadExternalRawData("MGZ_Mountain_Fix_2", 0x3CA132)
 	}
 	
-	if (tca.fbz)
+	if (tca.fbz && tca.fbz_clouds)
 		System.loadExternalRawData("FBZ_Cloud_Fix", 0x195040)
 	
 	
-	if (tca.soz)
+	if (tca.soz && tca.soz_bg)
 	{
-		if (isKnucklesRoute() && tca.intended)
+		if (isKnucklesRoute() && tca.intended && !tca.knux_fbz)
 			System.loadExternalRawData("SOZ_Day_Fix", 0x1AA36A)
 		else
 			System.loadExternalRawData("SOZ_Original", 0x1AA36A)
@@ -73,7 +79,7 @@ function void yieldExecution()
 	
 	if (tca.hpz && global.zone_act == 0x1601)
 	{
-		if (isKnucklesRoute() && tca.intended)
+		if (isKnucklesRoute() && tca.intended && tca.knux_fbz != 1)
 		{
 			System.loadExternalRawData("HPZ_Roof_Fix_1", 0x1BEE58)
 			System.loadExternalRawData("HPZ_Roof_Fix_2", 0x1C3F2C)
@@ -136,7 +142,7 @@ function void yieldExecution()
 		}
 		
 	}
-	else if (tca.fbz && global.zone_act == 0x0400 && tca.intended) // FBZ Act 1
+	else if (tca.fbz && global.zone_act == 0x0400 && (tca.intended && !(isMainCharacter(CHARACTER_KNUCKLES) && tca.knux_fbz))) // FBZ Act 1
 	{
 		System.loadExternalRawData("FBZ_Palette", 0x052dd0)
 		
@@ -151,7 +157,11 @@ function void yieldExecution()
 		}
 		
 	}
-	else if (tca.fbz && global.zone_act == 0x0401 && tca.intended) // FBZ Act 2 (Intended)
+	else if (tca.fbz && global.zone_act == 0x0400 && (!tca.intended || (tca.intended && (isMainCharacter(CHARACTER_KNUCKLES) && tca.knux_fbz)))) // FBZ Act 1 (As Released) ****
+	{
+		System.loadExternalRawData("FBZ_Palette_Released", 0x052dd0)
+	}
+	else if (tca.fbz && global.zone_act == 0x0401 && (tca.intended && !(isMainCharacter(CHARACTER_KNUCKLES) && tca.knux_fbz))) // FBZ Act 2 (Intended)
 	{
 
 		if (camera.position.x.u16 >= 0x29a8 - getScreenExtend())
@@ -174,7 +184,7 @@ function void yieldExecution()
 			}
 		}
 	}
-	else if (tca.fbz && global.zone_act == 0x0401 && !tca.intended) // FBZ Act 2 (As Released) ****
+	else if (tca.fbz && global.zone_act == 0x0401 && (!tca.intended || (tca.intended && (isMainCharacter(CHARACTER_KNUCKLES) && tca.knux_fbz)))) // FBZ Act 2 (As Released) ****
 	{
 
 		if (camera.position.x.u16 >= 0x29a8 - getScreenExtend())
@@ -286,15 +296,10 @@ function void yieldExecution()
 	}
 	else if (tca.soz && global.zone_act == 0x0800) // SOZ Act 1
 	{	
-		if (isKnucklesRoute() && tca.intended)
+		if (isKnucklesRoute() && tca.intended && !tca.knux_fbz)
 			System.loadExternalRawData("SOZ1_Palette_Day", 0x0A94FC)
 		else
 			System.loadExternalRawData("SOZ1_Palette_Arvo", 0x0A94FC)
-	}
-	else if (tca.hpz && global.zone == 0x1601 && tca.intended)
-	{
-		if (isKnucklesRoute())
-			System.loadExternalRawData("HPZ_Roof_Fix", 0x1C3F2C)
 	}
 	else if (tca.ssz_sonic && global.zone_act == 0x0a00 && tca.intended) // SSZ Sonic
 	{
@@ -326,53 +331,81 @@ function void yieldExecution()
 	}
 	else if (tca.ssz_knux && global.zone_act == 0x0a01 && tca.intended) // SSZ Knuckles (Intended)
 	{
-		if (transition_state == 0 )
+		if !(isMainCharacter(CHARACTER_KNUCKLES) && tca.knux_fbz == 1) // Normal Mode (Knuckles skips FBZ)
 		{
-			if (!tca.knux_stars_off && tca.bg_stars)
+			if (transition_state == 0 )
 			{
-				TCA.RenderFix()
-				
-				for (u16 fs = 0 ; fs*128 < getScreenWidth(); fs++)
+				if (!tca.knux_stars_off && tca.bg_stars)
 				{
-					Renderer.drawSprite(stringformat("knux_stars_%d", tca.bg_twinkle ? (level.framecounter >> 4) % 4 : 1), 128 + fs*128 - (camera.position.x.u16 % 1024) / 8, -1 * (camera.position.y.u16 - 0x400) - camera.screenshake.offset + 80, 0, SPRITE_FLAG_PRIO, 0x2001)
-				}
-			}
-
-			System.loadExternalRawData("SSZK_Palette_Night", 0x0A979C)
-		}
-		
-		if (transition_state == 1 && transition_time <= 0x78)
-		{	
-			System.loadExternalRawData("SSZK_Palette_Pre_Dawn", 0x0A979C)
-			transition_time += !tca.fadespeed ? 1 : 2
-			if (tca.ssz_knux_fade)
-			{
-				if (transition_time % (tca.fadespeed ? 30 : 24) == 0 || !tca.fadetype)
-				{
-					System.loadExternalRawData(tca.pal_ssz_dawn ? "SSZK_Palette_Morning_Pink" : "SSZK_Palette_Morning", 0x3fff30)
+					TCA.RenderFix()
 					
-					for (u8 i = 0; i < 23; i++)
+					for (u16 fs = 0 ; fs*128 < getScreenWidth(); fs++)
 					{
-						if (i != 13 && i != 14)
+						Renderer.drawSprite(stringformat("knux_stars_%d", tca.bg_twinkle ? (level.framecounter >> 4) % 4 : 1), 128 + fs*128 - (camera.position.x.u16 % 1024) / 8, -1 * (camera.position.y.u16 - 0x400) - camera.screenshake.offset + 80, 0, SPRITE_FLAG_PRIO, 0x2001)
+					}
+				}
+
+				System.loadExternalRawData("SSZK_Palette_Night", 0x0A979C)
+			}
+			
+			if (transition_state == 1 && transition_time <= 0x78)
+			{	
+				System.loadExternalRawData("SSZK_Palette_Pre_Dawn", 0x0A979C)
+				transition_time += !tca.fadespeed ? 1 : 2
+				if (tca.ssz_knux_fade)
+				{
+					if (transition_time % (tca.fadespeed ? 30 : 24) == 0 || !tca.fadetype)
+					{
+						System.loadExternalRawData(tca.pal_ssz_dawn ? "SSZK_Palette_Morning_Pink" : "SSZK_Palette_Morning", 0x3fff30)
+						
+						for (u8 i = 0; i < 23; i++)
 						{
-							u16[0xfffffc00 + (0x21 + i)*2] = blendColorsPacked(u16[0x0A977C + (0x21 + i)*2], u16[0x3fff30 + (0x11 + i)*2], min(0xff, transition_time * 2 + transition_time / 8 + 1))
-							u16[0xfffffc00 + 0x80 + (0x21 + i)*2] = blendColorsPacked(u16[0x0A977C + (0x21 + i)*2], u16[0x3fff30 + (0x11 + i)*2], min(0xff, transition_time * 2 + transition_time / 8 + 1))
+							if (i != 13 && i != 14)
+							{
+								u16[0xfffffc00 + (0x21 + i)*2] = blendColorsPacked(u16[0x0A977C + (0x21 + i)*2], u16[0x3fff30 + (0x11 + i)*2], min(0xff, transition_time * 2 + transition_time / 8 + 1))
+								u16[0xfffffc00 + 0x80 + (0x21 + i)*2] = blendColorsPacked(u16[0x0A977C + (0x21 + i)*2], u16[0x3fff30 + (0x11 + i)*2], min(0xff, transition_time * 2 + transition_time / 8 + 1))
+							}
 						}
 					}
-				}
 
-				if (transition_time >= 0x79)
-				{
-					if (!tca.ssz_knux_longdawn)
+					if (transition_time >= 0x79)
 					{
-						transition_state = 2
-						transition_time = 0
+						if (!tca.ssz_knux_longdawn)
+						{
+							transition_state = 2
+							transition_time = 0
+						}
+						System.loadExternalRawData("SSZK_Palette_Original", 0x0A979C)
 					}
-					System.loadExternalRawData("SSZK_Palette_Original", 0x0A979C)
 				}
+				else
+				{
+					if (transition_time % (tca.fadespeed ? 30 : 24) == 0 || !tca.fadetype)
+					{
+						System.loadExternalRawData("SSZK_Palette_Original", 0x3fff30)
+						
+						for (u8 i = 0; i < 31; i++)
+						{
+							if (i != 13 && i != 14)
+							{
+								u16[0xfffffc00 + (0x21 + i)*2] = blendColorsPacked(u16[0x0A977C + (0x21 + i)*2], u16[0x3fff30 + (0x11 + i)*2], min(0xff, transition_time * 2 + transition_time / 8 + 1))
+								u16[0xfffffc00 + 0x80 + (0x21 + i)*2] = blendColorsPacked(u16[0x0A977C + (0x21 + i)*2], u16[0x3fff30 + (0x11 + i)*2], min(0xff, transition_time * 2 + transition_time / 8 + 1))
+							}
+						}
+					}
+
+					if (transition_time >= 0x79)
+					{
+						transition_state = 3
+						System.loadExternalRawData("SSZK_Palette_Original", 0x0A979C)
+					}
+				}
+				
 			}
-			else
+			else if (transition_state == 2 && transition_time <= 0x78)
 			{
+				System.loadExternalRawData(tca.pal_ssz_dawn ? "SSZK_Palette_Morning_Pink" : "SSZK_Palette_Morning", 0x0A979C)
+				transition_time += !tca.fadespeed ? 1 : 2
 				if (transition_time % (tca.fadespeed ? 30 : 24) == 0 || !tca.fadetype)
 				{
 					System.loadExternalRawData("SSZK_Palette_Original", 0x3fff30)
@@ -381,38 +414,45 @@ function void yieldExecution()
 					{
 						if (i != 13 && i != 14)
 						{
-							u16[0xfffffc00 + (0x21 + i)*2] = blendColorsPacked(u16[0x0A977C + (0x21 + i)*2], u16[0x3fff30 + (0x11 + i)*2], min(0xff, transition_time * 2 + transition_time / 8 + 1))
-							u16[0xfffffc00 + 0x80 + (0x21 + i)*2] = blendColorsPacked(u16[0x0A977C + (0x21 + i)*2], u16[0x3fff30 + (0x11 + i)*2], min(0xff, transition_time * 2 + transition_time / 8 + 1))
+							u16[0xfffffc00 + (0x21 + i)*2] = blendColorsPacked(u16[0x0A977C + (0x21 + i)*2], u16[0x3fff30 + (0x11 + i)*2], min(256, transition_time * 2 + transition_time / 8 + 1))
+							u16[0xfffffc00 + 0x80 + (0x21 + i)*2] = blendColorsPacked(u16[0x0A977C + (0x21 + i)*2], u16[0x3fff30 + (0x11 + i)*2], min(256, transition_time * 2 + transition_time / 8 + 1))
 						}
 					}
 				}
-
+				
+			}
+		}
+		else // If Knuckles visits FBZ
+		{
+			if (transition_state == 0)
+			{
+				System.loadExternalRawData(tca.pal_ssz_dawn ? "SSZK_Palette_Morning_Pink" : "SSZK_Palette_Morning", 0x0A979C)
+			}
+			else if (transition_state == 1 && transition_time <= 0x78)
+			{
+				System.loadExternalRawData(tca.pal_ssz_dawn ? "SSZK_Palette_Morning_Pink" : "SSZK_Palette_Morning", 0x0A979C)
+				transition_time += !tca.fadespeed ? 1 : 2
+				if (transition_time % (tca.fadespeed ? 30 : 24) == 0 || !tca.fadetype)
+				{
+					System.loadExternalRawData("SSZK_Palette_Original", 0x3fff30)
+					
+					for (u8 i = 0; i < 31; i++)
+					{
+						if (i != 13 && i != 14)
+						{
+							u16[0xfffffc00 + (0x21 + i)*2] = blendColorsPacked(u16[0x0A977C + (0x21 + i)*2], u16[0x3fff30 + (0x11 + i)*2], min(256, transition_time * 2 + transition_time / 8 + 1))
+							u16[0xfffffc00 + 0x80 + (0x21 + i)*2] = blendColorsPacked(u16[0x0A977C + (0x21 + i)*2], u16[0x3fff30 + (0x11 + i)*2], min(256, transition_time * 2 + transition_time / 8 + 1))
+						}
+					}
+				}
+				
 				if (transition_time >= 0x79)
 				{
 					transition_state = 3
 					System.loadExternalRawData("SSZK_Palette_Original", 0x0A979C)
 				}
-			}
-			
-		}
-		else if (transition_state == 2 && transition_time <= 0x78)
-		{
-			System.loadExternalRawData(tca.pal_ssz_dawn ? "SSZK_Palette_Morning_Pink" : "SSZK_Palette_Morning", 0x0A979C)
-			transition_time += !tca.fadespeed ? 1 : 2
-			if (transition_time % (tca.fadespeed ? 30 : 24) == 0 || !tca.fadetype)
-			{
-				System.loadExternalRawData("SSZK_Palette_Original", 0x3fff30)
 				
-				for (u8 i = 0; i < 31; i++)
-				{
-					if (i != 13 && i != 14)
-					{
-						u16[0xfffffc00 + (0x21 + i)*2] = blendColorsPacked(u16[0x0A977C + (0x21 + i)*2], u16[0x3fff30 + (0x11 + i)*2], min(256, transition_time * 2 + transition_time / 8 + 1))
-						u16[0xfffffc00 + 0x80 + (0x21 + i)*2] = blendColorsPacked(u16[0x0A977C + (0x21 + i)*2], u16[0x3fff30 + (0x11 + i)*2], min(256, transition_time * 2 + transition_time / 8 + 1))
-					}
-				}
 			}
-			
 		}
 	}
 	
@@ -468,10 +508,15 @@ function void fn00d96a()
 	{		
 		if tca.knux_route
 		{
-			if (tca.soz)
+			if (tca.soz && !tca.knux_fbz)
 				System.loadExternalRawData("SOZ_Zone_Card_Knux", 0x00CC18)
 			if (tca.ssz_knux)
-				System.loadExternalRawData("SSZ_Zone_Card_Knux", 0x00CC78)
+			{
+				if (tca.knux_fbz == 1)
+					System.loadExternalRawData(tca.pal_ssz_dawn ? "SSZ_Zone_Card_Knux_Released_Dawn_Pink" : "SSZ_Zone_Card_Knux_Released_Dawn", 0x00CC78)
+				else
+					System.loadExternalRawData("SSZ_Zone_Card_Knux", 0x00CC78)
+			}
 		}
 		else
 		{
@@ -487,7 +532,7 @@ function void fn00d96a()
 		}
 		
 		if (!tca.fbz_s3_icon && tca.fbz)
-			System.loadExternalRawData("FBZ_Zone_Card", 0x00CBF8)
+			System.loadExternalRawData(tca.knux_route ? "FBZ_Zone_Card_Original" : "FBZ_Zone_Card", 0x00CBF8)
 		else if (tca.fbz_s3_icon)
 			System.loadExternalRawData("FBZ_Zone_Card_S3", 0x00CBF8)
 
@@ -496,7 +541,7 @@ function void fn00d96a()
 
 		if (u16[A0 + 0x36] == 0x007 && s16[0xffffb04a + 0x2e] == 0)
 		{
-			if (!tca.fbz_s3_icon && tca.fbz)
+			if (!tca.fbz_s3_icon && tca.fbz && !tca.knux_route)
 			{
 				SpriteHandle dataselpreview = Renderer.addSpriteHandle("fbz_icon", (objA0.position.x.u16 + getScreenExtend() - 208) - getScreenExtend() + 40, posY, 0x9ff9)
 				dataselpreview.setFlags(0x40)
@@ -531,7 +576,7 @@ function void fn00d96a()
 		{
 			if (tca.ssz_knux && tca.knux_route)
 			{
-				SpriteHandle dataselpreview = Renderer.addSpriteHandle("ssz_icon_knux", (objA0.position.x.u16 + getScreenExtend() - 208) - getScreenExtend() + 40, posY, 0x9ff9)
+				SpriteHandle dataselpreview = Renderer.addSpriteHandle((tca.knux_fbz == 1) ? "ssz_icon_knux_released" : "ssz_icon_knux", (objA0.position.x.u16 + getScreenExtend() - 208) - getScreenExtend() + 40, posY, 0x9ff9)
 				dataselpreview.setFlags(0x40)
 			}
 			else if (tca.ssz_icon && tca.ssz_sonic)
@@ -747,7 +792,7 @@ function void fn01c96e()
 //# address-hook(0x067f1e) end(0x067f38)
 function void fn067f1e()
 {
-	if !(tca.leftescape && global.zone == 0x03)
+	if !(tca.intended && tca.leftescape && global.zone == 0x03)
 	{
 		base.fn067f1e()
 		return
@@ -806,7 +851,7 @@ function void fn07092a()
 		return
 	}
 	
-	if (tca.intended || (!tca.intended && isKnucklesRoute()))
+	if (tca.intended && !tca.knux_fbz) || isKnucklesRoute()
 	{
 		if (camera.position.x.u16 >= 0x30d8 - getScreenExtend() && transition_state == 1)
 		{
@@ -1289,12 +1334,15 @@ function void fn085ee6()
 	if (tca.intended && global.zone_act == 0x0a01)
 	{
 		tca.knux_stars_off = 1
-		System.loadExternalRawData("SSZK_Palette_Pre_Dawn", 0x0A979C)
-		for (u8 i = 0; i < 0x20; i++)
+		if (tca.knux_fbz != 1)
 		{
-			if (i != 13 && i != 14)
+			System.loadExternalRawData("SSZK_Palette_Pre_Dawn", 0x0A979C)
+			for (u8 i = 0; i < 0x20; i++)
 			{
-				u16[0xfffffc00 + 0x80 + (0x21 + i)*2] = u16[0x0A977C + (0x21 + i)*2]
+				if (i != 13 && i != 14)
+				{
+					u16[0xfffffc00 + 0x80 + (0x21 + i)*2] = u16[0x0A977C + (0x21 + i)*2]
+				}
 			}
 		}
 	}
@@ -1328,17 +1376,6 @@ function void fn07ccb0()
 }
 
 // Make Dawn fade to day when sonic exits the screen.
-////# address-hook(0x05e9e2) end(0x05ea18)
-//function void fn05e9e2()
-//{
-//	base.fn05e9e2()
-//	if (tca.intended && tca.ssz_knux_fade && tca.ssz_knux_longdawn)
-//	{
-//		transition_state = 2
-//		transition_time = 0
-//	}
-//}
-
 //# address-hook(0x05e9c2) end(0x05e9e0)
 function void fn05e9c2()
 {
@@ -1431,14 +1468,14 @@ function void Renderer.drawCustomSprite(u64 key, s16 px, s16 py, u8 atex, u8 fla
 	if tca.fbz && (key == "S3CompleteSelect_Zone8" || key == "S3CompleteSelect_Zone8_alt")
 	{
 		if (!tca.fbz_s3_icon && tca.intended)
-			key = "S3CompleteSelect_FBZ"
+			key = tca.knux_fbz && (levelselect.characters == 3 || levelselect.characters == 4) ? "S3CompleteSelect_Zone8" : "S3CompleteSelect_FBZ"
 		else if (tca.fbz_s3_icon)
 			key = "S3CompleteSelect_FBZ_S3"
 	}
 	else if (key == "S3CompleteSelect_Zone9")
 	{
 		if (tca.soz)
-			key = tca.intended && (levelselect.characters == 3 || levelselect.characters == 4) ? "S3CompleteSelect_SOZ_Knux" : "S3CompleteSelect_SOZ"
+			key = tca.intended && !tca.knux_fbz && (levelselect.characters == 3 || levelselect.characters == 4) ? "S3CompleteSelect_SOZ_Knux" : "S3CompleteSelect_SOZ"
 	}
 	else if (key == "S3CompleteSelect_Zone6")
 	{
@@ -1450,7 +1487,15 @@ function void Renderer.drawCustomSprite(u64 key, s16 px, s16 py, u8 atex, u8 fla
 		if (tca.intended && tca.ssz_icon && tca.ssz_sonic) && (levelselect.selection == 0x16)
 			key = tca.pal_ssz_dawn ? "S3CompleteSelect_SSZ_Dawn_Pink" : "S3CompleteSelect_SSZ_Dawn"
 		else if (tca.ssz_knux) && (levelselect.selection == 0x17)
-			key = tca.intended ? "S3CompleteSelect_SSZ_Knux" : "S3CompleteSelect_SSZ_Knux_Released"
+			if (tca.intended)
+			{
+				if (tca.knux_fbz == 1)
+					key = tca.pal_ssz_dawn ? "S3CompleteSelect_SSZ_Knux_Released_Dawn_Pink" : "S3CompleteSelect_SSZ_Knux_Released_Dawn"
+				else
+					key = "S3CompleteSelect_SSZ_Knux"
+			}
+			else
+				key = "S3CompleteSelect_SSZ_Knux_Released"
 		else if (Mods.isModActive("Moar Transparency") && System.getGlobalVariableValueByName("mt.teleframe"))
 			key = "S3CompleteSelect_SSZ_C"
 	}

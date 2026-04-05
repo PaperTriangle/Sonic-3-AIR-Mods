@@ -53,21 +53,22 @@ function void yieldExecution()
 	base.yieldExecution()
 	
 	// MVZ to SOZ
-	if (tca.intended && global.zone_act == 0x0701 && camera.position.x.u16 > 0x4580 && !(level.wait_for_results))
+	if (tca.intended && !(isKnucklesRoute() && tca.knux_fbz)  && global.zone_act == 0x0701 && camera.position.x.u16 > 0x4580 && !(level.wait_for_results))
 	{
-		if u16[0xffffb000 + 0x10] >= 0x4650
+		if (u16[0xffffb000 + 0x10] >= 0x4788)
 		{
 			player1.control_override = 0xff
 			control.player1 = 0x0808		// CONTROL_RIGHT, CONTROL_RIGHT
-		}
-		else player1.control_override = 0
-		
-		if u16[0xffffb04a + 0x10] >= 0x4650
-		{
 			player2.control_override = 0xff
 			control.tails = 0x0808		// CONTROL_RIGHT, CONTROL_RIGHT
 		}
-		else player2.control_override = 0
+		else
+		{
+			u16[0xffffb000 + 0x0a] &= ~sprite_attribute.PRIORITY
+			u16[0xffffb04a + 0x0a] &= ~sprite_attribute.PRIORITY
+			player1.control_override = 0
+			player2.control_override = 0
+		}
 	}
 }
 
@@ -77,7 +78,7 @@ function void yieldExecution()
 
 function bool isSonicAndKnucklesZone()
 {
-	if (tca.intended)
+	if (tca.intended) && !isKnucklesRoute()
 	{
 		u8 zone = global.zone
 		if (global.stage_type == 2)
@@ -126,7 +127,7 @@ function bool fn00d458()
 				else if u16[A0 + 0x36] == 7 // going up from mhz
 					u16[A0 + 0x36] = 8 // takes you to soz
 			}
-			else if u16[A0 + 0x36] == 7 // going up from mhz
+			else if(!tca.knux_fbz && u16[A0 + 0x36] == 7) // going up from mhz
 				u16[A0 + 0x36] = 8 // takes you to soz
 		}
 		else if (control.pad1.pressed & CONTROL_DOWN)
@@ -140,7 +141,7 @@ function bool fn00d458()
 				else if u16[A0 + 0x36] == 6 // going down from fbz
 					u16[A0 + 0x36] = 3 // takes you to cnz
 			}
-			else if u16[A0 + 0x36] == 7 // going down from soz
+			else if (!tca.knux_fbz && u16[A0 + 0x36] == 7) // going down from soz
 				u16[A0 + 0x36] = 6 // takes you to mhz
 		}
 	}
@@ -223,7 +224,7 @@ function void fn00c890()
 					if u16[A3 + 0x36] == 7
 						D0.u16 -= 6
 				}
-				else if (u16[A3 + 0x36] >= 8)
+				else if (!tca.knux_fbz && u16[A3 + 0x36] >= 8)
 					D0.u16 -= 2
 
 				// Second digit (10, 20, etc)
@@ -276,13 +277,13 @@ function void SaveGameOnLevelFinished()
 		// Get the number of the next zone (using the usual internal zone numbering, see definition of global.zone.apparent)
 		u8 offset = global.zone * 2 + global.act
 		u8 nextZone = u8[0x00c404 + offset]
-		bool skipFBZ = isMainCharacter(CHARACTER_KNUCKLES)
+		bool skipFBZ = isKnucklesRoute()
 		if (nextZone == 4 && !skipFBZ) // leaving cnz, going to icz
 			nextZone = 7 // put the player's save on fbz because of new order
 		else if (nextZone == 8) // leaving fbz, going to soz
 			nextZone = 4 // put the player's save on icz
 		else if (nextZone == 7) // leaving mhz, going to fbz
-			nextZone = 8 // put the player's save on soz
+			nextZone = (isKnucklesRoute() && tca.knux_fbz) ? 7 : 8 // put the player's save on soz
 		bool gameCompleted = false
 		if (u8[A1] & 0x03)
 		{
@@ -301,7 +302,7 @@ function void SaveGameOnLevelFinished()
 		if (!gameCompleted)
 		{
 			u8[A1 + 0x03] = nextZone
-			if (isMainCharacter(CHARACTER_KNUCKLES))
+			if (isKnucklesRoute())
 			{
 				gameCompleted = (nextZone >= 0x0c)
 			}
@@ -350,7 +351,7 @@ function void TriggerNextZone()
 			else if global.zone == 0x04
 				D0.u16 = Game.onTriggerNextZone(0x0500)
 		}
-		else if global.zone == 0x07
+		else if global.zone == 0x07 && !(isKnucklesRoute() && tca.knux_fbz)
 			D0.u16 = Game.onTriggerNextZone(0x0800)
 	}
 	
@@ -404,15 +405,201 @@ function void UpdateLevelScrolling.CNZ2()
 	base.UpdateLevelScrolling.CNZ2()
 }
 
+//-----------//
+// FBZ Intro //
+//-----------//
 
-//-----------
-// MVZ to SOZ
-//-----------
+//# address-hook(0x0067ee) end(0x0069b6)
+function void fn0067ee()
+{	
+	if (global.zone_act != 0x0400 || !tca.fbz_intro)
+	{
+		base.fn0067ee()
+		return
+	}
+	
+	u32[0xffffb094] = addressof(ResetDynamicObjectList)
+	InitializeGameCharacters()
+	RestoreShield()
+	if (checkpoint.number != 0 || global.stage_type != 0)
+		return
+
+	A1 = 0xffffb000
+	A2 = 0xffffb04a
+	
+	if (isKnucklesRoute())
+	{
+		u32[0xffffb172] = 0x044a0c
+	}
+	else
+	{	
+		u32[0xffffb172] = 0x039a40
+		
+		objA1.state = char.state.ROLLING
+		objA1.flags2a |= char.flag.IN_AIR
+		u8[A1 + 0x2e] |= control_flag.DISABLE_UPDATE
+		
+		if (u32[A2] != 0)
+		{
+			u8[A2 + 0x20] = char.state.ROLLING
+			u8[A2 + 0x2a] |= char.flag.IN_AIR
+			u8[A2 + 0x2e] |= control_flag.DISABLE_UPDATE
+		}
+	}
+}
+
+//# address-hook(0x01c2b0) end(0x01c360)
+function void fn01c2b0()
+{
+	base.fn01c2b0()
+	
+	if (tca.fbz_intro && global.zone_act == 0x0400 && !isKnucklesRoute())
+		camera.position.y.u16 += 0xb0
+}
+
+// FBZ Jump (Sonic & Tails)
+//# address-hook(0x039a40) end(0x039a7e)
+function void fn039a40()
+{
+	if (global.zone_act != 0x0400 || !tca.fbz_intro)
+	{
+		base.fn039a40()
+		return
+	}
+	
+	objA0.update_address = 0x039a80
+	player1.control_override = 1
+	player2.control_override = 1
+	control.player1 = 0
+	control.pad1 = 0
+	control.tails = 0
+	control.pad2 = 0
+
+	objA0.animation.timer = 0x10
+	
+	A1 = 0xffffb000
+	objA1.position.x.u16 -= 0x60
+	objA1.position.y.u16 += 0xb0
+
+	A1 = 0xffffb04a
+	if (u32[A1] != 0)
+	{
+		objA1.position.x.u16 -= 0x60
+		objA1.position.y.u16 += 0xb8
+	}
+}
+
+
+//# address-hook(0x039a80) end(0x039ad0)
+function void fn039a80()
+{
+	if (global.zone_act != 0x0400 || !tca.fbz_intro)
+	{
+		base.fn039a80()
+		return
+	}
+	
+	player1.control_override = 1
+	player2.control_override = 1
+	control.player1 = 0
+	control.tails = 0
+	objA0.update_address = 0x039ad2
+
+	A1 = 0xffffb000
+	objA1.velocity.y = -0x980
+	objA1.velocity.x = 0x1b4
+	objA1.flags2a |= char.flag.IN_AIR
+	u8[A1 + 0x40] = 0
+
+	A1 = 0xffffb04a
+	if (u32[A1] != 0)
+	{
+		objA1.velocity.y = -0x9a0
+		objA1.velocity.x = 0x144
+		objA1.position.x.u16 -= 0x10
+		objA1.flags2a |= char.flag.IN_AIR
+		u8[A1 + 0x40] = 0
+		objA1.state = char.state.ROLLING
+		u8[A1 + 0x2e] = control_flag.DISABLE_UPDATE
+	}
+}
+
+
+//# address-hook(0x039ad2) end(0x039b64)
+function void fn039ad2()
+{
+	if (global.zone_act != 0x0400 || !tca.fbz_intro)
+	{
+		base.fn039ad2()
+		return
+	}
+	
+	player1.control_override = 1
+	player2.control_override = 1
+	control.player1 = 0
+	control.tails = 0
+
+	A2 = 0xffffb000
+
+	if (u16[A2 + 0x14] < 0x0770)
+	{
+		A1 = 0xffffb000
+		u8[A1 + 0x2e] = 0
+
+		A1 = 0xffffb04a
+		if (u32[A1] != 0)
+		{
+			u8[A1 + 0x2e] = 0
+		}
+	}
+	else
+	{
+		fn039b46()
+
+		A2 = 0xffffb04a
+		if (u32[A2] != 0)
+		{
+			fn039b46()
+		}
+	}
+	
+	if !(u8[0xffffb000 + 0x2a] & char.flag.IN_AIR)
+	{
+		player1.control_override = 0
+		player2.control_override = 0
+		
+		UnloadObject()
+	}
+}
+
+// FBZ Walk (Knuckles)
+//# address-hook(0x044a0c) end(0x044a20)
+function void fn044a0c()
+{
+	if (global.zone_act != 0x0400 || !tca.fbz_intro)
+	{
+		base.fn044a0c()
+		return
+	}
+	
+	// This defines the position where to stop automatic moving right
+	u16[A0 + 0x30] = 0x48
+	u16[0xffffb000 + 0x10] -= 0x50
+	u16[0xffffb04a + 0x10] -= 0x60
+	objA0.value32 = u16[0xffffb000 + 0x14]
+
+	objA0.update_address = 0x044a26
+	fn044a26()
+}
+
+//------------//
+// MVZ to SOZ //
+//------------//
 
 //# address-hook(0x076270) end(0x07630a)
 function void fn076270()
 {
-	if (!tca.intended)
+	if (!tca.intended) || (isKnucklesRoute() && tca.knux_fbz) 
 	{
 		base.fn076270()
 		return
@@ -433,7 +620,7 @@ function void fn076270()
 	stopCharacterWinPose(0xffffb04a)
 	PlayMusicAfterLevelResults()
 	
-	screenmover_target.right = 0x4650
+	screenmover_target.right = 0x4720
 
 	spawnSimpleChildObjects(0x084a48, 1)		// Screen mover for the right border
 }
@@ -444,25 +631,33 @@ function void UpdateLevelScrolling.MHZ2()
 {
 	if (tca.intended)
 	{
-		SpriteHandle tree1.1 = Renderer.addSpriteHandle("mhz_tree1_1", 0x4740, 0x0286, 0x4000)
+		SpriteHandle tree1.1 = Renderer.addSpriteHandle("mhz_tree1_1", 0x4800, 0x0286, (isKnucklesRoute() && tca.knux_fbz) ? 0xa000 : 0x4000)
 		tree1.1.setFlags(0x20|0x40)
 		tree1.1.setPaletteOffset(0x30)
-		SpriteHandle tree1.2 = Renderer.addSpriteHandle("mhz_tree1_2", 0x4740, 0x0286, 0x4000)
+		SpriteHandle tree1.2 = Renderer.addSpriteHandle("mhz_tree1_2", 0x4800, 0x0286, (isKnucklesRoute() && tca.knux_fbz) ? 0xa000 : 0x4000)
 		tree1.2.setFlags(0x20|0x40)
 		tree1.2.setPaletteOffset(0x20)
-		SpriteHandle tree2 = Renderer.addSpriteHandle("mhz_tree2", 0x4740, 0x0286, 0xa000)
+		SpriteHandle tree2 = Renderer.addSpriteHandle("mhz_tree2", 0x4800, 0x0286, 0xa000)
 		tree2.setFlags(0x20|0x40)
 		tree2.setPaletteOffset(0x30)
-		if u16[0xffffb000 + 0x10] >= 0x4770
-			TriggerNextZone(0x0800)
+		if !(isKnucklesRoute() && tca.knux_fbz) 
+		{
+			fillPlaneA_Default(camera.foreground.x.u16, camera.foreground.y.u16, getScreenWidth(), getScreenHeight())
+			if u16[0xffffb000 + 0x10] >= 0x4830
+				TriggerNextZone(0x0800)
+		}
+		
+		u8[0xffff8477] = 0x8b
+		u8[0xffff8478] = 0x23
 	}
+
 	base.UpdateLevelScrolling.MHZ2()
 }
 
 //# address-hook(0x01be46) end(0x01bfae)
 function void SetupCharacterAtStartPosition()
 {
-	if tca.intended && global.zone_act == 0x0800 && (checkpoint.number == 0) && global.rolling_demo == 0
+	if tca.intended && global.zone_act == 0x0800 && (checkpoint.number == 0) && global.rolling_demo == 0 && !(isKnucklesRoute() && tca.knux_fbz) 
 	{
 		u16[0xffffb000 + 0x10] = 0x0000
 		u16[0xffffb000 + 0x14] = 0x066c
@@ -478,7 +673,7 @@ function void fn0067ee()
 {
 	base.fn0067ee()
 	
-	if (tca.intended)
+	if (tca.intended && !(isKnucklesRoute() && tca.knux_fbz))
 	{
 		if (global.zone_act != 0x0800 || global.rolling_demo != 0) // Sandopolis
 			return
@@ -491,7 +686,7 @@ function void fn0067ee()
 //# address-hook(0x054e9c) end(0x054f62)
 function void fn054e9c()
 {
-	if (!tca.intended)
+	if (!tca.intended) || (isKnucklesRoute() && tca.knux_fbz) 
 	{
 		base.fn054e9c()
 		return
@@ -503,7 +698,7 @@ function void fn054e9c()
 //# address-hook(0x054f64) end(0x054f88)
 function void fn054f64()
 {
-	if (!tca.intended)
+	if (!tca.intended) || (isKnucklesRoute() && tca.knux_fbz) 
 	{
 		base.fn054f64()
 		return
@@ -514,7 +709,7 @@ function void fn054f64()
 //# address-hook(0x054f8c) end(0x055006)
 function void fn054f8c()
 {
-	if (!tca.intended)
+	if (!tca.intended) || (isKnucklesRoute() && tca.knux_fbz) 
 	{
 		base.fn054f8c()
 		return
@@ -525,7 +720,7 @@ function void fn054f8c()
 
 function void fn054fec()
 {
-	if (!tca.intended)
+	if (!tca.intended) || (isKnucklesRoute() && tca.knux_fbz) 
 	{
 		base.fn054fec()
 		return
@@ -536,7 +731,7 @@ function void fn054fec()
 //# address-hook(0x055814) end(0x055826)
 function void fn055814()
 {
-	if (!tca.intended)
+	if (!tca.intended) || (isKnucklesRoute() && tca.knux_fbz) 
 	{
 		base.fn055814()
 		return
@@ -548,7 +743,7 @@ function void fn055814()
 //# address-hook(0x05582e) end(0x055838)
 function void fn05582e()
 {
-	if (!tca.intended)
+	if (!tca.intended) || (isKnucklesRoute() && tca.knux_fbz) 
 	{
 		base.fn05582e()
 		return
@@ -560,7 +755,7 @@ function void fn05582e()
 //# address-hook(0x05583e) end(0x0558c0)
 function void fn05583e()
 {
-	if (!tca.intended)
+	if (!tca.intended) || (isKnucklesRoute() && tca.knux_fbz) 
 	{
 		base.fn05583e()
 		return
@@ -573,7 +768,7 @@ function void fn05583e()
 //# address-hook(0x076310) end(0x076350)
 function void fn076310()
 {
-	if (!tca.intended)
+	if (!tca.intended) || (isKnucklesRoute() && tca.knux_fbz) 
 	{
 		base.fn076310()
 		return
@@ -585,7 +780,7 @@ function void fn076310()
 //# address-hook(0x076356) end(0x0763ac)
 function void fn076356()
 {
-	if (!tca.intended)
+	if (!tca.intended) || (isKnucklesRoute() && tca.knux_fbz) 
 	{
 		base.fn076356()
 		return
@@ -597,7 +792,7 @@ function void fn076356()
 //# address-hook(0x0763b2) end(0x0763d2)
 function void fn0763b2()
 {
-	if (!tca.intended)
+	if (!tca.intended) || (isKnucklesRoute() && tca.knux_fbz) 
 	{
 		base.fn0763b2()
 		return
@@ -609,7 +804,7 @@ function void fn0763b2()
 //# address-hook(0x0763d8) end(0x076402)
 function void fn0763d8()
 {
-	if (!tca.intended)
+	if (!tca.intended) || (isKnucklesRoute() && tca.knux_fbz) 
 	{
 		base.fn0763d8()
 		return
@@ -621,7 +816,7 @@ function void fn0763d8()
 //# address-hook(0x076404) end(0x076450)
 function void fn076404()
 {
-	if (!tca.intended)
+	if (!tca.intended) || (isKnucklesRoute() && tca.knux_fbz) 
 	{
 		base.fn076404()
 		return
@@ -633,7 +828,7 @@ function void fn076404()
 //# address-hook(0x076456) end(0x076468)
 function void fn076456()
 {
-	if (!tca.intended)
+	if (!tca.intended) || (isKnucklesRoute() && tca.knux_fbz) 
 	{
 		base.fn076456()
 		return
@@ -645,7 +840,7 @@ function void fn076456()
 //# address-hook(0x07646e) end(0x076490)
 function void fn07646e()
 {
-	if (!tca.intended)
+	if (!tca.intended) || (isKnucklesRoute() && tca.knux_fbz) 
 	{
 		base.fn07646e()
 		return
@@ -657,7 +852,7 @@ function void fn07646e()
 //# address-hook(0x076492) end(0x07649e)
 function void fn076492()
 {
-	if (!tca.intended)
+	if (!tca.intended) || (isKnucklesRoute() && tca.knux_fbz) 
 	{
 		base.fn076492()
 		return
@@ -670,7 +865,7 @@ function void fn076492()
 //# address-hook(0x041fee) end(0x042026)
 function void fn041fee()
 {
-	 if (global.rolling_demo || !tca.intended)
+	 if (global.rolling_demo || !tca.intended) || (isKnucklesRoute() && tca.knux_fbz) 
 		base.fn041fee()
 }
 
@@ -678,7 +873,7 @@ function void fn041fee()
 //# address-hook(0x042028) end(0x042090)
 function void fn042028()
 {
-	if (global.rolling_demo || !tca.intended)
+	if (global.rolling_demo || !tca.intended) || (isKnucklesRoute() && tca.knux_fbz) 
 		base.fn042028()
 }
 
@@ -686,7 +881,7 @@ function void fn042028()
 //# address-hook(0x042092) end(0x0420a4)
 function void fn042092()
 {
-	if (global.rolling_demo || !tca.intended)
+	if (global.rolling_demo || !tca.intended) || (isKnucklesRoute() && tca.knux_fbz) 
 		base.fn042092()
 }
 
@@ -694,14 +889,14 @@ function void fn042092()
 //# address-hook(0x0420a6) end(0x0420fa)
 function void fn0420a6()
 {
-	if (global.rolling_demo || !tca.intended)
+	if (global.rolling_demo || !tca.intended) || (isKnucklesRoute() && tca.knux_fbz) 
 		base.fn0420a6()
 }
 
 
 function void fn0420de()
 {
-	if (global.rolling_demo || !tca.intended)
+	if (global.rolling_demo || !tca.intended) || (isKnucklesRoute() && tca.knux_fbz) 
 		base.fn0420de()
 }
 
@@ -709,14 +904,14 @@ function void fn0420de()
 //# address-hook(0x0420fc) end(0x04217e)
 function void fn0420fc()
 {
-	if (global.rolling_demo || !tca.intended)
+	if (global.rolling_demo || !tca.intended) || (isKnucklesRoute() && tca.knux_fbz) 
 		base.fn0420fc()
 }
 
 
 function void fn042160()
 {
-	if (global.rolling_demo || !tca.intended)
+	if (global.rolling_demo || !tca.intended) || (isKnucklesRoute() && tca.knux_fbz) 
 		base.fn042160()
 }
 
@@ -724,7 +919,7 @@ function void fn042160()
 //# address-hook(0x042180) end(0x04219c)
 function void fn042180()
 {
-	if (global.rolling_demo || !tca.intended)
+	if (global.rolling_demo || !tca.intended) || (isKnucklesRoute() && tca.knux_fbz) 
 		base.fn042180()
 }
 
@@ -732,7 +927,7 @@ function void fn042180()
 //# address-hook(0x04219e) end(0x0421f8)
 function void fn04219e()
 {
-	if (global.rolling_demo || !tca.intended)
+	if (global.rolling_demo || !tca.intended) || (isKnucklesRoute() && tca.knux_fbz) 
 		base.fn04219e()
 }
 
@@ -740,6 +935,6 @@ function void fn04219e()
 //# address-hook(0x0421fe) end(0x042248)
 function void fn0421fe()
 {
-	if (global.rolling_demo || !tca.intended)
+	if (global.rolling_demo || !tca.intended) || (isKnucklesRoute() && tca.knux_fbz) 
 		base.fn0421fe()
 }

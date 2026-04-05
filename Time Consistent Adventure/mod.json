@@ -5,7 +5,7 @@
 		"UniqueID": "time-consistent-adventure",
 		"Author": "PaperTriangle",
 		"Description": "Makes some changes to level palettes and art to make the time of day more consistent through both the Sonic & Tails and the Knuckles adventures over Angel Island. Credit to Useott & Nabbup the Original Zone Order code! Palette & art credits to: haha_hollie & Drawbits (MGZ - Arvo), Sonic 3 Complete (FBZ1 - Night), MiaCDi (LBZ2 Clouds), Useott (MHZ2 - Arvo), imnotmgm64 (SOZ1 - Arvo)",
-		"ModVersion": "1.9"
+		"ModVersion": "1.10"
 	},
 	"OtherMods":
 	{
@@ -58,118 +58,10 @@
 		"Uncategorized":
 		[
 			{
-				"InternalName": "tca.mgz",
-				"DisplayName": "MGZ Changes",
-				"Variable": "tca.mgz",
-				"Category": "Stage Settings",	
-				"DefaultValue": "1",
-				"Options":
-				{
-					"0": "Disabled",
-					"1": "Enabled"
-				}
-			},
-			{
-				"InternalName": "tca.fbz",
-				"DisplayName": "FBZ Changes",
-				"Variable": "tca.fbz",
-				"Category": "Stage Settings",	
-				"DefaultValue": "1",
-				"Options":
-				{
-					"0": "Disabled",
-					"1": "Enabled"
-				}
-			},
-			{
-				"InternalName": "tca.icz",
-				"DisplayName": "ICZ Changes",
-				"Variable": "tca.icz",
-				"Category": "Stage Settings",	
-				"DefaultValue": "1",
-				"Options":
-				{
-					"0": "Disabled",
-					"1": "Enabled"
-				}
-			},
-			{
-				"InternalName": "tca.lbz",
-				"DisplayName": "LBZ Changes",
-				"Variable": "tca.lbz",
-				"Category": "Stage Settings",	
-				"DefaultValue": "1",
-				"Options":
-				{
-					"0": "Disabled",
-					"1": "Enabled"
-				}
-			},
-			{
-				"InternalName": "tca.mvz",
-				"DisplayName": "MHZ2 Changes",
-				"Variable": "tca.mvz",
-				"Category": "Stage Settings",	
-				"DefaultValue": "1",
-				"Options":
-				{
-					"0": "Disabled",
-					"1": "Enabled"
-				}
-			},
-			{
-				"InternalName": "tca.soz",
-				"DisplayName": "SOZ1 Changes",
-				"Variable": "tca.soz",
-				"Category": "Stage Settings",	
-				"DefaultValue": "1",
-				"Options":
-				{
-					"0": "Disabled",
-					"1": "Enabled"
-				}
-			},
-			{
-				"InternalName": "tca.hpz",
-				"DisplayName": "HPZ Changes",
-				"Variable": "tca.hpz",
-				"Category": "Stage Settings",	
-				"DefaultValue": "1",
-				"Options":
-				{
-					"0": "Disabled",
-					"1": "Enabled"
-				}
-			},
-			{
-				"InternalName": "tca.ssz_sonic",
-				"DisplayName": "SSZ (Sonic & Tails) Changes",
-				"Variable": "tca.ssz_sonic",
-				"Category": "Stage Settings",	
-				"DefaultValue": "1",
-				"Options":
-				{
-					"0": "Disabled",
-					"1": "Enabled"
-				}
-			},
-			{
-				"InternalName": "tca.ssz_knux",
-				"DisplayName": "SSZ (Knuckles) Changes",
-				"Variable": "tca.ssz_knux",
-				"Category": "Stage Settings",	
-				"DefaultValue": "1",
-				"Options":
-				{
-					"0": "Disabled",
-					"1": "Enabled"
-				}
-			},
-			{
 				"InternalName": "tca.intended",
 				"DisplayName": "Your Zone Order",
 				"Variable": "tca.intended",
-				"Category": "Extra Settings",	
+				"Category": "General Settings",	
 				"DefaultValue": "1",
 				"Options":
 				{
@@ -181,7 +73,7 @@
 				"InternalName": "tca.fadetype",
 				"DisplayName": "Fade Type",
 				"Variable": "tca.fadetype",
-				"Category": "Extra Settings",	
+				"Category": "General Settings",	
 				"DefaultValue": "1",
 				"Options":
 				{
@@ -193,7 +85,7 @@
 				"InternalName": "tca.fadespeed",
 				"DisplayName": "Fade Speed",
 				"Variable": "tca.fadespeed",
-				"Category": "Extra Settings",	
+				"Category": "General Settings",	
 				"DefaultValue": "0",
 				"Options":
 				{
@@ -202,58 +94,10 @@
 				}
 			},
 			{
-				"InternalName": "tca.mgz2boss",
-				"DisplayName": "MGZ Eggman Boss Cutscene",
-				"Variable": "tca.mgz2boss",
-				"Category": "Extra Settings",	
-				"DefaultValue": "1",
-				"Options":
-				{
-					"0": "Centre",
-					"1": "Right Screen Edge"
-				}
-			},
-			{
-				"InternalName": "tca.leftescape",
-				"DisplayName": "CNZ Eggman Escape Direction",
-				"Variable": "tca.leftescape",
-				"Category": "Extra Settings",	
-				"DefaultValue": "1",
-				"Options":
-				{
-					"0": "Right",
-					"1": "Left"
-				}
-			},
-			{
-				"InternalName": "tca.fbz_s3_icon",
-				"DisplayName": "FBZ Original Zone Icon",
-				"Variable": "tca.fbz_s3_icon",
-				"Category": "Extra Settings",	
-				"DefaultValue": "0",
-				"Options":
-				{
-					"0": "Disabled",
-					"1": "Enabled"
-				}
-			},
-			{
-				"InternalName": "tca.fbz_bg",
-				"DisplayName": "FBZ2 Outdoor Palette",
-				"Variable": "tca.fbz_bg",
-				"Category": "Extra Settings",	
-				"DefaultValue": "1",
-				"Options":
-				{
-					"0": "Darker",
-					"1": "Lighter"
-				}
-			},
-			{
 				"InternalName": "tca.bg_stars",
 				"DisplayName": "Enable Starry Skies",
 				"Variable": "tca.bg_stars",
-				"Category": "Extra Settings",	
+				"Category": "General Settings",	
 				"DefaultValue": "1",
 				"Options":
 				{
@@ -265,7 +109,7 @@
 				"InternalName": "tca.bg_twinkle",
 				"DisplayName": "Stars Twinkle",
 				"Variable": "tca.bg_twinkle",
-				"Category": "Extra Settings",	
+				"Category": "General Settings",	
 				"DefaultValue": "1",
 				"Options":
 				{
@@ -277,7 +121,7 @@
 				"InternalName": "tca.zone_icons",
 				"DisplayName": "Enable Custom Zone Icons",
 				"Variable": "tca.zone_icons",
-				"Category": "Extra Settings",	
+				"Category": "General Settings",	
 				"DefaultValue": "1",
 				"Options":
 				{
@@ -286,10 +130,130 @@
 				}
 			},
 			{
+				"InternalName": "tca.mgz",
+				"DisplayName": "MGZ Palettes",
+				"Variable": "tca.mgz",
+				"Category": "MGZ Settings",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "tca.mgz_mountains",
+				"DisplayName": "MGZ1 Mountain Art Tweak",
+				"Variable": "tca.mgz_mountains",
+				"Category": "MGZ Settings",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "tca.mgz2boss",
+				"DisplayName": "MGZ Eggman Boss Cutscene",
+				"Variable": "tca.mgz2boss",
+				"Category": "MGZ Settings",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Centre",
+					"1": "Right Screen Edge"
+				}
+			},
+			{
+				"InternalName": "tca.fbz",
+				"DisplayName": "FBZ Palettes",
+				"Variable": "tca.fbz",
+				"Category": "FBZ & CNZ Settings",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "tca.fbz_clouds",
+				"DisplayName": "FBZ Cloud Art Fix",
+				"Variable": "tca.fbz_clouds",
+				"Category": "FBZ & CNZ Settings",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "tca.fbz_bg",
+				"DisplayName": "FBZ2 Outdoor Palette",
+				"Variable": "tca.fbz_bg",
+				"Category": "FBZ & CNZ Settings",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Darker",
+					"1": "Lighter"
+				}
+			},
+			{
+				"InternalName": "tca.leftescape",
+				"DisplayName": "CNZ Eggman Escape Direction",
+				"Variable": "tca.leftescape",
+				"Category": "FBZ & CNZ Settings",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Right",
+					"1": "Left"
+				}
+			},
+			{
+				"InternalName": "tca.fbz_s3_icon",
+				"DisplayName": "FBZ Original Zone Icon",
+				"Variable": "tca.fbz_s3_icon",
+				"Category": "FBZ & CNZ Settings",	
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "tca.fbz_intro",
+				"DisplayName": "New FBZ1 Intros",
+				"Variable": "tca.fbz_intro",
+				"Category": "FBZ & CNZ Settings",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disable",
+					"1": "Enabled"
+				}
+			},
+			{
 				"InternalName": "tca.fbz_explosions",
 				"DisplayName": "FBZ2 Ending Explosions",
 				"Variable": "tca.fbz_explosions",
-				"Category": "Extra Settings",	
+				"Category": "FBZ & CNZ Settings",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "tca.icz",
+				"DisplayName": "ICZ Palettes",
+				"Variable": "tca.icz",
+				"Category": "ICZ Settings",	
 				"DefaultValue": "1",
 				"Options":
 				{
@@ -301,7 +265,7 @@
 				"InternalName": "tca.icz_trans_point",
 				"DisplayName": "ICZ2 Dawn Fade Point",
 				"Variable": "tca.icz_trans_point",
-				"Category": "Extra Settings",	
+				"Category": "ICZ Settings",	
 				"DefaultValue": "1",
 				"Options":
 				{
@@ -313,7 +277,7 @@
 				"InternalName": "tca.icz_trans_fade",
 				"DisplayName": "ICZ2 Dawn Fade",
 				"Variable": "tca.icz_trans_fade",
-				"Category": "Extra Settings",	
+				"Category": "ICZ Settings",	
 				"DefaultValue": "1",
 				"Options":
 				{
@@ -322,10 +286,107 @@
 				}
 			},
 			{
+				"InternalName": "tca.lbz",
+				"DisplayName": "LBZ Palettes",
+				"Variable": "tca.lbz",
+				"Category": "LBZ Settings",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
 				"InternalName": "tca.lbz_clouds",
-				"DisplayName": "LBZ2 Clouds Adjust",
+				"DisplayName": "New LBZ2 Cloud Art",
 				"Variable": "tca.lbz_clouds",
-				"Category": "Extra Settings",	
+				"Category": "LBZ Settings",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "tca.mvz",
+				"DisplayName": "MHZ2 Boss Palettes",
+				"Variable": "tca.mvz",
+				"Category": "MHZ Settings",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "tca.knux_fbz",
+				"DisplayName": "Knuckles Visists FBZ",
+				"Variable": "tca.knux_fbz",
+				"Category": "MHZ Settings",	
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled",
+					"2": "Enabled (Force Night SSZ)"
+				}
+			},
+			{
+				"InternalName": "tca.soz",
+				"DisplayName": "SOZ1 Palettes",
+				"Variable": "tca.soz",
+				"Category": "SOZ Settings",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "tca.soz_bg",
+				"DisplayName": "SOZ1 Knuckles Sky Tweak",
+				"Variable": "tca.soz_bg",
+				"Category": "SOZ Settings",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "tca.ssz_sonic",
+				"DisplayName": "SSZ (Sonic & Tails) Palettes",
+				"Variable": "tca.ssz_sonic",
+				"Category": "SSZ & HPZ Settings",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "tca.ssz_knux",
+				"DisplayName": "SSZ (Knuckles) Palettes",
+				"Variable": "tca.ssz_knux",
+				"Category": "SSZ & HPZ Settings",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "tca.hpz",
+				"DisplayName": "HPZ BG Tiles",
+				"Variable": "tca.hpz",
+				"Category": "SSZ & HPZ Settings",	
 				"DefaultValue": "1",
 				"Options":
 				{
@@ -337,7 +398,7 @@
 				"InternalName": "tca.pal_ssz_dawn",
 				"DisplayName": "SSZ Dawn Palette",
 				"Variable": "tca.pal_ssz_dawn",
-				"Category": "Extra Settings",	
+				"Category": "SSZ & HPZ Settings",	
 				"DefaultValue": "0",
 				"Options":
 				{
@@ -349,8 +410,8 @@
 				"InternalName": "tca.ssz_trans_point",
 				"DisplayName": "SSZ Sonic Tansition Point",
 				"Variable": "tca.ssz_trans_point",
-				"Category": "Extra Settings",	
-				"DefaultValue": "1",
+				"Category": "SSZ & HPZ Settings",	
+				"DefaultValue": "3",
 				"Options":
 				{
 					"0": "Zone Start",
@@ -363,7 +424,7 @@
 				"InternalName": "tca.ssz_icon",
 				"DisplayName": "SSZ Dawn Icon",
 				"Variable": "tca.ssz_icon",
-				"Category": "Extra Settings",	
+				"Category": "SSZ & HPZ Settings",	
 				"DefaultValue": "1",
 				"Options":
 				{
@@ -375,7 +436,7 @@
 				"InternalName": "tca.ssz_knux_csfix",
 				"DisplayName": "SSZ Knuckles Glide Change",
 				"Variable": "tca.ssz_knux_csfix",
-				"Category": "Extra Settings",	
+				"Category": "SSZ & HPZ Settings",	
 				"DefaultValue": "1",
 				"Options":
 				{
@@ -387,7 +448,7 @@
 				"InternalName": "tca.ssz_knux_emerald",
 				"DisplayName": "SSZ Master Emerald Palette",
 				"Variable": "tca.ssz_knux_emerald",
-				"Category": "Extra Settings",	
+				"Category": "SSZ & HPZ Settings",	
 				"DefaultValue": "1",
 				"Options":
 				{
@@ -399,7 +460,7 @@
 				"InternalName": "tca.bmpline",
 				"DisplayName": "Master Emerald Palette Line",
 				"Variable": "tca.bmpline",
-				"Category": "Extra Settings",	
+				"Category": "SSZ & HPZ Settings",	
 				"DefaultValue": "5",
 				"Options":
 				{
@@ -415,7 +476,7 @@
 				"InternalName": "tca.ssz_knux_fade",
 				"DisplayName": "SSZ Knuckles Fade",
 				"Variable": "tca.ssz_knux_fade",
-				"Category": "Extra Settings",	
+				"Category": "SSZ & HPZ Settings",	
 				"DefaultValue": "1",
 				"Options":
 				{
@@ -427,7 +488,7 @@
 				"InternalName": "tca.ssz_knux_longdawn",
 				"DisplayName": "SSZ Knuckles Dawn Transition",
 				"Variable": "tca.ssz_knux_longdawn",
-				"Category": "Extra Settings",	
+				"Category": "SSZ & HPZ Settings",	
 				"DefaultValue": "1",
 				"Options":
 				{
