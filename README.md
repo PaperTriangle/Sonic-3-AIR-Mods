@@ -10,9 +10,6 @@ I know this is not _exactly_ like Origins, but this is as close as I intend to g
 
 I would recommend using this mod along with **LBZ Eggman Fleeing**, **Origins Parity Galore** and **Better Big Arm Fade**! You will need to load this mod over them.
 
-## Battery Powered Intro
-Simple mod that adds in two intro styles for FBZ! I Would honestly not recommend using it as there are better options out there.
-
 ## Better Big Arm Fade
 This mod makes the fade effect of the background at the start of the Big Arm fight use the Sonic 3 A.I.R. methods to blend the background palette colours. This allows the fade to work with custom palettes!
 
