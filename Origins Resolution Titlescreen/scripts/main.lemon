@@ -29,6 +29,7 @@ function void TitleScreen()
 
 	global.xtrachar = 0
 	levelselect.characters = 0
+	levelselect.selection = 0
 
 	playMusic(MUSIC_CTRL_FADEOUT)
 	kosinski.queue_size = 0
