@@ -427,7 +427,7 @@ function void fn0067ee()
 	A1 = 0xffffb000
 	A2 = 0xffffb04a
 	
-	if (isKnucklesRoute())
+	if (tca.fbz_intro != 2) && (isKnucklesRoute() || !tca.intended)
 	{
 		u32[0xffffb172] = 0x044a0c
 	}
@@ -437,7 +437,7 @@ function void fn0067ee()
 		
 		objA1.state = char.state.ROLLING
 		objA1.flags2a |= char.flag.IN_AIR
-		u8[A1 + 0x2e] |= control_flag.DISABLE_UPDATE
+		objA1.flags2e |= control_flag.DISABLE_UPDATE
 		
 		if (u32[A2] != 0)
 		{
@@ -453,8 +453,9 @@ function void fn01c2b0()
 {
 	base.fn01c2b0()
 	
-	if (tca.fbz_intro && global.zone_act == 0x0400 && !isKnucklesRoute())
-		camera.position.y.u16 += 0xb0
+	if (tca.fbz_intro && global.zone_act == 0x0400) 
+		if !(tca.fbz_intro != 2 && (isKnucklesRoute() || !tca.intended))
+			camera.position.y.u16 += 0xf0
 }
 
 // FBZ Jump (Sonic & Tails)
@@ -479,13 +480,13 @@ function void fn039a40()
 	
 	A1 = 0xffffb000
 	objA1.position.x.u16 -= 0x60
-	objA1.position.y.u16 += 0xb0
+	objA1.position.y.u16 += 0xf0
 
 	A1 = 0xffffb04a
 	if (u32[A1] != 0)
 	{
 		objA1.position.x.u16 -= 0x60
-		objA1.position.y.u16 += 0xb8
+		objA1.position.y.u16 += 0xf8
 	}
 }
 
@@ -506,21 +507,23 @@ function void fn039a80()
 	objA0.update_address = 0x039ad2
 
 	A1 = 0xffffb000
-	objA1.velocity.y = -0x980
-	objA1.velocity.x = 0x1b4
+	objA1.velocity.y = -0xaa0
+	objA1.velocity.x = 0x190
 	objA1.flags2a |= char.flag.IN_AIR
 	u8[A1 + 0x40] = 0
+	objA1.sprite_attributes |= sprite_attribute.PRIORITY
 
 	A1 = 0xffffb04a
 	if (u32[A1] != 0)
 	{
-		objA1.velocity.y = -0x9a0
-		objA1.velocity.x = 0x144
+		objA1.velocity.y = -0xab0
+		objA1.velocity.x = 0x120
 		objA1.position.x.u16 -= 0x10
 		objA1.flags2a |= char.flag.IN_AIR
 		u8[A1 + 0x40] = 0
 		objA1.state = char.state.ROLLING
-		u8[A1 + 0x2e] = control_flag.DISABLE_UPDATE
+		objA1.sprite_attributes |= sprite_attribute.PRIORITY
+		objA1.flags2e = control_flag.DISABLE_UPDATE
 	}
 }
 
@@ -567,7 +570,7 @@ function void fn039ad2()
 	{
 		player1.control_override = 0
 		player2.control_override = 0
-		
+
 		UnloadObject()
 	}
 }
