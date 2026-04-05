@@ -14,5 +14,6 @@
 	"big_title_screen":    { "File": "big_title_background.bmp", "Center": "40,0" },
 	"water_wave":  { "File": "big_title_background.bmp", "Rect": "0,208,480,32", "Center": "40,32" },
 	"sonic_the_hedgehog":  { "File": "sonic_the_hedgehog.bmp", "Rect": "0,0,112,10", "Center": "56,9" },
-	"complete_press_start":  { "File": "complete_press_start.bmp", "Rect": "0,0,90,9", "Center": "40,4" },
+	"press_start":  { "File": "press_start.bmp", "Rect": "0,0,90,9", "Center": "45,4" },
+	"complete_press_start":  { "File": "complete_press_start.bmp", "Rect": "0,0,90,9", "Center": "45,4" },
 }

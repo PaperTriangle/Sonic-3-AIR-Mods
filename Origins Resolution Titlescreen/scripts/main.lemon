@@ -510,7 +510,7 @@ function void fn0048dc()
 		else
 		{
 			if (orts.flash < 17)
-				Renderer.drawCustomSprite("complete_press_start", getScreenWidth() / 2, 220, 0x00, 0, 0x9f7e)
+				Renderer.drawCustomSprite(orts.press_start == 2 ? "complete_press_start" : "press_start", getScreenWidth() / 2, 220, 0x30, 0, 0x9f7e)
 		}
 		
 		if orts.flash > 32
