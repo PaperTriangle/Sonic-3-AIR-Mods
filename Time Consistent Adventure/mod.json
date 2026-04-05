@@ -233,7 +233,7 @@
 				"DefaultValue": "1",
 				"Options":
 				{
-					"0": "Disable",
+					"0": "Disabled",
 					"1": "Enabled (Zone Dependent)",
 					"2": "Enabled (Always Jump)"
 				}
