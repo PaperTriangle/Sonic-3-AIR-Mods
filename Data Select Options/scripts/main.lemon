@@ -807,7 +807,7 @@ function void fn00c890()
 						if u16[A3 + 0x36] == 7
 							D0.u16 -= 6
 					}
-					else if (u16[A3 + 0x36] >= 8)
+					else if (!System.getGlobalVariableValueByName("tca.knux_fbz") && u16[A3 + 0x36] >= 8)
 						D0.u16 -= 2
 
 					// Second digit (10, 20, etc)
