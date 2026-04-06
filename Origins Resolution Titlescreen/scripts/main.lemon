@@ -845,10 +845,7 @@ function void yieldExecution()
 			float wave1 = Math.lerp(0.00f, 1.15f, float(i) / float(limit))
 			s16 px = s16(getScreenWidth() - 426)/2
 			
-			if orts.wave == 2
-				px += Math.roundToInt((4.25f * wave1) * Math.sin(6.0f * 3.1415f * 384 * float(i * 4) + 4 * float(u16((global.framecounter >> 1) & 0xff) / 41.0f)))
-			else
-				px += Math.roundToInt((3.25f * wave1) * Math.sin(2.0f * 3.1415f * 384 * float(i * 5) + float(u16(global.framecounter.low) / 41.0f)))
+			px += Math.roundToInt((4.25f * wave1) * Math.sin(6.0f * 3.1415f * 384 * float(i * 4) + 4 * float(u16((global.framecounter >> 1) & 0xff) / 41.0f)))
 
 			Renderer.setViewport(0, py - limit + i, getScreenWidth(), 2, renderQueue)
 			Renderer.drawSpriteTinted("water_wave", px, py, 0, 0, renderQueue + 1, 0, 0xffffffff, 1.0f, 1.0f)
