@@ -658,7 +658,9 @@ function void UpdateLevelScrolling.MHZ2()
 		tree2.setPaletteOffset(0x30)
 		if !(isKnucklesRoute() && tca.knux_fbz) 
 		{
-			fillPlaneA_Default(camera.foreground.x.u16, camera.foreground.y.u16, getScreenWidth(), getScreenHeight())
+			if camera.position.x.u16 > 0x4580
+				fillPlaneA_Default(camera.foreground.x.u16, camera.foreground.y.u16, getScreenWidth(), getScreenHeight())
+			
 			if u16[0xffffb000 + 0x10] >= 0x4830
 				TriggerNextZone(0x0800)
 		}
