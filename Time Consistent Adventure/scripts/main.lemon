@@ -103,7 +103,7 @@ function void yieldExecution()
 		if (transition_state == 2)
 			System.loadExternalRawData("MGZ2_Palette", 0x0A8F5C)
 		
-		if ((camera.position.x.u16 + getScreenWidth() / 2 > 0x2100 && camera.position.y.u16 + getScreenHeight() / 2 > 0x0a40 && camera.position.y.u16 + getScreenHeight() / 2 < 0x0b40) && transition_state == 0)
+		if ((camera.position.x.u16 + getScreenWidth() / 2 > 0x2100 && !(camera.position.x.u16 + getScreenWidth() / 2 > 0x26c0 && camera.position.x.u16 + getScreenWidth() / 2 < 0x2880)) && (camera.position.y.u16 + getScreenHeight() / 2 > 0x0a00 && camera.position.y.u16 + getScreenHeight() / 2 < 0x0b00) && transition_state == 0)
 		{
 			transition_state = 1
 			transition_time = 0
