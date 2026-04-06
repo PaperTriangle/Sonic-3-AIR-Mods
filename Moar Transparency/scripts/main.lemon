@@ -805,7 +805,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 				flags |= render_flag.FLIP_Y
 				py += 0x0f
 			}
-			Renderer.drawSprite("barrier_edge", px, py, 0x00, flags, renderQueue, 0, 192)
+			Renderer.drawSprite("barrier_edge", px, py, 0x00, flags, renderQueue - 0x100, 0, 192)
 		}
 	}
 	
