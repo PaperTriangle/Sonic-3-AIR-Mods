@@ -3,6 +3,10 @@
 	{
 		"File": "MGZ/MGZ2_Palette.bin"
 	},
+	"MGZ2_Palette_Night":
+	{
+		"File": "MGZ/MGZ2_Palette_Night.bin"
+	},
 	"MGZ2_Night_Palette":
 	{
 		"File": "MGZ/MGZ2_Night_Palette.bin"

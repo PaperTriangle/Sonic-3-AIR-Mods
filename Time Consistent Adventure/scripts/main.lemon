@@ -32,6 +32,7 @@ global bool tca.bg_twinkle
 global bool tca.zone_icons
 global bool tca.ssz_icon
 
+global bool tca.mgz_knux_night
 global bool tca.mgz_mountains
 global bool tca.soz_bg
 global bool tca.knux_fbz
@@ -102,7 +103,12 @@ function void yieldExecution()
 		if (transition_state == 2)
 			System.loadExternalRawData("MGZ2_Palette", 0x0A8F5C)
 		
-		if ((camera.position.x.u16 > (!tca.fadespeed ? 0x27e8 : 0x28b8) - getScreenExtend() && camera.position.y.u16 > 0x0cc0) && transition_state == 0)
+		if ((camera.position.x.u16 + getScreenWidth() / 2 > 0x2100 && camera.position.y.u16 + getScreenHeight() / 2 > 0x0a40 && camera.position.y.u16 + getScreenHeight() / 2 < 0x0b40) && transition_state == 0)
+		{
+			transition_state = 1
+			transition_time = 0
+		}
+		else if ((camera.position.x.u16 > (!tca.fadespeed ? 0x27e8 : 0x28b8) - getScreenExtend() && camera.position.y.u16 > 0x0cc0) && transition_state == 0)
 		{
 			transition_state = 1
 			transition_time = 0
@@ -129,14 +135,40 @@ function void yieldExecution()
 		
 		if (transition_state == 1 && transition_time <= 0x78)
 		{	
-			System.loadExternalRawData("MGZ2_Night_Palette", 0x3fff30)
+			System.loadExternalRawData("MGZ2_Palette_Night", 0x3fff30)
 			
 			transition_time++
 			if (transition_time % 20 == 0 || !tca.fadetype)
 			{
-				for (u8 i = 0; i < 15; i++)
+				for (u8 i = 0; i < 31; i++)
 				{
-					u16[0xfffffc00 + (0x31 + i)*2] = blendColorsPacked(u16[0x0A8F3C + (0x31 + i)*2], u16[0x3fff30 + i*2], min(256, transition_time * 2 + transition_time / 8 + 1))
+					u16[0xfffffc00 + (0x21 + i)*2] = blendColorsPacked(u16[0x0A8F3C + (0x21 + i)*2], u16[0x3fff30 + (0x11 + i)*2], min(256, transition_time * 2 + transition_time / 8 + 1))
+				}
+			}
+		}
+		
+		if tca.mgz_knux_night && ((checkpoint.number == 8) || (transition_state == 2 && transition_time > 0x78))
+		{
+			System.loadExternalRawData("MGZ2_Palette_Night", 0x0A8F5C)
+			transition_state = 3
+		}
+		
+		if (tca.mgz_knux_night && (camera.position.x.u16 + getScreenWidth() / 2  > 0x39d0 && camera.position.y.u16 + getScreenHeight() / 2 < 0x00f0) && transition_state == 0)
+		{
+			transition_state = 2
+			transition_time = 0
+		}
+		
+		if (transition_state == 2 && transition_time <= 0x78)
+		{	
+			System.loadExternalRawData("MGZ2_Palette_Night", 0x3fff30)
+			
+			transition_time++
+			if (transition_time % (tca.fadespeed ? 30 : 24) == 0 || !tca.fadetype)
+			{
+				for (u8 i = 0; i < 31; i++)
+				{
+					u16[0xfffffc00 + (0x21 + i)*2] = blendColorsPacked(u16[0x0A8F3C + (0x21 + i)*2], u16[0x3fff30 + (0x11 + i)*2], min(256, transition_time * 2 + transition_time / 8 + 1))
 				}
 			}
 		}

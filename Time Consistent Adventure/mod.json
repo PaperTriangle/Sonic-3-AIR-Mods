@@ -154,6 +154,18 @@
 				}
 			},
 			{
+				"InternalName": "tca.mgz_knux_night",
+				"DisplayName": "MGZ2 Knuckles Boss Night",
+				"Variable": "tca.mgz_knux_night",
+				"Category": "MGZ Settings",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
 				"InternalName": "tca.mgz2boss",
 				"DisplayName": "MGZ Eggman Boss Cutscene",
 				"Variable": "tca.mgz2boss",
