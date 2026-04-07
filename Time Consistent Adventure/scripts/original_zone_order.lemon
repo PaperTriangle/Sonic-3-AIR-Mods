@@ -461,10 +461,10 @@ function void fn0067ee()
 	}
 }
 
-//# address-hook(0x01c2b0) end(0x01c360)
-function void fn01c2b0()
+//# address-hook(0x01be46) end(0x01bfae)
+function void SetupCharacterAtStartPosition()
 {
-	base.fn01c2b0()
+	base.SetupCharacterAtStartPosition()
 	
 	if (tca.fbz_intro && global.zone_act == 0x0400) 
 		if !(tca.fbz_intro != 2 && (isKnucklesRoute() || !tca.intended))
