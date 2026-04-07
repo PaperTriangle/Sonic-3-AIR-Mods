@@ -35,7 +35,8 @@
 			{
 				"InternalName": "lsds.leftshift",
 				"DisplayName": "Space Efficient Data Select",
-				"Variable": "lsds.leftshift",	
+				"Variable": "lsds.leftshift",
+				"Category": "Data Select",		
 				"DefaultValue": "1",
 				"Options":
 				{
@@ -46,7 +47,8 @@
 			{
 				"InternalName": "lsds.nodetail",
 				"DisplayName": "Disable Lives & Continues",
-				"Variable": "lsds.nodetail",	
+				"Variable": "lsds.nodetail",
+				"Category": "Data Select",	
 				"DefaultValue": "0",
 				"Options":
 				{
@@ -57,7 +59,8 @@
 			{
 				"InternalName": "lsds.noflicker",
 				"DisplayName": "Disable Emerald Flicker",
-				"Variable": "lsds.noflicker",	
+				"Variable": "lsds.noflicker",
+				"Category": "Data Select",	
 				"DefaultValue": "0",
 				"Options":
 				{
@@ -66,9 +69,23 @@
 				}
 			},
 			{
+				"InternalName": "lsds.traded_emeralds",
+				"DisplayName": "Visualise Traded Emeralds",
+				"Variable": "lsds.traded_emeralds",
+				"Category": "Data Select",	
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled (Solid)",
+					"2": "Enabled (Transparent)"
+				}
+			},
+			{
 				"InternalName": "lsds.alphashadow",
 				"DisplayName": "Use Borders With Shadows",
-				"Variable": "lsds.alphashadow",	
+				"Variable": "lsds.alphashadow",
+				"Category": "Data Select",	
 				"DefaultValue": "0",
 				"Options":
 				{
@@ -79,7 +96,8 @@
 			{
 				"InternalName": "lsds.amyicon",
 				"DisplayName": "Amy's Clear For Base Trio",
-				"Variable": "lsds.amyicon",	
+				"Variable": "lsds.amyicon",
+				"Category": "Data Select",	
 				"DefaultValue": "0",
 				"Options":
 				{
@@ -92,7 +110,8 @@
 			{
 				"InternalName": "lsds.backtotitle",
 				"DisplayName": "Back Out To Title Screen",
-				"Variable": "lsds.backtotitle",	
+				"Variable": "lsds.backtotitle",
+				"Category": "Data Select",	
 				"DefaultValue": "0",
 				"Options":
 				{
@@ -103,7 +122,8 @@
 			{
 				"InternalName": "lsds.levelselect",
 				"DisplayName": "Level Select Background",
-				"Variable": "lsds.levelselect",	
+				"Variable": "lsds.levelselect",
+				"Category": "Other Settings",	
 				"DefaultValue": "1",
 				"Options":
 				{
@@ -114,7 +134,8 @@
 			{
 				"InternalName": "lsds.noknuxtails",
 				"DisplayName": "Disable Knuckles & Tails",
-				"Variable": "lsds.noknuxtails",	
+				"Variable": "lsds.noknuxtails",
+				"Category": "Other Settings",	
 				"DefaultValue": "0",
 				"Options":
 				{
@@ -126,7 +147,8 @@
 			{
 				"InternalName": "lsds.esureorder",
 				"DisplayName": "Reorder ESU Characters",
-				"Variable": "lsds.esureorder",	
+				"Variable": "lsds.esureorder",
+				"Category": "Other Settings",	
 				"DefaultValue": "0",
 				"Options":
 				{

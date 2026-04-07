@@ -1,5 +1,6 @@
 global bool lsds.leftshift
 global bool lsds.noflicker
+global u8 lsds.traded_emeralds
 global bool lsds.alphashadow
 global bool lsds.nodetail
 global bool lsds.backtotitle
@@ -1199,4 +1200,100 @@ function void fn05c972()
 	spawnChildObject(0x0916ee, 0x02, -28, -4)
 
 	Kosinski.addToDMAQueue(0x17b17e, 0xa000)		// Egg Robo badnik sprites
+}
+
+//# address-hook(0x00d70c) end(0x00d77c)
+function void fn00d70c()
+{
+	if !lsds.traded_emeralds
+	{
+		base.fn00d70c()
+		return
+	}
+	
+	objA0.render_flags = render_flag.COMPOUND
+	objA0.sprite_attributes = (sprite_attribute.PRIORITY | (DataSelect.MenuPart1.targetInVRAM >> 5))
+	objA0.mapping_offset = 0x00ce0e
+	objA0.box_size.x = 0x40
+	objA0.compound.count = 0x07
+
+	A1 = 0xffff0000 + objA0.respawn_entry
+	A2 = u32[A1 + 0x30]
+	D4.u16 = u16[A2 + 0x06]
+	D0.u16 = objA1.position.x.u16
+	D1.u16 = objA1.position.y.u16
+	objA0.position.x.u16 = D0.u16
+	objA0.position.y.u16 = D1.u16
+
+	A1 = A0 + 0x18
+	D2 = 0x10
+	D3 = 6
+	while (D3.s16 >= 0)
+	{
+		u8[A1 + 0x05] = 0
+		D6 = 0
+		D4.u16 = (D4.u16 << 2) + (D4.u16 >> 14)
+		D5.u16 = D4.u16 & 0x03
+		if (D5.u16 != 0) //&& D3.s16 != 1
+		{
+			if (D5.u16 == 3)
+			{
+				D6 = 0x0c
+			}
+			
+			if (D5.u16 == 2)
+			{
+				u16 xShift = 0x80
+				u16 yShift = 0x80
+				
+				if D3.s16 == 6
+					yShift += 0x24
+				else if D3.s16 == 5
+				{
+					yShift += 0x1a
+					xShift += 0x14
+				}
+				else if D3.s16 == 4
+				{
+					yShift += 0x1a
+					xShift -= 0x14
+				}
+				else if D3.s16 == 3
+				{
+					yShift += 0x04
+					xShift += 0x19
+				}
+				else if D3.s16 == 2
+				{
+					yShift += 0x04
+					xShift -= 0x19
+				}
+				else if D3.s16 == 1
+				{
+					yShift -= 0x0d
+					xShift += 0x0b
+				}
+				else if D3.s16 == 0
+				{
+					yShift -= 0x0d
+					xShift -= 0x0b
+				}
+				
+				Renderer.drawCustomSprite("traded_emerald", D0.u16 - xShift, D1.u16 - yShift, 0x00, SPRITE_FLAG_PRIO, 0x9fe0, 0, lsds.traded_emeralds == 2 ? 0xa0 : 0xff) 
+			}
+			else
+			{
+				D6.u8 += D2.u8
+				u16[A1] = D0.u16
+				u16[A1 + 0x02] = D1.u16
+				u8[A1 + 0x05] = D6.u8
+			}
+		}
+
+		++D2.u16
+		A1 += 6
+		--D3.s16
+	}
+
+	DrawObject()
 }

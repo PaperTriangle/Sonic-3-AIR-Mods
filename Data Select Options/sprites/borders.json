@@ -7,6 +7,8 @@
 	"small_border_shadow":  { "File": "small_border_shadow.bmp", "Center": "40,64" },
 	"small_regular_border_shadow":  { "File": "small_regular_border_shadow.bmp", "Center": "40,64" },
 	
+	"traded_emerald":  { "File": "traded_emerald.png", "Center": "8,8" },
+	
 	"wide_bg_dataselect": { "File": "wide_dataselect_bg.bmp", "Center": "-43,0" },
 	"s3cls_border": { "File": "s3cls_border.bmp", "Center": "2,2" },
 	"s3cls_border_shadow": { "File": "s3cls_border_shadow.bmp", "Center": "2,2" },
