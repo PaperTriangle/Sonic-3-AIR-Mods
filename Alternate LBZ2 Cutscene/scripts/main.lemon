@@ -75,6 +75,22 @@ function void fn072c0a()
 	}
 }
 
+//# address-hook(0x072c68) end(0x072c9c)
+function void fn072c68()
+{
+	if (getNumPlayers() >= 2)
+	{
+		// Make Tails stop next to Sonic
+		if s16[0xffffb04a + 0x18] > 0 && (u16[0xffffb04a + 0x10] > u16[0xffffb000 + 0x10] - 0x30)
+		{
+			u16[0xffffb04a + 0x18] -= min(u16[0xffffb04a + 0x18], 0xa0)
+			u16[0xffffb04a + 0x1c] -= min(u16[0xffffb04a + 0x1c], 0xa0)
+		}
+	}
+		
+	base.fn072c68()
+}
+
 //# address-hook(0x072dea) end(0x072e4e)
 function void fn072dea()
 {
