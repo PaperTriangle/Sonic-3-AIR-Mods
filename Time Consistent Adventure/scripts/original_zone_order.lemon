@@ -276,7 +276,14 @@ function void fn00c890()
 //# address-hook(0x00c434) end(0x00c4d0)
 function void SaveGameOnLevelFinished()
 {
-	if (!tca.intended)
+	// Get the number of the next zone (using the usual internal zone numbering, see definition of global.zone.apparent)
+	u8 offset = global.zone * 2 + global.act
+	u8 nextZone = u8[0x00c404 + offset]
+
+	// Even in Intended mode, If not heading to ICZ, FBZ or SOZ then use the base method.
+	// This is incase anything else needs to adjust here on other zones...
+
+	if (!tca.intended) || !(nextZone == 4 || nextZone == 8 ||nextZone == 7)
 	{
 		base.SaveGameOnLevelFinished()
 		return
@@ -286,10 +293,6 @@ function void SaveGameOnLevelFinished()
 	if (global.lock_on_state == 0 && global.active_saveslot != 0)
 	{
 		A1 = global.active_saveslot
-
-		// Get the number of the next zone (using the usual internal zone numbering, see definition of global.zone.apparent)
-		u8 offset = global.zone * 2 + global.act
-		u8 nextZone = u8[0x00c404 + offset]
 
 		if (nextZone == 4 && !isKnucklesRoute()) // leaving cnz, going to icz
 			nextZone = 7 // put the player's save on fbz because of new order
