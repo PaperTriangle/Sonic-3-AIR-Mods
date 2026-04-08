@@ -6,18 +6,6 @@ global bool pp.knuxcredits
 
 constant u16 GamePause.NUM_ENTRIES = 4
 
-//# address-hook(0x0013e4) end(0x0014e4)
-function void UpdateGamePause()
-{
-	if pp.prevent && (level.wait_for_results || !hud.dirty.timer || global.level_started < 0 || global.zone == 0x0d || pp.knuxcredits)
-	{
-		global.game.paused = false
-		return
-	}
-
-	base.UpdateGamePause()
-}
-
 //# address-hook(0x05e70e) end(0x05e804)
 function void fn05e70e()
 {
@@ -347,4 +335,80 @@ function void Menu.FadeInAfterInit()
 	restartOn = 0
 	pp.knuxcredits = false
 	base.Menu.FadeInAfterInit()
+}
+
+//# address-hook(0x0013e4) end(0x0014e4)
+function void UpdateGamePause()
+{
+	if pp.prevent && (pp.no_pause || player1.control_override != 0 || global.zone == 0x0d || pp.knuxcredits || (!Mods.isModActive("Imma Let You Finish") && level.wait_for_results))
+	{
+		global.game.paused = false
+		return
+	}
+
+	base.UpdateGamePause()
+}
+
+// Pause Prevention 
+
+// AIZ2 Cutscene
+
+global bool pp.no_pause
+
+//# address-hook(0x02b452) end(0x02b492)
+function void fn02b452()
+{
+	if (u8[A0 + 0x34] == 0) && (objA0.flags2a & object.flag.P1_ON_OBJECT)
+		pp.no_pause = 1
+
+	base.fn02b452()
+}
+
+//# address-hook(0x0695ae) end(0x0695c8)
+function void fn0695ae()
+{
+	// Checks when to fade over to HCZ1
+	if (u16[0xfffffa86] + 0x01e6 <= u16[0xffffb000 + 0x14])
+		pp.no_pause = 0
+
+	base.fn0695ae()
+}
+
+// LBZ1 Knuckles
+//# address-hook(0x0626b2) end(0x0626d4)
+function void fn0626b2()
+{
+	if ((objA0.flags38 & 0x08) != 0)
+		pp.no_pause = 1
+	
+	base.fn0626b2()
+}
+
+//# address-hook(0x062778) end(0x0627c0)
+function void fn062778()
+{
+	if (objA0.render_flags & render_flag.VISIBLE)
+		pp.no_pause = 0
+	
+	base.fn062778()
+}
+
+//LBZ2 Egg Mobile
+
+//# address-hook(0x08d2b6) end(0x08d33e)
+function void fn08d2b6()
+{
+	if (u8[A0 + 0x29] != 0) && (u8[A0 + 0x29] != 2)
+		pp.no_pause = 1
+	
+	base.fn08d2b6()
+}
+
+//# address-hook(0x08d47c) end(0x08d4c6)
+function void fn08d47c()
+{
+	base.fn08d47c()
+
+	if (objA0.position.x.u16 >= 0x4440)
+		pp.no_pause = 0
 }
