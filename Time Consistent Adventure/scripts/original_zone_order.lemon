@@ -25,9 +25,9 @@ function void yieldExecution()
 		}
 		tca.flyingBatteryXPosition += 1
 		
-		if (camera.position.x.u16 > 0x489d && level.capsule_opened && !(level.wait_for_results))
+		if (camera.position.x.u16 > 0x489d && level.capsule_opened && !level.wait_for_results && !global.game.paused)
 		{
-			if (getMainCharacter() != CHARACTER_KNUCKLES)
+			if (!isKnucklesRoute())
 				playSound(0xbd)
 		}
 		
@@ -381,11 +381,14 @@ function void TriggerNextZone()
 //# address-hook(0x06e7e4) end(0x06e80a)
 function void fn06e7e4()
 {
+	player2.control_override = 0xff
+	
 	if (!tca.intended)
 	{
 		base.fn06e7e4()
 		return
 	}
+	
 	// Fire the cannon when it's ready
 	if tca.flyingBatteryXPosition > 200
 		--objA0.countdown_value

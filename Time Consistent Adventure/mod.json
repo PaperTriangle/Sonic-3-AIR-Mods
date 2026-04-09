@@ -312,7 +312,7 @@
 			},
 			{
 				"InternalName": "tca.lbz_clouds",
-				"DisplayName": "New LBZ2 Cloud Art",
+				"DisplayName": "Tweaked LBZ2 Cloud Art",
 				"Variable": "tca.lbz_clouds",
 				"Category": "LBZ Settings",	
 				"DefaultValue": "1",
