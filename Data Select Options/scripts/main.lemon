@@ -1244,7 +1244,7 @@ function void fn00d70c()
 			if (D5.u16 == 2)
 			{
 				u16 xShift = 0x80
-				u16 yShift = 0x80
+				u16 yShift = Mods.isModActive("Origins Screen Resolution") ? 0x80 : 0x88
 				
 				if D3.s16 == 6
 					yShift += 0x24
