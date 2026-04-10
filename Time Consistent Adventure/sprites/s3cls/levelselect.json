@@ -10,6 +10,6 @@
 	"S3CompleteSelect_SSZ_Dawn_Pink": { "File": "ssz_icon_dawn_pink.png"},	
 	"S3CompleteSelect_SSZ_Knux": { "File": "ssz_icon_knux.png"},
 	"S3CompleteSelect_SSZ_Knux_Released": { "File": "ssz_icon_knux_released.png"},
-	"S3CompleteSelect_SSZ_Knux_Released_Dawn": { "File": "ssz_icon_knux_released_Dawn.png"},
-	"S3CompleteSelect_SSZ_Knux_Released_Dawn_Pink": { "File": "ssz_icon_knux_released_Dawn_Pink.png"}
+	"S3CompleteSelect_SSZ_Knux_Released_Dawn": { "File": "ssz_icon_knux_released_dawn.png"},
+	"S3CompleteSelect_SSZ_Knux_Released_Dawn_Pink": { "File": "ssz_icon_knux_released_dawn_pink.png"}
 }
