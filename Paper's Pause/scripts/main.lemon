@@ -340,7 +340,7 @@ function void Menu.FadeInAfterInit()
 //# address-hook(0x0013e4) end(0x0014e4)
 function void UpdateGamePause()
 {
-	if pp.prevent && (pp.no_pause || player1.control_override != 0 || global.zone == 0x0d || pp.knuxcredits || (!Mods.isModActive("Imma Let You Finish") && level.wait_for_results))
+	if pp.prevent && (pp.no_pause || (player1.control_override != 0 && !(global.zone_act == 0x0500 && u16[0xffffb000 + 0x10] <= 0x3900)) || global.zone == 0x0d || pp.knuxcredits || (!Mods.isModActive("Imma Let You Finish") && level.wait_for_results))
 	{
 		global.game.paused = false
 		return
@@ -412,3 +412,41 @@ function void fn08d47c()
 	if (objA0.position.x.u16 >= 0x4440)
 		pp.no_pause = 0
 }
+
+// HPZ Cutscene
+
+//# address-hook(0x064ca6) end(0x064d14)
+function void fn064ca6()
+{
+	pp.no_pause = 1
+	
+	base.fn064ca6()
+}
+
+//# address-hook(0x064b22) end(0x064b64)
+function void fn064b22()
+{
+	base.fn064b22()
+	
+	pp.no_pause = 0
+}
+
+// SSZ Knuckles Cutscene
+
+//# address-hook(0x07ce1e) end(0x07ce3e)
+function void fn07ce1e()
+{
+	pp.no_pause = 1
+	
+	base.fn07ce1e()
+}
+
+//# address-hook(0x07ccb0) end(0x07ccf8)
+function void fn07ccb0()
+{
+	if (objA0.countdown_value = 1) || (Mods.isModActive("Time Consistent Adventure") && System.getGlobalVariableValueByName("tca.ssz_knux_csfix"))
+		pp.no_pause = 0
+
+	base.fn07ccb0()
+}
+	
