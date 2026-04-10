@@ -378,10 +378,22 @@ function void TriggerNextZone()
 // CNZ to FBZ
 //-----------
 
+// Prevent P2 from Firing the cannon.
+//# address-hook(0x06e7b6) end(0x06e7e2)
+function void fn06e7b6()
+{
+	if (u8[0xffff0000 + u16[A0 + 0x44] + 0x31] == 0x01)
+		player2.control_override = 0xff
+		
+	base.fn06e7b6()
+}
+
+// Shoot the cannon up.
 //# address-hook(0x06e7e4) end(0x06e80a)
 function void fn06e7e4()
 {
-	player2.control_override = 0xff
+	if (u8[0xffff0000 + u16[A0 + 0x44] + 0x31] == 0x01)
+		player2.control_override = 0xff
 	
 	if (!tca.intended)
 	{
@@ -403,12 +415,22 @@ function void fn06e7e4()
 
 	control.player1 = 0x7070		// CONTROL_ABC, CONTROL_ABC
 	player1.control_override = 0xff
+	u8[0xfffff73f] = 2
 
 #if STANDALONE
 	// Prevent that character gets stopped by right screen border after getting shot out of the cannon
 	player1.camera_lock = 1
 	move_area.right += 0x100
 #endif
+}
+
+// Stop tails from grabbing sonic while flying.
+//# address-hook(0x06e80c) end(0x06e826)
+function void fn06e80c()
+{
+	u8[0xfffff73f] = 2
+	
+	base.fn06e80c()
 }
 
 //# address-hook(0x052224) end(0x052228)
