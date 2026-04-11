@@ -704,7 +704,7 @@ global bool tca.funlayout
 
 function void LevelObjectTableBuilder.addObject(u16 px, u16 py, u8 type, u8 subtype, u8 flags)
 {
-	if (global.zone_act == 0x0701 && px == 0x4580 && py == 0x0320)
+	if (tca.intended && global.zone_act == 0x0701 && px == 0x4580 && py == 0x0320)
 	{
 		tca.funlayout = true
 		base.LevelObjectTableBuilder.addObject(px, py, type, subtype, flags)
