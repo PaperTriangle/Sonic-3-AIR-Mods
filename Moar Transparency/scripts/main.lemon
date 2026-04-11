@@ -2523,14 +2523,29 @@ function void fn064964()
 // Annoying compat for S3CLS+ //
 //----------------------------//
 
-global bool s3cls.emerald_shrine
+// Make level.backup.zone_act the same as the selected zone for detection.
+// Set the transition up as if we went through a giant ring or checkpoint stars.
+//# translated(0x007d6c) end(0x007e62)
+function bool fn007d6c()
+{
+	bool returnVal = base.fn007d6c()
+	
+	if (global.zone_act == 0x1701 || global.zone_act == 0x1300 || global.zone_act == 0x1400 || global.zone_act == 0x1500)
+	{
+		level.backup.zone_act = global.zone_act
+		global.in_extra_stage = 1
+		global.stage_type = 2
+	}
+	
+	return returnVal
+}
 
-// Override the exit if we detect we are in S3CLS+ Emerald Shrine.
+// Override the exit if we detect we are in S3CLS+ Emerald Shrine via level.backup.zone_act.
 // Ensuring that we restart the level as if we went through a Giant Ring.
 //# address-hook(0x090c34) end(0x090ca0)
 function void fn090c34()
 {
-	if (!s3cls.emerald_shrine)
+	if (level.backup.zone_act != 0x1701)
 	{
 		base.fn090c34()
 		return
@@ -2561,30 +2576,44 @@ function void fn090c34()
 	}
 }
 
-// If the backup level is the same zone_act, we came from S3CLS+.
-function void yieldExecution()
+// Prevent Inert Super Emeralds from starting a special stage when S3CLS+ entry is detected via level.backup.zone_act.
+//# address-hook(0x0908de) end(0x090920)
+function void fn0908de()
 {
-	if (global.zone_act == 0x1701 && level.backup.zone_act == 0x1701)
-		s3cls.emerald_shrine = true
-	else
-		s3cls.emerald_shrine = false
+	if (level.backup.zone_act != 0x1701)
+	{
+		base.fn0908de()
+		return
+	}
 	
-	base.yieldExecution()
+	D1.u16 = 0x1b
+	D2.u16 = 0x10
+	D3.u16 = 0x10
+	D4.u16 = objA0.position.x.u16
+	PlatformCheckClimbOn()
+
+	DrawObject()
 }
 
-// Make the backup zone_act the same for detection.
-// Set the transition up as if we went through a giant ring.
-//# translated(0x007d6c) end(0x007e62)
-function bool fn007d6c()
+// Fixes Tails' tails... Not sure why/how this happened...
+//# address-hook(0x090a94) end(0x090b06)
+function void fn090a94()
 {
-	bool returnVal = base.fn007d6c()
-	
-	if (global.zone_act == 0x1701)
+	base.fn090a94()
+
+	if (u8[0xffffb04a + 0x20] != char.state.DISAPPEARED)
+		u8[0xffffcc0a  + 0x20] = 1
+}
+
+// Make bonus stages consistent.
+//# address-hook(0x01be46) end(0x01bfae)
+function void SetupCharacterAtStartPosition()
+{
+	if (global.zone_act == 0x1300 || global.zone_act == 0x1400 || global.zone_act == 0x1500) && (global.zone_act == level.backup.zone_act)
 	{
-		level.backup.zone_act = 0x1701
 		global.in_extra_stage = 1
 		global.stage_type = 2
 	}
 	
-	return returnVal
+	base.SetupCharacterAtStartPosition()
 }
