@@ -349,9 +349,30 @@ function void UpdateGamePause()
 	base.UpdateGamePause()
 }
 
-// Pause Prevention 
+//------------------//
+// Pause Prevention //
+//------------------//
 
-// AIZ2 Cutscene
+// General
+
+// Act 2 Capsule Remove Pause
+//# address-hook(0x0865de) end(0x08661c)
+function void fn0865de()
+{
+	pp.no_pause = 1
+
+	base.fn0865de()
+}
+
+// Restore Pause Ability
+function u16 Game.onTriggerNextZone(u16 zoneAndAct)
+{
+	pp.no_pause = 0
+	
+	return base.Game.onTriggerNextZone(zoneAndAct)
+}
+
+// AIZ2 Post Eggman Cutscene
 
 global bool pp.no_pause
 
@@ -374,7 +395,9 @@ function void fn0695ae()
 	base.fn0695ae()
 }
 
-// LBZ1 Knuckles
+// SOZ1 Post Golem Cutscene
+
+// LBZ1 Knuckles Cutscene
 //# address-hook(0x0626b2) end(0x0626d4)
 function void fn0626b2()
 {
@@ -393,7 +416,7 @@ function void fn062778()
 	base.fn062778()
 }
 
-//LBZ2 Egg Mobile
+//LBZ2 Egg Mobile Cutscene
 
 //# address-hook(0x08d2b6) end(0x08d33e)
 function void fn08d2b6()
@@ -413,7 +436,28 @@ function void fn08d47c()
 		pp.no_pause = 0
 }
 
-// HPZ Cutscene
+// LRZ Knuckles Cutscene
+
+//# address-hook(0x063b9c) end(0x063bbc)
+function void fn063b9c()
+{
+	if (u16[0xffffb000 + 0x10] >= 0x39b0)
+		pp.no_pause = 1
+
+	base.fn063b9c()
+}
+
+//# address-hook(0x063c14) end(0x063c38)
+function void fn063c14()
+{
+	if (u16[0xffffb000 + 0x14] >= 0x04c0)
+		pp.no_pause = 0
+	
+	base.fn063c14()
+}
+
+// HPZ Emerald Theft Cutscene
+// Allows Pause at next Zone
 
 //# address-hook(0x064ca6) end(0x064d14)
 function void fn064ca6()
@@ -423,15 +467,7 @@ function void fn064ca6()
 	base.fn064ca6()
 }
 
-//# address-hook(0x064b22) end(0x064b64)
-function void fn064b22()
-{
-	base.fn064b22()
-	
-	pp.no_pause = 0
-}
-
-// SSZ Knuckles Cutscene
+// SSZ Egg Robo Claw Cutscene
 
 //# address-hook(0x07ce1e) end(0x07ce3e)
 function void fn07ce1e()
