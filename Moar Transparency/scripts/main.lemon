@@ -2518,3 +2518,73 @@ function void fn064964()
 	if mt.teleframe
 		MT.LoadBeamPalette(true)
 }
+
+//----------------------------//
+// Annoying compat for S3CLS+ //
+//----------------------------//
+
+global bool s3cls.emerald_shrine
+
+// Override the exit if we detect we are in S3CLS+ Emerald Shrine.
+// Ensuring that we restart the level as if we went through a Giant Ring.
+//# address-hook(0x090c34) end(0x090ca0)
+function void fn090c34()
+{
+	if (!s3cls.emerald_shrine)
+	{
+		base.fn090c34()
+		return
+	}
+	
+	A1 = 0xffffb000
+	D0.u16 = abs(s16[A1 + 0x10] - 0x1640)
+	if (D0.u16 >= 8)
+	{
+		if (D0.u16 >= 0x18)
+		{
+			objA0.flags38 |= 0x08
+		}
+		return
+	}
+
+	if (objA0.flags38 & 0x08)
+	{
+		objA0.flags38 &= ~0x08
+		A1 = 0xffff0000 + u16[A0 + 0x44]
+		if ((u8[A1 + 0x2a] & char.flag.ON_OBJECT) && (objA0.flags38 & 0x20))
+		{
+			playSound(0xaf)
+			level.restart = 1
+			global.in_extra_stage = 1
+			global.stage_type = 2
+		}
+	}
+}
+
+// If the backup level is the same zone_act, we came from S3CLS+.
+function void yieldExecution()
+{
+	if (global.zone_act == 0x1701 && level.backup.zone_act == 0x1701)
+		s3cls.emerald_shrine = true
+	else
+		s3cls.emerald_shrine = false
+	
+	base.yieldExecution()
+}
+
+// Make the backup zone_act the same for detection.
+// Set the transition up as if we went through a giant ring.
+//# translated(0x007d6c) end(0x007e62)
+function bool fn007d6c()
+{
+	bool returnVal = base.fn007d6c()
+	
+	if (global.zone_act == 0x1701)
+	{
+		level.backup.zone_act = 0x1701
+		global.in_extra_stage = 1
+		global.stage_type = 2
+	}
+	
+	return returnVal
+}

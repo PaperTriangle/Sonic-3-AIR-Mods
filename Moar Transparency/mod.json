@@ -30,6 +30,18 @@
 			"DisplayName": "Origins Screen Resolution",
 			"IsRequired": "0",
 			"Priority": "Lower"
+		},
+		"mrgrassman14-sonic-3-complete-level-select":
+		{
+			"DisplayName": "Sonic 3 Complete Level Select+",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		},
+		"Monitors +":
+		{
+			"DisplayName": "Monitors +",
+			"IsRequired": "0",
+			"Priority": "Lower"
 		}
 	},
 	"Settings":
