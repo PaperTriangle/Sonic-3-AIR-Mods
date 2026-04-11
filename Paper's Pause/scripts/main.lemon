@@ -340,7 +340,7 @@ function void Menu.FadeInAfterInit()
 //# address-hook(0x0013e4) end(0x0014e4)
 function void UpdateGamePause()
 {
-	if pp.prevent && (pp.no_pause || (player1.control_override != 0 && !(global.zone_act == 0x0500 && u16[0xffffb000 + 0x10] <= 0x3900)) || global.zone == 0x0d || pp.knuxcredits || (!Mods.isModActive("Imma Let You Finish") && level.wait_for_results))
+	if pp.prevent && (pp.no_pause || (u8[0xffffb000 + 0x20] == char.state.DIED || u8[0xffffb000 + 0x20] == char.state.DROWNED || u8[0xffffb000 + 0x20] == char.state.DIED_GREY) || (player1.control_override != 0 && !(global.zone_act == 0x0500 && u16[0xffffb000 + 0x10] <= 0x3900)) || global.zone == 0x0d || pp.knuxcredits || (!Mods.isModActive("Imma Let You Finish") && level.wait_for_results))
 	{
 		global.game.paused = false
 		return
