@@ -7,8 +7,13 @@ global bool sff.super_drown
 global bool sff.no_up
 global u8 sff.super_breaks_stuff
 global bool sff.animation_fix
+global bool sff.vine_tweak
 
 define u8 global.xtrachar = u8[0xffffe654]
+
+//-------------------//
+// Fix Super Flicky! //
+//-------------------//
 
 // Render the new sprites
 function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
@@ -257,7 +262,9 @@ function void UpdatePaletteEffects.SuperForm()
 		moddedFlickyPalette()
 }
 
-// Super Tails Stars
+//-------------------//
+// Super Tails Stars //
+//-------------------//
 
 function bool Character.performSuperTransformation()
 {
@@ -292,7 +299,9 @@ function void fn0191a4()
 	super.active = backupSuper
 }
 
-// Hyper Tails Stars
+//-------------------//
+// Hyper Tails Stars //
+//-------------------//
 
 // Used to prevent duplicate stars from debug monitors
 global bool alreadyHasStars
@@ -476,13 +485,19 @@ function bool UpdateTailsFlight_innerA()
 }
 
 
-//-------------
-// AIZ Vine Fix
-//-------------
+//--------------//
+// AIZ Vine Fix //
+//--------------//
 
 //# address-hook(0x0221ec) end(0x022246)
 function void fn0221ec()
 {
+	if (!sff.vine_tweak)
+	{
+		base.fn0221ec()
+		return
+	}
+	
 	if (u16[A0 + 0x30] != 0)
 	{
 		fn022258()
@@ -509,6 +524,12 @@ function void fn0221ec()
 //# address-hook(0x02254a) end(0x02257c)
 function void fn022040()
 {
+	if (!sff.vine_tweak)
+	{
+		base.fn022040()
+		return
+	}
+	
 	// Move with parent object
 	A1 = 0xffff0000 + u16[A0 + 0x3c]
 	u8 angle = u8[A1 + 0x26]
@@ -518,7 +539,33 @@ function void fn022040()
 	objA0.position.y.u16 = objA1.position.y.u16 + dy
 }
 
-// Super Tails Drowns
+// Prevent collapse
+//# address-hook(0x020594) end(0x0205b0)
+function void CollapsingCliff.Update()
+{
+	if (sff.vine_tweak)
+	{
+		if (objA0.flags2a & object.flag.P1_ON_OBJECT) && (u8[0xffffb000 + 0x20] == char.state.HANGING || (u8[0xffffb000 + 0x22] >= 0x78 && u8[0xffffb000 + 0x22] <= 0x7f))
+		{
+			objA0.flags2a &= ~object.flag.P1_ON_OBJECT
+			u8[0xffffb000 + 0x2a] &= ~char.flag.ON_OBJECT
+			u8[0xffffb000 + 0x2a] |= char.flag.IN_AIR
+		}
+		else if (objA0.flags2a & object.flag.P2_ON_OBJECT) && (u8[0xffffb04a + 0x20] == char.state.HANGING || (u8[0xffffb04a + 0x22] >= 0x78 && u8[0xffffb04a + 0x22] <= 0x7f))
+		{
+			objA0.flags2a &= ~object.flag.P2_ON_OBJECT
+			u8[0xffffb04a + 0x2a] &= ~char.flag.ON_OBJECT
+			u8[0xffffb04a + 0x2a] |= char.flag.IN_AIR
+		}
+	}
+		
+	base.CollapsingCliff.Update()
+}
+
+//--------------------//
+// Super Tails Drowns //
+//--------------------//
+
 //# address-hook(0x018466) end(0x018680)
 function void fn018466()
 {
@@ -735,7 +782,10 @@ function void fn018466()
 	}
 }
 
-// Tails' tails animation fix.
+//----------------------------------------------//
+// Tails' tails animation fix while looking up. //
+//----------------------------------------------//
+
 //# address-hook(0x0160d2)
 function void TailsTails.Update()
 {
@@ -783,13 +833,19 @@ function void TailsTails.Update()
 	DrawObject()
 }
 
-// Blue Glasses Eggman Always uses First Palette Line
+//----------------------------------------------------//
+// Blue Glasses Eggman Always uses First Palette Line //
+//----------------------------------------------------//
+
 function u16 EggmanBlue.getDefaultPal()
 {
 	return 0x00
 }
 
-// Super breaks stuff
+//---------------------//
+// Super breaks stuff! //
+//---------------------//
+
 //# address-hook(0x021568) end(0x021690)
 function void fn021568()
 {

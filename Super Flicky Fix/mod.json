@@ -147,6 +147,18 @@
 					"1": "Enabled",
 					"2": "Enabled (Tails & Ray)"
 				}
+			},
+			{
+				"InternalName": "sff.vine_tweak",
+				"DisplayName": "Adjust Vines and Cliffs",
+				"Variable": "sff.vine_tweak",
+				"Category": "Misc Settings",
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
 			}
 		]
 	}
