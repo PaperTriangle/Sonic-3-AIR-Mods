@@ -2143,30 +2143,34 @@ function void fn08b73a()
 	}
 }
 
-// Load extra palette detail for HPZ / SSZ
+// Turn off lasers if player died.
 //# address-hook(0x02d856) end(0x02d8dc)
 function void TitleCard.Show()
 {
-	laser_on = false		// Turn off lasers if player died.
+	laser_on = false
 	
 	base.TitleCard.Show()
-	
+}
+
+// Load extra palette detail for HPZ / SSZ
+//# address-hook(0x05a158) end(0x05a19e)
+function void InitLevelScrolling.HPZ()
+{
 	if (mt.teleframe)
 	{
-		if (global.zone == 0x0a || global.zone_act == 0x1601)
+		u16 offset = 3 * 0x40 + mt.bmpline * 0x20
+		for (u8 k = 0; k < 7; k += 1)
 		{
-			u16 offset = 3 * 0x40 + mt.bmpline * 0x20
-			for (u8 k = 0; k < 7; k += 1)
-			{
-				if (k < 5)
-					u16[0x802182 + offset + 2*k] = u16[0x000669f4 + 0x02 * k]
-				else
-					u16[0x802002 + offset + 2*k] = u16[0x00066a14 + 0x02 * (k - 5)]
-			}
-			
-			MT.LoadBeamPalette()
+			if (k < 5)
+				u16[0x802182 + offset + 2*k] = u16[0x0669f4 + 0x02 * k]
+			else
+				u16[0x802182 + offset + 2*k] = u16[0x066a14 + 0x02 * (k - 5)]
 		}
+		
+		MT.LoadBeamPalette()
 	}
+	
+	base.InitLevelScrolling.HPZ()
 }
 
 // Load CNZ Palettes into ICZ1 intro for Knuckles
