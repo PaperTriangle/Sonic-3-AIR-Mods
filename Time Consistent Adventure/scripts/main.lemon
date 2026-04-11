@@ -46,6 +46,7 @@ global u16 transition_time = 0
 global bool tca.knux_stars_off
 global bool tca.infbz1forreal
 global bool tca.inssz1forreal
+global u16 tca.stars_offset
 
 function bool isKnucklesRoute()
 {
@@ -182,9 +183,12 @@ function void yieldExecution()
 		{
 			TCA.RenderFix()
 			
+			if (!level.restart)
+				tca.stars_offset = (camera.background.y >> 16) // I do this to prevent the clouds snapping when restarting
+			
 			for (u16 fs = 0 ; fs*128 < getScreenWidth() + 128; fs++)
 			{
-				Renderer.drawSprite(stringformat("fbz_stars_%d", tca.bg_twinkle ? (level.framecounter >> 4) % 4 : 1), 128 + fs*128 - ((level.framecounter + camera.position.x.u16) % 1152) / 9, 128 - (camera.background.y >> 16) - camera.screenshake.offset, 0, SPRITE_FLAG_PRIO, 0x1001)
+				Renderer.drawSprite(stringformat("fbz_stars_%d", tca.bg_twinkle ? (level.framecounter >> 4) % 4 : 1), 128 + fs*128 - ((level.framecounter + camera.position.x.u16) % 1152) / 9, 128 - tca.stars_offset - camera.screenshake.offset, 0, SPRITE_FLAG_PRIO, 0x1001)
 			}
 		}
 		
