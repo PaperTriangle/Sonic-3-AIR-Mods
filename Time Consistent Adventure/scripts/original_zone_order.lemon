@@ -12,7 +12,7 @@ global u8 tca.flyingBatteryPropellorFrame
 function void yieldExecution()
 {
 	// CNZ to FBZ
-	if (tca.intended && global.zone_act == 0x0301)
+	if (tca.intended && global.zone_act == 0x0301 && !global.game.paused)
 	{
 		if !(camera.position.x.u16 > 0x4996 && player1.control_override)
 		{
@@ -25,7 +25,7 @@ function void yieldExecution()
 		}
 		tca.flyingBatteryXPosition += 1
 		
-		if (camera.position.x.u16 > 0x489d && level.capsule_opened && !level.wait_for_results && !global.game.paused)
+		if (camera.position.x.u16 > 0x489d && level.capsule_opened && !level.wait_for_results)
 		{
 			if (!isKnucklesRoute())
 				playSound(0xbd)
