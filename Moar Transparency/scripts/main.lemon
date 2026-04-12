@@ -791,6 +791,8 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		
 		return true
 	}
+	else if Mods.isModActive("Origins Parity Galore") && (!mt.lighttunnel && objA0.update_address == 0x0488a4)
+		return false
 	
 	if (mt.fbzlaser)
 	{
