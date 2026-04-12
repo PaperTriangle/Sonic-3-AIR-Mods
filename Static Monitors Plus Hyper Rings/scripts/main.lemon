@@ -28,9 +28,7 @@ function void LevelObjectTableBuilder.addObject(u16 px, u16 py, u8 type, u8 subt
 		}
 		else if (global.zone_act == 0x0101) // HCZ2
 		{
-			if (px == 0x1a10 && py == 0x0570)
-				subtype = 0x0f
-			else if (px == 0x3410 && py == 0x0830)
+			if (px == 0x2990 && py == 0x04f0)
 				subtype = 0x0f
 		}
 		else if (global.zone_act == 0x0200) // MGZ1
