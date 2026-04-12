@@ -115,7 +115,7 @@ function void yieldExecution()
 			transition_time = 0
 		}
 		
-		if (transition_state == 1 && transition_time <= 0x78)
+		if (transition_state == 1 && transition_time <= 0x78) && (!global.game.paused)
 		{
 			System.loadExternalRawData("MGZ2_Palette", 0x3fff30)
 			
@@ -134,7 +134,7 @@ function void yieldExecution()
 	{
 		System.loadExternalRawData("MGZ2_Palette", 0x0A8F5C)
 		
-		if (transition_state == 1 && transition_time <= 0x78)
+		if (transition_state == 1 && transition_time <= 0x78) && (!global.game.paused)
 		{	
 			System.loadExternalRawData("MGZ2_Palette_Night", 0x3fff30)
 			
@@ -160,7 +160,7 @@ function void yieldExecution()
 			transition_time = 0
 		}
 		
-		if (transition_state == 2 && transition_time <= 0x78)
+		if (transition_state == 2 && transition_time <= 0x78) && (!global.game.paused)
 		{	
 			System.loadExternalRawData("MGZ2_Palette_Night", 0x3fff30)
 			
@@ -205,7 +205,7 @@ function void yieldExecution()
 		else
 			System.loadExternalRawData(tca.fbz_bg ? "FBZ_Palette_Alt" : "FBZ_Palette", 0x052dd0)
 		
-		if (transition_state >= 1 && transition_time <= 0x78)
+		if (transition_state >= 1 && transition_time <= 0x78) && (!global.game.paused)
 		{	
 			System.loadExternalRawData("FBZ_Palette_Boss", 0x3fff30)
 			System.loadExternalRawData("FBZ_Palette_Released", 0x3fff60)
@@ -231,7 +231,7 @@ function void yieldExecution()
 	}
 	else if (tca.icz && global.zone == 0x05 && tca.intended) // ICZ Act 1 & 2
 	{
-		if (transition_state == 1 && transition_time <= 0x78 && camera.position.y.u16 < 0x700)
+		if (transition_state == 1 && transition_time <= 0x78 && camera.position.y.u16 < 0x700) && (!global.game.paused)
 		{	
 			System.loadExternalRawData("ICZ_Dawn_Palette", 0x3fff30)
 			System.loadExternalRawData("ICZ_Morning_Palette", 0x3fff60)
@@ -244,7 +244,7 @@ function void yieldExecution()
 				}
 			}
 		}
-		else if (tca.icz_trans_fade && transition_state == 2 && transition_time <= 0x78 && camera.position.y.u16 < 0x700)
+		else if (tca.icz_trans_fade && transition_state == 2 && transition_time <= 0x78 && camera.position.y.u16 < 0x700) && (!global.game.paused)
 		{
 			System.loadExternalRawData("ICZ_Morning_Palette", 0x3fff30)
 			System.loadExternalRawData("ICZ_New_Palette", 0x3fff60)
@@ -258,7 +258,7 @@ function void yieldExecution()
 				}
 			}
 		}
-		else if (!tca.icz_trans_fade && transition_state == 2 && transition_time <= 0x78 && camera.position.y.u16 < 0x700)
+		else if (!tca.icz_trans_fade && transition_state == 2 && transition_time <= 0x78 && camera.position.y.u16 < 0x700) && (!global.game.paused)
 		{	
 			System.loadExternalRawData("ICZ_Dawn_Palette", 0x3fff30)
 			System.loadExternalRawData("ICZ_New_Palette", 0x3fff60)
@@ -290,7 +290,7 @@ function void yieldExecution()
 	}
 	else if (tca.icz && global.zone == 0x05 && !tca.intended) // ICZ Act 1 & 2 (As Released) ****
 	{
-		if (transition_state == 1 && transition_time <= 0x78)
+		if (transition_state == 1 && transition_time <= 0x78) && (!global.game.paused)
 		{	
 			System.loadExternalRawData("ICZ_Act1_Palette", 0x3fff30)
 			System.loadExternalRawData("ICZ_New_Palette", 0x3fff60)
@@ -351,7 +351,7 @@ function void yieldExecution()
 		else if (transition_state == 0 && tca.ssz_trans_point == 3 && camera.position.y.u16 < 0x700 && checkpoint.number < 2 )
 			transition_state = 1
 		
-		if (transition_state == 1 && transition_time <= 0x78) && tca.inssz1forreal
+		if (transition_state == 1 && transition_time <= 0x78) && (!global.game.paused) && tca.inssz1forreal
 		{	
 			transition_time += !tca.fadespeed ? 1 : 2
 			if (transition_time % (tca.fadespeed ? 30 : 24) == 0 || !tca.fadetype)
@@ -384,7 +384,7 @@ function void yieldExecution()
 				System.loadExternalRawData("SSZK_Palette_Night", 0x0A979C)
 			}
 			
-			if (transition_state == 1 && transition_time <= 0x78)
+			if (transition_state == 1 && transition_time <= 0x78) && (!global.game.paused)
 			{	
 				System.loadExternalRawData("SSZK_Palette_Pre_Dawn", 0x0A979C)
 				transition_time += !tca.fadespeed ? 1 : 2
@@ -438,7 +438,7 @@ function void yieldExecution()
 				}
 				
 			}
-			else if (transition_state == 2 && transition_time <= 0x78)
+			else if (transition_state == 2 && transition_time <= 0x78) && (!global.game.paused)
 			{
 				System.loadExternalRawData(tca.pal_ssz_dawn ? "SSZK_Palette_Morning_Pink" : "SSZK_Palette_Morning", 0x0A979C)
 				transition_time += !tca.fadespeed ? 1 : 2
@@ -464,7 +464,7 @@ function void yieldExecution()
 			{
 				System.loadExternalRawData(tca.pal_ssz_dawn ? "SSZK_Palette_Morning_Pink" : "SSZK_Palette_Morning", 0x0A979C)
 			}
-			else if (transition_state == 1 && transition_time <= 0x78)
+			else if (transition_state == 1 && transition_time <= 0x78) && (!global.game.paused)
 			{
 				System.loadExternalRawData(tca.pal_ssz_dawn ? "SSZK_Palette_Morning_Pink" : "SSZK_Palette_Morning", 0x0A979C)
 				transition_time += !tca.fadespeed ? 1 : 2
