@@ -74,6 +74,44 @@ function void fn074952()
 	UnloadObject()
 }
 
+// Reset the counter in HPZ fight.
+//# address-hook(0x0640dc) end(0x064100)
+function void fn0640dc()
+{
+	if dsmg.extra_frames
+		dsmg.frame = 0
+	
+	base.fn0640dc()
+}
+
+// Move the framecounter in HPZ fight.
+//# address-hook(0x064090) end(0x0640c8)
+function void fn064090()
+{
+	if dsmg.extra_frames
+		DSMG.FrameCount(A0)
+
+	base.fn064090()
+}
+
+// Render the extra glide frame for boss Knuckles.
+function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
+{
+	if dsmg.extra_frames && (objA0.update_address == 0x063de0) && objA0.animation.sprite == 0xc0
+	{
+		if (dsmg.frame > 15)
+			dsmg.frame = 0
+		
+		if (dsmg.frame > 7)
+		{
+			Renderer.drawCustomSprite(DSMG.GlideFrame(), px, py, 0x80, (objA0.render_flags & render_flag.FLIP_X) | SPRITE_FLAG_PRIO, renderQueue)
+			return true
+		}
+	}
+	
+	return base.Standalone.onWriteToSpriteTable(px, py, renderQueue)
+}
+
 // Reset counter in SSZ cutscene.
 //# address-hook(0x07cc3a) end(0x07cc62)
 function void fn07cc3a()
