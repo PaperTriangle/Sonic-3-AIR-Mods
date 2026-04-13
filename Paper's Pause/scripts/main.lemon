@@ -1,17 +1,8 @@
 global bool pp.exittotitle
 global bool pp.texttype
 global bool pp.darkentype
-global bool pp.prevent
-global bool pp.knuxcredits
 
 constant u16 GamePause.NUM_ENTRIES = 4
-
-//# address-hook(0x05e70e) end(0x05e804)
-function void fn05e70e()
-{
-	pp.knuxcredits = true
-	base.fn05e70e()
-}
 
 function void GamePause.Menu()
 {
@@ -333,14 +324,32 @@ function void FadeOutScreenBlocking()
 function void Menu.FadeInAfterInit()
 {
 	restartOn = 0
-	pp.knuxcredits = false
+	pp.no_pause = 0
+	pp.no_hud = 0
+	pp.check_act = 0
 	base.Menu.FadeInAfterInit()
 }
 
+// (player1.control_override != 0 && !(global.zone_act == 0x0500 && u16[0xffffb000 + 0x10] <= 0x3900)) 
+// (!Mods.isModActive("Imma Let You Finish") && level.wait_for_results))
+
+
+//------------------//
+// Pause Prevention //
+//------------------//
+
+global bool pp.prevent
+global bool pp.hidehud
+
+global bool pp.no_pause
+global bool pp.no_hud
+global bool pp.check_act
+
+// Actually stop the Pause function.
 //# address-hook(0x0013e4) end(0x0014e4)
 function void UpdateGamePause()
 {
-	if pp.prevent && (pp.no_pause || (u8[0xffffb000 + 0x20] == char.state.DIED || u8[0xffffb000 + 0x20] == char.state.DROWNED || u8[0xffffb000 + 0x20] == char.state.DIED_GREY) || (player1.control_override != 0 && !(global.zone_act == 0x0500 && u16[0xffffb000 + 0x10] <= 0x3900)) || global.zone == 0x0d || pp.knuxcredits || (!Mods.isModActive("Imma Let You Finish") && level.wait_for_results))
+	if pp.prevent && (pp.no_pause || (u8[0xffffb000 + 0x20] == char.state.DIED || u8[0xffffb000 + 0x20] == char.state.DROWNED || u8[0xffffb000 + 0x20] == char.state.DIED_GREY) || global.zone == 0x0d)
 	{
 		global.game.paused = false
 		return
@@ -349,33 +358,71 @@ function void UpdateGamePause()
 	base.UpdateGamePause()
 }
 
-//------------------//
-// Pause Prevention //
-//------------------//
-
-// General
-
-global bool pp.no_pause
-
-// Act 2 Capsule Remove Pause
-//# address-hook(0x0865de) end(0x08661c)
-function void fn0865de()
+// Results Screen stops pausing.
+//# address-hook(0x02dae6) end(0x02dbc8)
+function void fn02dae6()
 {
+	if (!(global.zone_act == 0x1600 || global.zone_act == 0x0800 || global.zone_act == 0x0a00) && global.act.apparent == 0)
+	{
+		// Any Act 1
+		pp.check_act = 1
+	}
+	else
+	{
+		// Any Act 2, incl. Lava Reef Boss Act and Sky Sanctuary Zone
+		pp.check_act = 2
+	}
+	
 	pp.no_pause = 1
-
-	base.fn0865de()
+	
+	base.fn02dae6()
 }
 
-// Restore Pause Ability
-function u16 Game.onTriggerNextZone(u16 zoneAndAct)
+// Restore Pause ability at start of level.
+function void Standalone.onLevelStart()
 {
 	pp.no_pause = 0
 	
-	return base.Game.onTriggerNextZone(zoneAndAct)
+	base.Standalone.onLevelStart()
 }
 
-// HCZ1 -> HCZ2 Cutscene.
+// Special logic if Act 2 to prevent pause longer.
+//# address-hook(0x02dcca)
+function void LevelResults.AdvanceToNextAct()
+{
+	if pp.check_act == 2
+		pp.check_act = 3
+		
+	base.LevelResults.AdvanceToNextAct()
+}
 
+// Adjust pause state based on Act and remove HUD
+//# post-update-hook
+function void PostFrameUpdate()
+{
+	if (!pp.no_pause)
+		pp.no_hud = false
+		
+	if (pp.check_act == 3 && pp.no_pause && !level.wait_for_results)
+	{
+		pp.no_hud = 1
+		pp.check_act = 0
+	}
+	else if (pp.check_act == 1 && pp.no_pause && !level.wait_for_results)
+	{
+		pp.no_pause = 0
+		pp.check_act = 0
+	}
+
+	if (pp.no_hud && global.level_started > -0x70)
+		global.level_started -= 0x10
+	
+	base.PostFrameUpdate()
+}
+
+// AIZ1 Bombing Cutscene
+
+// HCZ1 -> HCZ2 Cutscene.
 //# address-hook(0x06a270) end(0x06a298)
 function void fn06a270()
 {
@@ -428,29 +475,36 @@ function void fn06a872()
 }
 
 // HCZ Knuckles
-//# address-hook(0x062112) end(0x06211e)
-function void fn062112()
+//# address-hook(0x062194) end(0x0621d4)
+function void fn062194()
 {
-	if (!Game.isTimeAttack() && !isMainCharacter(CHARACTER_KNUCKLES))
+	if (u16[0xffffb000 + 0x10] >= 0x3990 && u8[0xffffb000 + 0x2e] == 0 && u8[0xffffb000 + 0x2a] & char.flag.ON_OBJECT)
+	{
 		pp.no_pause = 1
+		pp.no_hud = 1
+	}
 
-	base.fn062112()
+	base.fn062194()
 }
 
 //# address-hook(0x062242) end(0x06227a)
 function void fn062242()
 {
-	pp.no_pause = 0
+	if !(objA0.render_flags & render_flag.VISIBLE)
+		pp.no_pause = 0
 	
 	base.fn062242()
 }	
 
-// CNZ1 Knuckles Cutscene
+// CNZ2 Knuckles Cutscene Lights
 //# address-hook(0x062332) end(0x062338)
 function void fn062332()
 {
 	if (!Game.isTimeAttack() && !isMainCharacter(CHARACTER_KNUCKLES))
+	{
 		pp.no_pause = 1
+		pp.no_hud = 1
+	}
 		
 	base.fn062332()
 }
@@ -464,12 +518,37 @@ function void fn062458()
 	base.fn062458()
 }
 
+// CNZ2 Knuckles Cutscene Boss
+//# address-hook(0x0624de) end(0x0624ec)
+function void fn0624de()
+{
+	if (!Game.isTimeAttack() && !isMainCharacter(CHARACTER_KNUCKLES))
+	{
+		pp.no_pause = 1
+		pp.no_hud = 1
+	}
+		
+	base.fn0624de()
+}
+
+//# address-hook(0x06261a) end(0x06263a)
+function void fn06261a()
+{
+	if (camera.position.y.u16 + 0x0160 < objA0.position.y.u16)
+		pp.no_pause = 0
+
+	base.fn06261a()
+}
+
 // LBZ1 Knuckles Cutscene
 //# address-hook(0x0626b2) end(0x0626d4)
 function void fn0626b2()
 {
 	if ((objA0.flags38 & 0x08) != 0)
+	{
 		pp.no_pause = 1
+		pp.no_hud = 1
+	}
 	
 	base.fn0626b2()
 }
@@ -488,7 +567,10 @@ function void fn062778()
 function void fn08d2b6()
 {
 	if (u8[A0 + 0x29] != 0) && (u8[A0 + 0x29] != 2)
+	{
 		pp.no_pause = 1
+		pp.no_hud = 1
+	}
 	
 	base.fn08d2b6()
 }
@@ -502,11 +584,14 @@ function void fn08d47c()
 		pp.no_pause = 0
 }
 
+// MHZ1 Knuckles Cutscene
+
 // MHZ2 Knuckles Cutscene
 //# address-hook(0x063170) end(0x0631a2)
 function void fn063170()
 {
 	pp.no_pause = 1
+	pp.no_hud = 1
 	
 	base.fn063170()
 }
@@ -519,12 +604,25 @@ function void fn0633d6()
 	base.fn0633d6()
 }
 
+// SOZ1 Act End (Only restoring at Act 2 logic)
+//# address-hook(0x056324)
+function void fn056324()
+{
+	if (s16(level.display_routine) == 0)
+		pp.no_pause = 0
+		
+	base.fn056324()
+}
+
 // LRZ Knuckles Cutscene
 //# address-hook(0x063b9c) end(0x063bbc)
 function void fn063b9c()
 {
 	if (u16[0xffffb000 + 0x10] >= 0x39b0)
+	{
 		pp.no_pause = 1
+		pp.no_hud = 1
+	}
 
 	base.fn063b9c()
 }
@@ -539,11 +637,11 @@ function void fn063c14()
 }
 
 // HPZ Emerald Theft Cutscene
-// Allows Pause at next Zone
 //# address-hook(0x064ca6) end(0x064d14)
 function void fn064ca6()
 {
 	pp.no_pause = 1
+	pp.no_hud = 1
 	
 	base.fn064ca6()
 }
@@ -553,6 +651,7 @@ function void fn064ca6()
 function void fn07ce1e()
 {
 	pp.no_pause = 1
+	pp.no_hud = 1
 	
 	base.fn07ce1e()
 }
@@ -565,4 +664,11 @@ function void fn07ccb0()
 
 	base.fn07ccb0()
 }
-	
+
+// SSZ Knuckles Credits
+//# address-hook(0x05e70e) end(0x05e804)
+function void fn05e70e()
+{
+	pp.no_pause = 1
+	base.fn05e70e()
+}
