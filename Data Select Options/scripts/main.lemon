@@ -91,12 +91,6 @@ function void fn00d1b6()
 //# address-hook(0x00d1fa) end(0x00d30a)
 function void fn00d1fa()
 {
-	if (!lsds.leftshift)
-	{
-		base.fn00d1fa()
-		return
-	}
-	
 #if STANDALONE
 	if (u16[0xffffeee4] == 0 && (control.pad1.pressed & DataSelect.CONTROLS_CANCEL || Input.buttonPressed(BUTTON_BACK)))
 #else
@@ -121,8 +115,17 @@ function void fn00d1fa()
 			yieldExecution()
 		#endif
 		}
+		return
 	}
-	else if (u16[0xffffeee2] == 0)
+	
+	if (!lsds.leftshift)
+	{
+		base.fn00d1fa()
+		return
+	}
+	
+
+	if (u16[0xffffeee2] == 0)
 	{
 		bool skipPart = false
 		if (u16[A0 + 0x30] == 0)
