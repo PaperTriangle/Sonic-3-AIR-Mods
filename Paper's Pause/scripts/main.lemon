@@ -330,9 +330,6 @@ function void Menu.FadeInAfterInit()
 	base.Menu.FadeInAfterInit()
 }
 
-// (player1.control_override != 0 && !(global.zone_act == 0x0500 && u16[0xffffb000 + 0x10] <= 0x3900)) 
-// (!Mods.isModActive("Imma Let You Finish") && level.wait_for_results))
-
 
 //------------------//
 // Pause Prevention //
@@ -363,7 +360,7 @@ function void UpdateGamePause()
 //# address-hook(0x02dae6) end(0x02dbc8)
 function void fn02dae6()
 {
-	if (!(global.zone_act == 0x1600 || global.zone_act == 0x0800 || global.zone_act == 0x0a00) && global.act.apparent == 0)
+	if (!(global.zone_act == 0x1600 || global.zone_act == 0x0800 || global.zone_act == 0x0b00 || global.zone_act == 0x0a00) && global.act.apparent == 0)
 	{
 		// Any Act 1
 		pp.check_act = 1
@@ -407,6 +404,10 @@ function void Standalone.onRestartAtCheckpoint()
 //# address-hook(0x02dcca)
 function void LevelResults.AdvanceToNextAct()
 {
+	// I need to do this for Knux's CNZ2 for some reason...
+	if (objA0.countdown_value > 0)
+		level.wait_for_results = 0xff
+
 	if pp.check_act == 2
 		pp.check_act = 3
 		
@@ -421,6 +422,7 @@ function void PostFrameUpdate()
 	{
 		pp.no_hud = 0
 		pp.fullhide = 0
+		pp.check_act = 0
 	}
 		
 	if (pp.check_act == 3 && pp.no_pause && !level.wait_for_results)
@@ -469,58 +471,6 @@ function void fn0500da()
 	pp.no_pause = 0
 	
 	base.fn0500da()
-}
-
-// HCZ1 -> HCZ2 Cutscene.
-//# address-hook(0x06a270) end(0x06a298)
-function void fn06a270()
-{
-	if (level.results_done)
-		pp.no_pause = 1
-
-	base.fn06a270()
-}
-
-//# address-hook(0x06a872) end(0x06a8c0)
-function void fn06a872()
-{
-	if (!pp.prevent)
-	{
-		base.fn06a872()
-		return
-	}
-
-	fn06a916()
-	UpdateMovementStraightSimple()
-
-	A1 = 0xffff0000 + u16[A0 + 0x44]
-	objA1.position.x.u16 = objA0.position.x.u16
-	D0.u16 = objA0.position.y.u16
-	objA1.position.y.u16 = D0.u16
-	if (D0.u16 < 0x0828)
-		return
-
-#if STANDALONE
-	Game.endSkippableCutscene()
-#endif
-
-	pp.no_pause = 0
-
-	if (objA0.subtype2c != 0)
-	{
-		A1 = 0xffffb04a
-		if (u32[A1] != 0)
-		{
-			StopCharacterWinPose()
-		}
-	}
-	else
-	{
-		stopCharacterWinPose(0xffffb000)
-		screenmover_target.top = 0
-		fn085de0()
-	}
-	UnloadObject()
 }
 
 // HCZ Knuckles
@@ -739,4 +689,13 @@ function void fn05e70e()
 {
 	pp.no_pause = 1
 	base.fn05e70e()
+}
+
+// DEZ1 Act End (Only restoring at Act 2 logic)
+//# address-hook(0x07e4a2) end(0x07e4c8)
+function void fn07e4a2()
+{
+	pp.no_pause = 0
+	
+	base.fn07e4a2()
 }
