@@ -1143,6 +1143,25 @@ function void VDP.zeroVRAM(u16 bytes)
 	base.VDP.zeroVRAM(bytes)
 }
 
+// Adjust change from Origins Screen Resolution Commit #5205901
+// to support the screen shift.
+//# address-hook(0x0745e2) end(0x074616)
+function void fn0745e2()
+{
+	if (objA0.position.y.u16 < camera.foreground.y.u16 + 0x88 + (getScreenHeight() - 224)/2)
+	{
+		objA0.position.y.u16 += 8
+		return
+	}
+
+	objA0.base_state = 0x26
+	objA0.flags38 |= 0x02
+	camera.screenshake.state = 0x14
+	objA0.countdown_value = 0x03
+
+	playSound(0x61)
+}
+
 // LBZ2 to MHZ1 Transition Compat
 
 global bool altlbz2cs.extratransition
