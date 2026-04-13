@@ -343,7 +343,8 @@ global bool pp.hidehud
 
 global bool pp.no_pause
 global bool pp.no_hud
-global bool pp.check_act
+global u8 pp.check_act
+global bool pp.fullhide
 
 // Actually stop the Pause function.
 //# address-hook(0x0013e4) end(0x0014e4)
@@ -386,6 +387,14 @@ function void Standalone.onLevelStart()
 	base.Standalone.onLevelStart()
 }
 
+// In case the player dies in the cutscene...
+function void Standalone.onDeath()
+{
+	pp.no_pause = 0
+	
+	base.Standalone.onDeath()
+}
+
 // Special logic if Act 2 to prevent pause longer.
 //# address-hook(0x02dcca)
 function void LevelResults.AdvanceToNextAct()
@@ -401,7 +410,10 @@ function void LevelResults.AdvanceToNextAct()
 function void PostFrameUpdate()
 {
 	if (!pp.no_pause)
-		pp.no_hud = false
+	{
+		pp.no_hud = 0
+		pp.fullhide = 0
+	}
 		
 	if (pp.check_act == 3 && pp.no_pause && !level.wait_for_results)
 	{
@@ -414,13 +426,42 @@ function void PostFrameUpdate()
 		pp.check_act = 0
 	}
 
-	if (pp.no_hud && global.level_started > -0x70)
-		global.level_started -= 0x10
+	if (pp.no_hud)
+	{
+		if (pp.fullhide)
+		{
+			global.level_started = -0x7f
+		}
+		else
+		{
+			if (global.level_started > -0x70)
+				global.level_started -= 0x10
+				
+			if (global.level_started < -0x70)
+				pp.fullhide = 1
+		}
+	}
 	
 	base.PostFrameUpdate()
 }
 
 // AIZ1 Bombing Cutscene
+//# address-hook(0x068556) end(0x068572)
+function void fn068556()
+{
+	pp.no_pause = 1
+	pp.no_hud = 1
+	
+	base.fn068556()
+}
+
+//# address-hook(0x0500da) end(0x0500da)
+function void fn0500da()
+{
+	pp.no_pause = 0
+	
+	base.fn0500da()
+}
 
 // HCZ1 -> HCZ2 Cutscene.
 //# address-hook(0x06a270) end(0x06a298)
