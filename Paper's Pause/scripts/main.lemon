@@ -634,6 +634,25 @@ function void fn08d47c()
 }
 
 // MHZ1 Knuckles Cutscene
+//# address-hook(0x062cf8) end(0x062d28)
+function void fn062cf8()
+{
+	if (objA1.position.x.u16 >= 0x0389)
+	{
+		pp.no_pause = 1
+		pp.no_hud = 1
+	}
+	
+	base.fn062cf8()
+}
+
+//# address-hook(0x062d70) end(0x062da6)
+function void fn062d70()
+{
+	pp.no_pause = 0
+		
+	base.fn062d70()
+}
 
 // MHZ2 Knuckles Cutscene
 //# address-hook(0x063170) end(0x0631a2)
