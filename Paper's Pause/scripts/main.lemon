@@ -395,6 +395,14 @@ function void Standalone.onDeath()
 	base.Standalone.onDeath()
 }
 
+// Restart from Pause Menu.
+function void Standalone.onRestartAtCheckpoint()
+{
+	pp.no_pause = 0
+	
+	base.Standalone.onRestartAtCheckpoint()
+}
+
 // Special logic if Act 2 to prevent pause longer.
 //# address-hook(0x02dcca)
 function void LevelResults.AdvanceToNextAct()
@@ -426,7 +434,7 @@ function void PostFrameUpdate()
 		pp.check_act = 0
 	}
 
-	if (pp.no_hud)
+	if (pp.hidehud && pp.no_hud)
 	{
 		if (pp.fullhide)
 		{

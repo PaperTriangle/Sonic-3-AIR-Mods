@@ -64,6 +64,17 @@
 					"0": "Disabled",
 					"1": "Enabled"
 				}
+			},
+			{
+				"InternalName": "pp.hidehud",
+				"DisplayName": "Hide HUD In Some Cutscenes",
+				"Variable": "pp.hidehud",
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
 			}
 		]
 	}
