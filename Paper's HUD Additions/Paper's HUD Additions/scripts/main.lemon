@@ -56,12 +56,15 @@ function void RenderHUD()
 		
 				if (!PHUD.RenderLives(px, py, renderQueue))
 				{
+					if (global.level_started - 0x08 < 0)
+						global.level_started -= 0x08
+					
 					base.RenderHUD()
 					return
 				}
 			}
 			
-			if (debug_mode.state)
+			if Mods.isModActive("Mobile Ports Debug Display") && (debug_mode.state || System.getGlobalVariableValueByName("Debug.HUDAlwaysActive"))
 				PHUD.RenderDebug(baseX, baseY, renderQueue)
 		
 			// Score
@@ -206,15 +209,17 @@ function void PHUD.RenderTransformButton()
 				phud.offset += 0x08
 			}
 
+			u8 debugMod = Mods.isModActive("Mobile Ports Debug Display") && System.getGlobalVariableValueByName("Debug.HUDAlwaysActive")
+
 			if (phud.transformstyle != 0)
 			{
 				u64 transformborder =  (phud.transformstyle == 1) ? stringformat("t_border_%s", compatName) : stringformat("t_ring_%s", compatName)
-				HUD.drawSprite(transformborder, getScreenWidth() - (baseX + 0x10 + HUD.useMobileLivesDisplay() * 0x28) + phud.offset, 0x10 + HUD.useMobileLivesDisplay() * 0x14, 0xe000)
+				HUD.drawSprite(transformborder, getScreenWidth() - (baseX + 0x10 + (debugMod || HUD.useMobileLivesDisplay()) * 0x28) + phud.offset, 0x10 + HUD.useMobileLivesDisplay() * 0x14 + debugMod * 0x1a, 0xe000)
 			}
 
-			HUD.drawSprite(PHUD.GetTransformIcon(phud.transformstyle != 0), getScreenWidth() - (baseX + 0x10 + HUD.useMobileLivesDisplay() * 0x28) + phud.offset, 0x10 + HUD.useMobileLivesDisplay() * 0x14, 0xe000)
+			HUD.drawSprite(PHUD.GetTransformIcon(phud.transformstyle != 0), getScreenWidth() - (baseX + 0x10 + (debugMod || HUD.useMobileLivesDisplay()) * 0x28) + phud.offset, 0x10 + HUD.useMobileLivesDisplay() * 0x14 + debugMod * 0x1a, 0xe000)
 			
-			Renderer.drawCustomSprite(phud.button_style ? "forever_y_button" : "@input_icon_button_Y", getScreenWidth() - (baseX + 0x24) + phud.offset, 0x10 + HUD.useMobileLivesDisplay() * 0x14, 0, SPRITE_FLAG_PRIO, 0xe000, 0, fade)
+			Renderer.drawCustomSprite(phud.button_style ? "forever_y_button" : "@input_icon_button_Y", getScreenWidth() - (baseX + 0x24) + phud.offset, 0x10 + HUD.useMobileLivesDisplay() * 0x14 + debugMod * 0x1a, 0, SPRITE_FLAG_PRIO, 0xe000, 0, fade)
 			
 		}
 	}
