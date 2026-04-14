@@ -145,6 +145,7 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 		}
 		
 		if (mt.dez1laser)
+		{
 			// DEZ1 Laser
 			if (objA0.update_address == 0x07ea3c)
 			{
@@ -186,6 +187,7 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 
 				return true
 			}
+		}
 		
 		// Hyper Dash Stars
 		if (objA0.update_address == 0x019874 && mt.esustars)
@@ -593,7 +595,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		// Super Stars
 		if (objA0.update_address == 0x0191a4)
 		{
-			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 0xff - 0x18 * (objA0.animation.sprite - 1))
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 0xff - 0x18 * objA0.animation.sprite)
 			
 			return true
 		}
@@ -601,7 +603,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		// DDZ Super Stars
 		if (objA0.update_address == 0x082452)
 		{
-			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 0xff - 0x18 * (objA0.animation.sprite - 1))
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 0xff - 0x18 * objA0.animation.sprite)
 			
 			return true
 		}
@@ -622,7 +624,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 			if (mt.esustars && Renderer.hasCustomSprite(stringformat("esu_smallhyper_%d", objA0.animation.sprite)))
 				return true
 				
-			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 0xff - 0x18 * (objA0.animation.sprite - 1))
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 0xff - 0x20 * objA0.animation.sprite)
 			
 			return true
 		}
