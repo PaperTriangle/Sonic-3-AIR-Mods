@@ -4,7 +4,6 @@ global bool orts.wave
 global bool orts.crash_sound
 global bool orts.bypass_menu
 global bool orts.oldschool_codes
-global bool orts.no_skip_cutscene
 global bool orts.no_demo
 
 global u8 orts.flash
@@ -855,13 +854,4 @@ function void yieldExecution()
 	}
 	
 	base.yieldExecution()
-}
-
-function void Game.startSkippableCutscene()
-{
-	if (orts.no_skip_cutscene)
-		return
-		
-	base.Game.startSkippableCutscene()
-
 }

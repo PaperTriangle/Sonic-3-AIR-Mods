@@ -3,6 +3,9 @@ A collection of PaperTriangle's Sonic 3 A.I.R. Mods both in progress and release
 
 **PLEASE NOTE:** I will only build compatibility with mods that I actually use on a regular basis. For most mods where compatibility would be required I have added functions in my mods so other modders can build compatibility into their own mods, or as seperate mods. Please do not feel offended if I reject a request for compatibility, but I just do not want to have to keep up a high level of maintenance when other mods update and change.
 
+## Absolute Cinema
+Prevents pausing during cutscenes, removes the HUD more often during cutscenes & can also prevent cutscene skipping.
+
 ## Alternate LBZ2 Cutscene
 Converts the LBZ2 Ending scene after beating Big Arm to me a bit more like Origins.
 

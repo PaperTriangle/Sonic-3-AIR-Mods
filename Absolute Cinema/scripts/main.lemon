@@ -1,0 +1,472 @@
+//------------------//
+// Pause Prevention //
+//------------------//
+
+global bool ac.prevent
+global bool ac.hidehud
+global bool ac.skip
+
+global bool ac.no_pause
+global bool ac.no_hud
+global u8 ac.check_act
+global bool ac.fullhide
+
+// Prevent fast forward skipping
+function void Game.startSkippableCutscene()
+{
+	if (!ac.skip)
+		return
+		
+	base.Game.startSkippableCutscene()
+}
+
+// Prevent Knuckles' Intro Skip
+//# address-hook(0x063682) end(0x063692)
+function void fn063682()
+{
+	if !ac.skip && ((control.pad1.pressed & CONTROL_START) || (control.pad2.pressed & CONTROL_START))
+		return
+		
+	base.fn063682()
+}
+
+function bool GamePause.BeginPause()
+{
+	if !ac.skip && (global.game_mode == 0x0c && isSonicIntro() && global.level_started == 0)
+		return true
+
+	// Enter game pause
+	return base.GamePause.BeginPause()
+}
+
+// Actually stop the Pause function.
+//# address-hook(0x0013e4) end(0x0014e4)
+function void UpdateGamePause()
+{
+	if ac.prevent && (ac.no_pause || (u8[0xffffb000 + 0x20] == char.state.DIED || u8[0xffffb000 + 0x20] == char.state.DROWNED || u8[0xffffb000 + 0x20] == char.state.DIED_GREY) || global.zone == 0x0d)
+	{
+		global.game.paused = false
+		return
+	}
+
+	base.UpdateGamePause()
+}
+
+// Results Screen stops pausing.
+//# address-hook(0x02dae6) end(0x02dbc8)
+function void fn02dae6()
+{
+	if (!(global.zone_act == 0x1600 || global.zone_act == 0x0800 || global.zone_act == 0x0b00 || global.zone_act == 0x0a00) && global.act.apparent == 0)
+	{
+		// Any Act 1
+		ac.check_act = 1
+	}
+	else
+	{
+		// Any Act 2, incl. Lava Reef Boss Act and Sky Sanctuary Zone
+		ac.check_act = 2
+	}
+	
+	ac.no_pause = 1
+	
+	base.fn02dae6()
+}
+
+// Restore at title screen.
+//# address-hook(0x003af0) end(0x003b12)
+function void Menu.FadeInAfterInit()
+{
+	ac.no_pause = 0
+	ac.no_hud = 0
+	ac.check_act = 0
+	base.Menu.FadeInAfterInit()
+}
+
+// Restore Pause ability at start of level.
+function void Standalone.onLevelStart()
+{
+	ac.no_pause = 0
+	
+	base.Standalone.onLevelStart()
+}
+
+// In case the player dies in the cutscene...
+function void Standalone.onDeath()
+{
+	ac.no_pause = 0
+	
+	base.Standalone.onDeath()
+}
+
+// Restart from Pause Menu.
+function void Standalone.onRestartAtCheckpoint()
+{
+	ac.no_pause = 0
+	
+	base.Standalone.onRestartAtCheckpoint()
+}
+
+// Special logic if Act 2 to prevent pause longer.
+//# address-hook(0x02dcca)
+function void LevelResults.AdvanceToNextAct()
+{
+	// I need to do this for Knux's CNZ2 for some reason...
+	if (objA0.countdown_value > 0)
+		level.wait_for_results = 0xff
+
+	if ac.check_act == 2
+		ac.check_act = 3
+		
+	base.LevelResults.AdvanceToNextAct()
+}
+
+// Adjust pause state based on Act and remove HUD
+//# post-update-hook
+function void PostFrameUpdate()
+{
+	if (!ac.no_pause)
+	{
+		ac.no_hud = 0
+		ac.fullhide = 0
+		ac.check_act = 0
+	}
+		
+	if (ac.check_act == 3 && ac.no_pause && !level.wait_for_results)
+	{
+		ac.no_hud = 1
+		ac.check_act = 0
+	}
+	else if (ac.check_act == 1 && ac.no_pause && !level.wait_for_results)
+	{
+		ac.no_pause = 0
+		ac.check_act = 0
+	}
+
+	if (ac.hidehud && ac.no_hud)
+	{
+		if (ac.fullhide)
+		{
+			global.level_started = -0x7f
+		}
+		else
+		{
+			if (global.level_started > -0x70)
+				global.level_started -= 0x10
+				
+			if (global.level_started < -0x70)
+				ac.fullhide = 1
+		}
+	}
+	
+	base.PostFrameUpdate()
+}
+
+// AIZ1 Sonic Intro
+//# address-hook(0x0674ac) end(0x067512)
+function void fn0674ac()
+{
+	ac.no_pause = 1
+	
+	base.fn0674ac()
+}
+
+//# address-hook(0x02d690) end(0x02d69a)
+function void TitleCard.Update()
+{
+	if (global.zone_act == 0x0000)
+		ac.no_pause = 0
+		
+	base.TitleCard.Update()
+}
+
+// AIZ1 Knuckles Intro
+//# address-hook(0x0634ca) end(0x063524)
+function void fn0634ca()
+{
+	ac.no_pause = 1
+	
+	base.fn0634ca()
+}
+
+//# address-hook(0x063466) end(0x063480)
+function void fn063466()
+{
+	if (ac.no_pause == 1)
+	{
+		// Start button pressed?
+		if (control.pad1.pressed & CONTROL_START)
+		{
+			if (!GamePause.BeginPause())
+				return
+
+			global.game.paused = true
+			global.frame_state = 0x10
+
+			GamePause.Menu()
+
+			Standalone.onResumeAfterPause()
+			global.game.paused = false
+		}
+	
+		control.pad1.pressed &= ~CONTROL_START
+		control.pad2.pressed &= ~CONTROL_START
+	}
+	
+	base.fn063466()
+}
+
+#if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
+// AIZ1 Intro ECF
+function void ECF_introMusicAndTitlecardStuff()
+{
+	if (global.zone_act == 0x0000 && checkpoint.number == 0)
+		ac.no_pause = 1
+
+	base.ECF_introMusicAndTitlecardStuff()
+}
+#endif
+
+// AIZ1 Bombing Cutscene
+//# address-hook(0x068556) end(0x068572)
+function void fn068556()
+{
+	ac.no_pause = 1
+	ac.no_hud = 1
+	
+	base.fn068556()
+}
+
+//# address-hook(0x0500da) end(0x0500da)
+function void fn0500da()
+{
+	ac.no_pause = 0
+	
+	base.fn0500da()
+}
+
+// HCZ Knuckles
+//# address-hook(0x062194) end(0x0621d4)
+function void fn062194()
+{
+	if (u16[0xffffb000 + 0x10] >= 0x3990 && u8[0xffffb000 + 0x2e] == 0 && u8[0xffffb000 + 0x2a] & char.flag.ON_OBJECT)
+	{
+		ac.no_pause = 1
+		ac.no_hud = 1
+	}
+
+	base.fn062194()
+}
+
+//# address-hook(0x062242) end(0x06227a)
+function void fn062242()
+{
+	if !(objA0.render_flags & render_flag.VISIBLE)
+		ac.no_pause = 0
+	
+	base.fn062242()
+}	
+
+// CNZ2 Knuckles Cutscene Lights
+//# address-hook(0x062332) end(0x062338)
+function void fn062332()
+{
+	if (!Game.isTimeAttack() && !isMainCharacter(CHARACTER_KNUCKLES))
+	{
+		ac.no_pause = 1
+		ac.no_hud = 1
+	}
+		
+	base.fn062332()
+}
+
+//# address-hook(0x062458) end(0x06247a)
+function void fn062458()
+{
+	if (u8[0xffff0000 + u16[A0 + 0x46] + 0x2a] & 0x80)
+		ac.no_pause = 0
+	
+	base.fn062458()
+}
+
+// CNZ2 Knuckles Cutscene Boss
+//# address-hook(0x0624de) end(0x0624ec)
+function void fn0624de()
+{
+	if (!Game.isTimeAttack() && !isMainCharacter(CHARACTER_KNUCKLES))
+	{
+		ac.no_pause = 1
+		ac.no_hud = 1
+	}
+		
+	base.fn0624de()
+}
+
+//# address-hook(0x06261a) end(0x06263a)
+function void fn06261a()
+{
+	if (camera.position.y.u16 + 0x0160 < objA0.position.y.u16)
+		ac.no_pause = 0
+
+	base.fn06261a()
+}
+
+// LBZ1 Knuckles Cutscene
+//# address-hook(0x0626b2) end(0x0626d4)
+function void fn0626b2()
+{
+	if ((objA0.flags38 & 0x08) != 0)
+	{
+		ac.no_pause = 1
+		ac.no_hud = 1
+	}
+	
+	base.fn0626b2()
+}
+
+//# address-hook(0x062778) end(0x0627c0)
+function void fn062778()
+{
+	if (objA0.render_flags & render_flag.VISIBLE)
+		ac.no_pause = 0
+	
+	base.fn062778()
+}
+
+//LBZ2 Egg Mobile Cutscene
+//# address-hook(0x08d2b6) end(0x08d33e)
+function void fn08d2b6()
+{
+	if (u8[A0 + 0x29] != 0) && (u8[A0 + 0x29] != 2)
+	{
+		ac.no_pause = 1
+		ac.no_hud = 1
+	}
+	
+	base.fn08d2b6()
+}
+
+//# address-hook(0x08d47c) end(0x08d4c6)
+function void fn08d47c()
+{
+	base.fn08d47c()
+
+	if (objA0.position.x.u16 >= 0x4440)
+		ac.no_pause = 0
+}
+
+// MHZ1 Knuckles Cutscene
+//# address-hook(0x062cf8) end(0x062d28)
+function void fn062cf8()
+{
+	if (objA1.position.x.u16 >= 0x0389)
+	{
+		ac.no_pause = 1
+		ac.no_hud = 1
+	}
+	
+	base.fn062cf8()
+}
+
+//# address-hook(0x062d70) end(0x062da6)
+function void fn062d70()
+{
+	ac.no_pause = 0
+		
+	base.fn062d70()
+}
+
+// MHZ2 Knuckles Cutscene
+//# address-hook(0x063170) end(0x0631a2)
+function void fn063170()
+{
+	ac.no_pause = 1
+	ac.no_hud = 1
+	
+	base.fn063170()
+}
+
+//# address-hook(0x0633d6) end(0x063440)
+function void fn0633d6()
+{
+	ac.no_pause = 0
+	
+	base.fn0633d6()
+}
+
+// SOZ1 Act End (Only restoring at Act 2 logic)
+//# address-hook(0x056324)
+function void fn056324()
+{
+	if (s16(level.display_routine) == 0)
+		ac.no_pause = 0
+		
+	base.fn056324()
+}
+
+// LRZ Knuckles Cutscene
+//# address-hook(0x063b9c) end(0x063bbc)
+function void fn063b9c()
+{
+	if (u16[0xffffb000 + 0x10] >= 0x39b0)
+	{
+		ac.no_pause = 1
+		ac.no_hud = 1
+	}
+
+	base.fn063b9c()
+}
+
+//# address-hook(0x063c14) end(0x063c38)
+function void fn063c14()
+{
+	if (u16[0xffffb000 + 0x14] >= 0x04c0)
+		ac.no_pause = 0
+	
+	base.fn063c14()
+}
+
+// HPZ Emerald Theft Cutscene
+//# address-hook(0x064ca6) end(0x064d14)
+function void fn064ca6()
+{
+	ac.no_pause = 1
+	ac.no_hud = 1
+	
+	base.fn064ca6()
+}
+
+// SSZ Egg Robo Claw Cutscene
+//# address-hook(0x07ce1e) end(0x07ce3e)
+function void fn07ce1e()
+{
+	ac.no_pause = 1
+	ac.no_hud = 1
+	
+	base.fn07ce1e()
+}
+
+//# address-hook(0x07ccb0) end(0x07ccf8)
+function void fn07ccb0()
+{
+	if (objA0.countdown_value = 1) || (Mods.isModActive("Time Consistent Adventure") && System.getGlobalVariableValueByName("tca.ssz_knux_csfix"))
+		ac.no_pause = 0
+
+	base.fn07ccb0()
+}
+
+// SSZ Knuckles Credits
+//# address-hook(0x05e70e) end(0x05e804)
+function void fn05e70e()
+{
+	ac.no_pause = 1
+	base.fn05e70e()
+}
+
+// DEZ1 Act End (Only restoring at Act 2 logic)
+//# address-hook(0x07e4a2) end(0x07e4c8)
+function void fn07e4a2()
+{
+	ac.no_pause = 0
+	
+	base.fn07e4a2()
+}

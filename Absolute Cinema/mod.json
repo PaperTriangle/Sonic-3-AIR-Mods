@@ -1,0 +1,100 @@
+{
+	"Metadata":
+	{
+		"Name": "Absolute Cinema",
+		"UniqueID": "absolute-cinema",
+		"Author": "PaperTriangle",
+		"Description": "Options to prevent the player from pausing in the more cinematic moments and also remove the HUD.",
+		"ModVersion": "1.0"
+	},
+	"OtherMods":
+	{
+		"Origins AIZ Intros":
+		{
+			"DisplayName": "Origins AIZ Intros",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		},
+		"extra-slot-project-amy":
+		{
+			"DisplayName": "Extra Slot Amy",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		},
+		"extra-slot-project-ray":
+		{
+			"DisplayName": "Extra Slot Ray",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		},
+		"extra-slot-project-mighty":
+		{
+			"DisplayName": "Extra Slot Mighty",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		},
+		"es-3d2d-shadow":
+		{
+			"DisplayName": "Extra Slot 3D in 2D Shadow",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		},
+		"juwl-ecc-mighty":
+		{
+			"DisplayName": "Juwl Mighty",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		},
+		"juwl-ecc-ray":
+		{
+			"DisplayName": "Juwl Ray",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		},
+		"juwl-ecc-amy":
+		{
+			"DisplayName": "Juwl Amy",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		}
+	},
+	"Settings":
+	{
+		"List":
+		[
+			{
+				"InternalName": "ac.prevent",
+				"DisplayName": "Pause Prevention",
+				"Variable": "ac.prevent",
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "ac.hidehud",
+				"DisplayName": "Hide HUD In Some Cutscenes",
+				"Variable": "ac.hidehud",
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "ac.skip",
+				"DisplayName": "Skippable Cutscenes",
+				"Variable": "ac.skip",
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			}
+		]
+	}
+}

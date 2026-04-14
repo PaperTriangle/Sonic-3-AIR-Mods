@@ -5,7 +5,7 @@
 		"UniqueID": "origins-resolution-title-screen",
 		"Author": "PaperTriangle",
 		"Description": "Simple intro and titlescreen mod to work with Origins Screen Resolution.",
-		"ModVersion": "1.0"
+		"ModVersion": "1.1"
 	},
 	"OtherMods":
 	{
@@ -97,17 +97,6 @@
 				"InternalName": "orts.oldschool_codes",
 				"DisplayName": "Original Cheat Codes",
 				"Variable": "orts.oldschool_codes",
-				"DefaultValue": "0",
-				"Options":
-				{
-					"0": "Disabled",
-					"1": "Enabled"
-				}
-			},
-			{
-				"InternalName": "orts.no_skip_cutscene",
-				"DisplayName": "Prevent Cutscene Skipping",
-				"Variable": "orts.no_skip_cutscene",
 				"DefaultValue": "0",
 				"Options":
 				{
