@@ -5,6 +5,7 @@
 global bool ac.prevent
 global bool ac.hidehud
 global bool ac.skip
+global bool ac.altlbz2
 
 global bool ac.no_pause
 global bool ac.no_hud
@@ -351,6 +352,19 @@ function void fn08d47c()
 
 	if (objA0.position.x.u16 >= 0x4440)
 		ac.no_pause = 0
+}
+
+// LBZ2 Alternate LBZ2 Cutscene Compat
+//# address-hook(0x072b46) end(0x072b94)
+function void fn072b46()
+{
+	if Mods.isModActive("Alternate LBZ2 Cutscene")
+		ac.no_pause = 1
+
+	if (ac.altlbz2 && Mods.isModActive("Alternate LBZ2 Cutscene"))
+		ac.no_hud = 1
+	
+	base.fn072b46()
 }
 
 // MHZ1 Knuckles Cutscene

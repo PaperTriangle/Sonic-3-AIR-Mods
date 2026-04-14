@@ -242,7 +242,7 @@ function void fn072e2e()
 	
 	Game.startSkippableCutscene()
 	
-	if (altlbz2cs.removehud)
+	if (altlbz2cs.removehud) && !(Mods.isModActive("Absolute Cinema") && System.getGlobalVariableValueByName("ac.hidehud"))
 	{
 		if (altlbz2cs.dangerhud == 0)
 		{
