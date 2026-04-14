@@ -191,7 +191,7 @@ function void fn0634ca()
 //# address-hook(0x063466) end(0x063480)
 function void fn063466()
 {
-	if (ac.no_pause == 1)
+	if !ac.skip && (ac.no_pause == 1)
 	{
 		// Start button pressed?
 		if !ac.prevent && (control.pad1.pressed & CONTROL_START)
