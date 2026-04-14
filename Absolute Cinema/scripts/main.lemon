@@ -194,13 +194,12 @@ function void fn063466()
 	if (ac.no_pause == 1)
 	{
 		// Start button pressed?
-		if (control.pad1.pressed & CONTROL_START)
+		if !ac.prevent && (control.pad1.pressed & CONTROL_START)
 		{
 			if (!GamePause.BeginPause())
 				return
 
 			global.game.paused = true
-			global.frame_state = 0x10
 
 			GamePause.Menu()
 
