@@ -5,7 +5,7 @@ global bool mt.bubbleshield
 global bool mt.lightningshield
 global bool mt.stars
 
-global bool mt.watersurface
+global u8 mt.watersurface
 global bool mt.snowfall
 global u8 mt.clouds
 
@@ -874,7 +874,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		return true
 	}
 	
-	if (mt.watersurface)
+	if (mt.watersurface == 2)
 	{
 		if (objA0.update_address == 0x018b3e && objA0.state == 0x01 && objA0.animation.sprite > 0)
 		{
@@ -1321,7 +1321,7 @@ function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 in
 		return true
 	}
 	
-	if (mt.watersurface)
+	if (mt.watersurface == 2)
 	{
 		// HCZ water waves effect
 		if (objA0.update_address == 0x01f244)
@@ -1346,7 +1346,8 @@ function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 in
 			return true
 		}
 	}
-	else
+	
+	if (!mt.watersurface)
 	{
 		if (objA0.update_address == 0x01f244)
 		{

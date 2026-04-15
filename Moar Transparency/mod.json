@@ -5,7 +5,7 @@
 		"UniqueID": "moar-transparency",
 		"Author": "PaperTriangle",
 		"Description": "Adds varying levels of transparency to more objects! Credit to Useott and Raine for some code that was adapted from A.I.R. Freshener.",
-		"ModVersion": "2.0"
+		"ModVersion": "2.1"
 	},
 	"OtherMods": {
 		"time-consistent-adventure":
@@ -239,7 +239,8 @@
 				"Options":
 				{
 					"0": "Disabled",
-					"1": "Enabled"
+					"1": "Default A.I.R.",
+					"2": "Enabled"
 				}
 			},
 			{
