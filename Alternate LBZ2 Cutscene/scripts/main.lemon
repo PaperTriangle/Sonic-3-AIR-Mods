@@ -681,7 +681,7 @@ function void fn073056()
 	
 	// Wait for Robotnik to leave the screen to the top
 	D0.u16 = objA0.position.y.u16 - 1
-	D1.u16 = camera.position.y.u16 - 0x50
+	D1.u16 = camera.position.y.u16 - 0x50 + (getScreenHeight() - 224)/2
 	if (D0.u16 >= D1.u16)
 	{
 		objA0.position.y.u16 = D0.u16
@@ -857,7 +857,15 @@ global bool altlbz2cs.behind
 function void fn07432a()
 {
 	altlbz2cs.behind = true
+	
+	// Also push camera position here temporarily to account for screen height difference.
+	if (Mods.isModActive("Origins Screen Resolution"))
+		camera.position.y.u16 -= (getScreenHeight() - 224)/2
+	
 	base.fn07432a()
+	
+	if (Mods.isModActive("Origins Screen Resolution"))
+		camera.position.y.u16 += (getScreenHeight() - 224)/2
 	
 }
 
@@ -1160,6 +1168,45 @@ function void fn0745e2()
 	objA0.countdown_value = 0x03
 
 	playSound(0x61)
+}
+
+// Push camera position here temporarily to account for screen height difference.
+//# address-hook(0x074f24) end(0x074f70)
+function void fn074f24()
+{
+	if (Mods.isModActive("Origins Screen Resolution"))
+		camera.position.y.u16 -= (getScreenHeight() - 224)/2
+	
+	base.fn074f24()
+	
+	if (Mods.isModActive("Origins Screen Resolution"))
+		camera.position.y.u16 += (getScreenHeight() - 224)/2
+}
+
+// Push camera foreground position here temporarily to account for screen height difference.
+//# address-hook(0x074456) end(0x074478)
+function void fn074456()
+{
+	if (Mods.isModActive("Origins Screen Resolution"))
+		camera.foreground.y.u16 -= (getScreenHeight() - 224)/2
+	
+	base.fn074456()
+	
+	if (Mods.isModActive("Origins Screen Resolution"))
+		camera.foreground.y.u16 += (getScreenHeight() - 224)/2
+}
+
+// Push camera foreground position here temporarily to account for screen height difference.
+//# address-hook(0x0744a4) end(0x0744e2)
+function void fn0744a4()
+{
+	if (Mods.isModActive("Origins Screen Resolution"))
+		camera.foreground.y.u16 -= (getScreenHeight() - 224)/2
+	
+	base.fn0744a4()
+	
+	if (Mods.isModActive("Origins Screen Resolution"))
+		camera.foreground.y.u16 += (getScreenHeight() - 224)/2
 }
 
 // LBZ2 to MHZ1 Transition Compat
