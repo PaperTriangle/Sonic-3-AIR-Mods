@@ -1,8 +1,10 @@
 global bool bb.monkeysmooth
+global bool bb.monkeydude
 global bool bb.turbospiker
 global bool bb.ribit
 global bool bb.skorp
 global bool bb.dragonfly
+global bool bb.madmole
 global bool bb.spikebonker
 global u8 bb.cutsceneadjust
 global bool bb.cutsceneadjust2
@@ -39,7 +41,7 @@ function void BB.SpawnPart(s16 speed.x, s16 speed.y, u8 part, u8 index)
 
 		objA1.state = part												// What badnik part?
 		objA1.animation.sprite = index									// What sprite index? Use 0 if not needed.
-		objA0.flags38 = 2												// We will use this for flashing
+		objA1.flags38 = 2												// We will use this for flashing
 
 	}
 }
@@ -63,7 +65,7 @@ function void BB.SpawnPart(s16 speed.x, s16 speed.y, u8 part, u8 index, s16 offs
 
 		objA1.state = part												// What badnik part?
 		objA1.animation.sprite = index									// What sprite index? Use 0 if not needed.
-		objA0.flags38 = 2												// We will use this for flashing
+		objA1.flags38 = 2												// We will use this for flashing
 
 	}
 }
@@ -195,12 +197,26 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 				return true
 			}
 		}
+		else if (objA0.state == 12)																	// Madmole
+		{
+			key = BB.customBadniks() ? "turbo_spiker_rocket" : "madmole_mushroom"
+			flags |=  SPRITE_FLAG_PRIO
+			if (objA0.animation.sprite == (BB.customBadniks() ? 1 : 0))
+				flags |= SPRITE_FLAG_FLIP_X
+			
+			objA0.animation.frame += 0x20
+		}
+		else if (objA0.state == 13)																	// Monkeydude
+		{
+			key = BB.customBadniks() ? "turbo_spiker_rocket" : "monkeydude_coconut"
+			flags |=  SPRITE_FLAG_PRIO
+		}
 		else
 		{
 			return true
 		}
 		
-		Renderer.drawCustomSprite(key, px, py, 0x00, flags, rq, 0x00, 0xff)						// High priority and renderQueue, to appear above most other things.
+		Renderer.drawCustomSprite(key, px, py, 0x00, flags, rq, objA0.state == 12 ? objA0.animation.frame - 0x20 : 0x00, 0xff)						// High priority and renderQueue, to appear above most other things.
 		return true																					// Make sure to return after!
 	}
 	else if BB.customBadniks() && (objA0.update_address == 0x204300)
@@ -526,9 +542,94 @@ function void BB.BreakDragonfly()
 	}
 }
 
+//----------//
+// Mad Mole //
+//----------//
+
+//# address-hook(0x00ffd4) end(0x010214)
+function void Character.OnCollisionWithDynamicObject()
+{
+	if (!bb.madmole || global.zone != 0x07)
+	{
+		base.Character.OnCollisionWithDynamicObject()
+		return
+	}
+	
+	bool mole_flags
+	u32 mole_address
+	if (objA1.update_address == addressof(Madmole.BaseUpdate) && (objA1.base_state & 0x06 && u32[A1 + 0x30] != 0x08d9dd))
+	{
+		mole_address = objA1.update_address
+		mole_flags = objA1.render_flags & render_flag.FLIP_X
+	}
+	
+	base.Character.OnCollisionWithDynamicObject()
+	
+	if mole_address
+	{
+		if (objA1.update_address == addressof(SmallExplosion.BaseUpdate))
+		{
+			u32 A1_backup = A1
+			u32 A0_backup = A0
+			BB.SpawnPart(mole_flags ? System.rand() % 0x100 * -1 - 0x200 : System.rand() % 0x100 + 0x200 , System.rand() % 0x200 * -1 - 0x300, 0x0c, mole_flags ? 1 : 0, mole_flags ? -14 : 14, -12)
+			A1 = A1_backup
+			A0 = A0_backup
+		}
+			
+		mole_address = 0
+	}
+}
+
+
 //------------
 // Monkey Dude
 //------------
+
+// Broken Bit
+
+//# address-hook(0x08744c) end(0x08745e)
+function void fn08744c()
+{
+	if (!bb.monkeydude)
+	{
+		base.fn08744c()
+		return
+	}
+	
+	fn087518()
+
+#if STANDALONE
+	// Fix for the coconut palette before it's thrown, #contributed by Legobouwer
+	objA0.sprite_attributes = 0x0548
+	if (objA0.animation.sprite != 6)
+		objA0.sprite_attributes |= sprite_attribute.PALETTE.LINE1
+#endif
+
+	// Targets:
+	//  - 0x087468	-> objA0.base_state = 0x00
+	//  - 0x087472	-> objA0.base_state = 0x02
+	call tableLookupAddress(0x087462, objA0.base_state)
+
+	BB.BreakMonkeydude()
+}
+
+function void BB.BreakMonkeydude()
+{
+	A1 = 0xffff0000 + u16[A0 + 0x46]
+	if (u8[A1 + 0x2a] & 0x80)
+	{
+		if (objA0.animation.sprite == 6)
+			BB.SpawnPart(System.rand() & 1 ? System.rand() % 0x180 * -1 - 0x80 : System.rand() % 0x180 + 0x80 , System.rand() % 0x100 * -1 - 0x200, 0x0d, 0)
+		
+		Object.TriggerUnloading()
+	}
+	else
+	{
+		DrawObject()
+	}
+}
+
+// Movement
 
 //# address-hook(0x0871da) end(0x087246)
 function void fn0871da()
