@@ -1692,6 +1692,26 @@ function void fn08cf1e()
 	}
 }
 
+//# address-hook(0x08cdf2) end(0x08ce30)
+function void fn08cdf2()
+{
+	A1 = 0xffffb000
+	CheckDistanceToObjectA1()
+	if (D2.u16 < 0x70 && (!Mods.isModActive("Origins Screen Resolution") || camera.position.x.u16 >= 0x3da0))
+	{
+		objA0.update_address = addressof(Object.CountdownAndTrigger)
+		move_area.left = 0x3da0
+		objA0.countdown_value = 0x1f
+		objA0.countdown_callback = 0x08cd9c
+	}
+
+	D0.u16 = (objA0.position.x.u16 & 0xff80) - level.despawn_position.x
+	if (D0.u16 > (0x0280 + (ort.spawnfix ? 0x80 : 0)))
+	{
+		Enemy.UnloadDelayed()
+	}
+}
+
 //-----//
 // MVZ //
 //-----//
