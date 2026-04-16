@@ -102,6 +102,17 @@
 				}
 			},
 			{
+				"InternalName": "ac.lbz1fix",
+				"DisplayName": "Fix LBZ1 Collapse Cutscene",
+				"Variable": "ac.lbz1fix",
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
 				"InternalName": "ac.altlbz2",
 				"DisplayName": "Early Alt LBZ2 Cutscene",
 				"Variable": "ac.altlbz2",

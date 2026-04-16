@@ -6,6 +6,7 @@ global bool ac.prevent
 global bool ac.hidehud
 global bool ac.skip
 global bool ac.altlbz2
+global bool ac.lbz1fix
 
 global bool ac.no_pause
 global bool ac.no_hud
@@ -323,13 +324,62 @@ function void fn0626b2()
 	base.fn0626b2()
 }
 
-//# address-hook(0x062778) end(0x0627c0)
-function void fn062778()
+//# address-hook(0x08cc84) end(0x08ccae)
+function void fn08cc84()
 {
-	if (objA0.render_flags & render_flag.VISIBLE)
+	if (u16[0xffffeec4] == 0)
 		ac.no_pause = 0
+		
+	base.fn08cc84()
+}
+
+// Move LBZ1 Boss Checkpoint
+function void LevelObjectTableBuilder.addObject(u16 px, u16 py, u8 type, u8 subtype, u8 flags)
+{
+	if (ac.lbz1fix && global.zone_act == 0x0600 && Game.getSetting(SETTING_LEVELLAYOUTS) != 0 && getScreenExtend() * 2 < 0xf4)
+	{
+		if (px == 0x3cc0 && py == 0x01e8)
+			return
+		else if (px == 0x3db4 && py == 0x07a0)
+		{
+			base.LevelObjectTableBuilder.addObject(0x3cc0 + getScreenExtend() * 2, 0x01e8, OBJECTTABLE1_34, 0x05, 0)
+			base.LevelObjectTableBuilder.addObject(px, py, type, subtype, flags)
+			return
+		}
+	}
 	
-	base.fn062778()
+	base.LevelObjectTableBuilder.addObject(px, py, type, subtype, flags)
+}
+
+function void LevelRingsTableBuilder.addRing(u16 px, u16 py)
+{
+	if (ac.lbz1fix && global.zone_act == 0x0600 && Game.getSetting(SETTING_LEVELLAYOUTS) != 0 && getScreenExtend() * 2 < 0xf4 && px >= 0x3ca0 && px <= 0x3d00)
+	{
+		base.LevelRingsTableBuilder.addRing(px + getScreenExtend() * 2, py)
+		return
+	}
+
+	base.LevelRingsTableBuilder.addRing(px, py)
+}
+
+//# address-hook(0x085b30) end(0x085b3e)
+function void fn085b30()
+{
+	if ac.lbz1fix && (global.zone_act == 0x0600 && camera.position.y.u16 + getScreenHeight()/2 < 0x0300)
+	{
+		if (camera.position.x.u16 + getScreenWidth()/2 >= 0x3d80) || (camera.position.x.u16 + getScreenWidth()/2 < 0x3c10)
+		{
+			playMusic(MUSIC_CTRL_FADEOUT)
+			
+			Kosinski.addToDMAQueue(0x37567a, 0x8ac0)	// Miniboss containment box, we load it here because messed up gfx.
+
+			objA0.countdown_value = 90
+			objA0.update_address = 0x085b44
+			fn085b44()
+		}
+	}
+	else
+		base.fn085b30()
 }
 
 //LBZ2 Egg Mobile Cutscene
