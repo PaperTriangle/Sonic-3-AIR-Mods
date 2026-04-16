@@ -13,7 +13,7 @@
 		{
 			"DisplayName": "Extra Slot 3D in 2D Shadow",
 			"IsRequired": "0",
-			"Priority": "Higher"
+			"Priority": "Lower"
 		},
 		"thorn-originsresolution":
 		{
