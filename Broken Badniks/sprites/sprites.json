@@ -16,5 +16,7 @@
 	"emerald_claw_1":  { "File": "emerald_claw.bmp", "Rect": "0,0,16,39", "Center": "14,14" },
 	"emerald_claw_2":  { "File": "emerald_claw.bmp", "Rect": "16,0,15,39", "Center": "-2,14" },
 	"madmole_mushroom":  { "File": "madmole_mushroom.bmp", "Rect": "0,0,22,22", "Center": "11,11" },
-	"monkeydude_coconut":  { "File": "monkeydude_coconut.bmp", "Center": "6,8" }
+	"monkeydude_coconut":  { "File": "monkeydude_coconut.bmp", "Center": "6,8" },
+	"monkeydude_hand":  { "File": "monkeydude_hand.bmp", "Center": "4,4" },
+	"monkeydude_joint":  { "File": "monkeydude_joint.bmp", "Center": "4,4" }
 }

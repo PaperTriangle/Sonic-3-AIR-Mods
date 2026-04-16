@@ -199,7 +199,7 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 		}
 		else if (objA0.state == 12)																	// Madmole
 		{
-			key = BB.customBadniks() ? "turbo_spiker_rocket" : "madmole_mushroom"
+			key = BB.customBadniks() ? "madmole_mushroom_0" : "madmole_mushroom"
 			flags |=  SPRITE_FLAG_PRIO
 			if (objA0.animation.sprite == (BB.customBadniks() ? 1 : 0))
 				flags |= SPRITE_FLAG_FLIP_X
@@ -208,7 +208,15 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 		}
 		else if (objA0.state == 13)																	// Monkeydude
 		{
-			key = BB.customBadniks() ? "turbo_spiker_rocket" : "monkeydude_coconut"
+			key = BB.customBadniks() ? "bullet_6" : "monkeydude_coconut"
+			flags |=  SPRITE_FLAG_PRIO
+		}
+		else if (objA0.state == 14)																	// Monkeydude
+		{
+			if (objA0.animation.sprite == 1)
+				key = BB.customBadniks() ? "monkey_dude_hand" : "monkeydude_hand"
+			else
+				key = BB.customBadniks() ? "monkey_dude_arm_circle" : "monkeydude_joint"
 			flags |=  SPRITE_FLAG_PRIO
 		}
 		else
@@ -587,6 +595,8 @@ function void Character.OnCollisionWithDynamicObject()
 
 // Broken Bit
 
+// Coconut
+
 //# address-hook(0x08744c) end(0x08745e)
 function void fn08744c()
 {
@@ -610,16 +620,74 @@ function void fn08744c()
 	//  - 0x087472	-> objA0.base_state = 0x02
 	call tableLookupAddress(0x087462, objA0.base_state)
 
-	BB.BreakMonkeydude()
+	BB.BreakMonkeydudeHand()
 }
 
-function void BB.BreakMonkeydude()
+function void BB.BreakMonkeydudeHand()
 {
 	A1 = 0xffff0000 + u16[A0 + 0x46]
 	if (u8[A1 + 0x2a] & 0x80)
 	{
 		if (objA0.animation.sprite == 6)
+		{
+			BB.SpawnPart(System.rand() & 1 ? System.rand() % 0x180 * -1 - 0x80 : System.rand() % 0x180 + 0x80 , System.rand() % 0x100 * -1 - 0x200, 0x0e, 1)
 			BB.SpawnPart(System.rand() & 1 ? System.rand() % 0x180 * -1 - 0x80 : System.rand() % 0x180 + 0x80 , System.rand() % 0x100 * -1 - 0x200, 0x0d, 0)
+		}
+		else
+			BB.SpawnPart(System.rand() & 1 ? System.rand() % 0x180 * -1 - 0x80 : System.rand() % 0x180 + 0x80 , System.rand() % 0x100 * -1 - 0x200, 0x0e, 1)
+		
+		Object.TriggerUnloading()
+	}
+	else
+	{
+		DrawObject()
+	}
+}
+
+//# address-hook(0x08741c) end(0x08742e)
+function void fn08741c()
+{
+	if (!bb.monkeydude)
+	{
+		base.fn08741c()
+		return
+	}
+	
+	fn087518()
+
+	// Targets:
+	//  - 0x087438	-> objA0.base_state = 0x00
+	//  - 0x087442	-> objA0.base_state = 0x02
+	//  - 0x08743e	-> objA0.base_state = 0x04
+	call tableLookupAddress(0x087432, objA0.base_state)
+
+	BB.BreakMonkeydude()
+}
+
+//# address-hook(0x0872cc) end(0x0872de)
+function void fn0872cc()
+{
+	fn087500()
+
+	// Targets:
+	//  - 0x0872ee	-> objA0.base_state = 0x00
+	//  - 0x08732a	-> objA0.base_state = 0x02
+	//  - 0x087382	-> objA0.base_state = 0x04
+	//  - 0x0873b4	-> objA0.base_state = 0x06
+	//  - 0x0873ea	-> objA0.base_state = 0x08
+	//  - 0x087330	-> objA0.base_state = 0x0a
+	call tableLookupAddress(0x0872e2, objA0.base_state)
+
+	BB.BreakMonkeydudeArm()
+}
+
+function void BB.BreakMonkeydudeArm()
+{
+	A1 = 0xffff0000 + u16[A0 + 0x46]
+	
+	if (u8[A1 + 0x2a] & 0x80)
+	{
+		BB.SpawnPart(System.rand() & 1 ? System.rand() % 0x180 * -1 - 0x80 : System.rand() % 0x180 + 0x80 , System.rand() % 0x100 * -1 - 0x200, 0x0e, 0)
 		
 		Object.TriggerUnloading()
 	}
