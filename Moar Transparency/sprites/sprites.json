@@ -191,4 +191,6 @@
 	
 	"cloud_large": { "File": "cloud_large.bmp"},
 	"cloud_small": { "File": "cloud_small.bmp"},
+	
+	"dark_sand": { "File": "dark_sand.png" }
 }

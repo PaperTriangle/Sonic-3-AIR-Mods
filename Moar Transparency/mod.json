@@ -235,11 +235,11 @@
 				"DisplayName": "Water Surface",
 				"Variable": "mt.watersurface",
 				"Category": "Effects",	
-				"DefaultValue": "1",
+				"DefaultValue": "2",
 				"Options":
 				{
 					"0": "Disabled",
-					"1": "Default A.I.R.",
+					"1": "Default (A.I.R.)",
 					"2": "Enabled"
 				}
 			},
@@ -267,6 +267,19 @@
 					"1": "Enabled (Dithered)",
 					"2": "Enabled (Dither Duplicate)",
 					"3": "Enabled (Custom Graphic)"
+				}
+			},
+			{
+				"InternalName": "mt.dark_sand",
+				"DisplayName": "SOZ Dark Death Sand",
+				"Variable": "mt.dark_sand",
+				"Category": "Effects",	
+				"DefaultValue": "3",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Default (A.I.R.)",
+					"2": "Enabled (Darkening)"
 				}
 			},
 			{

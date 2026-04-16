@@ -46,6 +46,7 @@ global bool mt.palettesource
 global bool mt.amyheart
 global bool mt.amytrail
 global bool mt.esustars
+global u8 mt.dark_sand
 
 global u8 dez_laser_val
 global bool ssz_s2_laser
@@ -2668,3 +2669,23 @@ function void SetupCharacterAtStartPosition()
 	
 	base.SetupCharacterAtStartPosition()
 }
+
+#if STANDALONE
+function void SOZ.drawDarkSandPit(u16 px, u16 py, u16 width)
+{
+	if (mt.dark_sand == 2)
+	{
+		for (u16 i = 0; i < width; i += 0x80)
+		{
+			SpriteHandle sandpit = Renderer.addSpriteHandle("dark_sand", px + i, py + 0x38, 0x8000)
+			sandpit.setFlags(SPRITE_FLAG_WORLDSPACE | SPRITE_FLAG_PRIO)
+			sandpit.setBlendMode(BlendMode.SUBTRACTIVE)
+		}
+		return
+	}
+	else if (!mt.dark_sand)
+		return
+	
+	base.SOZ.drawDarkSandPit(px, py, width)
+}
+#endif
