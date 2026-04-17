@@ -233,8 +233,11 @@ function void ECF_introMusicAndTitlecardStuff()
 //# address-hook(0x068556) end(0x068572)
 function void fn068556()
 {
-	ac.no_pause = 1
-	ac.no_hud = 1
+	if (global.zone_act == 0x0000)
+	{
+		ac.no_pause = 1
+		ac.no_hud = 1
+	}
 	
 	base.fn068556()
 }
