@@ -553,9 +553,10 @@ function void fn063170()
 //# address-hook(0x0633d6) end(0x063440)
 function void fn0633d6()
 {
-	ac.no_pause = 0
-	
 	base.fn0633d6()
+	
+	if (objA0.velocity.y >= 0)
+		ac.no_pause = 0
 }
 
 // SOZ1 Act End (Only restoring at Act 2 logic)
