@@ -201,7 +201,6 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 		else if (objA0.state == 12)																	// Madmole
 		{
 			key = BB.customBadniks() ? "madmole_mushroom_0" : "madmole_mushroom"
-			flags |=  SPRITE_FLAG_PRIO
 			if (objA0.animation.sprite == (BB.customBadniks() ? 1 : 0))
 				flags |= SPRITE_FLAG_FLIP_X
 			
@@ -210,7 +209,6 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 		else if (objA0.state == 13)																	// Monkeydude
 		{
 			key = BB.customBadniks() ? "bullet_6" : "monkeydude_coconut"
-			flags |=  SPRITE_FLAG_PRIO
 		}
 		else if (objA0.state == 14)																	// Monkeydude
 		{
@@ -218,7 +216,6 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 				key = BB.customBadniks() ? "monkey_dude_hand" : "monkeydude_hand"
 			else
 				key = BB.customBadniks() ? "monkey_dude_arm_circle" : "monkeydude_joint"
-			flags |=  SPRITE_FLAG_PRIO
 		}
 		else
 		{
@@ -726,11 +723,11 @@ function void BB.BreakMonkeydudeHand()
 	{
 		if (objA0.animation.sprite == 6)
 		{
-			BB.SpawnPart(System.rand() & 1 ? System.rand() % 0x180 * -1 - 0x80 : System.rand() % 0x180 + 0x80 , System.rand() % 0x100 * -1 - 0x200, 0x0e, 1)
-			BB.SpawnPart(System.rand() & 1 ? System.rand() % 0x180 * -1 - 0x80 : System.rand() % 0x180 + 0x80 , System.rand() % 0x100 * -1 - 0x200, 0x0d, 0)
+			BB.SpawnPart(System.rand() & 1 ? System.rand() % 0x80 * -1 - 0x80 : System.rand() % 0x80 + 0x80 , System.rand() % 0x100 * -1 - 0x200, 0x0d, 0)
+			BB.SpawnPart(System.rand() & 1 ? System.rand() % 0x80 * -1 - 0x80 : System.rand() % 0x80 + 0x80 , System.rand() % 0x100 * -1 - 0x200, 0x0e, 1)
 		}
 		else
-			BB.SpawnPart(System.rand() & 1 ? System.rand() % 0x180 * -1 - 0x80 : System.rand() % 0x180 + 0x80 , System.rand() % 0x100 * -1 - 0x200, 0x0e, 1)
+			BB.SpawnPart(System.rand() & 1 ? System.rand() % 0x80 * -1 - 0x80 : System.rand() % 0x80 + 0x80 , System.rand() % 0x100 * -1 - 0x200, 0x0e, 1)
 		
 		Object.TriggerUnloading()
 	}
@@ -783,7 +780,7 @@ function void BB.BreakMonkeydudeArm()
 	
 	if (u8[A1 + 0x2a] & 0x80)
 	{
-		BB.SpawnPart(System.rand() & 1 ? System.rand() % 0x180 * -1 - 0x80 : System.rand() % 0x180 + 0x80 , System.rand() % 0x100 * -1 - 0x200, 0x0e, 0)
+		BB.SpawnPart(System.rand() & 1 ? System.rand() % 0x80 * -1 - 0x80 : System.rand() % 0x80 + 0x80 , System.rand() % 0x100 * -1 - 0x200, 0x0e, 0)
 		
 		Object.TriggerUnloading()
 	}
