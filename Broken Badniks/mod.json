@@ -87,6 +87,18 @@
 				}
 			},
 			{
+				"InternalName": "bb.mushmeanie",
+				"DisplayName": "MHZ Mushmeanie",
+				"Variable": "bb.mushmeanie",
+				"Category": "Broken Bits",
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
 				"InternalName": "bb.skorp",
 				"DisplayName": "SOZ Skorp",
 				"Variable": "bb.skorp",
