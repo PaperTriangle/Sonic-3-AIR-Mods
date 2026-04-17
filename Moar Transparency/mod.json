@@ -274,7 +274,7 @@
 				"DisplayName": "SOZ Dark Death Sand",
 				"Variable": "mt.dark_sand",
 				"Category": "Effects",	
-				"DefaultValue": "3",
+				"DefaultValue": "1",
 				"Options":
 				{
 					"0": "Disabled",
