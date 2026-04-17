@@ -102,6 +102,28 @@
 				}
 			},
 			{
+				"InternalName": "ac.hcz",
+				"DisplayName": "HCZ1 To HCZ2 Transition",
+				"Variable": "ac.hcz",
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Not Cutscene",
+					"1": "Is Cutscene"
+				}
+			},
+			{
+				"InternalName": "ac.mgz",
+				"DisplayName": "MGZ2 Eggman Encounters...",
+				"Variable": "ac.mgz",
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Not Cutscene",
+					"1": "Is Cutscene"
+				}
+			},
+			{
 				"InternalName": "ac.lbz1fix",
 				"DisplayName": "Fix LBZ1 Collapse Cutscene",
 				"Variable": "ac.lbz1fix",
@@ -114,13 +136,13 @@
 			},
 			{
 				"InternalName": "ac.altlbz2",
-				"DisplayName": "Early Alt LBZ2 Cutscene",
+				"DisplayName": "Alt LBZ2 Cutscene Support",
 				"Variable": "ac.altlbz2",
 				"DefaultValue": "0",
 				"Options":
 				{
-					"0": "Disabled",
-					"1": "Enabled"
+					"0": "Hide HUD Late",
+					"1": "Hide HUD Early"
 				}
 			}
 		]

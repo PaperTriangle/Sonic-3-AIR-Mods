@@ -5,6 +5,8 @@
 global bool ac.prevent
 global bool ac.hidehud
 global bool ac.skip
+global bool ac.hcz
+global bool ac.mgz
 global bool ac.altlbz2
 global bool ac.lbz1fix
 
@@ -245,6 +247,61 @@ function void fn0500da()
 	base.fn0500da()
 }
 
+// HCZ Act Transition
+//# address-hook(0x06a270) end(0x06a298)
+function void fn06a270()
+{
+	if ac.hcz && (level.results_done)
+	{
+		ac.no_pause = 1
+		ac.no_hud = 1
+	}
+
+	base.fn06a270()
+}
+
+//# address-hook(0x06a872) end(0x06a8c0)
+function void fn06a872()
+{
+	if (!ac.prevent || !ac.hcz)
+	{
+		base.fn06a872()
+		return
+	}
+
+	fn06a916()
+	UpdateMovementStraightSimple()
+
+	A1 = 0xffff0000 + u16[A0 + 0x44]
+	objA1.position.x.u16 = objA0.position.x.u16
+	D0.u16 = objA0.position.y.u16
+	objA1.position.y.u16 = D0.u16
+	if (D0.u16 < 0x0828)
+		return
+
+#if STANDALONE
+	Game.endSkippableCutscene()
+#endif
+
+	ac.no_pause = 0
+
+	if (objA0.subtype2c != 0)
+	{
+		A1 = 0xffffb04a
+		if (u32[A1] != 0)
+		{
+			StopCharacterWinPose()
+		}
+	}
+	else
+	{
+		stopCharacterWinPose(0xffffb000)
+		screenmover_target.top = 0
+		fn085de0()
+	}
+	UnloadObject()
+}
+
 // HCZ Knuckles
 //# address-hook(0x062194) end(0x0621d4)
 function void fn062194()
@@ -266,6 +323,48 @@ function void fn062242()
 	
 	base.fn062242()
 }	
+
+// MGZ2 Eggman in Act
+//# address-hook(0x06bf2a) end(0x06bf7c)
+function void fn06bf2a()
+{
+	if (ac.mgz)
+	{
+		ac.no_pause = 1
+		ac.no_hud = 1
+	}
+
+	base.fn06bf2a()
+}
+
+//# address-hook(0x06c200) end(0x06c2b0)
+function void fn06c200()
+{
+	ac.no_pause = 0
+	
+	base.fn06c200()
+}
+
+// MGZ2 Eggman Boss
+//# address-hook(0x06c354) end(0x06c3e0)
+function void fn06c354()
+{
+	if (ac.mgz)
+	{
+		ac.no_pause = 1
+		ac.no_hud = 1
+	}
+
+	base.fn06c354()
+}
+
+//# address-hook(0x06c5c4) end(0x06c5fc)
+function void fn06c5c4()
+{
+	ac.no_pause = 0
+		
+	base.fn06c5c4()
+}
 
 // CNZ2 Knuckles Cutscene Lights
 //# address-hook(0x062332) end(0x062338)
