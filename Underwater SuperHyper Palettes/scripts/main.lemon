@@ -33,6 +33,20 @@ global bool uh.style.shadow
 global u8 uh.hyper.shadow
 global u16 uh.tint.shadow
 
+global bool uh.override_ecf
+global bool uh.palette.mighty_ecf
+global bool uh.style.mighty_ecf
+global u8 uh.hyper.mighty_ecf
+global u16 uh.tint.mighty_ecf
+global bool uh.palette.ray_ecf
+global bool uh.style.ray_ecf
+global u8 uh.hyper.ray_ecf
+global u16 uh.tint.ray_ecf
+global bool uh.palette.amy_ecf
+global bool uh.style.amy_ecf
+global u8 uh.hyper.amy_ecf
+global u16 uh.tint.amy_ecf
+
 define u8 global.xtrachar = u8[0xffffe654]
 
 function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
@@ -158,7 +172,20 @@ function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
 			super.palettefx.frame = superFrameBackup
 
 			zeroMemory(dest, 0x40)
-			u16 numColors = System.loadExternalPaletteData(getCharacterPaletteKey(character), line, 0x800000, 0x20)
+			u16 numColors
+			
+		#if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
+			System.writeDisplayLine(getECFCharBufferName(0xffffb000))
+			if (getECFCharBufferName(0xffffb000))
+			{
+				numColors = System.loadExternalPaletteData(getECFCharacterPaletteKey(getECFCharBufferName(0xffffb000)), line, 0x800000, 0x20)
+			}
+			else
+		#endif
+			{
+				numColors = System.loadExternalPaletteData(getCharacterPaletteKey(character), line, 0x800000, 0x20)
+			}
+			
 			for (u16 i = 0; i < numColors; ++i)
 			{
 				u32 rgba = u32[0x800000 + i * 4]
@@ -248,7 +275,20 @@ function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
 			u8 line = getModdedPaletteLine(character, useHyperPalette && isHyperEffect, underwater)
 
 			zeroMemory(dest, 0x40)
-			u16 numColors = System.loadExternalPaletteData(getCharacterPaletteKey(character), line, 0x800000, 0x20)
+			
+			u16 numColors
+			
+		#if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
+			System.writeDisplayLine(getECFCharBufferName(0xffffb000))
+			if (getECFCharBufferName(0xffffb000))
+			{
+				numColors = System.loadExternalPaletteData(getECFCharacterPaletteKey(getECFCharBufferName(0xffffb000)), line, 0x800000, 0x20)
+			}
+			else
+		#endif
+			{
+				numColors = System.loadExternalPaletteData(getCharacterPaletteKey(character), line, 0x800000, 0x20)
+			}
 			for (u16 i = 0; i < numColors; ++i)
 			{
 				u32 rgba = u32[0x800000 + i * 4]
@@ -375,6 +415,16 @@ function u8 getModdedPaletteLineAsReleased(u8 character, bool isHyperEffect, boo
 // Rainbow Hyper
 function bool UH.isRainbowHyper()
 {
+#if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
+	if (uh.override_ecf)
+		if (isECFCharP1("JUWL-Mighty"))
+			return uh.hyper.mighty_ecf == 2
+		else if (isECFCharP1("JUWL-Ray"))
+			return uh.hyper.ray_ecf == 2
+		else if (isECFCharP1("JUWL-Amy"))
+			return uh.hyper.amy_ecf == 2
+#endif
+
 	if (global.xtrachar == 0)
 		if (isMainCharacter(CHARACTER_SONIC))
 			return uh.hyper.sonic == 2
@@ -392,7 +442,7 @@ function bool UH.isRainbowHyper()
 			return uh.hyper.amy == 2
 		else if (global.xtrachar == 5)
 			return uh.hyper.shadow == 2
-			
+
 	return true
 }
 
@@ -400,6 +450,16 @@ function bool UH.isRainbowHyper()
 // Fast Flash or Not?
 function bool UH.isFastFlash()
 {
+#if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
+	if (uh.override_ecf)
+		if (isECFCharP1("JUWL-Mighty"))
+			return uh.hyper.mighty_ecf != 0
+		else if (isECFCharP1("JUWL-Ray"))
+			return uh.hyper.ray_ecf != 0
+		else if (isECFCharP1("JUWL-Amy"))
+			return uh.hyper.amy_ecf != 0
+#endif
+
 	if (global.xtrachar == 0)
 		if (isMainCharacter(CHARACTER_SONIC))
 			return uh.hyper.sonic != 0
@@ -424,6 +484,16 @@ function bool UH.isFastFlash()
 // Flash Tint
 function u16 UH.flashTint()
 {
+#if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
+	if (uh.override_ecf)
+		if (isECFCharP1("JUWL-Mighty"))
+			return uh.tint.mighty_ecf
+		else if (isECFCharP1("JUWL-Ray"))
+			return uh.tint.ray_ecf
+		else if (isECFCharP1("JUWL-Amy"))
+			return uh.tint.amy_ecf
+#endif
+
 	if (global.xtrachar == 0)
 		if (isMainCharacter(CHARACTER_SONIC))
 			return uh.tint.sonic
@@ -451,6 +521,16 @@ function bool UH.isCycleEffect(bool useHyperPalette, bool isHyperEffect)
 	if (useHyperPalette && isHyperEffect)
 		return false
 
+#if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
+	if (uh.override_ecf)
+		if (isECFCharP1("JUWL-Mighty"))
+			return !uh.style.mighty_ecf
+		else if (isECFCharP1("JUWL-Ray"))
+			return !uh.style.ray_ecf
+		else if (isECFCharP1("JUWL-Amy"))
+			return !uh.style.amy_ecf
+#endif
+
 	if (global.xtrachar == 0)
 		if (isMainCharacter(CHARACTER_SONIC))
 			return !uh.style.sonic
@@ -475,17 +555,42 @@ function bool UH.isCycleEffect(bool useHyperPalette, bool isHyperEffect)
 // Returns the palette key of the specified extra character.
 function string getExtraCharacterPaletteKey(u8 xtrachar)
 {
-	if (uh.palette.mighty && xtrachar == 1)
-		return "es_mighty_custom"
-	else if (uh.palette.ray && xtrachar == 2)
-		return "es_ray_custom"
-	else if (uh.palette.amy && xtrachar == 3)
-		return "es_amy_custom"
-	else if (uh.palette.shadow && xtrachar == 5)
-		if (System.getGlobalVariableValueByName("shadow.isBoosting") || System.getGlobalVariableValueByName("shadow.Homing") > 1 || System.getGlobalVariableValueByName("shadow.DropDown"))
-			return "es_shadow_boost_custom"
-		else
-			return "es_shadow_custom"
+	if (uh.override_esu)
+		if (uh.palette.mighty && xtrachar == 1)
+			return "es_mighty_custom"
+		else if (uh.palette.ray && xtrachar == 2)
+			return "es_ray_custom"
+		else if (uh.palette.amy && xtrachar == 3)
+			return "es_amy_custom"
+		else if (uh.palette.shadow && xtrachar == 5)
+			if (System.getGlobalVariableValueByName("shadow.isBoosting") || System.getGlobalVariableValueByName("shadow.Homing") > 1 || System.getGlobalVariableValueByName("shadow.DropDown"))
+				return "es_shadow_boost_custom"
+			else
+				return "es_shadow_custom"
 	
 	return base.getExtraCharacterPaletteKey(xtrachar)
 }
+
+#if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
+function string getECFCharacterPaletteKey(string name)
+{
+	if uh.override_ecf
+		if (uh.palette.mighty_ecf && name == "JUWL-Mighty")
+			return "juwl_mighty_custom"
+		if (uh.palette.ray_ecf && name == "JUWL-Ray")
+			return "juwl_ray_custom"
+		if (uh.palette.amy_ecf && name == "JUWL-Amy")
+			return "juwl_amy_custom"
+	
+	return base.getECFCharacterPaletteKey(name)
+}
+
+//# address-hook(0x003750) end(0x00398c)
+function void UpdatePaletteEffects.SuperForm()
+{
+	if uh.override_ecf && ((uh.palette.mighty_ecf && isECFCharP1("JUWL-Mighty")) || (uh.palette.ray_ecf && isECFCharP1("JUWL-Ray")) || (uh.palette.ray_ecf && isECFCharP1("JUWL-Amy"))) && super.palettefx.state && (global.game_mode & 0x7f) != 0x2c
+		UpdatePaletteEffects.SuperForm.moddingVersion(0x01)
+	else
+		base.UpdatePaletteEffects.SuperForm()
+}
+#endif

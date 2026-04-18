@@ -4,7 +4,7 @@
 		"Name": "Underwater Super/Hyper Palettes",
 		"UniqueID": "underwater-super-hyper-palettes",
 		"Author": "PaperTriangle",
-		"ModVersion": "1.2",
+		"ModVersion": "1.3",
 		"Description": "Adds underwater version of the Hyper Sonic palette.",
 	},
 	"OtherMods":
@@ -436,6 +436,183 @@
 				"Variable": "uh.tint.shadow",
 				"DefaultValue": "0xcee",
 				"Category": "ES Shadow Settings",
+				"Options":
+				{
+					"0xeee": "White",
+					"0xcce": "Red",
+					"0xcec": "Green",
+					"0xecc": "Blue",
+					"0xcee": "Yellow",
+					"0xece": "Magenta",
+					"0xeec": "Cyan",
+					"0xccc": "Grey"
+				}
+			},
+			{
+				"InternalName": "uh.override_ecf",
+				"DisplayName": "Override ECF Super/Hyper",
+				"Variable": "uh.override_ecf",
+				"DefaultValue": "0",
+				"Category": "Main Settings",		
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "uh.palette.mighty_ecf",
+				"DisplayName": "Override Mighty's Palette",
+				"Variable": "uh.palette.mighty_ecf",
+				"DefaultValue": "0",
+				"Category": "JUWL Mighty Settings",		
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "uh.style.mighty_ecf",
+				"DisplayName": "Mighty Palette Style",
+				"Variable": "uh.style.mighty_ecf",
+				"DefaultValue": "1",
+				"Category": "JUWL Mighty Settings",		
+				"Options":
+				{
+					"0": "Cycle",
+					"1": "Flash White"
+				}
+			},
+			{
+				"InternalName": "uh.hyper.mighty_ecf",
+				"DisplayName": "Mighty Hyper Form",
+				"Variable": "uh.hyper.mighty_ecf",
+				"DefaultValue": "1",
+				"Category": "JUWL Mighty Settings",		
+				"Options":
+				{
+					"0": "Slow",
+					"1": "Fast",
+					"2": "Rainbow"
+				}
+			},
+			{
+				"InternalName": "uh.tint.mighty_ecf",
+				"DisplayName": "Mighty White Flash Tint",
+				"Variable": "uh.tint.mighty_ecf",
+				"DefaultValue": "0xcce",
+				"Category": "JUWL Mighty Settings",
+				"Options":
+				{
+					"0xeee": "White",
+					"0xcce": "Red",
+					"0xcec": "Green",
+					"0xecc": "Blue",
+					"0xcee": "Yellow",
+					"0xece": "Magenta",
+					"0xeec": "Cyan",
+					"0xccc": "Grey"
+				}
+			},
+			{
+				"InternalName": "uh.palette.ray_ecf",
+				"DisplayName": "Override Ray's Palette",
+				"Variable": "uh.palette.ray_ecf",
+				"DefaultValue": "0",
+				"Category": "JUWL Ray Settings",		
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "uh.style.ray_ecf",
+				"DisplayName": "Ray Palette Style",
+				"Variable": "uh.style.ray_ecf",
+				"DefaultValue": "0",
+				"Category": "JUWL Ray Settings",		
+				"Options":
+				{
+					"0": "Cycle",
+					"1": "Flash White"
+				}
+			},
+			{
+				"InternalName": "uh.hyper.ray_ecf",
+				"DisplayName": "Ray Hyper Form",
+				"Variable": "uh.hyper.ray_ecf",
+				"DefaultValue": "1",
+				"Category": "JUWL Ray Settings",		
+				"Options":
+				{
+					"0": "Slow",
+					"1": "Fast",
+					"2": "Rainbow"
+				}
+			},
+			{
+				"InternalName": "uh.tint.ray_ecf",
+				"DisplayName": "Ray White Flash Tint",
+				"Variable": "uh.tint.ray_ecf",
+				"DefaultValue": "0xcee",
+				"Category": "JUWL Ray Settings",
+				"Options":
+				{
+					"0xeee": "White",
+					"0xcce": "Red",
+					"0xcec": "Green",
+					"0xecc": "Blue",
+					"0xcee": "Yellow",
+					"0xece": "Magenta",
+					"0xeec": "Cyan",
+					"0xccc": "Grey"
+				}
+			},
+			{
+				"InternalName": "uh.palette.amy_ecf",
+				"DisplayName": "Override Amy's Palette",
+				"Variable": "uh.palette.amy_ecf",
+				"DefaultValue": "0",
+				"Category": "JUWL Amy Settings",		
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "uh.style.amy_ecf",
+				"DisplayName": "Amy Palette Style",
+				"Variable": "uh.style.amy_ecf",
+				"DefaultValue": "1",
+				"Category": "JUWL Amy Settings",		
+				"Options":
+				{
+					"0": "Cycle",
+					"1": "Flash White"
+				}
+			},
+			{
+				"InternalName": "uh.hyper.amy_ecf",
+				"DisplayName": "Amy Hyper Form",
+				"Variable": "uh.hyper.amy_ecf",
+				"DefaultValue": "1",
+				"Category": "JUWL Amy Settings",		
+				"Options":
+				{
+					"0": "Slow",
+					"1": "Fast",
+					"2": "Rainbow"
+				}
+			},
+			{
+				"InternalName": "uh.tint.amy_ecf",
+				"DisplayName": "Amy White Flash Tint",
+				"Variable": "uh.tint.amy_ecf",
+				"DefaultValue": "0xece",
+				"Category": "JUWL Amy Settings",
 				"Options":
 				{
 					"0xeee": "White",
