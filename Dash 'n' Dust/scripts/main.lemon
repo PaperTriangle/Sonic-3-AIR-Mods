@@ -3,6 +3,7 @@ global bool dd.newgraphic
 global bool dd.dropdash_dust
 global bool dd.dropdash_animation
 global bool dd.super_screenclear
+global bool dd.camera_delay
 
 //-----------------------------//
 // Hyper Dash Dropdash Charge! //
@@ -259,11 +260,11 @@ function void releaseDropDash()
 	if (A0 == 0xffffb000)
 	{
 		ClearPositionBackup()
-		camera.locktime.player1 = 0x1400
+		camera.locktime.player1 = dd.camera_delay ? 0x1400 : 0x0c00
 	}
 	else
 	{
-		camera.locktime.player2 = 0x1400
+		camera.locktime.player2 = dd.camera_delay ? 0x1400 : 0x0c00
 	}
 
 	s16 baseSpeed = super.active ? 0x0c00 : 0x0800
