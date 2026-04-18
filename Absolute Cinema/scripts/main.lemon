@@ -146,7 +146,7 @@ function void PostFrameUpdate()
 		ac.check_act = 0
 	}
 
-	if (ac.hidehud && ac.no_hud)
+	if (ac.hidehud && ac.no_hud && !global.game.paused)
 	{
 		if (ac.fullhide)
 		{
