@@ -58,9 +58,27 @@
 	"character_slot5_lives_icon_ring_haru":  { "File": "shadow_ring_haru.png", "Rect": "0,0,18,17", "Center": "2,0" },
 	"character_char4_lives_icon_ring_haru":  { "File": "galore_amy_ring_haru.png", "Rect": "0,0,19,17", "Center": "2,0" },
 	
+	"character_JUWL-Mighty_lives_icon":  { "File": "juwl/mighty.bmp", "Rect": "0,0,16,16", "Center": "1,0" },
+	"character_JUWL-Ray_lives_icon":  { "File": "juwl/ray.bmp", "Rect": "0,0,16,16", "Center": "0,0" },
+	"character_JUWL-Amy_lives_icon":  { "File": "juwl/amy.bmp", "Rect": "0,0,16,16", "Center": "1,0" },
+	"character_JUWL-Mighty_lives_icon_border_s3":  { "File": "juwl/mighty.png", "Rect": "0,0,18,18", "Center": "2,1" },
+	"character_JUWL-Ray_lives_icon_border_s3":  { "File": "juwl/ray.png", "Rect": "0,0,18,18", "Center": "1,1" },
+	"character_JUWL-Amy_lives_icon_border_s3":  { "File": "juwl/amy.png", "Rect": "0,0,18,18", "Center": "2,0" },
+	"character_JUWL-Mighty_lives_icon_border_haru":  { "File": "juwl/mighty_haru.png", "Rect": "0,0,18,18", "Center": "2,1" },
+	"character_JUWL-Ray_lives_icon_border_haru":  { "File": "juwl/ray_haru.png", "Rect": "0,0,18,18", "Center": "1,1" },
+	"character_JUWL-Amy_lives_icon_border_haru":  { "File": "juwl/amy_haru.png", "Rect": "0,0,18,18", "Center": "2,0" },
+	
+	"character_JUWL-Mighty_lives_icon_ring_s3":  { "File": "juwl/mighty_ring.png", "Rect": "0,0,18,18", "Center": "2,1" },
+	"character_JUWL-Ray_lives_icon_ring_s3":  { "File": "juwl/ray_ring.png", "Rect": "0,0,18,18", "Center": "1,1" },
+	"character_JUWL-Amy_lives_icon_ring_s3":  { "File": "juwl/amy_ring.png", "Rect": "0,0,18,18", "Center": "2,0" },
+	"character_JUWL-Mighty_lives_icon_ring_haru":  { "File": "juwl/mighty_ring_haru.png", "Rect": "0,0,18,18", "Center": "2,1" },
+	"character_JUWL-Ray_lives_icon_ring_haru":  { "File": "juwl/ray_ring_haru.png", "Rect": "0,0,18,18", "Center": "1,1" },
+	"character_JUWL-Amy_lives_icon_ring_haru":  { "File": "juwl/amy_ring_haru.png", "Rect": "0,0,18,18", "Center": "2,0" },
+	
 	"original_lives_background":  { "File": "life_default_bg.png", "Rect": "0,0,16,16", "Center": "0,0" },
 	"character_tails_original_extra":  { "File": "tails_default_extra.bmp", "Rect": "0,0,16,16", "Center": "0,0" },
 	"character_slot3_original_extra":  { "File": "amy_default_extra.bmp", "Rect": "0,0,16,16", "Center": "0,0" },
+	"character_JUWL-Ray_original_extra":  { "File": "juwl/ray_default_extra.bmp", "Rect": "0,0,16,16", "Center": "0,0" },
 	
 	"character_slot1_lives_text_s3":  { "File": "text_ESU.png", "Rect": "1,0,39,16", "Center": "-17,0" },
 	"character_slot2_lives_text_s3":  { "File": "text_ESU.png", "Rect": "1,16,21,16", "Center": "-17,0" },
@@ -72,6 +90,14 @@
 	"character_slot3_lives_text_haru":  { "File": "text_ESU_haru.png", "Rect": "1,32,22,16", "Center": "-17,0" },
 	"character_slot5_lives_text_haru":  { "File": "text_ESU_haru.png", "Rect": "1,48,39,16", "Center": "-17,0" },
 	"character_char4_lives_text_haru":  { "File": "text_ESU_haru.png", "Rect": "1,32,22,16", "Center": "-17,0" },
+	
+	"character_JUWL-Mighty_lives_text_s3":  { "File": "text_ESU.png", "Rect": "1,0,39,16", "Center": "-17,0" },
+	"character_JUWL-Ray_lives_text_s3":  { "File": "text_ESU.png", "Rect": "1,16,21,16", "Center": "-17,0" },
+	"character_JUWL-Amy_lives_text_s3":  { "File": "text_ESU.png", "Rect": "1,32,22,16", "Center": "-17,0" },
+	"character_JUWL-Mighty_lives_text_haru":  { "File": "text_ESU_haru.png", "Rect": "1,0,39,16", "Center": "-17,0" },
+	"character_JUWL-Ray_lives_text_haru":  { "File": "text_ESU_haru.png", "Rect": "1,16,21,16", "Center": "-17,0" },
+	"character_JUWL-Amy_lives_text_haru":  { "File": "text_ESU_haru.png", "Rect": "1,32,22,16", "Center": "-17,0" },
+	
 	"character_ariff_tails_lives_icon":  { "File": "ariff_tails.bmp", "Rect": "0,0,19,16", "Center": "2,-1" },
 	"character_ariff_tails_lives_icon_border_s3":  { "File": "ariff_tails.png", "Rect": "0,0,19,16", "Center": "2,-1" },
 	"character_ariff_tails_lives_icon_border_haru":  { "File": "ariff_tails_haru.png", "Rect": "0,0,19,16", "Center": "2,-1" },

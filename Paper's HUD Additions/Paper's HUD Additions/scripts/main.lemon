@@ -320,9 +320,6 @@ function bool PHUD.RenderLives(u16 px, u16 py, u16 renderQueue)
 	u64 characterName = PHUD.getCharacterName()
 	px++
 	
-	if (((phud.allowsuper && global.xtrachar == 0) || (phud.allowsuperesu && global.xtrachar > 0)) && !Renderer.hasCustomSprite(stringformat("%s_lives_icon", characterSprite)))
-		characterSprite = getCharacterSpriteKey(u8[0xffffb000 + 0x38], false)
-	
 	if (Mods.isModActive("Amy Galore: Standalone edition") && (global.characters == 0x04 || global.characters == 0x05))
 	{
 		characterSprite = getCharacterSpriteKey(u8[0xffffb000 + 0x38])
@@ -409,11 +406,21 @@ function u16 PHUD.MobileLivesOffset()
 
 function u64 PHUD.getCharacterSprite()
 {
+#if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
+	if (getECFCharBufferName(0xffffb000))
+		return stringformat("character_%s", getECFCharBufferName(0xffffb000))
+#endif
+
 	return ((phud.allowsuper && global.xtrachar == 0) || (phud.allowsuperesu && global.xtrachar > 0)) ? getCharacterSpriteKey(u8[0xffffb000 + 0x38]) : getCharacterSpriteKey(u8[0xffffb000 + 0x38], false)
 }
 
 function u64 PHUD.getCharacterName()
 {
+#if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
+	if (getECFCharBufferName(0xffffb000))
+		return stringformat("character_%s", getECFCharBufferName(0xffffb000))
+#endif
+
 	return getCharacterSpriteKey(u8[0xffffb000 + 0x38], false)
 }
 
