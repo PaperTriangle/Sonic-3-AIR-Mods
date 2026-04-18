@@ -281,19 +281,13 @@ function bool Game.isSecretUnlocked(u32 secretId)
 //# address-hook(0x00d6d0) end(0x00d70a)
 function void fn00d6d0()
 {
-	if !(lsds.esureorder && (Mods.isModActive("Extra Slot Amy") || Mods.isModActive("Extra Slot Amy SHC")) && (Mods.isModActive("Extra Slot Mighty") || Mods.isModActive("Extra Slot Mighty SHC")) && (Mods.isModActive("Extra Slot Ray") || Mods.isModActive("Extra Slot Ray SHC")))
-	{
-		base.fn00d6d0()
-		return
-	}
-	
 	u8 originalCharacter = D0.u8
 	u8 oldXtraChar = objA0.animation.timer
 	
 	base.fn00d6d0()
 	
 #if EXTRA_CHARACTERS_UNLIMITED
-	if (lsds.esureorder)
+	if (lsds.esureorder && (Mods.isModActive("Extra Slot Amy") || Mods.isModActive("Extra Slot Amy SHC")) && (Mods.isModActive("Extra Slot Mighty") || Mods.isModActive("Extra Slot Mighty SHC")) && (Mods.isModActive("Extra Slot Ray") || Mods.isModActive("Extra Slot Ray SHC")))
 	{
 		if (objA0.animation.timer == 0x00 && oldXtraChar == (Mods.isModActive("Extra Slot Mighty & Ray") ? 0x04 : 0x03))
 		{
@@ -989,7 +983,7 @@ function void fn007e64()
 	base.fn007e64()
 	
 #if EXTRA_CHARACTERS_UNLIMITED
-	if (lsds.esureorder)
+	if (lsds.esureorder && (Mods.isModActive("Extra Slot Amy") || Mods.isModActive("Extra Slot Amy SHC")) && (Mods.isModActive("Extra Slot Mighty") || Mods.isModActive("Extra Slot Mighty SHC")) && (Mods.isModActive("Extra Slot Ray") || Mods.isModActive("Extra Slot Ray SHC")))
 	{
 		if (global.xtrachar == 0x00 && oldXtraChar == 0x04)
 		{
