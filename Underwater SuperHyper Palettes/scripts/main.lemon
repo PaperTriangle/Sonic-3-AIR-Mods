@@ -175,7 +175,6 @@ function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
 			u16 numColors
 			
 		#if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
-			System.writeDisplayLine(getECFCharBufferName(0xffffb000))
 			if (getECFCharBufferName(0xffffb000))
 			{
 				numColors = System.loadExternalPaletteData(getECFCharacterPaletteKey(getECFCharBufferName(0xffffb000)), line, 0x800000, 0x20)
@@ -279,7 +278,6 @@ function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
 			u16 numColors
 			
 		#if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
-			System.writeDisplayLine(getECFCharBufferName(0xffffb000))
 			if (getECFCharBufferName(0xffffb000))
 			{
 				numColors = System.loadExternalPaletteData(getECFCharacterPaletteKey(getECFCharBufferName(0xffffb000)), line, 0x800000, 0x20)
