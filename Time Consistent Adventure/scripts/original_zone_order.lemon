@@ -8,7 +8,6 @@ global s8 tca.flyingBatteryYPositionBasePos
 global u8 tca.flyingBatteryYPositionFlip
 global u8 tca.flyingBatteryPropellorFrame
 
-
 function void yieldExecution()
 {
 	// CNZ to FBZ
@@ -724,7 +723,6 @@ function void SetupCharacterAtStartPosition()
 		u16[0xffffb000 + 0x14] = 0x066c
 		camera.position.x.u16 = 0x0000
 		camera.position.y.u16 = 0x060c
-		fn044a0c()
 	}
 	else base.SetupCharacterAtStartPosition()
 }
