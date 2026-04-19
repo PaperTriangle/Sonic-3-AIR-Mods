@@ -4,8 +4,8 @@
 		"Name": "Data Select Options",
 		"UniqueID": "data-select-options",
 		"Author": "PaperTriangle",
-		"Description": "Adds options to slightly customise the Data Select screen.",
-		"ModVersion": "2.4"
+		"Description": "Adds options to slightly customise the Data Select screen. (New Sonic Clear Icons by CancerEdition.)",
+		"ModVersion": "2.5"
 	},
 	"OtherMods":
 	{
@@ -87,6 +87,18 @@
 				"Variable": "lsds.alphashadow",
 				"Category": "Data Select",	
 				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "lsds.sonic_icons",
+				"DisplayName": "New Sonic Clear Icons",
+				"Variable": "lsds.sonic_icons",
+				"Category": "Data Select",	
+				"DefaultValue": "1",
 				"Options":
 				{
 					"0": "Disabled",

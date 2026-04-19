@@ -5,6 +5,7 @@ global bool lsds.alphashadow
 global bool lsds.nodetail
 global bool lsds.backtotitle
 global u8 lsds.noknuxtails
+global bool lsds.sonic_icons
 global u8 lsds.amyicon
 global bool lsds.esureorder
 global bool lsds.levelselect
@@ -421,6 +422,23 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 			if (Renderer.hasCustomSprite(portrait))
 			{
 				Renderer.drawCustomSprite(portrait, px, py - py_shift - (lsds.nodetail ? 0x10 : 0), 0, SPRITE_FLAG_PRIO, renderQueue)
+				u8[A0 + 0x23] = 0
+			}
+		}
+		
+		// New Sonic Icons
+		if (lsds.sonic_icons && (slotnum < 2) && !ecf_slot && (u8[A0 + 0x38] == 0xff && objA0.animation.timer == 0 && u16[0xffffb04a + 0x30] == 0))
+		{
+			if u8[A0 + 0x23] == 0x18
+			{
+				System.loadExternalRawData("sonic_clear_palette", 0x00cab8)
+				Renderer.drawCustomSprite("sonic_clear", px, py - (lsds.nodetail ? 0x10 : 0), 0x30, SPRITE_FLAG_PRIO, renderQueue)
+				u8[A0 + 0x23] = 0
+			}
+			else if u8[A0 + 0x23] == 0x19
+			{
+				System.loadExternalRawData("super_sonic_clear_palette", 0x00cad8)
+				Renderer.drawCustomSprite("super_sonic_clear", px, py - (lsds.nodetail ? 0x10 : 0), 0x30, SPRITE_FLAG_PRIO, renderQueue)
 				u8[A0 + 0x23] = 0
 			}
 		}
