@@ -385,6 +385,7 @@ function void fn08167c()
 	if (!ggf.knuxddz)
 	{
 		base.fn08167c()
+		return
 	}
 	
 	objA0.velocity.y -= 0x20
