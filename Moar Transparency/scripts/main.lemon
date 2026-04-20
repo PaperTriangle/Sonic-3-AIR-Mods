@@ -583,7 +583,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 	// Shields
 	
 	// Lightning Shield + Spark
-	if (mt.lightningshield && objA0.mapping_offset == 0x019dc8)
+	if (mt.lightningshield && objA0.update_address == 0x019874 && objA0.mapping_offset == 0x019dc8)
 	{
 		Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 208)
 		
@@ -620,7 +620,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		}
 		
 		// Hyper Dash Stars
-		if (objA0.update_address == 0x019874)
+		if (objA0.update_address == 0x019874 && objA0.mapping_offset != 0x019dc8)
 		{
 			if (mt.esustars && Renderer.hasCustomSprite(stringformat("esu_smallhyper_%d", objA0.animation.sprite)))
 				return true
