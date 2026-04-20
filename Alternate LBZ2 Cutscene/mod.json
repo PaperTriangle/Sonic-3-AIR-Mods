@@ -43,7 +43,7 @@
 		{
 			"DisplayName": "Seamless LBZ2 To MHZ1 Transition",
 			"IsRequired": "0",
-			"Priority": "Higher"
+			"Priority": "Lower"
 		}
 	},
 	"Settings":
