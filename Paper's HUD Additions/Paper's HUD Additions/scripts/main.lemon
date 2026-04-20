@@ -320,12 +320,6 @@ function bool PHUD.RenderLives(u16 px, u16 py, u16 renderQueue)
 	u64 characterName = PHUD.getCharacterName()
 	px++
 	
-	if (Mods.isModActive("Amy Galore: Standalone edition") && (global.characters == 0x04 || global.characters == 0x05))
-	{
-		characterSprite = getCharacterSpriteKey(u8[0xffffb000 + 0x38])
-		characterName = getCharacterSpriteKey(u8[0xffffb000 + 0x38])
-	}
-	
 	if (((phud.allowsuper && global.xtrachar == 0) || (phud.allowsuperesu && global.xtrachar > 0)) && !Renderer.hasCustomSprite(stringformat("%s_lives_icon", characterSprite)))
 	{
 		return false
@@ -476,7 +470,7 @@ function void PHUD.RenderDebug(u16 baseX, u16 baseY, u16 renderQueue)
 	string DigitKey
 	bool haruCompat = Mods.isModActive("Haru's Forever-esque HUD")
 	bool useMobilePosition = HUD.useMobileLivesDisplay() && (!Game.isTimeAttack() && !Game.getSetting(SETTING_INFINITE_LIVES))
-	u16 px = getScreenWidth() - baseX - (0x30 + (phud.name ? PHUD.MobileLivesOffset() : 0))
+	u16 px = getScreenWidth() - baseX - (0x30 + (phud.name && HUD.useMobileLivesDisplay() ? PHUD.MobileLivesOffset() : 0))
 	u16 py = useMobilePosition ? baseY + 0x14 : baseY
 
 	u16 X = (u32(camera.position.x.u16) << 16) + u16[0xffffb000 + 0x10]
