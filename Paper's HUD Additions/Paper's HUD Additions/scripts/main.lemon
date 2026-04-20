@@ -42,7 +42,7 @@ function void RenderHUD()
 
 	bool isBonusStage = (global.zone >= 0x13 && global.zone <= 0x15)
 #if STANDALONE
-	if (!debug_mode.state || Mods.isModActive("Mobile Debug Display"))
+	if (!debug_mode.state || Mods.isModActive("Mobile Ports Debug Display"))
 	{
 		if (!isBonusStage)
 		{

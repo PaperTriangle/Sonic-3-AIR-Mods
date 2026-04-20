@@ -28,7 +28,7 @@
 		},
 		"MobileDebugDisplay":
 		{
-			"DisplayName": "Mobile Debug Display",
+			"DisplayName": "Mobile Ports Debug Display",
 			"IsRequired": "0",
 			"Priority": "Lower"
 		}
