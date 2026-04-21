@@ -235,7 +235,7 @@ function void yieldExecution()
 		{	
 			System.loadExternalRawData("ICZ_Dawn_Palette", 0x3fff30)
 			System.loadExternalRawData("ICZ_Morning_Palette", 0x3fff60)
-			transition_time += !tca.fadespeed ? 1 : 2
+			transition_time += tca.fadetype ? 2 : (!tca.fadespeed ? 2 : 4)
 			if (transition_time % (tca.fadespeed ? 30 : 24) == 0 || !tca.fadetype)
 			{
 				for (u8 i = 0; i < 15; i++)
@@ -249,7 +249,7 @@ function void yieldExecution()
 			System.loadExternalRawData("ICZ_Morning_Palette", 0x3fff30)
 			System.loadExternalRawData("ICZ_New_Palette", 0x3fff60)
 			
-			transition_time += !tca.fadespeed ? 1 : 2
+			transition_time += tca.fadetype ? 2 : (!tca.fadespeed ? 2 : 4)
 			if (transition_time % (tca.fadespeed ? 30 : 24) == 0 || !tca.fadetype)
 			{
 				for (u8 i = 0; i < 15; i++)
@@ -263,7 +263,7 @@ function void yieldExecution()
 			System.loadExternalRawData("ICZ_Dawn_Palette", 0x3fff30)
 			System.loadExternalRawData("ICZ_New_Palette", 0x3fff60)
 			
-			transition_time += !tca.fadespeed ? 1 : 2
+			transition_time += tca.fadetype ? 2 : (!tca.fadespeed ? 2 : 4)
 			if (transition_time % (tca.fadespeed ? 30 : 24) == 0 || !tca.fadetype)
 			{
 				for (u8 i = 0; i < 15; i++)
@@ -295,7 +295,7 @@ function void yieldExecution()
 			System.loadExternalRawData("ICZ_Act1_Palette", 0x3fff30)
 			System.loadExternalRawData("ICZ_New_Palette", 0x3fff60)
 			
-			transition_time += !tca.fadespeed ? 1 : 2
+			transition_time += tca.fadetype ? 2 : (!tca.fadespeed ? 2 : 4)
 			if (transition_time % (tca.fadespeed ? 30 : 24) == 0 || !tca.fadetype)
 			{
 				for (u8 i = 0; i < 15; i++)
