@@ -255,7 +255,10 @@ function void yieldExecution()
 	}
 	else if (tca.icz && global.zone == 0x05 && tca.intended) // ICZ Act 1 & 2
 	{
-		if (transition_state == 1 && transition_time <= 0x78 && camera.position.y.u16 < 0x700) && (!global.game.paused)
+	
+		if (transition_state == 0)
+			System.loadExternalRawData("ICZ_Dawn_Palette", 0x3fff30)
+		else if (transition_state == 1 && transition_time <= 0x78 && camera.position.y.u16 < 0x700) && (!global.game.paused)
 		{	
 			System.loadExternalRawData("ICZ_Dawn_Palette", 0x3fff30)
 			System.loadExternalRawData("ICZ_Morning_Palette", 0x3fff60)
@@ -1068,73 +1071,26 @@ function void fn23e20e()
 	
 	if (isKnucklesRoute())
 	{
-		if (tca.icz_trans_point && camera.position.x.u16 > 0x3ad8 - getScreenExtend())
+		u32 palAddress = transition_state == 0 ? 0x3fff30 : 0x3fff60
+		
+		if ((global.game_mode & 0x80) == 0)
 		{
-			if (tca.icz_trans_fade)
-			{
-				if ((global.game_mode & 0x80) == 0)
-				{
-					A1 = 0xfffffc62
-					u32[(A1+=4)-4] = 0x0eee0ecc
-					u32[(A1+=4)-4] = 0x0eaa0e88
-					u32[(A1+=4)-4] = 0x0c660c44
-					u32[(A1+=4)-4] = 0x0c240e24
-					u32[0xfffffc7c] = 0x0c640ea8	// New line, corrects original S3&K glitch with brightest two colors in background reflections on water
-					objA1.update_address = 0x06240c04
-				}
-
-				A1 = 0xfffffce2
-				u32[(A1+=4)-4] = 0x0eee0ecc
-				u32[(A1+=4)-4] = 0x0eaa0e88
-				u32[(A1+=4)-4] = 0x0c660c44
-				u32[(A1+=4)-4] = 0x0c240e24
-				u32[0xfffffcfc] = 0x0c640ea8	// New line, corrects original S3&K glitch with brightest two colors in background reflections on water
-				objA1.update_address = 0x0a240c04
-			}
-			else
-			{
-				if ((global.game_mode & 0x80) == 0)
-				{
-					A1 = 0xfffffc62
-					u32[(A1+=4)-4] = 0x0eec0cc6
-					u32[(A1+=4)-4] = 0x0c800c60
-					u32[(A1+=4)-4] = 0x0c400a40
-					u32[(A1+=4)-4] = 0x08200620
-					u32[0xfffffc7c] = 0x0c600ea4	// New line, corrects original S3&K glitch with brightest two colors in background reflections on water
-					objA1.update_address = 0x02000600
-				}
-
-				A1 = 0xfffffce2
-				u32[(A1+=4)-4] = 0x0eec0cc6
-				u32[(A1+=4)-4] = 0x0c800c60
-				u32[(A1+=4)-4] = 0x0c400a40
-				u32[(A1+=4)-4] = 0x08200620
-				u32[0xfffffcfc] = 0x0c600ea4	// New line, corrects original S3&K glitch with brightest two colors in background reflections on water
-				objA1.update_address = 0x02000600
-				
-			}
+			A1 = 0xfffffc62
+			u32[(A1+=4)-4] = u32[palAddress]				// 0x0cee0cca
+			u32[(A1+=4)-4] = u32[palAddress + 0x04]			// 0x0c860c64
+			u32[(A1+=4)-4] = u32[palAddress + 0x08]			// 0x0c440a44
+			u32[(A1+=4)-4] = u32[palAddress + 0x0c]			// 0x08240624
+			u32[0xfffffcfc] = u32[palAddress + 0x1a]		// 0x0c640ea8	// New line, corrects original S3&K glitch with brightest two colors in background reflections on water
+			objA1.update_address = u32[palAddress + 0x10]	// 0x02020604
 		}
-		else
-		{
-			if ((global.game_mode & 0x80) == 0)
-			{
-				A1 = 0xfffffc62
-				u32[(A1+=4)-4] = 0x0cee0cca
-				u32[(A1+=4)-4] = 0x0c860c64
-				u32[(A1+=4)-4] = 0x0c440a44
-				u32[(A1+=4)-4] = 0x08240624
-				u32[0xfffffc7c] = 0x0c640ea8	// New line, corrects original S3&K glitch with brightest two colors in background reflections on water
-				objA1.update_address = 0x02020604
-			}
 
-			A1 = 0xfffffce2
-			u32[(A1+=4)-4] = 0x0cee0cca
-			u32[(A1+=4)-4] = 0x0c860c64
-			u32[(A1+=4)-4] = 0x0c440a44
-			u32[(A1+=4)-4] = 0x08240624
-			u32[0xfffffcfc] = 0x0c640ea8	// New line, corrects original S3&K glitch with brightest two colors in background reflections on water
-			objA1.update_address = 0x02020604
-		}
+		A1 = 0xfffffce2
+		u32[(A1+=4)-4] = u32[palAddress]				// 0x0cee0cca
+		u32[(A1+=4)-4] = u32[palAddress + 0x04]			// 0x0c860c64
+		u32[(A1+=4)-4] = u32[palAddress + 0x08]			// 0x0c440a44
+		u32[(A1+=4)-4] = u32[palAddress + 0x0c]			// 0x08240624
+		u32[0xfffffcfc] = u32[palAddress + 0x1a]		// 0x0c640ea8	// New line, corrects original S3&K glitch with brightest two colors in background reflections on water
+		objA1.update_address = u32[palAddress + 0x10]	// 0x02020604
 	}
 	else
 	{
