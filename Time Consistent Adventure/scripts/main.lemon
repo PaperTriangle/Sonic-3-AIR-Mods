@@ -38,6 +38,7 @@ global bool tca.soz_bg
 global bool tca.knux_fbz
 global bool tca.fbz_intro
 global bool tca.fbz_clouds
+global bool tca.mgz_cnz_transition
 
 global bool tca.pal_ssz_dawn
 
@@ -61,17 +62,17 @@ function bool isKnucklesRoute()
 function void yieldExecution()
 {
 	//Tile Data
-	if (tca.mgz && tca.mgz_mountains)
+	if (tca.mgz_mountains)
 	{
 		System.loadExternalRawData("MGZ_Mountain_Fix_1", 0x3C8A70)
 		System.loadExternalRawData("MGZ_Mountain_Fix_2", 0x3CA132)
 	}
 	
-	if (tca.fbz && tca.fbz_clouds)
+	if (tca.fbz_clouds)
 		System.loadExternalRawData("FBZ_Cloud_Fix", 0x195040)
 	
 	
-	if (tca.soz && tca.soz_bg)
+	if (tca.soz_bg)
 	{
 		if (isKnucklesRoute() && tca.intended && !tca.knux_fbz)
 			System.loadExternalRawData("SOZ_Day_Fix", 0x1AA36A)
@@ -164,7 +165,7 @@ function void yieldExecution()
 		{	
 			System.loadExternalRawData("MGZ2_Palette_Night", 0x3fff30)
 			
-			transition_time++
+			transition_time += !tca.fadespeed ? 1 : 2
 			if (transition_time % (tca.fadespeed ? 30 : 24) == 0 || !tca.fadetype)
 			{
 				for (u8 i = 0; i < 31; i++)
@@ -173,7 +174,30 @@ function void yieldExecution()
 				}
 			}
 		}
+	}
+	else if (tca.mgz_cnz_transition && !tca.mgz && global.zone_act == 0x0201) // MGZ Act 2
+	{
 		
+		u32 fadeAdd1 = (transition_state == 2) ? 0x364896 + 0x120 : 0x0A8F9C
+		u32 fadeAdd2 = (transition_state == 2) ? 0x364896 + 0x1e0  : 0x364896 + 0x120  
+		
+		if (transition_state > 0 && transition_time <= 0x78) && (!global.game.paused)
+		{	
+			transition_time += 2
+			if (transition_time % 20 == 0 || !tca.fadetype)
+			{
+				for (u8 i = 0; i < 16; i++)
+				{
+					u16[0xfffffc00 + (0x30 + i)*2] = blendColorsPacked(u16[fadeAdd1 + i*2], u16[fadeAdd2 + i*2], min(256, transition_time * 2 + transition_time / 8 + 1))
+				}
+			}
+		}
+		
+		if (transition_state == 1 && transition_time >= 0x78)
+		{
+			transition_state = 2
+			transition_time = 0
+		}
 	}
 	else if (tca.fbz && global.zone_act == 0x0400 && (tca.intended && !(isMainCharacter(CHARACTER_KNUCKLES) && tca.knux_fbz))) // FBZ Act 1
 	{
@@ -759,15 +783,19 @@ function void fn06d104()
 {
 	if (!tca.mgz)
 	{
-		base.fn06d104()
-		return
+		if (!tca.mgz_cnz_transition)
+		{
+			base.fn06d104()
+			return
+		}
 	}
-	
-	transition_state = 1
 	
 	--objA0.countdown_value
 	if (objA0.countdown_value >= 0)
 		return
+		
+	if (objA0.value39 == (!tca.mgz ? 0x04 : 0x0a) && transition_state == 0)
+		transition_state = 1
 
 	objA0.countdown_value = u16[0x06d14c + objA0.value39]
 	objA0.value39 += 2

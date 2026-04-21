@@ -142,6 +142,18 @@
 				}
 			},
 			{
+				"InternalName": "tca.mgz_cnz_transition",
+				"DisplayName": "Force Fade Without Palettes",
+				"Variable": "tca.mgz_cnz_transition",
+				"Category": "MGZ Settings",	
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
 				"InternalName": "tca.mgz_mountains",
 				"DisplayName": "MGZ1 Mountain Art Tweak",
 				"Variable": "tca.mgz_mountains",
