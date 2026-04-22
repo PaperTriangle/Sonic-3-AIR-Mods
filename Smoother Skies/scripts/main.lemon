@@ -1,0 +1,238 @@
+global u8 ssf.mgz_to_cnz
+global u8 ssf.icz_fade
+global u8 ssf.big_arm_fade
+
+// Locations for Raw Data palette editing
+// MGZ Afternoon:	0x3649b6 (Length: 0x20)
+// MGZ Night:		0x364a76 (Length: 0x20)
+// ICZ Dawn Sky:	0x071a08 (Length: 0x14)
+// ICZ Day Sky:		0x0a91fe (Length: 0x1e)
+// Big Arm Sky:		0x2522a6 (Length: 0x08)
+
+//# address-hook(0x072e30)
+function void fn072e30()
+{
+	if (!ssf.big_arm_fade)
+	{
+		base.fn072e30()
+		return
+	}
+	
+	u8 fade_steps = 0x10
+	
+	if (ssf.big_arm_fade == 3)
+		fade_steps = 0x01
+	else if (ssf.big_arm_fade == 2)
+		fade_steps = 0x0c
+
+	// Sky palette fade steps
+	if (u16[A0 + 0x48] < 48 && u16[A0 + 0x48] % fade_steps == 0)
+	{
+		u16[0xfffffc00 + 0x3b * 2] = blendColorsPacked(u16[0x2522a6], u16[0x0a92fc + 0x2b * 2], u16[A0 + 0x48] * 5 + u16[A0 + 0x48] / 3)
+		u16[0xfffffc00 + 0x3c * 2] = blendColorsPacked(u16[0x2522a6 + 0x02], u16[0x0a92fc + 0x2c * 2], u16[A0 + 0x48] * 5 + u16[A0 + 0x48] / 3)
+		u16[0xfffffc00 + 0x3d * 2] = blendColorsPacked(u16[0x2522a6 + 0x04], u16[0x0a92fc + 0x2d * 2], u16[A0 + 0x48] * 5 + u16[A0 + 0x48] / 3)
+		u16[0xfffffc00 + 0x3e * 2] = blendColorsPacked(u16[0x2522a6 + 0x06], u16[0x0a92fc + 0x2e * 2], u16[A0 + 0x48] * 5 + u16[A0 + 0x48] / 3)
+	}
+	else if (u16[A0 + 0x48] == 48)
+	{
+		u16[0xfffffc00 + 0x3b * 2] = u16[0x0a92fc + 0x2b * 2]
+		u16[0xfffffc00 + 0x3c * 2] = u16[0x0a92fc + 0x2c * 2]
+		u16[0xfffffc00 + 0x3d * 2] = u16[0x0a92fc + 0x2d * 2]
+		u16[0xfffffc00 + 0x3e * 2] = u16[0x0a92fc + 0x2e * 2]
+		Object.TriggerUnloading()
+	}
+	
+	++u16[A0 + 0x48]
+}
+
+//# address-hook(0x07305a)
+function void fn07305a()
+{
+	if (!ssf.big_arm_fade)
+	{
+		base.fn07305a()
+		return
+	}
+	
+	// Handling for Big Arms fight on Sonic's path:
+	//  Music change, fade to dark sky
+	if (u16[A0 + 0x48] == 0)
+	{
+		playMusic(MUSIC_CTRL_FADEOUT)
+	}
+	else if (u16[A0 + 0x48] == 120)
+	{
+		playMusic(MUSIC_BIGARMS)
+		level.boss_encounter = 2	// Usually only 0 or 1, but we're using a value of 2 here for "chooseFittingMusic"
+	}
+
+	u8 fade_steps = 0x10
+	
+	if (ssf.big_arm_fade == 3)
+		fade_steps = 0x01
+	else if (ssf.big_arm_fade == 2)
+		fade_steps = 0x0c
+
+	// Sky palette fade steps
+	if (u16[A0 + 0x48] < 48 && u16[A0 + 0x48] % fade_steps == 0)
+	{
+		u16[0xfffffc00 + 0x3b * 2] = blendColorsPacked(u16[0x0a92fc + 0x2b * 2], u16[0x2522a6], u16[A0 + 0x48] * 5 + u16[A0 + 0x48] / 3)
+		u16[0xfffffc00 + 0x3c * 2] = blendColorsPacked(u16[0x0a92fc + 0x2c * 2], u16[0x2522a6 + 0x02], u16[A0 + 0x48] * 5 + u16[A0 + 0x48] / 3)
+		u16[0xfffffc00 + 0x3d * 2] = blendColorsPacked(u16[0x0a92fc + 0x2d * 2], u16[0x2522a6 + 0x04], u16[A0 + 0x48] * 5 + u16[A0 + 0x48] / 3)
+		u16[0xfffffc00 + 0x3e * 2] = blendColorsPacked(u16[0x0a92fc + 0x2e * 2], u16[0x2522a6 + 0x06], u16[A0 + 0x48] * 5 + u16[A0 + 0x48] / 3)
+	}
+	else if (u16[A0 + 0x48] == 48)
+	{
+		u16[0xfffffc00 + 0x3b * 2] = u16[0x2522a6]
+		u16[0xfffffc00 + 0x3c * 2] = u16[0x2522a6 + 0x02]
+		u16[0xfffffc00 + 0x3d * 2] = u16[0x2522a6 + 0x04]
+		u16[0xfffffc00 + 0x3e * 2] = u16[0x2522a6 + 0x06]
+	}
+
+	++u16[A0 + 0x48]
+	if (u16[A0 + 0x48] <= 120)
+		return
+
+	if (allocDynamicObjectStd())
+	{
+		// Spawn Big Arms
+		objA1.update_address = 0x074262
+	}
+	fn0852ae()
+}
+
+//# address-hook(0x06d104) end(0x06d138)
+function void fn06d104()
+{
+	if (!ssf.mgz_to_cnz)
+	{
+		base.fn06d104()
+		return
+	}
+	
+	if objA0.value39 == 0
+		objA0.value42 = 0
+	
+	if (ssf.mgz_to_cnz == 2)
+	{
+		u32 fadeAdd1 = (objA0.value42 >= 0x73) ? 0x364896 + 0x120 : 0x0A8F9C
+		u32 fadeAdd2 = (objA0.value42 >= 0x73) ? 0x364896 + 0x1e0  : 0x364896 + 0x120  
+		
+		if (objA0.value42 > 0x37 && objA0.value42 < 0x73)
+		{	
+			for (u8 i = 0; i < 16; i++)
+			{
+				u16[0xfffffc00 + (0x30 + i)*2] = blendColorsPacked(u16[fadeAdd1 + i*2], u16[fadeAdd2 + i*2], min(0x100, 0x100 * (objA0.value42 - 0x37) / 0x3c))
+			}
+		}
+		else if (objA0.value42 > 0x73 && objA0.value42 < 0xaf)
+		{	
+			for (u8 i = 0; i < 16; i++)
+			{
+				u16[0xfffffc00 + (0x30 + i)*2] = blendColorsPacked(u16[fadeAdd1 + i*2], u16[fadeAdd2 + i*2], min(0x100, 0x100 * (objA0.value42 - 0x73) / 0x3c))
+			}
+		}
+	}
+	else
+	{
+		u32 fadeAdd1 = (objA0.value42 >= 0x94) ? 0x364896 + 0x120 : 0x0A8F9C
+		u32 fadeAdd2 = (objA0.value42 >= 0x94) ? 0x364896 + 0x1e0  : 0x364896 + 0x120  
+		
+		if (objA0.value42 < 0x94)
+		{	
+			for (u8 i = 0; i < 16; i++)
+			{
+				u16[0xfffffc00 + (0x30 + i)*2] = blendColorsPacked(u16[fadeAdd1 + i*2], u16[fadeAdd2 + i*2], min(0x100, 0x100 * objA0.value42 / 0x94))
+			}
+		}
+		else if (objA0.value42 < 0xe6)
+		{	
+			for (u8 i = 0; i < 16; i++)
+			{
+				u16[0xfffffc00 + (0x30 + i)*2] = blendColorsPacked(u16[fadeAdd1 + i*2], u16[fadeAdd2 + i*2], min(0x100, 0x100 * (objA0.value42 - 0x94) / 0x52))
+			}
+		}
+	}
+
+	objA0.value42++		
+
+	--objA0.countdown_value
+	if (objA0.countdown_value >= 0)
+		return
+	
+	u16 offset = objA0.value39
+	objA0.countdown_value = u16[0x06d14c + offset]
+	objA0.value39 += 2
+	if (objA0.value39 >= 0x20)
+	{
+		fn06d13c()
+	}
+}
+
+// Day Palette Function
+//# address-hook(0x23e1aa) end(0x23e1d8)
+function void fn23e1aa()
+{
+	if (!ssf.icz_fade)
+	{
+		base.fn23e1aa()
+		return
+	}
+	
+	if ((global.game_mode & 0x80) == 0)
+		A1 = 0xfffffc62
+	else
+		A1 = 0xfffffce2
+	
+	u32[(A1+=4)-4] = u32[0x0a91fe]
+	u32[(A1+=4)-4] = u32[0x0a91fe + 0x04]
+	u32[(A1+=4)-4] = u32[0x0a91fe + 0x08]
+	u32[(A1+=4)-4] = u32[0x0a91fe + 0x0c]
+	u32[0xfffffc7c] = u32[0x0a91fe + 0x1a]			// New line, corrects original S3&K glitch with brightest two colors in background reflections on water
+	objA1.update_address = u32[0x0a91fe + 0x10]
+}
+
+// Dawn Palette Function
+//# address-hook(0x23e20e) end(0x23e23c)
+function void fn23e20e()
+{
+	if (!ssf.icz_fade)
+	{
+		base.fn23e20e()
+		return
+	}
+	
+	if ((global.game_mode & 0x80) == 0)
+		A1 = 0xfffffc62
+	else
+		A1 = 0xfffffce2
+	
+	u32[(A1+=4)-4] = u32[0x071a08]
+	u32[(A1+=4)-4] = u32[0x071a08 + 0x04]
+	u32[(A1+=4)-4] = u32[0x071a08 + 0x08]
+	u32[(A1+=4)-4] = u32[0x071a08 + 0x0c]
+	u32[0xfffffc7c] = u32[0x0a91fe + 0x1a]			// This uses same value as daytime here. 
+	objA1.update_address = u32[0x071a08 + 0x10]
+}
+
+//# address-hook(0x071420) end(0x07143e)
+function void fn071420()
+{
+	if (!ssf.icz_fade)
+	{
+		base.fn071420()
+		return
+	}
+	
+	u8 fade_steps = 0x40
+	
+	for (u8 i = 0; i < 10; i++)
+	{
+		u16[0xfffffc00 + (0x31 + i)*2] = blendColorsPacked(u16[0x071a08 + i*2], u16[0x0a91fe + i*2], min(0x100, 0x100 * objA0.countdown_value / fade_steps))
+	}
+	
+	objA0.countdown_value++
+	
+	if objA0.countdown_value > fade_steps
+		UnloadObject()
+}

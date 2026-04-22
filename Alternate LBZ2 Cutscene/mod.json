@@ -5,7 +5,7 @@
 		"UniqueID": "alt-lbz2-cutscene",
 		"Author": "PaperTriangle",
 		"Description": "A more Origins like cutscene for LBZ2.",
-		"ModVersion": "2.7"
+		"ModVersion": "2.8"
 	},
 	"OtherMods":
 	{
@@ -15,11 +15,17 @@
 			"IsRequired": "0",
 			"Priority": "Lower"
 		},
-		"big-arm-fade":
+		"smoother-skies":
 		{
-			"DisplayName": "Better Big Arm Fade",
+			"DisplayName": "Smoother Skies",
 			"IsRequired": "0",
 			"Priority": "Lower"
+		},
+		"time-consistent-adventure":
+		{
+			"DisplayName": "Time Consistent Adventure",
+			"IsRequired": "0",
+			"Priority": "Higher"
 		},
 		"Origins Parity Galore":
 		{

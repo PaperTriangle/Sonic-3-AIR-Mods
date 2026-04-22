@@ -185,12 +185,12 @@ function void fn072e30()
 
 	if (u16[A0 + 0x48] == 48)
 	{
-		if (Mods.isModActive("Better Big Arm Fade")) // We want to use the saved palette values here
+		if (Mods.isModActive("Smoother Skies")) // We want to use the level palette values here
 		{
-			u16[0xfffffc00 + 0x3b * 2] = System.getGlobalVariableValueByName("bigarmfade.p1")
-			u16[0xfffffc00 + 0x3c * 2] = System.getGlobalVariableValueByName("bigarmfade.p2")
-			u16[0xfffffc00 + 0x3d * 2] = System.getGlobalVariableValueByName("bigarmfade.p3")
-			u16[0xfffffc00 + 0x3e * 2] = System.getGlobalVariableValueByName("bigarmfade.p4")
+			u16[0xfffffc00 + 0x3b * 2] = u16[0x0a92fc + 0x2b * 2]
+			u16[0xfffffc00 + 0x3c * 2] = u16[0x0a92fc + 0x2c * 2]
+			u16[0xfffffc00 + 0x3d * 2] = u16[0x0a92fc + 0x2d * 2]
+			u16[0xfffffc00 + 0x3e * 2] = u16[0x0a92fc + 0x2e * 2]
 		}
 		else
 		{

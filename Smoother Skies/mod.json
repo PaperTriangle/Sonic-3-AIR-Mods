@@ -1,0 +1,79 @@
+{
+	"Metadata":
+	{
+		"Name": "Smoother Skies",
+		"UniqueID": "smoother-skies",
+		"Author": "PaperTriangle",
+		"Description": "Smoother sky fade for MGZ to CNZ transition, ICZ's outdoors transition and the Big Arm fight's sky transition.",
+		"ModVersion": "1.0"
+	},
+	"OtherMods":
+	{
+		"weathermod":
+		{
+			"DisplayName": "WeatherMod v3",
+			"IsRequired": "0",
+			"Priority": "Higher"
+		},
+		"AmbientMod":
+		{
+			"DisplayName": "AmbientMod",
+			"IsRequired": "0",
+			"Priority": "Higher"
+		},
+		"alt-lbz2-cutscene":
+		{
+			"DisplayName": "Alternate LBZ2 Cutscene",
+			"IsRequired": "0",
+			"Priority": "Higher"
+		},
+		"time-consistent-adventure":
+		{
+			"DisplayName": "Time Consistent Adventure",
+			"IsRequired": "0",
+			"Priority": "Higher"
+		}
+	},
+	"Settings":
+	{
+		"List":
+		[
+			{
+				"InternalName": "ssf.mgz_to_cnz",
+				"DisplayName": "MGZ to CNZ Fade",
+				"Variable": "ssf.mgz_to_cnz",
+				"DefaultValue": "2",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Original Length",
+					"2": "Shorter & Smoother"
+				}
+			},
+			{
+				"InternalName": "ssf.icz_fade",
+				"DisplayName": "ICZ Outside Fade",
+				"Variable": "ssf.icz_fade",
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Smooth"
+				}
+			},
+			{
+				"InternalName": "ssf.big_arm_fade",
+				"DisplayName": "Big Arm Fade",
+				"Variable": "ssf.big_arm_fade",
+				"DefaultValue": "3",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Original Style",
+					"2": "Stepped",
+					"3": "Smooth"
+				}
+			}
+		]
+	}
+}

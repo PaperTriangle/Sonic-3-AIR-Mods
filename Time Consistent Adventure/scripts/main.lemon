@@ -1103,12 +1103,10 @@ function void fn23e20e()
 // LBZ Specific Features
 //----------------------
 
-#if !BBAF_ACTIVE
-
 //# address-hook(0x072e30)
 function void fn072e30()
 {
-	if (!tca.lbz)
+	if (!tca.lbz || Mods.isModActive("Smoother Skies"))
 	{
 		base.fn072e30()
 		return
@@ -1175,7 +1173,7 @@ function void fn072e30()
 //# address-hook(0x07305a)
 function void fn07305a()
 {
-	if (!tca.lbz)
+	if (!tca.lbz || Mods.isModActive("Smoother Skies"))
 	{
 		base.fn07305a()
 		return
@@ -1227,8 +1225,6 @@ function void fn07305a()
 	}
 	fn0852ae()
 }
-
-#endif
 
 //-----------------------
 // SOZ Specific Functions

@@ -11,14 +11,7 @@ Converts the LBZ2 Ending scene after beating Big Arm to me a bit more like Origi
 
 I know this is not _exactly_ like Origins, but this is as close as I intend to get.
 
-I would recommend using this mod along with **LBZ Eggman Fleeing**, **Origins Parity Galore** and **Better Big Arm Fade**! You will need to load this mod over them.
-
-## Better Big Arm Fade
-This mod makes the fade effect of the background at the start of the Big Arm fight use the Sonic 3 A.I.R. methods to blend the background palette colours. This allows the fade to work with custom palettes!
-
-There is a setting to decide how smooth the blend is.
-
-**PLEASE NOTE:** If you use **Ambient Mod** for the rain in the Big Arm fight, please place it above this mod or the rain will not end correctly!
+I would recommend using this mod along with **LBZ Eggman Fleeing**, **Origins Parity Galore**, **Origins Screen Resolution** and **Smoother Skies**! You will need to load this mod over them.
 
 ## Break That Pipe!
 This mod simply makes the LBZ2 pipes breakable by Knuckles and Super Sonic.
@@ -52,7 +45,7 @@ Allows Knuckles' glide to land on dynamic objects and prevents the glide from st
 Also adds in a couple of extra frames to Knuckles from Origins and some other options like Hyper Stars for Hyper Knuckles.
 
 ## ESU Origins Resolution Tweaks
-Some tweaks for ESU characters so they work with the Origins Resolution mod... Mostly around intro cutscenes. Also replaces the act clear icons with a PNG version of the UI symbol to prevent water palettes interacting with the HUD.
+Some tweaks for ESU characters so they work with the **Origins Screen Resolution** mod... Mostly around intro cutscenes. Also replaces the act clear icons with a PNG version of the UI symbol to prevent water palettes interacting with the HUD.
 
 ## Extended Palette For Giant Ring
 Makes the Giant Ring operate using an extended palette line. Preventing the Super Rings from messing with stage / HUD palettes.
@@ -119,8 +112,10 @@ Hud Elements have compatibility with **Haru's Forever-esque HUD**. Lives icon ha
 ## Paper's Pause
 Adds a new pause menu that is how I may have imagined it if the game was re-released in the '90s.
 
-## Rotate
-Makes player rotation worse... Made this as a test— I do not recommend using...
+## Smoother Skies
+Makes the fades of sky palettes smoother during the MGZ to CNZ transition, the ICZ post Big Icedus sky fade and the Big Arm intro and outro fade.
+
+This mod look directly at palette locations in the ROM and blends between them. This means it ***should*** work with custom rawdata palettes. Details on each specific palette address are located in a comment within the lemonscript file.
 
 ## Static Monitors Plus Hyper Rings
 Places Hyper Ring power ups in zones at static locations. Most of the time this overrides existing power ups, but sometimes it adds new monitors. I created this because I wanted to use the Hyper Ring power up, but I don't like randomisers.
