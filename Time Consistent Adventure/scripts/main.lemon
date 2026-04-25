@@ -1046,23 +1046,16 @@ function void fn23e20e()
 		u32 palAddress = transition_state == 0 ? 0x3fff30 : 0x3fff60
 		
 		if ((global.game_mode & 0x80) == 0)
-		{
 			A1 = 0xfffffc62
-			u32[(A1+=4)-4] = u32[palAddress]				// 0x0cee0cca
-			u32[(A1+=4)-4] = u32[palAddress + 0x04]			// 0x0c860c64
-			u32[(A1+=4)-4] = u32[palAddress + 0x08]			// 0x0c440a44
-			u32[(A1+=4)-4] = u32[palAddress + 0x0c]			// 0x08240624
-			u32[0xfffffcfc] = u32[palAddress + 0x1a]		// 0x0c640ea8	// New line, corrects original S3&K glitch with brightest two colors in background reflections on water
-			objA1.update_address = u32[palAddress + 0x10]	// 0x02020604
-		}
-
-		A1 = 0xfffffce2
-		u32[(A1+=4)-4] = u32[palAddress]				// 0x0cee0cca
-		u32[(A1+=4)-4] = u32[palAddress + 0x04]			// 0x0c860c64
-		u32[(A1+=4)-4] = u32[palAddress + 0x08]			// 0x0c440a44
-		u32[(A1+=4)-4] = u32[palAddress + 0x0c]			// 0x08240624
-		u32[0xfffffcfc] = u32[palAddress + 0x1a]		// 0x0c640ea8	// New line, corrects original S3&K glitch with brightest two colors in background reflections on water
-		objA1.update_address = u32[palAddress + 0x10]	// 0x02020604
+		else
+			A1 = 0xfffffce2
+		
+		u32[(A1+=4)-4] = u32[palAddress]
+		u32[(A1+=4)-4] = u32[palAddress + 0x04]
+		u32[(A1+=4)-4] = u32[palAddress + 0x08]
+		u32[(A1+=4)-4] = u32[palAddress + 0x0c]
+		u32[0xfffffcfc] = u32[palAddress + 0x1a]		// New line, corrects original S3&K glitch with brightest two colors in background reflections on water
+		objA1.update_address = u32[palAddress + 0x10]
 	}
 	else
 	{

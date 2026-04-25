@@ -58,7 +58,7 @@
 			},
 			{
 				"InternalName": "sff.lookup_animation_fix",
-				"DisplayName": "Fix Look Up Animation Restart",
+				"DisplayName": "Fix Look Up Animation Reset",
 				"Variable": "sff.lookup_animation_fix",
 				"Category": "Tails Settings",
 				"DefaultValue": "1",
