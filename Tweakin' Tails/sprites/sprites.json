@@ -1,0 +1,29 @@
+{
+	"super_flicky_0":  { "File": "super_flicky.bmp", "Rect": "1,1,16,16", "Center": "8,8" },
+	"super_flicky_1":  { "File": "super_flicky.bmp", "Rect": "18,1,16,15", "Center": "8,8" },
+	"super_flicky_2":  { "File": "super_flicky.bmp", "Rect": "35,1,15,21", "Center": "8,12" },
+	
+	"green_super_flicky_0":  { "File": "super_flicky_green_eyes.bmp", "Rect": "1,1,16,16", "Center": "8,8" },
+	"green_super_flicky_1":  { "File": "super_flicky_green_eyes.bmp", "Rect": "18,1,16,15", "Center": "8,8" },
+	"green_super_flicky_2":  { "File": "super_flicky_green_eyes.bmp", "Rect": "35,1,15,21", "Center": "8,12" },
+	
+	"tails_victory_1": { "File": "tails_victory.bmp", "Rect": "1,1,24,32", "Center": "12,16" },
+	"tails_victory_2": { "File": "tails_victory.bmp", "Rect": "26,1,40,40", "Center": "28,24" },
+	
+	"tails_tails_victory_1": { "File": "tails_victory.bmp", "Rect": "67,1,17,24", "Center": "21,8" },
+	"tails_tails_victory_2": { "File": "tails_victory.bmp", "Rect": "84,1,24,24", "Center": "28,8" },
+	"tails_tails_victory_3": { "File": "tails_victory.bmp", "Rect": "67,26,25,24", "Center": "28,8" },
+	"tails_tails_victory_4": { "File": "tails_victory.bmp", "Rect": "1,34,24,16", "Center": "28,0" },
+	"tails_tails_victory_5": { "File": "tails_victory.bmp", "Rect": "93,26,24,24", "Center": "28,8" },
+	
+	"ariff_tails_victory_1":  { "File": "ariff_tails_victory.bmp", "Rect": "1,1,23,31", "Center": "11,15" },
+	"ariff_tails_victory_2":  { "File": "ariff_tails_victory.bmp", "Rect": "25,1,30,35", "Center": "18,19" },
+	
+	"ariff_tails_tails_victory_1":  { "File": "ariff_tails_victory.bmp", "Rect": "56,1,16,24", "Center": "21,8" },
+	"ariff_tails_tails_victory_2":  { "File": "ariff_tails_victory.bmp", "Rect": "73,1,24,24", "Center": "28,8" },
+	"ariff_tails_tails_victory_3":  { "File": "ariff_tails_victory.bmp", "Rect": "56,26,24,24", "Center": "28,8" },
+	"ariff_tails_tails_victory_4":  { "File": "ariff_tails_victory.bmp", "Rect": "31,37,24,16", "Center": "28,0" },
+	"ariff_tails_tails_victory_5":  { "File": "ariff_tails_victory.bmp", "Rect": "6,37,24,24", "Center": "28,8" },
+	
+	
+}

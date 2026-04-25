@@ -6,7 +6,9 @@ global bool sff.tails_flight
 global bool sff.super_drown
 global bool sff.no_up
 global u8 sff.super_breaks_stuff
-global bool sff.animation_fix
+global bool sff.lookup_animation_fix
+global bool sff.victory_animation
+global bool sff.spindash_animation_fix
 global bool sff.vine_tweak
 
 define u8 global.xtrachar = u8[0xffffe654]
@@ -18,7 +20,19 @@ define u8 global.xtrachar = u8[0xffffe654]
 // Render the new sprites
 function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 {
-	bool prioFlag = sff.behind_tiles ? (u16[0xffffb000 + 0x0a] & sprite_attribute.PRIORITY) == sprite_attribute.PRIORITY : true
+	bool prioFlag
+	
+	if (sff.victory_animation && global.xtrachar == 0 && A0 == 0xffffcc0a && u8[0xffff0000 + u16[A0 + 0x30] + 0x22] == 0xa6)
+	{
+		prioFlag = (u16[0xffffcc0a + 0x0a] & sprite_attribute.PRIORITY) == sprite_attribute.PRIORITY
+		
+		u64 key = stringformat(Mods.isModActive("Plush's Ariff Tails") ? "ariff_tails_tails_victory_%d" : "tails_tails_victory_%d", objA0.animation.sprite - 0x21)
+		u8 atex = 0x40 + 0x20 * CHARACTER_TAILS
+		Renderer.drawCustomSprite(key, px, py, atex, objA0.render_flags | (prioFlag ? SPRITE_FLAG_PRIO : 0), renderQueue)
+		return true
+	}
+	
+	prioFlag = sff.behind_tiles ? (u16[0xffffb000 + 0x0a] & sprite_attribute.PRIORITY) == sprite_attribute.PRIORITY : true
 	
     if(objA0.update_address == 0x01a1f4 && global.characters == CHARS_TAILS_ALONE) 
     {
@@ -782,14 +796,14 @@ function void fn018466()
 	}
 }
 
-//----------------------------------------------//
-// Tails' tails animation fix while looking up. //
-//----------------------------------------------//
+//---------------------------------------------------------------------//
+// Tails' tails animation fix while looking up and during Vitory pose. //
+//---------------------------------------------------------------------//
 
 //# address-hook(0x0160d2)
 function void TailsTails.Update()
 {
-	if (!sff.animation_fix)
+	if (global.xtrachar != 0 || !(sff.lookup_animation_fix || sff.lookup_animation_fix))
 	{
 		base.TailsTails.Update()
 		return
@@ -803,9 +817,9 @@ function void TailsTails.Update()
 	objA0.flags2a = u8[A2 + 0x2a]			// Flags
 	objA0.sprite_priority = u16[A2 + 0x08]
 	objA0.sprite_attributes = (objA0.sprite_attributes & ~sprite_attribute.PRIORITY) | (u16[A2 + 0x0a] & sprite_attribute.PRIORITY)
-
+	
 	D0 = u8[A2 + 0x20]
-	if (u8[A2 + 0x20] == char.state.LOOKING_UP)
+	if (sff.lookup_animation_fix && u8[A2 + 0x20] == char.state.LOOKING_UP) || (sff.victory_animation && u8[A2 + 0x20] == char.state.WIN_POSE)
 	{
 		D0 = 5
 	}
@@ -821,16 +835,60 @@ function void TailsTails.Update()
 		u8[A0 + 0x34] = D0.u8
 		objA0.state = u8[0x016164 + D0.s16]
 	}
-
+	
 	A1 = 0x016196
 	UpdateTailsAnimation_inner()
 	if (global.inv_gravity && objA0.state != 0x03)
 	{
 		objA0.render_flags ^= render_flag.FLIP_Y
 	}
-
+	
 	TailsTails.UpdateSpritePatterns()
+	
 	DrawObject()
+}
+
+// Move the damn tails at act transition...
+//# address-hook(0x04f3b0) end(0x04f3d2)
+function void fn04f3b0()
+{
+	u16[0xffffcc0a + 0x10] -= D0.u16
+	u16[0xffffcc0a + 0x14] -= D1.u16
+	
+	base.fn04f3b0()
+}
+
+// Custom Tails victory pose
+function u64 Standalone.getModdedAnimationSpriteKey(u8 character, u16 animationSpriteEx)
+{
+
+#if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
+	if getECFCharBufferName(A0)
+		return base.Standalone.getModdedAnimationSpriteKey(character, animationSpriteEx)
+#endif
+
+	if sff.victory_animation && global.xtrachar == 0 && character == 1 && objA0.mapping_offset != 0x344bb8
+	{
+		if animationSpriteEx == 0xa5
+			return Mods.isModActive("Plush's Ariff Tails") ? "ariff_tails_victory_1" : "tails_victory_1"
+		else if animationSpriteEx == 0xa6
+			return Mods.isModActive("Plush's Ariff Tails") ? "ariff_tails_victory_2" : "tails_victory_2"
+	}
+
+	return base.Standalone.getModdedAnimationSpriteKey(character, animationSpriteEx)
+}
+
+function u8 lookupAngleByVector(s16 dx, s16 dy)
+{
+	if sff.spindash_animation_fix && (A0 == 0xffffcc0a && dx == 0 && dy == 0) && !(u8[0xffff0000 + u16[A0 + 0x30] + 0x2a] & char.flag.IN_AIR)
+	{
+		if u8[0xffff0000 + u16[A0 + 0x30] + 0x2a] & char.flag.FACING_LEFT
+			return 0x80
+		else
+			return 0x00
+	}
+	
+	return base.lookupAngleByVector(dx, dy)
 }
 
 //----------------------------------------------------//

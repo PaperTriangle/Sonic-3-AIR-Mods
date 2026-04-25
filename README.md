@@ -127,17 +127,17 @@ Allows Sonic to hold a Drop Dash while bouncing off of more objects. Also allows
 
 Has some compatibility with **ES Mighty**, **ES Amy** and **ES 3D2D Shadow**.
 
-## Super Flicky Fix
-Makes the Super Flickies render using Sonic's player palette line. Meaning game objects should not flash yellow.
-
-Has some other options like Super/Hyper Stars for Super/Hyper Tails. Also has some compatibility with **Classic Hyper Trails** to make the OG Super Tails more "Super".
-
 ## Time Consistent Adventure
 This mod adjusts the palettes and some stage art for many zones to provide a more consistent passage of time with the Sonic & Tails and the Knuckles adventures.
 
 Thanks to Useott this mod also includes the logic to run it as either the originally intended zone order or the as released zone order!
 
 **PLEASE NOTE:** If you use the "as released"  order this does disable many features of the mod.
+
+## Tweakin' Tails
+Started as a mod that makes the Super Flickies render using Sonic's player palette line. Meaning game objects should not flash yellow.
+
+Has since been expanded with more options for Tails like Super/Hyper Stars for Super/Hyper Tails, Super Tails breaking walls, faster flight ascention while Super/Hyper & Tails' tail animation tweaks for looking up and the victory pose.
 
 ## Underwater Super/Hyper Palettes
 Adds an underwater palette for Hyper Sonic, underwater palette options for Tails and Knuckles, and also has some options to make the flash less white to align with some of the ESU characters.
