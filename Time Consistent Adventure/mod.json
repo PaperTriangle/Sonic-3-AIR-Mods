@@ -15,12 +15,6 @@
 			"IsRequired": "0",
 			"Priority": "Higher"
 		},
-		"useott-s-original-zone-order":
-		{
-			"DisplayName": "Useott's Original Zone Order",
-			"IsRequired": "0",
-			"Priority": "Lower"
-		},
 		"data-select-options":
 		{
 			"DisplayName": "Data Select Options",
