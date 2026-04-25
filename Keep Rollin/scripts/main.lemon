@@ -283,6 +283,23 @@ function void fn0335c4()
 	base.fn0335c4()
 }
 
+// Fix CNZ Cylinder Rolling
+//# address-hook(0x0338c4) end(0x033abe)
+function void fn0338c4()
+{
+	u8 bit = (1 << D6.u8)
+
+	if (u8[A1 + 0x2a] & char.flag.ROLLING) && ((objA0.flags2a & bit) != 0) && (u8[A2 + 0x01] == 0) && (debug_mode.state == 0 && abs(objA1.groundspeed) >= 0x300) && !(u8[A1 + 0x2a] & char.flag.IN_AIR)
+	{
+		u8[A1 + 0x2a] &= ~char.flag.ROLLING
+		objA1.hitbox_extends.x = char.hitbox.x.UPRIGHT
+		objA1.hitbox_extends.y = char.hitbox.y.UPRIGHT
+		objA1.state.both = char.state.RUNNING2
+	}
+	
+	base.fn0338c4()
+}
+
 // AIZ Hollow Tree Running
 function void fn01f7ce()
 {
