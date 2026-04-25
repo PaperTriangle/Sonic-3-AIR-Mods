@@ -9,6 +9,7 @@ global u8 sff.super_breaks_stuff
 global bool sff.lookup_animation_fix
 global bool sff.victory_animation
 global bool sff.spindash_animation_fix
+global bool sff.disable_return_sounds
 global bool sff.vine_tweak
 
 define u8 global.xtrachar = u8[0xffffe654]
@@ -852,8 +853,11 @@ function void TailsTails.Update()
 //# address-hook(0x04f3b0) end(0x04f3d2)
 function void fn04f3b0()
 {
-	u16[0xffffcc0a + 0x10] -= D0.u16
-	u16[0xffffcc0a + 0x14] -= D1.u16
+	if (global.xtrachar == 0) // Need to do this because of ES Ray.
+	{
+		u16[0xffffcc0a + 0x10] -= D0.u16
+		u16[0xffffcc0a + 0x14] -= D1.u16
+	}
 	
 	base.fn04f3b0()
 }
@@ -889,6 +893,15 @@ function u8 lookupAngleByVector(s16 dx, s16 dy)
 	}
 	
 	return base.lookupAngleByVector(dx, dy)
+}
+
+//# address-hook(0x001380) end(0x0013c0)
+function void PlaySound()
+{
+	if (sff.disable_return_sounds && tails.ai_routine == 0x04 && D0 == 0xba)
+		return
+	
+	base.PlaySound()
 }
 
 //----------------------------------------------------//

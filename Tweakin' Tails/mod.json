@@ -5,7 +5,7 @@
 		"UniqueID": "tweakin-tails",
 		"Author": "PaperTriangle",
 		"Description": "Fixes handling of the super flicky to use Sonic's extended palette and provides some other tweaks for tails.",
-		"ModVersion": "2.0"
+		"ModVersion": "2.1"
 	},
 	"OtherMods":
 	{
@@ -93,6 +93,18 @@
 				}
 			},
 			{
+				"InternalName": "sff.disable_return_sounds",
+				"DisplayName": "No Returning Flight Sound",
+				"Variable": "sff.disable_return_sounds",
+				"Category": "Tails Settings",
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
 				"InternalName": "sff.tails_flight",
 				"DisplayName": "Tails' Flight Ascends Faster",
 				"Variable": "sff.tails_flight",
@@ -144,7 +156,7 @@
 			},
 			{
 				"InternalName": "sff.behind_tiles",
-				"DisplayName": "Flicks Go Behind Tiles",
+				"DisplayName": "Flickies Go Behind Tiles",
 				"Variable": "sff.behind_tiles",
 				"DefaultValue": "0",
 				"Category": "Flicky Settings",
