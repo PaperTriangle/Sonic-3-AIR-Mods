@@ -1234,7 +1234,7 @@ function void UpdateLevelScrolling.LBZ2()
 					
 				SpriteHandle multiply = Renderer.addSpriteHandle("lbz2_fading_sky", 0, 0, 0x4000)
 				multiply.setScale(getScreenWidth(), getScreenHeight())
-				multiply.setOpacity(System.getGlobalVariableValueByName("bigarmfade.steps") == 1 ? 1.0f * altlbz2cs.skyfade / 0x50 : altlbz2cs.skyfade / 0x10 * 0.20f)
+				multiply.setOpacity(System.getGlobalVariableValueByName("ssf.big_arm_fade") == 3 ? 1.0f * altlbz2cs.skyfade / 0x50 : altlbz2cs.skyfade / 0x10 * 0.20f)
 			}
 			else
 			{
