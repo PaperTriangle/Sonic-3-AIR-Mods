@@ -12,7 +12,6 @@ global bool tca.ssz_knux
 
 global bool tca.intended
 global bool tca.fadetype
-global bool tca.fadespeed
 global bool tca.mgz2boss
 global bool tca.leftescape
 global bool tca.fbz_s3_icon
@@ -109,7 +108,7 @@ function void yieldExecution()
 			transition_state = 1
 			transition_time = 0
 		}
-		else if ((camera.position.x.u16 > (!tca.fadespeed ? 0x27e8 : 0x28b8) - getScreenExtend() && camera.position.y.u16 > 0x0cc0) && transition_state == 0)
+		else if ((camera.position.x.u16 > 0x27e8 - getScreenExtend() && camera.position.y.u16 > 0x0cc0) && transition_state == 0)
 		{
 			transition_state = 1
 			transition_time = 0
@@ -119,8 +118,8 @@ function void yieldExecution()
 		{
 			System.loadExternalRawData("MGZ2_Palette", 0x3fff30)
 			
-			transition_time += !tca.fadespeed ? 1 : 2
-			if (transition_time % (tca.fadespeed ? 30 : 24) == 0 || !tca.fadetype)
+			transition_time++
+			if (transition_time % 24 == 0 || !tca.fadetype)
 			{
 				for (u8 i = 0; i < 31; i++)
 				{
@@ -164,8 +163,8 @@ function void yieldExecution()
 		{	
 			System.loadExternalRawData("MGZ2_Palette_Night", 0x3fff30)
 			
-			transition_time += !tca.fadespeed ? 1 : 2
-			if (transition_time % (tca.fadespeed ? 30 : 24) == 0 || !tca.fadetype)
+			transition_time++
+			if (transition_time % 24 == 0 || !tca.fadetype)
 			{
 				for (u8 i = 0; i < 31; i++)
 				{
@@ -209,8 +208,8 @@ function void yieldExecution()
 			System.loadExternalRawData("FBZ_Palette_Boss", 0x3fff30)
 			System.loadExternalRawData("FBZ_Palette_Released", 0x3fff60)
 			
-			transition_time += !tca.fadespeed ? 1 : 2
-			if (transition_time % (tca.fadespeed ? 30 : 24) == 0 || !tca.fadetype)
+			transition_time += 4
+			if (transition_time % 40 == 0 || !tca.fadetype)
 			{
 				for (u8 i = 0; i < 8; i++)
 				{
@@ -238,7 +237,7 @@ function void yieldExecution()
 			System.loadExternalRawData("ICZ_Dawn_Palette", 0x3fff30)
 			System.loadExternalRawData("ICZ_Morning_Palette", 0x3fff60)
 			transition_time += 2
-			if (transition_time % 24 == 0 || !tca.fadetype)
+			if (transition_time % 30 == 0 || !tca.fadetype)
 			{
 				for (u8 i = 0; i < 15; i++)
 				{
@@ -251,8 +250,8 @@ function void yieldExecution()
 			System.loadExternalRawData("ICZ_Morning_Palette", 0x3fff30)
 			System.loadExternalRawData("ICZ_New_Palette", 0x3fff60)
 			
-			transition_time += 2
-			if (transition_time % 24 == 0 || !tca.fadetype)
+			transition_time += 4
+			if (transition_time % 40 == 0 || !tca.fadetype)
 			{
 				for (u8 i = 0; i < 15; i++)
 				{
@@ -266,7 +265,7 @@ function void yieldExecution()
 			System.loadExternalRawData("ICZ_New_Palette", 0x3fff60)
 			
 			transition_time += 2
-			if (transition_time % 24 == 0 || !tca.fadetype)
+			if (transition_time % 30 == 0 || !tca.fadetype)
 			{
 				for (u8 i = 0; i < 15; i++)
 				{
@@ -298,7 +297,7 @@ function void yieldExecution()
 			System.loadExternalRawData("ICZ_New_Palette", 0x3fff60)
 			
 			transition_time += 2
-			if (transition_time % 24 == 0 || !tca.fadetype)
+			if (transition_time % 30 == 0 || !tca.fadetype)
 			{
 				for (u8 i = 0; i < 15; i++)
 				{
@@ -355,8 +354,8 @@ function void yieldExecution()
 		
 		if (transition_state == 1 && transition_time <= 0x78) && (!global.game.paused) && tca.inssz1forreal
 		{	
-			transition_time += !tca.fadespeed ? 1 : 2
-			if (transition_time % (tca.fadespeed ? 30 : 24) == 0 || !tca.fadetype)
+			transition_time += 4
+			if (transition_time % 40 == 0 || !tca.fadetype)
 			{
 				System.loadExternalRawData("SSZ1_Palette_Original", 0x3fff30)
 							
@@ -389,10 +388,10 @@ function void yieldExecution()
 			if (transition_state == 1 && transition_time <= 0x78) && (!global.game.paused)
 			{	
 				System.loadExternalRawData("SSZK_Palette_Pre_Dawn", 0x0A979C)
-				transition_time += !tca.fadespeed ? 1 : 2
+				transition_time += 2
 				if (tca.ssz_knux_fade)
 				{
-					if (transition_time % (tca.fadespeed ? 30 : 24) == 0 || !tca.fadetype)
+					if (transition_time % 30 == 0 || !tca.fadetype)
 					{
 						System.loadExternalRawData(tca.pal_ssz_dawn ? "SSZK_Palette_Morning_Pink" : "SSZK_Palette_Morning", 0x3fff30)
 						
@@ -406,7 +405,7 @@ function void yieldExecution()
 						}
 					}
 
-					if (transition_time >= 0x79)
+					if (transition_time >= 0x78)
 					{
 						if (!tca.ssz_knux_longdawn)
 						{
@@ -418,7 +417,7 @@ function void yieldExecution()
 				}
 				else
 				{
-					if (transition_time % (tca.fadespeed ? 30 : 24) == 0 || !tca.fadetype)
+					if (transition_time % 30 == 0 || !tca.fadetype)
 					{
 						System.loadExternalRawData("SSZK_Palette_Original", 0x3fff30)
 						
@@ -432,7 +431,7 @@ function void yieldExecution()
 						}
 					}
 
-					if (transition_time >= 0x79)
+					if (transition_time >= 0x78)
 					{
 						transition_state = 3
 						System.loadExternalRawData("SSZK_Palette_Original", 0x0A979C)
@@ -443,8 +442,8 @@ function void yieldExecution()
 			else if (transition_state == 2 && transition_time <= 0x78) && (!global.game.paused)
 			{
 				System.loadExternalRawData(tca.pal_ssz_dawn ? "SSZK_Palette_Morning_Pink" : "SSZK_Palette_Morning", 0x0A979C)
-				transition_time += !tca.fadespeed ? 1 : 2
-				if (transition_time % (tca.fadespeed ? 30 : 24) == 0 || !tca.fadetype)
+				transition_time += 4
+				if (transition_time % 40 == 0 || !tca.fadetype)
 				{
 					System.loadExternalRawData("SSZK_Palette_Original", 0x3fff30)
 					
@@ -469,8 +468,8 @@ function void yieldExecution()
 			else if (transition_state == 1 && transition_time <= 0x78) && (!global.game.paused)
 			{
 				System.loadExternalRawData(tca.pal_ssz_dawn ? "SSZK_Palette_Morning_Pink" : "SSZK_Palette_Morning", 0x0A979C)
-				transition_time += !tca.fadespeed ? 1 : 2
-				if (transition_time % (tca.fadespeed ? 30 : 24) == 0 || !tca.fadetype)
+				transition_time += 4
+				if (transition_time % 40 == 0 || !tca.fadetype)
 				{
 					System.loadExternalRawData("SSZK_Palette_Original", 0x3fff30)
 					
@@ -484,7 +483,7 @@ function void yieldExecution()
 					}
 				}
 				
-				if (transition_time >= 0x79)
+				if (transition_time >= 0x78)
 				{
 					transition_state = 3
 					System.loadExternalRawData("SSZK_Palette_Original", 0x0A979C)
@@ -1359,7 +1358,7 @@ function void fn07ccb0()
 function void fn05e9c2()
 {
 	base.fn05e9c2()
-	if (tca.intended && tca.ssz_knux_fade && tca.ssz_knux_longdawn)
+	if (tca.intended && tca.ssz_knux_fade && tca.ssz_knux_longdawn && u8[0xfffffaa9] != 0)
 	{
 		transition_state = 2
 		transition_time = 0
@@ -1432,6 +1431,7 @@ function void TitleCard.Show()
 	if (tca.icz_trans_point && isKnucklesRoute() && global.zone_act == 0x0501 && camera.position.x.u16 > 0x3ad8 - getScreenExtend())
 	{
 		transition_state = 1
+		System.loadExternalRawData("ICZ_Morning_Palette", 0x3fff60)
 		transition_time = 0xff
 	}
 	

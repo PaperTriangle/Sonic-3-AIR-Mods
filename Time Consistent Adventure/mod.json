@@ -76,18 +76,6 @@
 				}
 			},
 			{
-				"InternalName": "tca.fadespeed",
-				"DisplayName": "Fade Speed",
-				"Variable": "tca.fadespeed",
-				"Category": "General Settings",	
-				"DefaultValue": "0",
-				"Options":
-				{
-					"0": "Regular",
-					"1": "Fast"
-				}
-			},
-			{
 				"InternalName": "tca.bg_stars",
 				"DisplayName": "Enable Starry Skies",
 				"Variable": "tca.bg_stars",
