@@ -859,12 +859,12 @@ function void fn07432a()
 	altlbz2cs.behind = true
 	
 	// Also push camera position here temporarily to account for screen height difference.
-	if (Mods.isModActive("Origins Screen Resolution"))
+	if (Mods.isModActive("Origins Screen Resolution") && camera.position.y.u16 > 0x0500)
 		camera.position.y.u16 -= (getScreenHeight() - 224)/2
 	
 	base.fn07432a()
 	
-	if (Mods.isModActive("Origins Screen Resolution"))
+	if (Mods.isModActive("Origins Screen Resolution") && camera.position.y.u16 > 0x0500)
 		camera.position.y.u16 += (getScreenHeight() - 224)/2
 	
 }
@@ -1050,7 +1050,7 @@ function void fn05449a()
 function void Renderer.drawCustomSprite(u64 key, s16 px, s16 py, u8 atex, u8 flags, u16 renderQueue)
 {
 	if (key == "lbz2_death_egg_platform" || key == "lbz2_death_egg_platformsupport" || key == "lbz2_death_egg_platformsupport" || key == "lbz2_death_egg")
-		if (camera.position.x.u16 < 0x4340)
+		if (camera.position.x.u16 + getScreenWidth()/2 < 0x4400)
 			return
 		else if (unused.lives_counter.player2 >= 0x60)
 			renderQueue = 0x9e04
@@ -1156,7 +1156,7 @@ function void VDP.zeroVRAM(u16 bytes)
 //# address-hook(0x0745e2) end(0x074616)
 function void fn0745e2()
 {
-	if (objA0.position.y.u16 < camera.foreground.y.u16 + 0x88 + (getScreenHeight() - 224)/2)
+	if (objA0.position.y.u16 < camera.foreground.y.u16 + 0x88 + (camera.position.y.u16 > 0x0500 ? (getScreenHeight() - 224)/2 : (getScreenHeight() - 224)))
 	{
 		objA0.position.y.u16 += 8
 		return
@@ -1174,12 +1174,12 @@ function void fn0745e2()
 //# address-hook(0x074f24) end(0x074f70)
 function void fn074f24()
 {
-	if (Mods.isModActive("Origins Screen Resolution"))
+	if (Mods.isModActive("Origins Screen Resolution") && camera.position.y.u16 > 0x0500)
 		camera.position.y.u16 -= (getScreenHeight() - 224)/2
 	
 	base.fn074f24()
 	
-	if (Mods.isModActive("Origins Screen Resolution"))
+	if (Mods.isModActive("Origins Screen Resolution") && camera.position.y.u16 > 0x0500)
 		camera.position.y.u16 += (getScreenHeight() - 224)/2
 }
 
@@ -1187,12 +1187,12 @@ function void fn074f24()
 //# address-hook(0x074456) end(0x074478)
 function void fn074456()
 {
-	if (Mods.isModActive("Origins Screen Resolution"))
+	if (Mods.isModActive("Origins Screen Resolution") && camera.position.y.u16 > 0x0500)
 		camera.foreground.y.u16 -= (getScreenHeight() - 224)/2
 	
 	base.fn074456()
 	
-	if (Mods.isModActive("Origins Screen Resolution"))
+	if (Mods.isModActive("Origins Screen Resolution") && camera.position.y.u16 > 0x0500)
 		camera.foreground.y.u16 += (getScreenHeight() - 224)/2
 }
 
@@ -1200,12 +1200,12 @@ function void fn074456()
 //# address-hook(0x0744a4) end(0x0744e2)
 function void fn0744a4()
 {
-	if (Mods.isModActive("Origins Screen Resolution"))
+	if (Mods.isModActive("Origins Screen Resolution") && camera.position.y.u16 > 0x0500)
 		camera.foreground.y.u16 -= (getScreenHeight() - 224)/2
 	
 	base.fn0744a4()
 	
-	if (Mods.isModActive("Origins Screen Resolution"))
+	if (Mods.isModActive("Origins Screen Resolution") && camera.position.y.u16 > 0x0500)
 		camera.foreground.y.u16 += (getScreenHeight() - 224)/2
 }
 
