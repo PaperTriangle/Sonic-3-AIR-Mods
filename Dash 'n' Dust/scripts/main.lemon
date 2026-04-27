@@ -1,6 +1,8 @@
 global u8 dd.hyper_dash
 global bool dd.newgraphic
 global bool dd.dropdash_dust
+global bool dd.underwater_dust
+global bool dd.splash_object
 global bool dd.dropdash_animation
 global bool dd.super_screenclear
 global bool dd.camera_delay
@@ -135,9 +137,67 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 {
 	u8 gameMode = global.game_mode & 0x7f
 	
-	if (dd.newgraphic && (gameMode == 0x0c || gameMode == 0x08) && ((objA0.update_address == 0x018b3e && objA0.state == 0x02) || (objA0.update_address == 0x064c24)))
+	bool prioFlag = (objA0.sprite_attributes & sprite_attribute.PRIORITY) != 0
+	if (objA0.update_address == 0x251208)
 	{
-		Renderer.drawCustomSprite(stringformat("spindash_dust_new_%d", objA0.animation.sprite - 10), px, py, 0x00, objA0.render_flags, renderQueue)
+		u64 key
+		
+		if Mods.isModActive("Water+")
+		{
+			if (objA0.animation.sprite == 0)
+				return true
+			
+			if (objA0.animation.sprite == 1)
+			{
+				if (s16[0xffff0000 + objA0.dustcloud.character_address + 0x1a] >= 0x2ae || s16[0xffff0000 + objA0.dustcloud.character_address + 0x1a] < -0x600)
+					objA0.flags2e = true
+				else objA0.flags2e = false
+			}
+			
+			key = stringformat("waterplus_splash1_%d", (objA0.animation.sprite / 2))
+			if (objA0.flags2e == 1)
+				key = stringformat("waterplus_splash2_%d", (objA0.animation.sprite / 2))
+		}
+		else
+			key = stringformat("water_splash_%d", objA0.animation.sprite)
+		
+		u8 alpha = 0xff
+		
+		Mods.isModActive("Moar Transparency")		
+			if (System.getGlobalVariableValueByName("mt.watersurface"))
+				alpha = 192
+		
+		if (Renderer.hasCustomSprite(key))
+			Renderer.drawSprite(key, px, py + 2, 0x00, (prioFlag ? SPRITE_FLAG_PRIO : 0), renderQueue - 0x80, 0, alpha)
+
+		return true
+	}
+	
+	if Mods.isModActive("Water+") && (objA0.update_address == 0x06a504)
+	{
+		u64 key = stringformat("waterplus_splash2_%d", (objA0.animation.sprite / 2))
+		
+		u8 alpha = 0xff
+		
+		Mods.isModActive("Moar Transparency")		
+			if (System.getGlobalVariableValueByName("mt.watersurface"))
+				alpha = 192
+		
+		if (Renderer.hasCustomSprite(key))
+			Renderer.drawSprite(key, px, py + 2, 0x00, 0, renderQueue, 0, alpha)
+		
+		return true
+	}
+	
+	if ((dd.newgraphic || dd.underwater_dust) && (gameMode == 0x0c || gameMode == 0x08) && ((objA0.update_address == 0x018b3e && objA0.state == 0x02) || (objA0.update_address == 0x064c24)))
+	{
+		Renderer.drawCustomSprite(stringformat(dd.newgraphic ? "spindash_dust_new_%d" : "spindash_dust_%d", objA0.animation.sprite - 10), px, py, 0x00, objA0.render_flags, renderQueue)
+		return true
+	}
+	
+	if (dd.underwater_dust && (gameMode == 0x0c || gameMode == 0x08) && (objA0.update_address == 0x018b3e && objA0.state == 0x03))
+	{
+		Renderer.drawCustomSprite(stringformat("skid_dust_%d", objA0.animation.sprite - 17), px, py, 0x00, objA0.render_flags, renderQueue)
 		return true
 	}
 	
@@ -260,11 +320,11 @@ function void releaseDropDash()
 	if (A0 == 0xffffb000)
 	{
 		ClearPositionBackup()
-		camera.locktime.player1 = dd.camera_delay ? 0x1400 : 0x0c00
+		camera.locktime.player1 = max(camera.locktime.player1, dd.camera_delay ? 0x1400 : 0x0c00)
 	}
 	else
 	{
-		camera.locktime.player2 = dd.camera_delay ? 0x1400 : 0x0c00
+		camera.locktime.player2 = max(camera.locktime.player2, dd.camera_delay ? 0x1400 : 0x0c00)
 	}
 
 	s16 baseSpeed = super.active ? 0x0c00 : 0x0800
@@ -321,3 +381,241 @@ function void releaseDropDash()
 #endif
 }
 #endif
+
+//------------------//
+// Underwater dust! //
+//------------------//
+
+// If drowning, make the rendering code think you are fine.
+//# address-hook(0x018baa) end(0x018bba)
+function void fn018baa()
+{
+	if (!dd.underwater_dust)
+	{
+		base.fn018baa()
+		return
+	}
+	
+	u8 drown_countdown_backup = u8[0xffff0000 + objA0.dustcloud.character_address + 0x2c]
+	
+	if (u8[0xffff0000 + objA0.dustcloud.character_address + 0x2c] < 12)
+		u8[0xffff0000 + objA0.dustcloud.character_address + 0x2c] = 0xff
+		
+	base.fn018baa()
+	
+	u8[0xffff0000 + objA0.dustcloud.character_address + 0x2c] = drown_countdown_backup
+}
+
+// Prevent updating dust graphic if drown counter is not in use.
+//# address-hook(0x018d6a) end(0x018d6a)
+function void fn018d6a()
+{
+	if (!dd.underwater_dust)
+	{
+		base.fn018d6a()
+		return
+	}
+	
+	if u8[0xffff0000 + objA0.dustcloud.character_address + 0x2c] != 0xff
+	{
+		D6 = 0x18a604
+		fn018d70()
+	}
+}
+
+//# address-hook(0x016890) end(0x016c78)
+//# translated(0x016f6c) end(0x016fa6)
+function void UpdateKnucklesGlideCollision()
+{
+	if (!dd.underwater_dust)
+	{
+		base.UpdateKnucklesGlideCollision()
+		return
+	}
+	
+	u8 drown_countdown_backup = char.drown_countdown
+	
+	if (char.drown_countdown < 12)
+		char.drown_countdown = 0xff
+		
+	base.UpdateKnucklesGlideCollision()
+	
+	char.drown_countdown = drown_countdown_backup
+}
+
+//# address-hook(0x0113f6) end(0x011480)
+//# address-hook(0x014c20) end(0x014caa)
+//# address-hook(0x017428) end(0x0174b2)
+function void PressedLeftWhileUprightOnGround()
+{
+	if (!dd.underwater_dust)
+	{
+		base.PressedLeftWhileUprightOnGround()
+		return
+	}
+	
+	u8 drown_countdown_backup = char.drown_countdown
+	
+	if (char.drown_countdown < 12)
+		char.drown_countdown = 0xff
+		
+	base.PressedLeftWhileUprightOnGround()
+	
+	char.drown_countdown = drown_countdown_backup
+}
+
+//# address-hook(0x011482) end(0x011506)
+//# address-hook(0x014cac) end(0x014d30)
+//# address-hook(0x0174b4) end(0x017538)
+function void PressedRightWhileUprightOnGround()
+{
+	if (!dd.underwater_dust)
+	{
+		base.PressedRightWhileUprightOnGround()
+		return
+	}
+	
+	u8 drown_countdown_backup = char.drown_countdown
+	
+	if (char.drown_countdown < 12)
+		char.drown_countdown = 0xff
+		
+	base.PressedRightWhileUprightOnGround()
+	
+	char.drown_countdown = drown_countdown_backup
+}
+
+//# address-hook(0x018c84) end(0x018c92)
+//# translated(0x018caa) end(0x018cb0)
+function void fn018c84()
+{
+	if (!dd.underwater_dust)
+	{
+		base.fn018c84()
+		return
+	}
+	
+	if (objA0.flags2a & 0x40)
+	{
+		objA0.state = 0
+		return
+	}
+
+	fn018c94()
+}
+
+//# address-hook(0x018cb6) end(0x018d68)
+function void fn018cb6()
+{
+	if (!dd.underwater_dust)
+	{
+		base.fn018cb6()
+		return
+	}
+	
+	A2 = 0xffff0000 + objA0.dustcloud.character_address
+	D1 = 0x10
+	if (u8[A2 + 0x20] != char.state.BRAKING)
+	{
+		bool b = true
+		if (u8[A2 + 0x38] == CHARACTER_KNUCKLES)
+		{
+			D1 = 0x06
+			b = (u8[A2 + 0x2f] != 3)
+		}
+
+		if (b)
+		{
+			objA0.base_state = 0x02
+			u8[A0 + 0x36] = 0
+			return
+		}
+	}
+
+	--u8[A0 + 0x36]
+	if (s8[A0 + 0x36] < 0)
+	{
+		u8[A0 + 0x36] = 3
+		
+		if (allocDynamicObjectStd())
+		{
+			// Spawn skidding dust
+			objA1.update_address = objA0.update_address
+			objA1.position.x.u16 = u16[A2 + 0x10]
+			objA1.position.y.u16 = u16[A2 + 0x14]
+			if (objA0.flags38 != 0)
+			{
+				D1.u16 -= 4
+			}
+			if (global.inv_gravity)
+				D1.s16 = -D1.s16
+
+			objA1.position.y.u16 += D1.u16
+			objA1.render_flags = objA0.render_flags
+			u8[A1 + 0x05] += 2
+			objA1.box_size.x = 4
+			objA1.sprite_priority = 0x80
+			objA1.sprite_attributes = (objA0.sprite_attributes & ~sprite_attribute.PRIORITY) | (u16[A2 + 0x0a] & sprite_attribute.PRIORITY)
+			objA1.mapping_offset = objA0.mapping_offset
+			u8[A1 + 0x20] = 3
+			u8[A1 + 0x2a] = 0
+			objA1.dustcloud.character_address = objA0.dustcloud.character_address
+		}
+	}
+
+
+	fn018d6a()
+}
+
+//---------------------//
+// Custom Water Object //
+//---------------------//
+
+//# address-hook(0x018bc8) end(0x018be8)
+function void fn018bc8()
+{
+	if (!dd.splash_object)
+	{
+		base.fn018bc8()
+		return
+	}
+	
+	if (allocDynamicObjectStd())
+	{
+		objA1.update_address = 0x251208
+		objA1.render_flags = objA0.render_flags
+		objA1.sprite_attributes = objA0.sprite_attributes
+
+		objA1.box_size.x = 0x20
+		objA1.box_size.y = 0x20
+
+		objA1.position.x.u16 = u16[0xffff0000 + objA0.dustcloud.character_address + 0x10]
+		objA1.position.y.u16 = u16[0xffff0000 + objA0.dustcloud.character_address + 0x14]
+		
+		objA1.animation.timer = 5
+		
+		objA1.dustcloud.character_address = objA0.dustcloud.character_address
+	}
+	
+	objA0.state = 0
+}
+
+//# address-hook(0x251208)
+function void DND.splashUpdate()
+{
+	objA0.position.y.u16 = water.height.current
+	
+	// 8 by 4
+	objA0.animation.timer--
+	
+	if objA0.animation.timer == 0
+	{
+		objA0.animation.sprite++
+		objA0.animation.timer = 4
+	}
+	
+	if objA0.animation.sprite < 9
+		DrawObject()
+	else
+		UnloadObject()
+}

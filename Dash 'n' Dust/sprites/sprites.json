@@ -1,4 +1,19 @@
 {
+	"skid_dust_0":  { "File": "skid_dust.bmp", "Rect": "1,1,16,16", "Center": "8,8" },
+	"skid_dust_1":  { "File": "skid_dust.bmp", "Rect": "18,1,16,16", "Center": "8,8" },
+	"skid_dust_2":  { "File": "skid_dust.bmp", "Rect": "35,1,16,16", "Center": "8,8" },
+	"skid_dust_3":  { "File": "skid_dust.bmp", "Rect": "52,1,16,16", "Center": "8,8" },
+	
+	"water_splash_0":  { "File": "water_splash.bmp", "Rect": "1,21,20,12", "Center": "10,12" },
+	"water_splash_1":  { "File": "water_splash.bmp", "Rect": "22,3,30,30", "Center": "15,30" },
+	"water_splash_2":  { "File": "water_splash.bmp", "Rect": "53,1,31,32", "Center": "15,32" },
+	"water_splash_3":  { "File": "water_splash.bmp", "Rect": "85,2,30,31", "Center": "15,31" },
+	"water_splash_4":  { "File": "water_splash.bmp", "Rect": "116,3,31,30", "Center": "15,30" },
+	"water_splash_5":  { "File": "water_splash.bmp", "Rect": "148,11,32,22", "Center": "16,22" },
+	"water_splash_6":  { "File": "water_splash.bmp", "Rect": "181,6,32,15", "Center": "16,15" },
+	"water_splash_7":  { "File": "water_splash.bmp", "Rect": "181,22,32,7", "Center": "16,7" },
+	"water_splash_8":  { "File": "water_splash.bmp", "Rect": "181,30,31,3", "Center": "15,3" },
+	
 	"origins_dropdash_0":  { "File": "origins_dropdash.bmp", "Rect": "32,1,30,30", "Center": "15,15" },
 	"origins_dropdash_1":  { "File": "origins_dropdash.bmp", "Rect": "63,1,28,30", "Center": "14,15" },
 	"origins_dropdash_2":  { "File": "origins_dropdash.bmp", "Rect": "1,1,30,30", "Center": "15,15" },
@@ -33,6 +48,14 @@
 	"super_sonic3_dropdash_5":  { "File": "super_sonic3_dropdash.bmp", "Rect": "61,1,28,30", "Center": "14,15" },
 	"super_sonic3_dropdash_6":  { "File": "super_sonic3_dropdash.bmp", "Rect": "1,1,30,30", "Center": "15,15" },
 	"super_sonic3_dropdash_7":  { "File": "super_sonic3_dropdash.bmp", "Rect": "32,32,30,28", "Center": "15,14" },
+	
+	"spindash_dust_0":  { "File": "spindash_dust.bmp", "Rect": "1,1,32,23", "Center": "32,3" },
+	"spindash_dust_1":  { "File": "spindash_dust.bmp", "Rect": "34,1,32,23", "Center": "32,3" },
+	"spindash_dust_2":  { "File": "spindash_dust.bmp", "Rect": "67,1,32,23", "Center": "32,3" },
+	"spindash_dust_3":  { "File": "spindash_dust.bmp", "Rect": "100,1,32,23", "Center": "32,3" },
+	"spindash_dust_4":  { "File": "spindash_dust.bmp", "Rect": "133,1,32,23", "Center": "32,3" },
+	"spindash_dust_5":  { "File": "spindash_dust.bmp", "Rect": "166,1,32,23", "Center": "32,3" },
+	"spindash_dust_6":  { "File": "spindash_dust.bmp", "Rect": "199,1,32,23", "Center": "32,3" },
 	
 	"spindash_dust_new_0":  { "File": "spindash_dust_new.bmp", "Rect": "1,1,32,23", "Center": "32,3" },
 	"spindash_dust_new_1":  { "File": "spindash_dust_new.bmp", "Rect": "34,1,32,23", "Center": "32,3" },
