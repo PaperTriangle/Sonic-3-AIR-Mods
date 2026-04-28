@@ -805,6 +805,8 @@ function bool fn007d6c()
 	return returnVal
 }
 
+global u32 orts.title_counter
+
 function void yieldExecution()
 {
 	if (orts.oldschool_codes)
@@ -832,6 +834,9 @@ function void yieldExecution()
 		}
 	}
 
+	if (global.game_mode == 0x04)
+		orts.title_counter = global.framecounter
+
 	if (orts.wave && orts.waveon)
 	{
 		u16 py = 240
@@ -844,7 +849,7 @@ function void yieldExecution()
 			float wave1 = Math.lerp(0.00f, 1.15f, float(i) / float(limit))
 			s16 px = s16(getScreenWidth() - 426)/2
 			
-			px += Math.roundToInt((4.25f * wave1) * Math.sin(6.0f * 3.1415f * 384 * float(i * 4) + 4 * float(u16((global.framecounter >> 1) & 0xff) / 41.0f)))
+			px += Math.roundToInt((4.25f * wave1) * Math.sin(6.0f * 3.1415f * 384 * float(i * 4) + 4 * float(u16((orts.title_counter >> 1) & 0xff) / 41.0f)))
 
 			Renderer.setViewport(0, py - limit + i, getScreenWidth(), 2, renderQueue)
 			Renderer.drawSpriteTinted("water_wave", px, py, 0, 0, renderQueue + 1, 0, 0xffffffff, 1.0f, 1.0f)
