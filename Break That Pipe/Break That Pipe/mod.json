@@ -5,6 +5,32 @@
 		"UniqueID": "break-that-pipe",
 		"Author": "PaperTriangle",
 		"Description": "Allow the LBZ pipes to break like standard rocks! Now the Fire Shield's dash, regular ol' Knuckles and Super Sonic can break them with ease! Now with support for ES Amy and ES 3D2D Shadow!",
-		"ModVersion": "2.0"
+		"ModVersion": "2.1"
+	},
+	"OtherMods":
+	{
+		"tweakin-tails":
+		{
+			"DisplayName": "Tweakin' Tails",
+			"IsRequired": "0",
+			"Priority": "Higher"
+		}
+	},
+	"Settings":
+	{
+		"List":
+  		[
+			{
+				"InternalName": "btp.consistent_breaking",
+				"DisplayName": "Consistent Rocks & Walls",
+				"Variable": "btp.consistent_breaking",
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			}
+		]
 	}
 }

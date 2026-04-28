@@ -1,12 +1,19 @@
+global bool btp.consistent_breaking
+
 define u8 global.xtrachar	= u8[0xffffe654]
 
-//---------------------
-// Mod Compat Functions
-//---------------------
+//----------------------//
+// Mod Compat Functions //
+//----------------------//
+
+function bool BTP.canBreak(u8 state.in, u8 isRocks)
+{
+	return (global.xtrachar == 1 && A1 == 0xffffb000 && isRocks) || (global.xtrachar == 3 && (System.getGlobalVariableValueByName("Amy_HammerSpinAttacking") || super.active.tails)) || (global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.isBoosting")) || (btp.consistent_breaking && global.xtrachar == 0 && isMainCharacter(CHARACTER_SONIC) && (u8[A1 + 0x2b] & char.bonus.SHIELD_FIRE) && !(u8[A1 + 0x2b] & char.bonus.INVINCIBLE) && u8[A1 + 0x2f] > 0 && state.in == char.state.ROLLING)
+}
 
 function bool BTP.canBreak(u8 state.in)
 {
-	return (global.xtrachar == 3 && (System.getGlobalVariableValueByName("Amy_HammerSpinAttacking") || super.active.tails)) || (global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.isBoosting"))
+	return BTP.canBreak(state.in, false)
 }
 
 function bool BTP.destroyObjectExternally()
@@ -14,9 +21,9 @@ function bool BTP.destroyObjectExternally()
 	return false
 }
 
-//----------
-// LBZ2 Pipe
-//----------
+//-----------//
+// LBZ2 Pipe //
+//-----------//
 
 //# address-hook(0x027424) end(0x027590)
 function void fn027424()
@@ -81,7 +88,7 @@ function void fn027424()
 					// Super form breaks walls even when going slow, so can a hammer swinging Amy and a boosting Shadow!
 					canBreakWall = true
 				}
-				else if ((objA0.flags2a & object.flag.P1_PUSHING) || (u8[A1 + 0x2b] & char.bonus.SHIELD_FIRE))
+				else if ((objA0.flags2a & object.flag.P1_PUSHING) || (!btp.consistent_breaking && u8[A1 + 0x2b] & char.bonus.SHIELD_FIRE))
 				{
 					// Normal Sonic and Tails need to quickly roll into a wall to break it (this includes the fire shield attack)
 					canBreakWall = (objA1.state == char.state.ROLLING && abs(D1.s16) >= 0x480)
@@ -226,4 +233,231 @@ function void LBZPipe.break()
 	objA0.update_address = 0x027592
 	fn0275f2()
 	fn027592()
+}
+
+//-------//
+// Rocks //
+//-------//
+
+//# address-hook(0x01fd08) end(0x01ff1a)
+function void fn01fd08()
+{
+	if (!btp.consistent_breaking)
+	{
+		base.fn01fd08()
+		return
+	}
+	
+	u16[A0 + 0x30] = u16[0xffffb000 + 0x18]
+	u16[A0 + 0x36] = u16[0xffffb04a + 0x18]
+
+	D1 = objA0.box_size.x + 11
+	D2 = objA0.box_size.y
+	D3.u16 = D2.u16 + 1
+	D4.u16 = objA0.position.x.u16
+	fn01dc56()
+
+	D6 = (D6 << 16) + (D6 >> 16)
+	if (D6.u16 & 0x03)
+	{
+		bool canBreakWall = false
+
+		A1 = 0xffffb000
+		D1.u16 = u16[A0 + 0x30]
+		if (D6.u16 & 0x01)
+		{
+			if (u8[A1 + 0x38] == CHARACTER_KNUCKLES)
+			{
+				// Knuckles can break all walls
+				canBreakWall = true
+			}
+			else
+			{
+				if ((objA0.subtype2c & 0x80) == 0)	// Special Knuckles-only wall?
+				{
+					if (super.active || BTP.canBreak(objA1.state, true))
+					{
+						// Super form breaks walls even when going slow
+						canBreakWall = true
+					}
+					else if (objA0.flags2a & object.flag.P1_PUSHING)
+					{
+						// Normal Sonic and Tails need to quickly roll into a wall to break it (this includes the fire shield attack)
+						canBreakWall = (objA1.state == char.state.ROLLING && abs(D1.s16) >= 0x480)
+					}
+				}
+			}
+
+			if (canBreakWall)
+			{
+				objA0.flags2a &= ~object.flag.P1_PUSHING
+				Rocks.BreakWall()
+
+				if (objA0.flags2a & object.flag.P2_PUSHING)
+				{
+					// Check for second character
+					A1 = 0xffffb04a
+					if (u8[A1 + 0x38] == CHARACTER_KNUCKLES || objA1.state == char.state.ROLLING)
+					{
+						objA1.velocity.x = u16[A0 + 0x36]
+						objA1.groundspeed = objA1.velocity.x
+						objA0.flags2a &= ~object.flag.P2_PUSHING
+						objA1.flags2a &= ~char.flag.PUSHING
+					}
+				}
+			}
+		}
+
+		if (!canBreakWall)
+		{
+			// Give second character a try
+			A1 = 0xffffb04a
+			D1.u16 = u16[A0 + 0x36]
+
+			if (objA0.flags2a & object.flag.P2_PUSHING)
+			{
+				if (u8[A1 + 0x38] == CHARACTER_KNUCKLES)
+				{
+					// Knuckles can break all walls
+					canBreakWall = true
+				}
+				else
+				{
+					if ((objA0.subtype2c & 0x80) == 0)	// Special Knuckles-only wall?
+					{
+						// Normal Sonic and Tails need to quickly roll into a wall to break it (this includes the fire shield attack)
+						canBreakWall = (objA1.state == char.state.ROLLING && abs(D1.s16) >= 0x480)
+					}
+				}
+			}
+
+			if (canBreakWall)
+			{
+				objA0.flags2a &= ~object.flag.P2_PUSHING
+				Rocks.BreakWall()
+				return
+			}
+		}
+	}
+
+	if (competition_mode.active == 0)
+	{
+		if (checkForUnloadObjectAtPosition(objA0.countdown_value))
+			return
+	}
+	DrawObject()
+}
+
+//-------//
+// Walls //
+//-------//
+
+//# address-hook(0x021568) end(0x021690)
+function void fn021568()
+{
+	if (!btp.consistent_breaking)
+	{
+		base.fn021568()
+		return
+	}
+	
+	u16[A0 + 0x30] = u16[0xffffb000 + 0x18]
+	objA0.value32 = u16[0xffffb04a + 0x18]
+
+	D1 = objA0.box_size.x + 11
+	D2 = objA0.box_size.y
+	D3.u16 = D2.u16 + 1
+	D4.u16 = objA0.position.x.u16
+	fn01dc56()
+
+	if (u8[A0 + 0x2c] & 0x80)
+	{
+		if (level.trigger00 == 0)
+		{
+			DrawOrUnloadObject()
+		}
+		else
+		{
+			UnloadObject()
+		}
+		return
+	}
+
+	D6 = (D6 << 16) + (D6 >> 16)
+	D6.u16 &= 0x03
+	if (D6.u16 == 0)
+	{
+		DrawOrUnloadObject()
+		return
+	}
+
+	A1 = 0xffffb000
+	D1.u16 = u16[A0 + 0x30]
+	if (D6.u16 & 0x01)
+	{
+		bool canBreakWall = false
+		if (super.active || u8[A1 + 0x38] == CHARACTER_KNUCKLES || BTP.canBreak(objA1.state))
+		{
+			// Super/Hyper forms can break walls, and Knuckles can
+			canBreakWall = true
+		}
+		else
+		{
+			// Does this wall allow for rolling into the wall? Otherwise the fire shield will do
+			if (objA0.flags2a & object.flag.P1_PUSHING)
+			{
+				canBreakWall = (objA1.state == char.state.ROLLING && abs(D1.s16) >= 0x0480)
+			}
+		}
+
+		if (canBreakWall)
+		{
+			objA0.flags2a &= ~object.flag.P1_PUSHING
+			fn02165a()
+
+			A1 = 0xffffb04a
+			if ((objA0.flags2a & object.flag.P2_PUSHING) && objA1.state == char.state.ROLLING)
+			{
+				objA0.flags2a &= ~object.flag.P2_PUSHING
+				objA1.velocity.x = objA0.value32
+				objA1.groundspeed = objA1.velocity.x
+				objA1.flags2a &= ~char.flag.PUSHING
+			}
+
+			DrawOrUnloadObject()
+			return
+		}
+	}
+
+	A1 = 0xffffb04a
+	D1.u16 = objA0.value32
+	if ((objA0.flags2a & object.flag.P2_PUSHING) && objA1.state == char.state.ROLLING && abs(D1.s16) >= 0x0480)
+	{
+		objA0.flags2a &= ~object.flag.P2_PUSHING
+		fn02165a()
+
+	#if STANDALONE
+		if (Game.getSetting(SETTING_FIX_GLITCHES) >= 2)
+		{
+			// Prevent slope glitch here for player 1
+			if ((u8[0xffffb000 + 0x2a] & char.flag.ON_OBJECT) && u16[0xffffb000 + 0x42] == A0.u16)
+			{
+				u8[0xffffb000 + 0x2a] &= ~char.flag.ON_OBJECT
+				u8[0xffffb000 + 0x2a] |= char.flag.IN_AIR
+			}
+		}
+	#endif
+	}
+#if STANDALONE
+	else if (global.zone == 0x02)
+	{
+		// In MGZ, make all normal breakable walls also breakable by spinning top
+		D6 = (D6 << 16) + (D6 >> 16)
+		fn021758()
+	}
+#endif
+	else
+	{
+		DrawOrUnloadObject()
+	}
 }
