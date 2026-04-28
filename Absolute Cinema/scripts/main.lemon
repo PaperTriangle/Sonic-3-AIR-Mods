@@ -601,6 +601,25 @@ function void fn064ca6()
 	base.fn064ca6()
 }
 
+// SSZ DEZ Rising
+//# address-hook(0x0657fe) end(0x065824)
+function void fn0657fe()
+{
+	ac.no_pause = 1
+	ac.no_hud = 1
+	
+	base.fn0657fe()
+}
+
+//# address-hook(0x0656da) end(0x065714)
+function void fn0656da()
+{
+	base.fn0656da()
+	
+	if checkpoint.number == 1
+		ac.no_pause = 0
+}
+
 // SSZ Egg Robo Claw Cutscene
 //# address-hook(0x07ce1e) end(0x07ce3e)
 function void fn07ce1e()
