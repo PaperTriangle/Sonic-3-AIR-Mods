@@ -437,7 +437,7 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 			}
 			else if u8[A0 + 0x23] == 0x19
 			{
-				System.loadExternalRawData("super_sonic_clear_palette", 0x00cad8)
+				System.loadExternalRawData(lsds.sonic_icons == 2 ? "super_sonic_clear_palette_alt" : "super_sonic_clear_palette", 0x00cad8)
 				Renderer.drawCustomSprite("super_sonic_clear", px, py - (lsds.nodetail ? 0x10 : 0), 0x30, SPRITE_FLAG_PRIO, renderQueue)
 				u8[A0 + 0x23] = 0
 			}

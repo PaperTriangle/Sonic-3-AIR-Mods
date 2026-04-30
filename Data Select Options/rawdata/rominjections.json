@@ -6,5 +6,9 @@
 	"super_sonic_clear_palette":
 	{
 		"File": "super_sonic_clear_palette.bin"
+	},
+	"super_sonic_clear_palette_alt":
+	{
+		"File": "super_sonic_clear_palette_alt.bin"
 	}
 }
