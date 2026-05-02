@@ -3,7 +3,13 @@ global u8 flower_palette_line
 //# address-hook(0x01c550) end(0x01c5c4)
 function void fn01c550()
 {
+
+	u16 originalCameraPos = camera.position.x.u16
+	camera.position.x.u16 += getScreenExtend()
+
 	base.fn01c550()
+	
+	camera.position.x.u16 = originalCameraPos
 	
 	u16 offset = 3 * 0x40 + flower_palette_line * 0x20
 	u16[0x802000 + offset + 0x04] = u16[0xfffffc5e]
