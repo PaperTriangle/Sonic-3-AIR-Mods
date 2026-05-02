@@ -841,7 +841,7 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 				key = stringformat("supend_0x%02x", objA0.animation.sprite)
 				
 				if (Mods.isModActive("Tweakin' Tails") && objA0.animation.sprite > 2)
-					Renderer.drawCustomSprite(stringformat("ariff_flickies_end_0x%02x", objA0.animation.sprite), px, py, 0x40, SPRITE_FLAG_FLIP_X, renderQueue - 1)
+					Renderer.drawCustomSprite(stringformat(System.getGlobalVariableValueByName("sff.green_eyes") ? "ariff_flickies_green_end_0x%02x" : "ariff_flickies_end_0x%02x", objA0.animation.sprite), px, py, 0x40, SPRITE_FLAG_FLIP_X, renderQueue - 1)
 			}
 			else
 				return base.Standalone.onWriteToSpriteTable(px, py, renderQueue)
