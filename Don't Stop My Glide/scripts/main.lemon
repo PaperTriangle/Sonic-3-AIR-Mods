@@ -714,7 +714,6 @@ function void ItemEffect.ApplySuperTransformation()
 //	Smooth landing camera
 //-----------------------
 
-//# address-hook(0x01c11e) end(0x01c236)
 function void UpdateCameraPositionY_Glide()
 {
 	D0.s16 = char.position.y.u16 - u16[A1] - (getScreenHeight() - 224)/2
