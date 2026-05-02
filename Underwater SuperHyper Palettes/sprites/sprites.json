@@ -11,9 +11,7 @@
 	"endpose_knuckles_0x00": { "File": "endpose_knuckles.bmp", "Rect": "8,8,16,16", "Center": "8,8" },
 	"endpose_knuckles_0x01": { "File": "endpose_knuckles.bmp", "Rect": "32,8,32,40", "Center": "16,16" },
 	"endpose_knuckles_0x02": { "File": "endpose_knuckles.bmp", "Rect": "72,8,64,104", "Center": "32,52" },
-	"tornado_knuckles_small":			{ "File": "tornado_knuckles.bmp", "Rect": "64,8,24,24", "Center": "16,16" },
-	"tornado_knuckles_small_standing":	{ "File": "tornado_knuckles.bmp", "Rect": "32,8,24,24", "Center": "16,16" },
-	"tornado_knuckles_small_exhausted":	{ "File": "tornado_knuckles.bmp", "Rect": "8,20,16,12", "Center": "9,4" },
+	"tornado_knuckles_small": { "File": "tornado_knuckles.bmp", "Rect": "64,8,24,24", "Center": "16,16" },
 	"SuperAmyEndPose_0x03":  { "File": "Super_Amy_Endpose.bmp", "Rect": "0,0,44,59", "Center": "22,29" },
 	"SuperAmyEndPose_0x04":  { "File": "Super_Amy_Endpose.bmp", "Rect": "48,0,73,101", "Center": "36,50" }
 }
