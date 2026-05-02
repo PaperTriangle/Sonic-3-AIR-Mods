@@ -1,0 +1,32 @@
+{
+	"Metadata":
+	{
+		"Name": "Landing Gear",
+		"Author": "PaperTriangle",
+		"UniqueID": "landing-gear",
+		"Description": "Makes landing a little smoother.",
+		"ModVersion": "1.0"
+	},
+	"OtherMods":
+	{
+		"do-not-stop-my-glide":
+		{
+			"DisplayName": "Don't Stop My Glide",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		},
+		"thorn-originsresolution":
+		{
+			"DisplayName": "Origins Screen Resolution",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		},
+		"extra-slot-project-ray":
+		{
+			"DisplayName": "Extra Slot Ray",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		}
+		
+	}
+}
