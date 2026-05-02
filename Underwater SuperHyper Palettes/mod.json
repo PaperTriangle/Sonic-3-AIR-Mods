@@ -9,9 +9,9 @@
 	},
 	"OtherMods":
 	{
-		"super-flicky-fix":
+		"tweakin-tails":
 		{
-			"DisplayName": "Super Flicky Fix",
+			"DisplayName": "Tweakin' Tails",
 			"IsRequired": "0",
 			"Priority": "Higher"
 		},
@@ -218,7 +218,7 @@
 			},
 			{
 				"InternalName": "uh.override_esu",
-				"DisplayName": "Override ESU Super/Hyper",
+				"DisplayName": "Override ESU/ECF",
 				"Variable": "uh.override_esu",
 				"DefaultValue": "0",
 				"Category": "Main Settings",		
@@ -233,7 +233,7 @@
 				"DisplayName": "Override Mighty's Palette",
 				"Variable": "uh.palette.mighty",
 				"DefaultValue": "0",
-				"Category": "ES Mighty Settings",		
+				"Category": "Mighty Settings",		
 				"Options":
 				{
 					"0": "Disabled",
@@ -245,7 +245,7 @@
 				"DisplayName": "Mighty Palette Style",
 				"Variable": "uh.style.mighty",
 				"DefaultValue": "0",
-				"Category": "ES Mighty Settings",		
+				"Category": "Mighty Settings",		
 				"Options":
 				{
 					"0": "Cycle",
@@ -257,7 +257,7 @@
 				"DisplayName": "Mighty Hyper Form",
 				"Variable": "uh.hyper.mighty",
 				"DefaultValue": "1",
-				"Category": "ES Mighty Settings",		
+				"Category": "Mighty Settings",		
 				"Options":
 				{
 					"0": "Slow",
@@ -270,7 +270,7 @@
 				"DisplayName": "Mighty White Flash Tint",
 				"Variable": "uh.tint.mighty",
 				"DefaultValue": "0xcce",
-				"Category": "ES Mighty Settings",
+				"Category": "Mighty Settings",
 				"Options":
 				{
 					"0xeee": "White",
@@ -288,7 +288,7 @@
 				"DisplayName": "Override Ray's Palette",
 				"Variable": "uh.palette.ray",
 				"DefaultValue": "0",
-				"Category": "ES Ray Settings",		
+				"Category": "Ray Settings",		
 				"Options":
 				{
 					"0": "Disabled",
@@ -300,7 +300,7 @@
 				"DisplayName": "Ray Palette Style",
 				"Variable": "uh.style.ray",
 				"DefaultValue": "0",
-				"Category": "ES Ray Settings",		
+				"Category": "Ray Settings",		
 				"Options":
 				{
 					"0": "Cycle",
@@ -312,7 +312,7 @@
 				"DisplayName": "Ray Hyper Form",
 				"Variable": "uh.hyper.ray",
 				"DefaultValue": "1",
-				"Category": "ES Ray Settings",		
+				"Category": "Ray Settings",		
 				"Options":
 				{
 					"0": "Slow",
@@ -325,7 +325,7 @@
 				"DisplayName": "Ray White Flash Tint",
 				"Variable": "uh.tint.ray",
 				"DefaultValue": "0xcee",
-				"Category": "ES Ray Settings",
+				"Category": "Ray Settings",
 				"Options":
 				{
 					"0xeee": "White",
@@ -343,7 +343,7 @@
 				"DisplayName": "Override Amy's Palette",
 				"Variable": "uh.palette.amy",
 				"DefaultValue": "0",
-				"Category": "ES Amy Settings",		
+				"Category": "Amy Settings",		
 				"Options":
 				{
 					"0": "Disabled",
@@ -355,7 +355,7 @@
 				"DisplayName": "Amy Palette Style",
 				"Variable": "uh.style.amy",
 				"DefaultValue": "1",
-				"Category": "ES Amy Settings",		
+				"Category": "Amy Settings",		
 				"Options":
 				{
 					"0": "Cycle",
@@ -367,7 +367,7 @@
 				"DisplayName": "Amy Hyper Form",
 				"Variable": "uh.hyper.amy",
 				"DefaultValue": "1",
-				"Category": "ES Amy Settings",		
+				"Category": "Amy Settings",		
 				"Options":
 				{
 					"0": "Slow",
@@ -380,7 +380,7 @@
 				"DisplayName": "Amy White Flash Tint",
 				"Variable": "uh.tint.amy",
 				"DefaultValue": "0xece",
-				"Category": "ES Amy Settings",
+				"Category": "Amy Settings",
 				"Options":
 				{
 					"0xeee": "White",
@@ -398,7 +398,7 @@
 				"DisplayName": "Override Shadow's Palette",
 				"Variable": "uh.palette.shadow",
 				"DefaultValue": "0",
-				"Category": "ES Shadow Settings",		
+				"Category": "Shadow Settings",		
 				"Options":
 				{
 					"0": "Disabled",
@@ -410,7 +410,7 @@
 				"DisplayName": "Shadow Palette Style",
 				"Variable": "uh.style.shadow",
 				"DefaultValue": "1",
-				"Category": "ES Shadow Settings",		
+				"Category": "Shadow Settings",		
 				"Options":
 				{
 					"0": "Cycle",
@@ -422,7 +422,7 @@
 				"DisplayName": "Shadow Hyper Form",
 				"Variable": "uh.hyper.shadow",
 				"DefaultValue": "2",
-				"Category": "ES Shadow Settings",		
+				"Category": "Shadow Settings",		
 				"Options":
 				{
 					"0": "Slow",
@@ -435,184 +435,7 @@
 				"DisplayName": "Shadow White Flash Tint",
 				"Variable": "uh.tint.shadow",
 				"DefaultValue": "0xcee",
-				"Category": "ES Shadow Settings",
-				"Options":
-				{
-					"0xeee": "White",
-					"0xcce": "Red",
-					"0xcec": "Green",
-					"0xecc": "Blue",
-					"0xcee": "Yellow",
-					"0xece": "Magenta",
-					"0xeec": "Cyan",
-					"0xccc": "Grey"
-				}
-			},
-			{
-				"InternalName": "uh.override_ecf",
-				"DisplayName": "Override ECF Super/Hyper",
-				"Variable": "uh.override_ecf",
-				"DefaultValue": "0",
-				"Category": "Main Settings",		
-				"Options":
-				{
-					"0": "Disabled",
-					"1": "Enabled"
-				}
-			},
-			{
-				"InternalName": "uh.palette.mighty_ecf",
-				"DisplayName": "Override Mighty's Palette",
-				"Variable": "uh.palette.mighty_ecf",
-				"DefaultValue": "0",
-				"Category": "JUWL Mighty Settings",		
-				"Options":
-				{
-					"0": "Disabled",
-					"1": "Enabled"
-				}
-			},
-			{
-				"InternalName": "uh.style.mighty_ecf",
-				"DisplayName": "Mighty Palette Style",
-				"Variable": "uh.style.mighty_ecf",
-				"DefaultValue": "1",
-				"Category": "JUWL Mighty Settings",		
-				"Options":
-				{
-					"0": "Cycle",
-					"1": "Flash White"
-				}
-			},
-			{
-				"InternalName": "uh.hyper.mighty_ecf",
-				"DisplayName": "Mighty Hyper Form",
-				"Variable": "uh.hyper.mighty_ecf",
-				"DefaultValue": "1",
-				"Category": "JUWL Mighty Settings",		
-				"Options":
-				{
-					"0": "Slow",
-					"1": "Fast",
-					"2": "Rainbow"
-				}
-			},
-			{
-				"InternalName": "uh.tint.mighty_ecf",
-				"DisplayName": "Mighty White Flash Tint",
-				"Variable": "uh.tint.mighty_ecf",
-				"DefaultValue": "0xcce",
-				"Category": "JUWL Mighty Settings",
-				"Options":
-				{
-					"0xeee": "White",
-					"0xcce": "Red",
-					"0xcec": "Green",
-					"0xecc": "Blue",
-					"0xcee": "Yellow",
-					"0xece": "Magenta",
-					"0xeec": "Cyan",
-					"0xccc": "Grey"
-				}
-			},
-			{
-				"InternalName": "uh.palette.ray_ecf",
-				"DisplayName": "Override Ray's Palette",
-				"Variable": "uh.palette.ray_ecf",
-				"DefaultValue": "0",
-				"Category": "JUWL Ray Settings",		
-				"Options":
-				{
-					"0": "Disabled",
-					"1": "Enabled"
-				}
-			},
-			{
-				"InternalName": "uh.style.ray_ecf",
-				"DisplayName": "Ray Palette Style",
-				"Variable": "uh.style.ray_ecf",
-				"DefaultValue": "0",
-				"Category": "JUWL Ray Settings",		
-				"Options":
-				{
-					"0": "Cycle",
-					"1": "Flash White"
-				}
-			},
-			{
-				"InternalName": "uh.hyper.ray_ecf",
-				"DisplayName": "Ray Hyper Form",
-				"Variable": "uh.hyper.ray_ecf",
-				"DefaultValue": "1",
-				"Category": "JUWL Ray Settings",		
-				"Options":
-				{
-					"0": "Slow",
-					"1": "Fast",
-					"2": "Rainbow"
-				}
-			},
-			{
-				"InternalName": "uh.tint.ray_ecf",
-				"DisplayName": "Ray White Flash Tint",
-				"Variable": "uh.tint.ray_ecf",
-				"DefaultValue": "0xcee",
-				"Category": "JUWL Ray Settings",
-				"Options":
-				{
-					"0xeee": "White",
-					"0xcce": "Red",
-					"0xcec": "Green",
-					"0xecc": "Blue",
-					"0xcee": "Yellow",
-					"0xece": "Magenta",
-					"0xeec": "Cyan",
-					"0xccc": "Grey"
-				}
-			},
-			{
-				"InternalName": "uh.palette.amy_ecf",
-				"DisplayName": "Override Amy's Palette",
-				"Variable": "uh.palette.amy_ecf",
-				"DefaultValue": "0",
-				"Category": "JUWL Amy Settings",		
-				"Options":
-				{
-					"0": "Disabled",
-					"1": "Enabled"
-				}
-			},
-			{
-				"InternalName": "uh.style.amy_ecf",
-				"DisplayName": "Amy Palette Style",
-				"Variable": "uh.style.amy_ecf",
-				"DefaultValue": "1",
-				"Category": "JUWL Amy Settings",		
-				"Options":
-				{
-					"0": "Cycle",
-					"1": "Flash White"
-				}
-			},
-			{
-				"InternalName": "uh.hyper.amy_ecf",
-				"DisplayName": "Amy Hyper Form",
-				"Variable": "uh.hyper.amy_ecf",
-				"DefaultValue": "1",
-				"Category": "JUWL Amy Settings",		
-				"Options":
-				{
-					"0": "Slow",
-					"1": "Fast",
-					"2": "Rainbow"
-				}
-			},
-			{
-				"InternalName": "uh.tint.amy_ecf",
-				"DisplayName": "Amy White Flash Tint",
-				"Variable": "uh.tint.amy_ecf",
-				"DefaultValue": "0xece",
-				"Category": "JUWL Amy Settings",
+				"Category": "Shadow Settings",
 				"Options":
 				{
 					"0xeee": "White",
@@ -625,7 +448,6 @@
 					"0xccc": "Grey"
 				}
 			}
-
 		]
 	}
 }

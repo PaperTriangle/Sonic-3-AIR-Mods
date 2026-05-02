@@ -33,25 +33,16 @@ global bool uh.style.shadow
 global u8 uh.hyper.shadow
 global u16 uh.tint.shadow
 
-global bool uh.override_ecf
-global bool uh.palette.mighty_ecf
-global bool uh.style.mighty_ecf
-global u8 uh.hyper.mighty_ecf
-global u16 uh.tint.mighty_ecf
-global bool uh.palette.ray_ecf
-global bool uh.style.ray_ecf
-global u8 uh.hyper.ray_ecf
-global u16 uh.tint.ray_ecf
-global bool uh.palette.amy_ecf
-global bool uh.style.amy_ecf
-global u8 uh.hyper.amy_ecf
-global u16 uh.tint.amy_ecf
-
 define u8 global.xtrachar = u8[0xffffe654]
 
 function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
 {
-	if (!uh.override_esu && global.xtrachar != 0)
+	bool ecfActyve = 0
+#if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
+	ecfActyve = getECFCharBufferName(0xffffb000) ? 1 : 0
+#endif
+	
+	if (!uh.override_esu && global.xtrachar != 0) || (!uh.override_esu && ecfActyve)
 	{
 		base.UpdatePaletteEffects.SuperForm.moddingVersion(characterVersion)
 		return
@@ -232,7 +223,7 @@ function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
 			}
 
 			// Also update Sonic's colors, for the flickies
-			if (super.active.tails == 0xff && ((!Mods.isModActive("Super Flicky Fix")) || (Mods.isModActive("Super Flicky Fix") && !System.getGlobalVariableValueByName("sff.super_sonic_palette"))))
+			if (global.zone_act != 0x0d01) && (super.active.tails == 0xff && ((!Mods.isModActive("Tweakin' Tails")) || (Mods.isModActive("Tweakin' Tails") && !System.getGlobalVariableValueByName("sff.super_sonic_palette"))))
 				UpdatePaletteEffects.UpdateSuperSonic.Smoothed(0xff)
 			return
 		}
@@ -414,13 +405,13 @@ function u8 getModdedPaletteLineAsReleased(u8 character, bool isHyperEffect, boo
 function bool UH.isRainbowHyper()
 {
 #if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
-	if (uh.override_ecf)
+	if (uh.override_esu)
 		if (isECFCharP1("JUWL-Mighty"))
-			return uh.hyper.mighty_ecf == 2
+			return uh.hyper.mighty == 2
 		else if (isECFCharP1("JUWL-Ray"))
-			return uh.hyper.ray_ecf == 2
+			return uh.hyper.ray == 2
 		else if (isECFCharP1("JUWL-Amy"))
-			return uh.hyper.amy_ecf == 2
+			return uh.hyper.amy == 2
 #endif
 
 	if (global.xtrachar == 0)
@@ -449,13 +440,13 @@ function bool UH.isRainbowHyper()
 function bool UH.isFastFlash()
 {
 #if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
-	if (uh.override_ecf)
+	if (uh.override_esu)
 		if (isECFCharP1("JUWL-Mighty"))
-			return uh.hyper.mighty_ecf != 0
+			return uh.hyper.mighty != 0
 		else if (isECFCharP1("JUWL-Ray"))
-			return uh.hyper.ray_ecf != 0
+			return uh.hyper.ray != 0
 		else if (isECFCharP1("JUWL-Amy"))
-			return uh.hyper.amy_ecf != 0
+			return uh.hyper.amy != 0
 #endif
 
 	if (global.xtrachar == 0)
@@ -483,13 +474,13 @@ function bool UH.isFastFlash()
 function u16 UH.flashTint()
 {
 #if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
-	if (uh.override_ecf)
+	if (uh.override_esu)
 		if (isECFCharP1("JUWL-Mighty"))
-			return uh.tint.mighty_ecf
+			return uh.tint.mighty
 		else if (isECFCharP1("JUWL-Ray"))
-			return uh.tint.ray_ecf
+			return uh.tint.ray
 		else if (isECFCharP1("JUWL-Amy"))
-			return uh.tint.amy_ecf
+			return uh.tint.amy
 #endif
 
 	if (global.xtrachar == 0)
@@ -520,13 +511,13 @@ function bool UH.isCycleEffect(bool useHyperPalette, bool isHyperEffect)
 		return false
 
 #if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
-	if (uh.override_ecf)
+	if (uh.override_esu)
 		if (isECFCharP1("JUWL-Mighty"))
-			return !uh.style.mighty_ecf
+			return !uh.style.mighty
 		else if (isECFCharP1("JUWL-Ray"))
-			return !uh.style.ray_ecf
+			return !uh.style.ray
 		else if (isECFCharP1("JUWL-Amy"))
-			return !uh.style.amy_ecf
+			return !uh.style.amy
 #endif
 
 	if (global.xtrachar == 0)
@@ -572,12 +563,12 @@ function string getExtraCharacterPaletteKey(u8 xtrachar)
 #if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
 function string getECFCharacterPaletteKey(string name)
 {
-	if uh.override_ecf
-		if (uh.palette.mighty_ecf && name == "JUWL-Mighty")
+	if uh.override_esu
+		if (uh.palette.mighty && name == "JUWL-Mighty")
 			return "juwl_mighty_custom"
-		if (uh.palette.ray_ecf && name == "JUWL-Ray")
+		if (uh.palette.ray && name == "JUWL-Ray")
 			return "juwl_ray_custom"
-		if (uh.palette.amy_ecf && name == "JUWL-Amy")
+		if (uh.palette.amy && name == "JUWL-Amy")
 			return "juwl_amy_custom"
 	
 	return base.getECFCharacterPaletteKey(name)
@@ -586,9 +577,349 @@ function string getECFCharacterPaletteKey(string name)
 //# address-hook(0x003750) end(0x00398c)
 function void UpdatePaletteEffects.SuperForm()
 {
-	if uh.override_ecf && ((uh.palette.mighty_ecf && isECFCharP1("JUWL-Mighty")) || (uh.palette.ray_ecf && isECFCharP1("JUWL-Ray")) || (uh.palette.ray_ecf && isECFCharP1("JUWL-Amy"))) && super.palettefx.state && (global.game_mode & 0x7f) != 0x2c
+	if uh.override_esu && ((uh.palette.mighty && isECFCharP1("JUWL-Mighty")) || (uh.palette.ray && isECFCharP1("JUWL-Ray")) || (uh.palette.ray && isECFCharP1("JUWL-Amy"))) && super.palettefx.state && (global.game_mode & 0x7f) != 0x2c
 		UpdatePaletteEffects.SuperForm.moddingVersion(0x01)
 	else
 		base.UpdatePaletteEffects.SuperForm()
 }
 #endif
+
+function bool UpdatePaletteEffects.SuperForm.endpose()
+{
+	bool ecfActyve = 0
+#if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
+	ecfActyve = getECFCharBufferName(0xffffb000) ? 1 : 0
+#endif
+	
+	if (!uh.override_esu && global.xtrachar != 0) || (!uh.override_esu && ecfActyve)
+		return base.UpdatePaletteEffects.SuperForm.endpose()
+	
+	u8 characterVersion = isMainCharacter(CHARACTER_SONIC) ? ((objA0.subtype2c == 0x02) ? 0 : 1) : (getMainCharacter() + 1)
+
+	UpdatePaletteEffects.SuperForm.endpose.moddingVersion(characterVersion)
+	return true
+}
+
+function void UpdatePaletteEffects.SuperForm.endpose.moddingVersion(u8 characterVersion)
+{
+	bool ecfActyve = 0
+#if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
+	ecfActyve = getECFCharBufferName(0xffffb000) ? 1 : 0
+#endif
+	
+	if (!uh.override_esu && global.xtrachar != 0) || (!uh.override_esu && ecfActyve)
+	{
+		base.UpdatePaletteEffects.SuperForm.endpose.moddingVersion(characterVersion)
+		return
+	}
+
+	// Update ongoing palette effect
+	u8 character = getMainCharacter()
+	bool useHyperPalette = UH.isRainbowHyper()
+	bool isHyperEffect = (UH.isFastFlash() || useHyperPalette) && (global.super_emeralds >= 7)
+	bool isCyclePalette = UH.isCycleEffect(useHyperPalette, isHyperEffect)
+	u16 flashStrength = (uh.flash && !isCyclePalette) || uh.flash == 2 ? 0xc8 : 0x100
+	
+	if (uh.flash.rainbow && (useHyperPalette && isHyperEffect))
+		flashStrength = 0x100
+	
+	// Set Up Cycles
+	u8 cycles
+	
+	if (uh.flash.type)
+	{
+		if (isCyclePalette)
+			cycles = isHyperEffect ? 0x0b : 0x17
+		else
+			cycles = isHyperEffect ? 0x07 : 0x0f
+	}
+	else
+	{
+		if (isCyclePalette)
+			cycles = isHyperEffect ? 0x07 : 0x0b
+		else
+			cycles = isHyperEffect ? 0x04 : 0x06
+	}
+	
+	// Set Up blending
+	u16 nextFrame
+	u16 blendFactor
+	
+	if (uh.flash.type)
+	{
+		nextFrame = (super.palettefx.frame + 6) % (isCyclePalette ? (isHyperEffect ? 108 : 72) : (isHyperEffect ? 108 : 18))
+		blendFactor = clamp(u16(super.palettefx.timer) * flashStrength / cycles, 0, flashStrength)
+		
+		if (characterVersion == 2)
+		{
+			// Tails
+			nextFrame = (super.palettefx.frame.tails + 6) % (isCyclePalette ? (isHyperEffect ? 108 : 72) : (isHyperEffect ? 108 : 18))
+			blendFactor = clamp(u16(super.palettefx.timer.tails) * flashStrength / cycles, 0, flashStrength)
+		}
+		if (nextFrame % 18 == 0)
+			blendFactor = flashStrength - blendFactor
+		else if (nextFrame % 18 == 12)
+			blendFactor = 0
+	}
+	else
+	{
+		if (useHyperPalette && isHyperEffect)
+		{
+			blendFactor = (super.palettefx.frame % 2 == 0) ? flashStrength : 0
+			nextFrame = (super.palettefx.frame + 1) % 12
+		}
+		else if (isCyclePalette)
+		{
+			u8 tempFrame = super.palettefx.frame >= 4 ? 6 - super.palettefx.frame : super.palettefx.frame
+			blendFactor = tempFrame * flashStrength / 3
+			nextFrame = (super.palettefx.frame + 1) % 6
+		}
+		else
+		{
+			blendFactor = (super.palettefx.frame >= 3 ? 1 : super.palettefx.frame) * flashStrength / 2
+			nextFrame = (super.palettefx.frame + 1) % 4
+		}
+		
+		if (characterVersion == 2)
+		{
+			if (useHyperPalette && isHyperEffect)
+			{
+				blendFactor = (super.palettefx.frame.tails % 2 == 0) ? flashStrength : 0
+				nextFrame = (super.palettefx.frame.tails + 1) % 12
+			}
+			else if (isCyclePalette)
+			{
+				u8 tempFrame = super.palettefx.frame.tails >= 4 ? 6 - super.palettefx.frame.tails : super.palettefx.frame.tails
+				blendFactor = tempFrame * flashStrength / 3
+				nextFrame = (super.palettefx.frame.tails + 1) % 6
+			}
+			else
+			{
+				blendFactor = (super.palettefx.frame.tails >= 3 ? 1 : super.palettefx.frame.tails) * flashStrength / 2
+				nextFrame = (super.palettefx.frame.tails + 1) % 4
+			}
+		}
+	}
+	
+	// Apply Blending
+	
+	u32 offset = character * 0x40
+	u32 source = 0x802180 + offset
+	u32 dest   = 0x802000 + offset
+
+	// Load modded Super palette
+	
+	u16 superFrameBackup = super.palettefx.frame
+	
+	if (characterVersion == 2)
+		super.palettefx.frame = super.palettefx.frame.tails
+	
+	u8 line
+	
+	if (uh.flash.type)
+		line = global.xtrachar == 0 ? getModdedEndPosePaletteLine(character, useHyperPalette && isHyperEffect) : getModdedPaletteLine(character, useHyperPalette && isHyperEffect, false)
+	else
+		line = global.xtrachar == 0 ? getModdedEndPosePaletteLineAsReleased(character, useHyperPalette && isHyperEffect, super.palettefx.frame / 2) : getModdedPaletteLineAsReleased(character, useHyperPalette && isHyperEffect, false, super.palettefx.frame / 2)
+		
+	super.palettefx.frame = superFrameBackup
+
+	zeroMemory(dest, 0x40)
+	u16 numColors
+	
+#if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
+	if (getECFCharBufferName(0xffffb000))
+	{
+		numColors = System.loadExternalPaletteData(getECFCharacterEndPosePaletteKey(getECFCharBufferName(0xffffb000)), line, 0x800000, 0x20)
+	}
+	else
+#endif
+	{
+		numColors = System.loadExternalPaletteData(global.xtrachar == 0 ? getCharacterEndPosePaletteKey(character) : getCharacterPaletteKey(character), line, 0x800000, 0x20)
+	}
+	
+	for (u16 i = 0; i < numColors; ++i)
+	{
+		u32 rgba = u32[0x800000 + i * 4]
+		u16[dest + i * 2] = (rgba & 0xff000000) ? packColorExt(rgba) : 0
+	}
+
+	for (u8 k = 0; k < 0x40; k += 2)
+	{
+		if (u16[dest + k] == 0)
+		{
+			// Use original color as fallback
+			u16[dest + k] = u16[source + k]
+		}
+		else
+		{
+			// Apply flash effect
+			if (isCyclePalette)
+				u16[dest + k] = blendColorsPacked(u16[dest + k], u16[source + k], blendFactor)
+			else
+			{
+				u16 flashColour = 0xeee
+				
+				if !(useHyperPalette && isHyperEffect)
+				{
+					flashColour = UH.flashTint()
+				}
+				
+				u16[dest + k] = blendColorsPacked(u16[dest + k], flashColour, blendFactor)
+			}
+		}
+	}
+
+	
+	// Progress the animation
+	
+	if (characterVersion == 2)
+	{
+		// Super/Hyper Tails
+		--super.palettefx.timer.tails
+		if (super.palettefx.timer.tails < 0)
+		{
+			super.palettefx.timer.tails = cycles
+			super.palettefx.frame.tails = nextFrame
+		}
+
+		// Also update Sonic's colors, for the flickies
+		if Mods.isModActive("Tweakin' Tails")
+		{
+			System.setGlobalVariableValueByName("superflicky.palettefx.state", 0x80)
+			System.callFunctionByName("moddedFlickyPalette")
+			System.setGlobalVariableValueByName("superflicky.palettefx.state", 0x00)
+		}
+		
+		return
+	}
+
+	--super.palettefx.timer
+	if (super.palettefx.timer < 0)
+	{
+		super.palettefx.timer = cycles
+		super.palettefx.frame = nextFrame
+	}
+}
+
+function u8 getModdedEndPosePaletteLineAsReleased(u8 character, bool isHyperEffect, u8 cycle)
+{
+	string key = getCharacterPaletteKey(character)
+	u8 line = 2
+	if (isHyperEffect)
+	{
+		// Hyper color cycle (if mod supports it)
+		line = 3 + cycle
+		if (!System.hasExternalPaletteData(key, line))
+		{
+			line = 1
+		}
+	}
+
+	return line
+}
+
+// Render Ending
+function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
+{
+	bool ecfActyve = 0
+#if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
+	ecfActyve = getECFCharBufferName(0xffffb000) ? 1 : 0
+#endif
+
+	u8 gameMode = global.game_mode & 0x7f
+	bool prioFlag = (objA0.sprite_attributes & 0x8000) != 0
+	
+	if !ecfActyve && (objA0.update_address == 0x05e18a || objA0.update_address == 0x05f4e4) && (global.super_emeralds >= 7 || global.chaos_emeralds >= 7)
+	{
+		u64 key
+		u8 atex = 0x40 + getMainCharacter() * 0x20
+		
+		if (global.xtrachar == 0)
+		{
+			if (Mods.isModActive("Plush's Ariff Tails") && isMainCharacter(CHARACTER_TAILS))
+			{
+				key = stringformat("supend_0x%02x", objA0.animation.sprite)
+				
+				if (Mods.isModActive("Tweakin' Tails") && objA0.animation.sprite > 2)
+					Renderer.drawCustomSprite(stringformat("ariff_flickies_end_0x%02x", objA0.animation.sprite), px, py, 0x40, SPRITE_FLAG_FLIP_X, renderQueue - 1)
+			}
+			else
+				return base.Standalone.onWriteToSpriteTable(px, py, renderQueue)
+		}
+		else if (uh.override_esu)
+		{
+			if (global.xtrachar == 1)
+				key = (outro.ending_type < 0) ? stringformat("MightyPose_0x%02x", objA0.animation.sprite) : "MightyPose_0x01"
+			else if (global.xtrachar == 2)
+			{
+				px += (objA0.animation.sprite == 3) ? 0x10 : 0x30
+				key = stringformat("RayPose_0x%02x", objA0.animation.sprite)
+			}
+			else if (global.xtrachar == 3)
+				key = stringformat("AmyEndPose_0x%02x", objA0.animation.sprite)
+			else if (global.xtrachar == 5)
+				key = "ShadowPose"
+		}
+
+		if (Renderer.hasCustomSprite(key))
+		{
+			Renderer.drawCustomSprite(key, px, py, atex, SPRITE_FLAG_FLIP_X, renderQueue)
+			
+			return true
+		}
+	}
+	
+	return base.Standalone.onWriteToSpriteTable(px, py, renderQueue)
+}
+
+// Hyper palette in Knux SSZ
+//# address-hook(0x05e70e) end(0x05e804)
+function void fn05e70e()
+{
+	base.fn05e70e()
+	
+	if (super.active == 1 && global.super_emeralds >= 7)
+		super.active = 0xff
+}
+
+// Custom Ariff Endpose Palette
+function string getCharacterEndPosePaletteKey(u8 character)
+{
+	if (Mods.isModActive("Plush's Ariff Tails") && character == CHARACTER_TAILS && System.getGlobalVariableValueByName("TPal") == 0x01)
+		return "endpose_palette_ariff_tails"
+
+	return base.getCharacterEndPosePaletteKey(character)
+}
+
+// JUWL Endpose Palettes
+function string getECFCharacterEndPosePaletteKey(string name)
+{
+	if uh.override_esu
+		if (uh.palette.mighty && name == "JUWL-Mighty")
+			return "juwl_mighty_endpose_custom"
+		if (uh.palette.ray && name == "JUWL-Ray")
+			return "juwl_ray_endpose_custom"
+		if (uh.palette.amy && name == "JUWL-Amy")
+			return "juwl_amy_endpose_custom"
+	
+	return base.getECFCharacterEndPosePaletteKey(name)
+}
+
+//# address-hook(0x05b2d4) end(0x05b2d4)
+function void fn05b2d4()
+{
+	bool ecfActyve = 0
+#if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
+	ecfActyve = getECFCharBufferName(0xffffb000) ? 1 : 0
+#endif
+	
+	if (!uh.override_esu && global.xtrachar != 0) || (!uh.override_esu && ecfActyve)
+	{
+		base.fn05b2d4()
+		return
+	}
+	
+	//super.active = 0
+	super.active.tails = 0
+	base.fn05b2d4()
+}
