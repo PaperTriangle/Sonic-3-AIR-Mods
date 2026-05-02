@@ -94,14 +94,14 @@ function void UpdateCameraPositionY()
 			if (airCamCheck)
 			{
 				u8 camMulti = 0x38
-				if oldCamDiff > 0 && abs(D0.s16) > 0x22 && oldCamDiff < abs(D0.s16)
+				if oldCamDiff > 0 && abs(D0.s16) > 0x20 && oldCamDiff < abs(D0.s16)
 				{
 					airCamCheck = false
 					D1.u16 = 0x600
 				}
 				else
 				{
-					D1.u16 = max( (abs(D0.s16)/2) * (max(abs(s16[A0 + 0x1c]), 0x300)/0x300) * camMulti, camMulti)
+					D1.u16 = max( (abs(D0.s16)/2) * (max(abs(s16[A0 + 0x1c]), 0x280)/0x280) * camMulti, camMulti)
 				}
 				
 				oldCamDiff = abs(D0.s16)
