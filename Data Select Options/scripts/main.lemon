@@ -562,6 +562,11 @@ function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 in
 			Renderer.drawVdpSprite(px, py + (Mods.isModActive("Origins Screen Resolution") ? 0x18 : 0x10), size, index, renderQueue)
 			return true
 		}
+		else if (objA0.update_address == 0x00d42c && (index == 0x93bd || index == 0x83bd))
+		{
+			Renderer.drawVdpSprite(px, py + (Mods.isModActive("Origins Screen Resolution") ? 0x08 : 0x00), size, index, 0x9ffa)
+			return true
+		}
 		
 		if Mods.isModActive("Origins Screen Resolution")
 		{
@@ -1045,7 +1050,7 @@ function void fn007e64()
 // Draw background and quit out!
 function bool LevelSelect.innerUpdate()
 {
-	if (lsds.levelselect && Mods.isModActive("Sonic 3 Complete Level Select+"))
+	if (lsds.levelselect && (Mods.isModActive("Sonic 3 Complete Level Select+") || Mods.isModActive("Extra Character Framework")))
 	{
 		Renderer.drawCustomSprite("custom_ls_bg", s16(getScreenWidth() - 426)/2 - 43, -8, 0x10, 0, 0x1000)
 	}
