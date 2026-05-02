@@ -584,6 +584,65 @@ function void UpdatePaletteEffects.SuperForm()
 }
 #endif
 
+// Super Tails if enabled
+//# address-hook(0x05e334) end(0x05e3ae)
+function void fn05e334()
+{
+	UpdateMovementSimple()
+	if (objA0.velocity.y < 0 || objA0.position.y.u16 < 0xe0)
+		return
+
+	objA0.mapping_offset = 0x0607e6
+	objA0.sprite_attributes = (sprite_attribute.PALETTE.LINE2 | 0x0347)
+	objA0.sprite_priority = 0x0100
+	objA0.box_size.x = 0x80
+	objA0.box_size.y = 0x80
+	if (isMainCharacter(CHARACTER_TAILS))
+	{
+		objA0.animation.sprite = 0x03
+	}
+#if STANDALONE
+	else if (isMainCharacter(CHARACTER_KNUCKLES))
+	{
+		objA0.mapping_offset = 0x060a4c
+		objA0.animation.sprite = 0x01
+	}
+#endif
+	D0.u16 = screenmover_target.right
+
+	A1 = u32[0x05e3b4 + D0.u16]
+#if STANDALONE
+	if (isMainCharacter(CHARACTER_KNUCKLES))
+		A1 = 0x060bea
+#endif
+	copyMemory(0xfffffc40, A1, 0x20)
+
+#if STANDALONE
+	if (isMainCharacter(CHARACTER_KNUCKLES))
+	{
+		objA0.render_flags &= ~render_flag.FLIP_X
+		fn05e3c0()
+		return
+	}
+#endif
+	if (outro.ending_type < 0)
+	{
+		fn05e3c0()
+		return
+	}
+	if (outro.ending_type == 0 && isMainCharacter(CHARACTER_TAILS) && !Game.getSetting(SETTING_HYPER_TAILS))
+	{
+		fn05e3c0()
+		return
+	}
+
+	objA0.base_state = 0x0a
+	hud.dirty.timer = 0x01
+	super.palettefx.frame = 0
+
+	fn08648c()
+}
+
 function bool UpdatePaletteEffects.SuperForm.endpose()
 {
 	bool ecfActyve = 0
@@ -729,12 +788,12 @@ function void UpdatePaletteEffects.SuperForm.endpose.moddingVersion(u8 character
 #if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
 	if (getECFCharBufferName(0xffffb000))
 	{
-		numColors = System.loadExternalPaletteData(getECFCharacterEndPosePaletteKey(getECFCharBufferName(0xffffb000)), line, 0x800000, 0x20)
+		numColors = System.loadExternalPaletteData(getECFCharacterEndPosePaletteKey(getECFCharBufferName(0xffffb000)), line, 0x800000, 0x10)
 	}
 	else
 #endif
 	{
-		numColors = System.loadExternalPaletteData(global.xtrachar == 0 ? getCharacterEndPosePaletteKey(character) : getCharacterPaletteKey(character), line, 0x800000, 0x20)
+		numColors = System.loadExternalPaletteData(global.xtrachar == 0 ? getCharacterEndPosePaletteKey(character) : getCharacterPaletteKey(character), line, 0x800000, 0x10)
 	}
 	
 	for (u16 i = 0; i < numColors; ++i)
@@ -838,9 +897,9 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 		{
 			if (Mods.isModActive("Plush's Ariff Tails") && isMainCharacter(CHARACTER_TAILS))
 			{
-				key = stringformat("supend_0x%02x", objA0.animation.sprite)
+				key = !Game.getSetting(SETTING_HYPER_TAILS) && global.super_emeralds < 7 ? stringformat("endpose_tails_0x%02x", objA0.animation.sprite) : stringformat("ariff_tails_end_0x%02x", objA0.animation.sprite)
 				
-				if (Mods.isModActive("Tweakin' Tails") && objA0.animation.sprite > 2)
+				if (Mods.isModActive("Tweakin' Tails") && global.super_emeralds >= 7)
 					Renderer.drawCustomSprite(stringformat(System.getGlobalVariableValueByName("sff.green_eyes") ? "ariff_flickies_green_end_0x%02x" : "ariff_flickies_end_0x%02x", objA0.animation.sprite), px, py, 0x40, SPRITE_FLAG_FLIP_X, renderQueue - 1)
 			}
 			else
@@ -856,7 +915,7 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 				key = stringformat("RayPose_0x%02x", objA0.animation.sprite)
 			}
 			else if (global.xtrachar == 3)
-				key = stringformat("AmyEndPose_0x%02x", objA0.animation.sprite)
+				key = stringformat("SuperAmyEndPose_0x%02x", objA0.animation.sprite)
 			else if (global.xtrachar == 5)
 				key = "ShadowPose"
 		}
@@ -864,7 +923,17 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 		if (Renderer.hasCustomSprite(key))
 		{
 			Renderer.drawCustomSprite(key, px, py, atex, SPRITE_FLAG_FLIP_X, renderQueue)
-			
+			return true
+		}
+	}
+	else if !ecfActyve && (objA0.update_address == 0x05e18a || objA0.update_address == 0x05f4e4) && isMainCharacter(CHARACTER_TAILS)
+	{
+		u64 key = stringformat("endpose_tails_0x%02x", objA0.animation.sprite)
+		u8 atex = 0x40 + getMainCharacter() * 0x20
+		
+		if (Renderer.hasCustomSprite(key))
+		{
+			Renderer.drawCustomSprite(key, px, py, atex, SPRITE_FLAG_FLIP_X, renderQueue)
 			return true
 		}
 	}
@@ -920,6 +989,6 @@ function void fn05b2d4()
 	}
 	
 	//super.active = 0
-	super.active.tails = 0
+	//super.active.tails = 0
 	base.fn05b2d4()
 }
