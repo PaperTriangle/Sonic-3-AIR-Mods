@@ -410,7 +410,7 @@ function void fn03fbc4()
 		return
 	}
 
-	if (global.zone == 0x06 && (camera.position.x.u16 > 0x4350 && u16[A1 + 0x14] > 0x072c) && u8[A1 + 0x05] == base_state.HURT) // Otherwise they fall through to their death!
+	if (global.zone == 0x06 && (camera.position.x.u16 + getScreenWidth()/2 > 0x4350 && u16[A1 + 0x14] > 0x072c) && u8[A1 + 0x05] == base_state.HURT) // Otherwise they fall through to their death!
 	{
 		u8[A1 + 0x05] = base_state.NORMAL
 	}
