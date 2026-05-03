@@ -1,17 +1,19 @@
-global bool airCamCheck
-global s16 oldCamDiff
+global bool lg.airCamCheck
+global s16 lg.oldCamDiff
+global u16 lg.catchUp
+global u16 lg.speedUp
 
 define u8 global.xtrachar = u8[0xffffe654]
 
-function s16 AC.CharacterAdjust()
+function s16 LG.CharacterAdjust()
 {
-	return (global.xtrachar == 0 && char.character == CHARACTER_TAILS) ? 1 : 5
+	return (global.xtrachar != 2 && char.character == CHARACTER_TAILS) ? 1 : 5
 }
 
 //# address-hook(0x01c11e) end(0x01c236)
 function void UpdateCameraPositionY()
 {
-	if (Mods.isModActive("Don't Stop My Glide") && isMainCharacter(CHARACTER_KNUCKLES) && dsmg.smooth_landing_setting && (char.state == char.state.KNUX_STANDUP))
+	if (Mods.isModActive("Don't Stop My Glide") && isMainCharacter(CHARACTER_KNUCKLES) && System.getGlobalVariableValueByName("dsmg.smooth_landing_setting") && (char.state == char.state.KNUX_STANDUP))
 	{
 		base.UpdateCameraPositionY()
 		return
@@ -24,7 +26,7 @@ function void UpdateCameraPositionY()
 	}
 	if (char.flags & char.flag.ROLLING)
 	{
-		D0.s16 -= AC.CharacterAdjust()
+		D0.s16 -= LG.CharacterAdjust()
 	}
 
 #if STANDALONE
@@ -44,8 +46,10 @@ function void UpdateCameraPositionY()
 
 	if (char.flags & char.flag.IN_AIR)
 	{
-		airCamCheck = true
-		oldCamDiff = 0
+		lg.airCamCheck = true
+		lg.oldCamDiff = 0
+		lg.catchUp = 0
+		lg.speedUp = 0
 		
 		D0.s16 += 0x20 - D1.u16
 		if (D0.s16 < 0)
@@ -76,7 +80,7 @@ function void UpdateCameraPositionY()
 		D0.s16 -= D1.u16
 		if (D0.s16 == 0)
 		{
-			airCamCheck = false
+			lg.airCamCheck = false
 			
 			if (u8[0xffffee32] != 0)
 			{
@@ -91,32 +95,31 @@ function void UpdateCameraPositionY()
 		}
 		else
 		{
-			if (airCamCheck)
+			if (u8[0xffffee39] != 0)
 			{
-				u8 camMulti = 0x38
-				if oldCamDiff > 0 && abs(D0.s16) > 0x20 && oldCamDiff < abs(D0.s16)
+				D1.u16 = 0x1800
+			}
+			else if (lg.airCamCheck)
+			{
+				if (lg.oldCamDiff > 0 && lg.oldCamDiff < abs(D0.s16))
+					lg.catchUp++
+				
+				u16 camMulti = 0x40 + lg.catchUp * 0x40
+				
+				D1.u16 = max( (abs(D0.s16)/2) * camMulti, camMulti)
+				
+				if (D1.u16 >= 0x600 + ((min(abs(s16[A0 + 0x1c]), 0x800) * 0x09) >> 2))
 				{
-					airCamCheck = false
-					D1.u16 = 0x600
-				}
-				else
-				{
-					D1.u16 = max( (abs(D0.s16)/2) * (max(abs(s16[A0 + 0x1c]), 0x280)/0x280) * camMulti, camMulti)
+					D1.u16 = 0x600 + ((min(abs(s16[A0 + 0x1c]), 0x800) * 0x09) >> 2)
+					lg.speedUp = 0
+					lg.airCamCheck = false
 				}
 				
-				oldCamDiff = abs(D0.s16)
-			}
-			else if (u8[0xffffee39] != 0)
-			{
-				D1.u16 = 0x1800
-			}
-			else if (abs(s16[A0 + 0x1c]) >= 0x800)
-			{
-				D1.u16 = 0x1800
+				lg.oldCamDiff = abs(D0.s16)
 			}
 			else
 			{
-				D1.u16 = 0x600
+				D1.u16 = 0x600 + ((min(abs(s16[A0 + 0x1c]), 0x800) * 0x09) >> 2)
 			}
 		}
 	}
