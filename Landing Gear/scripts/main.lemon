@@ -104,9 +104,9 @@ function void UpdateCameraPositionY()
 				if (lg.oldCamDiff > 0 && lg.oldCamDiff < abs(D0.s16))
 					lg.catchUp++
 				
-				u16 camMulti = 0x40 + lg.catchUp * 0x40
+				u16 camMulti = 0x40 * (1 + lg.catchUp)
 				
-				D1.u16 = max( (abs(D0.s16)/2) * camMulti, camMulti)
+				D1.u16 = max( (abs(D0.s16)/2) * camMulti, 4 * camMulti)
 				
 				if (D1.u16 >= 0x600 + ((min(abs(s16[A0 + 0x1c]), 0x800) * 0x09) >> 2))
 				{
