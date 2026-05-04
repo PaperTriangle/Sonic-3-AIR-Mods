@@ -1,7 +1,6 @@
 global bool lg.airCamCheck
 global s16 lg.oldCamDiff
 global u16 lg.catchUp
-global u16 lg.speedUp
 
 define u8 global.xtrachar = u8[0xffffe654]
 
@@ -49,7 +48,6 @@ function void UpdateCameraPositionY()
 		lg.airCamCheck = true
 		lg.oldCamDiff = 0
 		lg.catchUp = 0
-		lg.speedUp = 0
 		
 		D0.s16 += 0x20 - D1.u16
 		if (D0.s16 < 0)
@@ -111,7 +109,6 @@ function void UpdateCameraPositionY()
 				if (D1.u16 >= 0x600 + ((min(abs(s16[A0 + 0x1c]), 0x800) * 0x09) >> 2))
 				{
 					D1.u16 = 0x600 + ((min(abs(s16[A0 + 0x1c]), 0x800) * 0x09) >> 2)
-					lg.speedUp = 0
 					lg.airCamCheck = false
 				}
 				
