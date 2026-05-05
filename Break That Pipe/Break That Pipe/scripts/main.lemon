@@ -8,7 +8,15 @@ define u8 global.xtrachar	= u8[0xffffe654]
 
 function bool BTP.canBreak(u8 state.in, u8 isRocks)
 {
-	return (global.xtrachar == 1 && A1 == 0xffffb000 && isRocks) || (global.xtrachar == 3 && (System.getGlobalVariableValueByName("Amy_HammerSpinAttacking") || super.active.tails)) || (global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.isBoosting")) || (btp.consistent_breaking && global.xtrachar == 0 && isMainCharacter(CHARACTER_SONIC) && (u8[A1 + 0x2b] & char.bonus.SHIELD_FIRE) && !(u8[A1 + 0x2b] & char.bonus.INVINCIBLE) && u8[A1 + 0x2f] > 0 && state.in == char.state.ROLLING)
+	bool ecfActyve = 0
+#if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
+	ecfActyve = getECFCharBufferName(A1) ? 1 : 0
+	
+	if (getECFCharBufferName(A1) == "JUWL-Amy" && (u8[A1 + 0x20] == 0x20 || u8[A1 + 0x20] == 0x21 || u8[A1 + 0x20] == 0x22))
+		return true
+#endif
+
+	return (global.xtrachar == 1 && A1 == 0xffffb000 && isRocks) || (global.xtrachar == 3 && (System.getGlobalVariableValueByName("Amy_HammerSpinAttacking") || super.active.tails)) || (global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.isBoosting")) || (btp.consistent_breaking && global.xtrachar == 0 && !ecfActyve && isMainCharacter(CHARACTER_SONIC) && (u8[A1 + 0x2b] & char.bonus.SHIELD_FIRE) && !(u8[A1 + 0x2b] & char.bonus.INVINCIBLE) && u8[A1 + 0x2f] > 0 && state.in == char.state.ROLLING)
 }
 
 function bool BTP.canBreak(u8 state.in)
