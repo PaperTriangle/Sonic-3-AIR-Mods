@@ -842,7 +842,7 @@ function void UpdatePaletteEffects.SuperForm.endpose.moddingVersion(u8 character
 		}
 
 		// Also update Sonic's colors, for the flickies
-		if Mods.isModActive("Tweakin' Tails")
+		if Mods.isModActive("Tweakin' Tails") && global.xtrachar == 0
 		{
 			System.setGlobalVariableValueByName("superflicky.palettefx.state", 0x80)
 			System.callFunctionByName("moddedFlickyPalette")
@@ -895,11 +895,13 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 		
 		if (global.xtrachar == 0)
 		{
-			if (Mods.isModActive("Plush's Ariff Tails") && isMainCharacter(CHARACTER_TAILS))
+			if (Mods.isModActive("Tweakin' Tails") && Mods.isModActive("Plush's Ariff Tails") && isMainCharacter(CHARACTER_TAILS))
 			{
-				key = !Game.getSetting(SETTING_HYPER_TAILS) && global.super_emeralds < 7 ? stringformat("endpose_tails_0x%02x", objA0.animation.sprite) : stringformat("ariff_tails_end_0x%02x", objA0.animation.sprite)
+				bool isHyper = (global.super_emeralds >= 7)
 				
-				if (Mods.isModActive("Tweakin' Tails") && global.super_emeralds >= 7)
+				key = stringformat(!isHyper && !Game.getSetting(SETTING_HYPER_TAILS) ? "endpose_tails_0x%02x" : "ariff_tails_end_0x%02x", objA0.animation.sprite)
+				
+				if isHyper
 					Renderer.drawCustomSprite(stringformat(System.getGlobalVariableValueByName("sff.green_eyes") ? "ariff_flickies_green_end_0x%02x" : "ariff_flickies_end_0x%02x", objA0.animation.sprite), px, py, 0x40, SPRITE_FLAG_FLIP_X, renderQueue - 1)
 			}
 			else
@@ -954,7 +956,7 @@ function void fn05e70e()
 // Custom Ariff Endpose Palette
 function string getCharacterEndPosePaletteKey(u8 character)
 {
-	if (Mods.isModActive("Plush's Ariff Tails") && character == CHARACTER_TAILS && System.getGlobalVariableValueByName("TPal") == 0x01)
+	if (global.xtrachar == 0 && Mods.isModActive("Plush's Ariff Tails") && character == CHARACTER_TAILS && System.getGlobalVariableValueByName("TPal") == 0x01)
 		return "endpose_palette_ariff_tails"
 
 	return base.getCharacterEndPosePaletteKey(character)
@@ -972,23 +974,4 @@ function string getECFCharacterEndPosePaletteKey(string name)
 			return "juwl_amy_endpose_custom"
 	
 	return base.getECFCharacterEndPosePaletteKey(name)
-}
-
-//# address-hook(0x05b2d4) end(0x05b2d4)
-function void fn05b2d4()
-{
-	bool ecfActyve = 0
-#if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
-	ecfActyve = getECFCharBufferName(0xffffb000) ? 1 : 0
-#endif
-	
-	if (!uh.override_esu && global.xtrachar != 0) || (!uh.override_esu && ecfActyve)
-	{
-		base.fn05b2d4()
-		return
-	}
-	
-	//super.active = 0
-	//super.active.tails = 0
-	base.fn05b2d4()
 }

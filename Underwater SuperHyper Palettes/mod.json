@@ -44,6 +44,24 @@
 			"DisplayName": "Extra Slot 3D in 2D Shadow",
 			"IsRequired": "0",
 			"Priority": "Lower"
+		},
+		"juwl-ecc-amy":
+		{
+			"DisplayName": "Juwl Amy",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		},
+		"juwl-ecc-ray":
+		{
+			"DisplayName": "Juwl Ray",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		},
+		"juwl-ecc-mighty":
+		{
+			"DisplayName": "Juwl Mighty",
+			"IsRequired": "0",
+			"Priority": "Lower"
 		}
 	},
 	"Settings":
