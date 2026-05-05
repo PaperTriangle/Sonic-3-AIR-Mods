@@ -5,7 +5,7 @@
 		"UniqueID": "tweakin-tails",
 		"Author": "PaperTriangle",
 		"Description": "Fixes handling of the super flicky to use Sonic's extended palette and provides some other tweaks for tails.",
-		"ModVersion": "2.1"
+		"ModVersion": "2.2"
 	},
 	"OtherMods":
 	{
@@ -36,6 +36,12 @@
 		"Plush's Ariff Tails":
 		{
 			"DisplayName": "Plush's Ariff Tails",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		},
+		"extra-character-framework":
+		{
+			"DisplayName": "Extra Character Framework",
 			"IsRequired": "0",
 			"Priority": "Lower"
 		}

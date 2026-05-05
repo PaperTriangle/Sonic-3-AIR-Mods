@@ -23,7 +23,12 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 {
 	bool prioFlag
 	
-	if (sff.victory_animation && global.xtrachar == 0 && A0 == 0xffffcc0a && u8[0xffff0000 + u16[A0 + 0x30] + 0x22] == 0xa6)
+	bool ecfActyve = 0
+#if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
+	ecfActyve = getECFCharBufferName(0xffffb000) ? 1 : 0
+#endif
+	
+	if (!ecfActyve && sff.victory_animation && global.xtrachar == 0 && A0 == 0xffffcc0a && u8[0xffff0000 + u16[A0 + 0x30] + 0x22] == 0xa6)
 	{
 		prioFlag = (u16[0xffffcc0a + 0x0a] & sprite_attribute.PRIORITY) == sprite_attribute.PRIORITY
 		
@@ -294,7 +299,12 @@ function bool Character.performSuperTransformation()
 //# address-hook(0x0191a4) end(0x019230)
 function void fn0191a4()
 {
-	if (!isMainCharacter(CHARACTER_TAILS) || global.xtrachar > 0)
+	bool ecfActyve = 0
+#if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
+	ecfActyve = getECFCharBufferName(0xffffb000) ? 1 : 0
+#endif
+
+	if (!isMainCharacter(CHARACTER_TAILS) || global.xtrachar > 0 || ecfActyve)
 	{
 		base.fn0191a4()
 		return
@@ -401,7 +411,12 @@ function bool allocHyperStarObject()
 //# address-hook(0x0193ec) end(0x019486)
 function void fn0193ec()
 {
-	if (!isMainCharacter(CHARACTER_TAILS) || global.xtrachar > 0)
+	bool ecfActyve = 0
+#if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
+	ecfActyve = getECFCharBufferName(0xffffb000) ? 1 : 0
+#endif
+
+	if (!isMainCharacter(CHARACTER_TAILS) || global.xtrachar > 0 || ecfActyve)
 	{
 		base.fn0193ec()
 		return
@@ -584,7 +599,12 @@ function void CollapsingCliff.Update()
 //# address-hook(0x018466) end(0x018680)
 function void fn018466()
 {
-	if (!sff.super_drown || !(global.xtrachar == 0 && isMainCharacter(CHARACTER_TAILS)))
+	bool ecfActyve = 0
+#if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
+	ecfActyve = getECFCharBufferName(0xffffb000) ? 1 : 0
+#endif
+
+	if (!sff.super_drown || !(global.xtrachar == 0 && isMainCharacter(CHARACTER_TAILS)) || ecfActyve)
 	{
 		base.fn018466()
 		return
@@ -804,7 +824,12 @@ function void fn018466()
 //# address-hook(0x0160d2)
 function void TailsTails.Update()
 {
-	if (global.xtrachar != 0 || !(sff.lookup_animation_fix || sff.lookup_animation_fix))
+	bool ecfActyve = 0
+#if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
+	ecfActyve = getECFCharBufferName(0xffffb000) ? 1 : 0
+#endif
+
+	if (ecfActyve || global.xtrachar != 0 || !(sff.lookup_animation_fix || sff.lookup_animation_fix))
 	{
 		base.TailsTails.Update()
 		return
@@ -920,7 +945,12 @@ function u16 EggmanBlue.getDefaultPal()
 //# address-hook(0x021568) end(0x021690)
 function void fn021568()
 {
-	if !((sff.super_breaks_stuff && super.active.tails && global.xtrachar == 0 && isMainCharacter(CHARACTER_TAILS)) || (sff.super_breaks_stuff && super.active.tails && global.xtrachar == 2 && sff.super_breaks_stuff == 2))
+	bool ecfActyve = 0
+#if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
+	ecfActyve = getECFCharBufferName(0xffffb000) ? 1 : 0
+#endif
+
+	if !((sff.super_breaks_stuff && super.active.tails && global.xtrachar == 0 && isMainCharacter(CHARACTER_TAILS)) || (sff.super_breaks_stuff && super.active.tails && global.xtrachar == 2 && sff.super_breaks_stuff == 2)) || ecfActyve
 	{
 		base.fn021568()
 		return
@@ -935,7 +965,12 @@ function void fn021568()
 //# address-hook(0x01fd08) end(0x01ff1a)
 function void fn01fd08()
 {
-	if !((sff.super_breaks_stuff && super.active.tails && global.xtrachar == 0 && isMainCharacter(CHARACTER_TAILS)) || (sff.super_breaks_stuff && super.active.tails && global.xtrachar == 2 && sff.super_breaks_stuff == 2))
+	bool ecfActyve = 0
+#if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
+	ecfActyve = getECFCharBufferName(0xffffb000) ? 1 : 0
+#endif
+
+	if !((sff.super_breaks_stuff && super.active.tails && global.xtrachar == 0 && isMainCharacter(CHARACTER_TAILS)) || (sff.super_breaks_stuff && super.active.tails && global.xtrachar == 2 && sff.super_breaks_stuff == 2)) || ecfActyve
 	{
 		base.fn01fd08()
 		return
@@ -949,7 +984,12 @@ function void fn01fd08()
 
 function bool BTP.canBreak(u8 state.in)
 {
-	if !((sff.super_breaks_stuff && super.active.tails && global.xtrachar == 0 && isMainCharacter(CHARACTER_TAILS)) || (sff.super_breaks_stuff && super.active.tails && global.xtrachar == 2 && sff.super_breaks_stuff == 2))
+	bool ecfActyve = 0
+#if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
+	ecfActyve = getECFCharBufferName(0xffffb000) ? 1 : 0
+#endif
+
+	if !((sff.super_breaks_stuff && super.active.tails && global.xtrachar == 0 && isMainCharacter(CHARACTER_TAILS)) || (sff.super_breaks_stuff && super.active.tails && global.xtrachar == 2 && sff.super_breaks_stuff == 2)) || ecfActyve
 		return base.BTP.canBreak(state.in)
 		
 	return true
