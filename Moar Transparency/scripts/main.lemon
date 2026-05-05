@@ -145,6 +145,12 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 			
 		}
 		
+		// Doing this to support SSZ Clouds and Extra Slot character names.
+		if (objA0.update_address == 0x02dd98)
+		{
+			return base.Standalone.onWriteToSpriteTable(px, py, 0xd000)
+		}
+		
 		if (mt.dez1laser)
 		{
 			// DEZ1 Laser
@@ -1241,6 +1247,13 @@ function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 in
 	if (Mods.isModActive("No Transparency"))
 		System.setGlobalVariableValueByName("renderTransparentPlz", true)
 	
+	// Doing this here to support rendering on top of SSZ clouds.
+	if (objA0.update_address == 0x02dd98)
+	{
+		Renderer.drawVdpSprite(px, py, size, index, 0xd000)
+		return true
+	}
+	
 	if (mt.telebeam || mt.teleframe)
 	{
 		// Teleporter
@@ -1377,33 +1390,33 @@ function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 in
 				bool prioFlag = (objA0.sprite_attributes & sprite_attribute.PRIORITY) != 0
 				if (index == 0xe310)
 				{
-					Renderer.drawSprite("cloud_large", px, py, 0x30, (prioFlag ? SPRITE_FLAG_PRIO : 0), 0x9f80, 0, 160)
+					Renderer.drawSprite("cloud_large", px, py, 0x30, (prioFlag ? SPRITE_FLAG_PRIO : 0), 0xa080, 0, 160)
 					
 					if (getScreenWidth() > 400)
-						Renderer.drawSprite("cloud_large", px+512, py, 0x30, (prioFlag ? SPRITE_FLAG_PRIO : 0), 0x9f80, 0, 160)
+						Renderer.drawSprite("cloud_large", px+512, py, 0x30, (prioFlag ? SPRITE_FLAG_PRIO : 0), 0xa080, 0, 160)
 				}
 				else if (index == 0xe330)
 				{
-					Renderer.drawSprite("cloud_small", px, py, 0x30, (prioFlag ? SPRITE_FLAG_PRIO : 0), 0x9f80, 0, 160)
+					Renderer.drawSprite("cloud_small", px, py, 0x30, (prioFlag ? SPRITE_FLAG_PRIO : 0), 0xa080, 0, 160)
 					
 					if (getScreenWidth() > 400)
-						Renderer.drawSprite("cloud_small", px+512, py, 0x30, (prioFlag ? SPRITE_FLAG_PRIO : 0), 0x9f80, 0, 160)
+						Renderer.drawSprite("cloud_small", px+512, py, 0x30, (prioFlag ? SPRITE_FLAG_PRIO : 0), 0xa080, 0, 160)
 				}
 			}
 			else
 			{
-				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, 0x9f80, 160)
+				Renderer.drawVdpSpriteWithAlpha(px, py, size, index, 0xa080, 160)
 				
 				if (mt.clouds == 2)
-					Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, 0x9f80, 160)
+					Renderer.drawVdpSpriteWithAlpha(px+1, py, size, index, 0xa080, 160)
 
 				if (getScreenWidth() > 400)
 				{
 					// Draw an additional copy of the cloud one loop further to the right
-					Renderer.drawVdpSpriteWithAlpha(px+512, py, size, index, 0x9f80, 160)
+					Renderer.drawVdpSpriteWithAlpha(px+512, py, size, index, 0xa080, 160)
 					
 					if (mt.clouds == 2)
-						Renderer.drawVdpSpriteWithAlpha(px+513, py, size, index, 0x9f80, 160)
+						Renderer.drawVdpSpriteWithAlpha(px+513, py, size, index, 0xa080, 160)
 				}
 			}
 			return true
@@ -1414,12 +1427,12 @@ function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 in
 		// SSZ clouds effect
 		if (objA0.update_address == 0x057bf6)
 		{
-			Renderer.drawVdpSprite(px, py, size, index, 0x9f80)
+			Renderer.drawVdpSprite(px, py, size, index, 0xa080)
 
 			if (getScreenWidth() > 400)
 			{
 				// Draw an additional copy of the cloud one loop further to the right
-				Renderer.drawVdpSprite(px+512, py, size, index, 0x9f80)
+				Renderer.drawVdpSprite(px+512, py, size, index, 0xa080)
 			}
 			return true
 		}
