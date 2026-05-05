@@ -14,11 +14,24 @@ define u32 char.ADDRESS_P2 = 0xffffb04a
 
 function bool SDMD.canBounce(u32 AX)
 {
-	return (u8[AX + 0x20] == char.state.ROLLING) || (u8[AX + 0x38] == CHARACTER_SONIC && u8[AX + 0x20] == char.state.SONIC_DROPDASH) || (global.xtrachar == 3 && AX == char.ADDRESS_P1 && System.getGlobalVariableValueByName("Amy_HammerSpinAttacking"))
+	bool ecfActyve = 0
+#if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
+	ecfActyve = getECFCharBufferName(AX) ? 1 : 0
+	
+	if (getECFCharBufferName(AX) == "JUWL-Amy" && (u8[AX + 0x20] == 0x20 || u8[AX + 0x20] == 0x21))
+		return true
+#endif
+
+	return (u8[AX + 0x20] == char.state.ROLLING) || (!ecfActyve && u8[AX + 0x38] == CHARACTER_SONIC && u8[AX + 0x20] == char.state.SONIC_DROPDASH) || (global.xtrachar == 3 && AX == char.ADDRESS_P1 && System.getGlobalVariableValueByName("Amy_HammerSpinAttacking"))
 }
 
 function bool SDMD.canSmash(u32 AX)
 {
+#if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
+	if (getECFCharBufferName(AX) == "JUWL-Mighty" && u8[AX + 0x20] == 0x20)
+		return true
+#endif
+
 	return (global.xtrachar == 1 && u8[AX + 0x0d] & 0x02) || (global.xtrachar == 3 && System.getGlobalVariableValueByName("Amy_HammerSpinAttacking") && u8[AX + 0x2f] == 0) || (global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.DropDown"))
 }
 

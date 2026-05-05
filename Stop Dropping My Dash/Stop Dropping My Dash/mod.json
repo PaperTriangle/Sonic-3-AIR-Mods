@@ -5,7 +5,7 @@
 		"UniqueID": "stop-dropping-my-dash",
 		"Author": "PaperTriangle",
 		"Description": "Allows Sonic to hold a drop dash while bouncing off of more objects.",
-		"ModVersion": "3.0"
+		"ModVersion": "3.1"
 	},
 	"OtherMods":
 	{
@@ -42,6 +42,24 @@
 		"Origins Parity Galore":
 		{
 			"DisplayName": "Origins Parity Galore",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		},
+		"juwl-ecc-amy":
+		{
+			"DisplayName": "Juwl Amy",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		},
+		"juwl-ecc-ray":
+		{
+			"DisplayName": "Juwl Ray",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		},
+		"juwl-ecc-mighty":
+		{
+			"DisplayName": "Juwl Mighty",
 			"IsRequired": "0",
 			"Priority": "Lower"
 		}
