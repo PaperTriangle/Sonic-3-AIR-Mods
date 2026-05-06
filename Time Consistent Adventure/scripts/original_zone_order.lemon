@@ -520,13 +520,13 @@ function void fn039a40()
 	
 	A1 = 0xffffb000
 	objA1.position.x.u16 -= 0x60
-	objA1.position.y.u16 += 0xf0
+	objA1.position.y.u16 += 0xe8
 
 	A1 = 0xffffb04a
 	if (u32[A1] != 0)
 	{
 		objA1.position.x.u16 -= 0x60
-		objA1.position.y.u16 += 0xf8
+		objA1.position.y.u16 += 0xf0
 	}
 }
 
