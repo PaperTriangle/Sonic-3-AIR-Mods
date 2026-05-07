@@ -5,7 +5,7 @@
 		"UniqueID": "tweakin-tails",
 		"Author": "PaperTriangle",
 		"Description": "Fixes handling of the super flicky to use Sonic's extended palette and provides some other tweaks for tails.",
-		"ModVersion": "2.2"
+		"ModVersion": "2.1"
 	},
 	"OtherMods":
 	{
