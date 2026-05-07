@@ -201,7 +201,7 @@ function void LBZPipe.break()
 		{
 			// Let the water rise (in Knuckles' area)
 			global.level_flag02 = 1
-			water.height.target = 0x0660
+			water.height.target = 0x065e
 			if (super.active)
 			{
 				water.height.changerate = 2
