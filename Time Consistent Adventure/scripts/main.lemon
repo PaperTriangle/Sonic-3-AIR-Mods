@@ -1423,7 +1423,7 @@ function void TitleCard.Show()
 	else
 		tca.infbz1forreal = 0
 		
-	if (tca.fbz && global.zone_act == 0x0a00)
+	if (tca.ssz_sonic && global.zone_act == 0x0a00)
 		tca.inssz1forreal = 1
 	else
 		tca.inssz1forreal = 0
