@@ -5,7 +5,7 @@
 		"UniqueID": "moar-transparency",
 		"Author": "PaperTriangle",
 		"Description": "Adds varying levels of transparency to more objects! Credit to Useott and Raine for some code that was adapted from A.I.R. Freshener.",
-		"ModVersion": "2.2"
+		"ModVersion": "2.3"
 	},
 	"OtherMods": {
 		"time-consistent-adventure":
@@ -280,6 +280,18 @@
 					"0": "Disabled",
 					"1": "Default (A.I.R.)",
 					"2": "Enabled (Darkening)"
+				}
+			},
+			{
+				"InternalName": "mt.hcz_intro_water",
+				"DisplayName": "HCZ1 Starting Water",
+				"Variable": "mt.hcz_intro_water",
+				"Category": "Effects",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
 				}
 			},
 			{

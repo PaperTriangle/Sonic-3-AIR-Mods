@@ -47,6 +47,7 @@ global bool mt.amyheart
 global bool mt.amytrail
 global bool mt.esustars
 global u8 mt.dark_sand
+global bool mt.hcz_intro_water
 
 global u8 dez_laser_val
 global bool ssz_s2_laser
@@ -2217,6 +2218,7 @@ function void fn08b73a()
 function void TitleCard.Show()
 {
 	laser_on = false		// Turn off lasers if player died.
+	mt.hcz_flood = 0
 	
 	base.TitleCard.Show()
 	
@@ -2702,3 +2704,120 @@ function void SOZ.drawDarkSandPit(u16 px, u16 py, u16 width)
 	base.SOZ.drawDarkSandPit(px, py, width)
 }
 #endif
+
+global u16 mt.hcz_flood
+
+//# address-hook(0x050bbe) end(0x050bc2)
+function void UpdateLevelScrolling.HCZ1()
+{
+	base.UpdateLevelScrolling.HCZ1()
+	
+	if (mt.hcz_intro_water)
+	{
+		HCZ.drawIntroWater(0x0180, 0x0500, 512, 256)
+		HCZ.drawIntroWater(0x0380, 0x0500, 128, 192)
+		HCZ.drawIntroWater(0x0200, 0x0600, 288, 32)
+		HCZ.drawIntroWater(0x07a0, 0x0560, 352, 64)
+		
+		if mt.hcz_flood > 0
+			HCZ.drawIntroFloodWater()
+	}
+}
+
+function void HCZ.drawIntroWater(u16 px, u16 py, u16 width, u16 height)
+{
+	SpriteHandle hczwater = Renderer.addSpriteHandle("hcz_water", px, py, 0x9ff0)
+	hczwater.setFlags(SPRITE_FLAG_WORLDSPACE | SPRITE_FLAG_PRIO)
+	hczwater.setBlendMode(BlendMode.SUBTRACTIVE)
+	hczwater.setScale(width, height)
+}
+
+function void HCZ.drawIntroFloodWater()
+{
+	for (u8 line = 0; line < 6; ++line)
+	{
+		u16 startLine = 0x400
+		if line == 0
+			startLine = 0x05d0
+		else if line == 1
+			startLine = 0x05a0
+		
+		HCZ.drawIntroWater(startLine, 0x0560 + u16(line) * 0x10 , min(mt.hcz_flood - startLine, 0x600), 16)
+	}
+}
+
+//# address-hook(0x02fe5e) end(0x02feac)
+function void fn02fe5e()
+{
+	// Move waterfront every second frame only
+	//  -> The rest of the effect is done by animation and palette rotation
+
+	--objA0.animation.timer
+	if (s8(objA0.animation.timer) < 0)
+	{
+		objA0.animation.timer = 1
+		++objA0.animation.sprite
+		if (objA0.animation.sprite == 2)
+		{
+			objA0.position.x.u16 += 0x20
+		#if !STANDALONE
+			if (objA0.position.x.u16 == 0x0580 && objA0.position.y.u16 == 0x05a0)
+			{
+				objA0.position.x.u16 -= 0x20
+				objA0.position.y.u16 -= 0x20
+			}
+		#endif
+		}
+		objA0.animation.sprite &= 0x01
+	}
+
+	if (objA0.position.x.u16 >= 0x0980)
+	{
+		objA0.position.x.u16 = 0x7f00
+	}
+
+#if STANDALONE
+
+	checkForUnloadObjectAtPosition(objA0.position.x.u16)
+
+	u16 baseX = objA0.position.x.u16 - 0x30 + ((objA0.animation.sprite == 1) ? 0x10 : 0)
+	u16 baseY = objA0.position.y.u16
+
+	s16 offset = (objA0.position.x.u16 >= 0x0480) ? 0x20 : (objA0.animation.sprite < 2) ? 0x10 : 0
+	for (; offset >= 0; offset -= 0x10)
+	{
+		u16 px = baseX - offset
+		u16 py = baseY - offset * 2
+
+		Renderer.drawCustomSprite("hcz_waterfront", px, py, 0x00, SPRITE_FLAG_WORLDSPACE, 0x9fff)
+
+		// Change everything to the left to wet, and everything to the right to dry
+		px += 0x20
+		for (u8 line = 0; line < 2; ++line)
+		{
+			u16 minLeft = (py == 0x560) ? 0x05d0 : (py == 0x570) ? 0x05a0 : 0x0400
+			u16 maxRight = (py < 0x5a0) ? 0x0900 : 0x07a0
+
+			u16 left  = clamp(px - 0x200, minLeft, maxRight)
+			u16 mid   = clamp(px, minLeft, maxRight)
+			u16 right = clamp(px + 0x200, minLeft, maxRight)
+
+			Game.changePlanePatternRectAtex(left, py, mid - left, 0x10, 1, 0x30)
+			Game.changePlanePatternRectAtex(mid, py, right - mid, 0x10, 1, 0x20)
+			
+			if line == 0 && (mid - left) != 0
+				mt.hcz_flood = mid
+			
+			//debugDrawRect(left, py, mid - left, 0x10, 0x600000ff)
+			//debugDrawRect(mid, py, right - mid, 0x10, 0x60ff0000)
+
+			py += 0x10
+		}
+	}
+
+	HCZWaterfallPaletteFix()
+
+#else
+	DrawOrUnloadObject()
+#endif
+}

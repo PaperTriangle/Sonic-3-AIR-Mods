@@ -192,5 +192,6 @@
 	"cloud_large": { "File": "cloud_large.bmp"},
 	"cloud_small": { "File": "cloud_small.bmp"},
 	
-	"dark_sand": { "File": "dark_sand.png" }
+	"dark_sand": { "File": "dark_sand.png" },
+	"hcz_water": { "File": "hcz_water.png" }
 }
