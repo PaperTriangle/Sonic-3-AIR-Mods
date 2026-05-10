@@ -1351,7 +1351,7 @@ function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 in
 				px = (camera.position.x.u16 & 0xffe0) - camera.position.x.u16 - 0x10	// Extend a bit more to the left just for sprite interpolation
 				for (; px < s16(getScreenWidth()); px += 0x20)
 				{
-					Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 160)
+					Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue + 0x08, 160)
 				}
 			}
 			return true
@@ -1365,8 +1365,15 @@ function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 in
 			return true
 		}
 	}
-	
-	if (!mt.watersurface)
+	else if (mt.watersurface == 1)
+	{
+		// HCZ water waves effect
+		if (objA0.update_address == 0x01f244)
+		{
+			return base.Standalone.onDrawVdpSpriteCompound(px, py, size, index, renderQueue + 0x08, spriteCounter)
+		}
+	}
+	else if (!mt.watersurface)
 	{
 		if (objA0.update_address == 0x01f244)
 		{
@@ -1378,7 +1385,7 @@ function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 in
 					px += 0x20
 				for (; px < s16(getScreenWidth()); px += 0x40)
 				{
-					Renderer.drawVdpSprite(px, py, size, index, renderQueue)
+					Renderer.drawVdpSprite(px, py, size, index, renderQueue + 0x08)
 				}
 			}
 			return true
@@ -2735,14 +2742,14 @@ function void HCZ.drawIntroSurface()
 {
 	for (u8 width = 0; width < 5; ++width)
 	{
-		SpriteHandle hczsurface = Renderer.addSpriteHandle("hcz_water_surface", 0x0180 + 0x80 * u16(width), 0x0500, 0x9ff8)
+		SpriteHandle hczsurface = Renderer.addSpriteHandle("hcz_water_surface", 0x0180 + 0x80 * u16(width) - mt.shakeX, 0x0500 - mt.shakeY, 0x9fff)
 		hczsurface.setFlags(SPRITE_FLAG_WORLDSPACE | SPRITE_FLAG_PRIO)
 	}
 }
 
 function void HCZ.drawIntroWater(u16 px, u16 py, u16 width, u16 height)
 {
-	SpriteHandle hczwater = Renderer.addSpriteHandle("hcz_water", px, py, 0x9ff0)
+	SpriteHandle hczwater = Renderer.addSpriteHandle("hcz_water", px - mt.shakeX, py - mt.shakeY, 0x9fff)
 	hczwater.setFlags(SPRITE_FLAG_WORLDSPACE | SPRITE_FLAG_PRIO)
 	hczwater.setBlendMode(BlendMode.SUBTRACTIVE)
 	hczwater.setScale(width, height)
@@ -2836,6 +2843,17 @@ function void fn02fe5e()
 #else
 	DrawOrUnloadObject()
 #endif
+}
+
+global s16 mt.shakeX
+global s16 mt.shakeY
+
+function void UpdateLevelDisplay()
+{
+    base.UpdateLevelDisplay()
+
+   	mt.shakeX = s16(camera.position.x.u16) - s16(camera.foreground.x.u16)
+   	mt.shakeY = s16(camera.position.y.u16) - s16(camera.foreground.y.u16)
 }
 
 function void WaterPlus.drawWater()
