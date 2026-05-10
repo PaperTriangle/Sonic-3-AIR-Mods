@@ -137,6 +137,9 @@ Thanks to Useott this mod also includes the logic to run it as either the origin
 
 **PLEASE NOTE:** If you use the "as released"  order this does disable many features of the mod.
 
+## Triple Trouble 16-Bit Sounds
+This mods adds sounds from Triple Trouble 16-Bit for Monitors and some DEZ2 objects.
+
 ## Tweakin' Tails
 Started as a mod that makes the Super Flickies render using Sonic's player palette line. Meaning game objects should not flash yellow.
 

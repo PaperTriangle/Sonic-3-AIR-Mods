@@ -1,0 +1,9 @@
+{
+	"tt16_break":	{ "File": "break.ogg", "Type": "Sound"},
+	"tt16_monitor":	{ "File": "monitor_break.ogg", "Type": "Sound"},
+	"elevator_start": { "File": "elevator_start.ogg",	"Type": "Sound" },
+	"elevator_up": { "File": "elevator_up.ogg",	"Type": "Sound" },
+	"elevator_down": { "File": "elevator_down.ogg",	"Type": "Sound" },
+	"gravity_switch_down": { "File": "gravity_switch_down.ogg",	"Type": "Sound" },
+	"gravity_switch_up": { "File": "gravity_switch_up.ogg",	"Type": "Sound" }
+}

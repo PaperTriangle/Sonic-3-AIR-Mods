@@ -1,0 +1,49 @@
+{
+	"Metadata":
+	{
+		"Name": "Triple Trouble 16-Bit Sounds",
+		"UniqueID": "tt16-sounds",
+		"Author": "PaperTriangle",
+		"Description": "Adds some Triple Trouble 16-Bit Sounds.",
+		"ModVersion": "1.0"
+	},
+	"Settings":
+	{
+		"List":
+		[
+			{
+				"InternalName": "tt16s.monitor_sounds",
+				"DisplayName": "Monitor Sounds",
+				"Variable": "tt16s.monitor_sounds",
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "tt16s.dez2_elevator_sounds",
+				"DisplayName": "DEZ2 Elevator Sounds",
+				"Variable": "tt16s.dez2_elevator_sounds",
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "tt16s.dez2_button_sounds",
+				"DisplayName": "DEZ2 Gravity Button Sounds",
+				"Variable": "tt16s.dez2_button_sounds",
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			}
+		]
+	}
+}

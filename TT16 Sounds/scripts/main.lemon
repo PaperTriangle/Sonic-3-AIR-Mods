@@ -1,0 +1,100 @@
+global bool tt16s.monitor_sounds
+global bool tt16s.dez2_elevator_sounds
+global bool tt16s.dez2_button_sounds
+
+global bool tt16s.monitorSoundTT16
+
+//# address-hook(0x048d2c) end(0x048d60)
+function void fn048d2c()
+{
+	if (!tt16s.dez2_elevator_sounds)
+	{
+		base.fn048d2c()
+		return
+	}
+
+	if u16[A4 + 0x04] == 0
+		Audio.playAudio("elevator_start")
+
+	u16[A4 + 0x04] += 16
+	
+	if (u16[A4 + 0x04] == 0x0300)
+	{
+		D0.u16 = objA0.subtype2c & 0x7f
+		u16[A4 + 0x06] = D0.u16
+		u16[A4 + 0x08] = D0.u16 >> 1
+		objA1.velocity.y = (objA0.flags2a & 0x02) ? 0x1000 : -0x1000
+		u8[A4] += 2
+		
+		Audio.playAudio(objA0.flags2a & 0x02 ? "elevator_down" : "elevator_up")
+	}
+
+	fn048d66()
+}
+
+//# address-hook(0x048ad6) end(0x048b3a)
+function void fn048ad6()
+{
+	if (!tt16s.dez2_button_sounds)
+	{
+		base.fn048ad6()
+		return
+	}
+	
+	D1.u16 = 0x1b
+	D2.u16 = 0x08
+	D3.u16 = 0x09
+	D4.u16 = objA0.position.x.u16
+	fn01dc56()
+
+	D6 = (D6 << 16) + (D6 >> 16)
+	if (D6.u16 & 0x14)
+	{
+		objA0.animation.sprite = 1
+		objA0.update_address = 0x048b7e
+		u16[A0 + 0x30] = 3
+
+		D0 = (objA0.render_flags & render_flag.FLIP_Y) ? -8 : 8		// D0 is used inside "fn048b40()"
+		objA0.position.y.u16 += D0
+
+		A1 = 0xffffb000
+		D2.u16 = D6.u16
+		D3.u16 = 0x14
+		fn048b40()
+
+		A1 = 0xffffb04a
+		D2.u16 = D6.u16
+		D3.u16 = 0x28
+		fn048b40()
+
+		Audio.playAudio(global.inv_gravity & 0x01 ? "gravity_switch_down" : "gravity_switch_up") 
+	}
+
+	DrawOrUnloadObject()
+}
+
+//# address-hook(0x01d716) end(0x01d7b6)
+function void MonitorIntact.Opening()
+{
+	if (tt16s.monitor_sounds)
+		tt16s.monitorSoundTT16 = true
+
+	base.MonitorIntact.Opening()
+}
+
+function u64 Standalone.getModdedSoundKey(u64 soundKey, u8 sfxId, u8 soundRegType)
+{
+    if (tt16s.monitor_sounds && tt16s.monitorSoundTT16 && sfxId == 0x3D) // Badnik/Monitor Hit SFX
+    {
+		tt16s.monitorSoundTT16 = false
+        return "tt16_monitor"
+    }
+	else if (tt16s.monitor_sounds && sfxId == 0x3D)
+    {
+		return "tt16_break"
+	}
+    else
+    {
+        return base.Standalone.getModdedSoundKey(soundKey, sfxId, soundRegType)
+    }
+}
