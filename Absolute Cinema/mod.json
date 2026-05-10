@@ -5,10 +5,22 @@
 		"UniqueID": "absolute-cinema",
 		"Author": "PaperTriangle",
 		"Description": "Options to prevent the player from pausing in the more cinematic moments and also remove the HUD.",
-		"ModVersion": "1.1"
+		"ModVersion": "1.2"
 	},
 	"OtherMods":
 	{
+		"do-not-stop-my-glide":
+		{
+			"DisplayName": "Don't Stop My Glide",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		},
+		"thorn-originsresolution":
+		{
+			"DisplayName": "Origins Screen Resolution",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		},
 		"Origins AIZ Intros":
 		{
 			"DisplayName": "Origins AIZ Intros",
@@ -95,6 +107,17 @@
 				"DisplayName": "Skippable Cutscenes",
 				"Variable": "ac.skip",
 				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "ac.smooth_landing",
+				"DisplayName": "Smoother Landing Camera",
+				"Variable": "ac.smooth_landing",
+				"DefaultValue": "1",
 				"Options":
 				{
 					"0": "Disabled",

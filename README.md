@@ -77,9 +77,6 @@ Adjusts some of the animations for the player characters in HCZ to be more like 
 ## Imma Let You Finish
 Forces the characters to stop fidgeting and let the act end.
 
-## Landing Gear
-Makes the camera a little smoother when landing on the ground... Could cause some odd issues...
-
 ## Keep Rollin'
 Makes characters keep rolling when passing from dynamic object to ground object.
 
