@@ -48,6 +48,12 @@
 			"DisplayName": "Origins Parity Galore",
 			"IsRequired": "0",
 			"Priority": "Lower"
+		},
+		"water-plus":
+		{
+			"DisplayName": "Water+",
+			"IsRequired": "0",
+			"Priority": "Lower"
 		}
 	},
 	"Settings":
@@ -287,11 +293,12 @@
 				"DisplayName": "HCZ1 Starting Water",
 				"Variable": "mt.hcz_intro_water",
 				"Category": "Effects",	
-				"DefaultValue": "1",
+				"DefaultValue": "2",
 				"Options":
 				{
 					"0": "Disabled",
-					"1": "Enabled"
+					"1": "Enabled (Regular Surface)",
+					"2": "Enabled (Custom Surface)"
 				}
 			},
 			{

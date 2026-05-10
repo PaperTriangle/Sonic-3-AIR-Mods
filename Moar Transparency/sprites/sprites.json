@@ -193,5 +193,6 @@
 	"cloud_small": { "File": "cloud_small.bmp"},
 	
 	"dark_sand": { "File": "dark_sand.png" },
+	"hcz_water_surface": { "File": "hcz_water_surface.bmp" },
 	"hcz_water": { "File": "hcz_water.png" }
 }

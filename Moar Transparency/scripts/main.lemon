@@ -47,7 +47,7 @@ global bool mt.amyheart
 global bool mt.amytrail
 global bool mt.esustars
 global u8 mt.dark_sand
-global bool mt.hcz_intro_water
+global u8 mt.hcz_intro_water
 
 global u8 dez_laser_val
 global bool ssz_s2_laser
@@ -1335,6 +1335,10 @@ function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 in
 		
 		return true
 	}
+	
+	// HCZ1 Intro Water Removal
+	if (mt.hcz_intro_water == 2) && (objA0.update_address == 0x01f244) && (global.zone_act == 0x0100 && camera.position.x.u16 <= 0x900)
+		return true
 	
 	if (mt.watersurface == 2)
 	{
@@ -2714,6 +2718,9 @@ function void UpdateLevelScrolling.HCZ1()
 	
 	if (mt.hcz_intro_water)
 	{
+		if (mt.hcz_intro_water == 2)
+			HCZ.drawIntroSurface()
+		
 		HCZ.drawIntroWater(0x0180, 0x0500, 512, 256)
 		HCZ.drawIntroWater(0x0380, 0x0500, 128, 192)
 		HCZ.drawIntroWater(0x0200, 0x0600, 288, 32)
@@ -2721,6 +2728,15 @@ function void UpdateLevelScrolling.HCZ1()
 		
 		if mt.hcz_flood > 0
 			HCZ.drawIntroFloodWater()
+	}
+}
+
+function void HCZ.drawIntroSurface()
+{
+	for (u8 width = 0; width < 5; ++width)
+	{
+		SpriteHandle hczsurface = Renderer.addSpriteHandle("hcz_water_surface", 0x0180 + 0x80 * u16(width), 0x0500, 0x9ff8)
+		hczsurface.setFlags(SPRITE_FLAG_WORLDSPACE | SPRITE_FLAG_PRIO)
 	}
 }
 
@@ -2820,4 +2836,12 @@ function void fn02fe5e()
 #else
 	DrawOrUnloadObject()
 #endif
+}
+
+function void WaterPlus.drawWater()
+{
+	if (mt.hcz_intro_water == 2) && (global.zone_act == 0x0100 && camera.position.x.u16 <= 0x900)
+		return
+
+	base.WaterPlus.drawWater()
 }
