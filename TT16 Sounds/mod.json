@@ -23,6 +23,54 @@
 				}
 			},
 			{
+				"InternalName": "tt16s.hcz_slide",
+				"DisplayName": "HCZ Slide Sounds",
+				"Variable": "tt16s.hcz_slide",
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Sonic 3 Water Run",
+					"2": "Generic Slide"
+				}
+			},
+			{
+				"InternalName": "tt16s.icz_slide",
+				"DisplayName": "ICZ Slide Sounds",
+				"Variable": "tt16s.icz_slide",
+				"DefaultValue": "2",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Sonic 3 Snowboarding",
+					"2": "Ice Slide",
+					"3": "Generic Slide"
+				}
+			},
+			{
+				"InternalName": "tt16s.soz_slide",
+				"DisplayName": "SOZ Slide Sounds",
+				"Variable": "tt16s.soz_slide",
+				"DefaultValue": "2",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Mud Slide",
+					"2": "Generic Slide"
+				}
+			},
+			{
+				"InternalName": "tt16s.soz_jump",
+				"DisplayName": "SOZ Sand Jump Sounds",
+				"Variable": "tt16s.soz_jump",
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Mud Slide Sound"
+				}
+			},
+			{
 				"InternalName": "tt16s.dez2_elevator_sounds",
 				"DisplayName": "DEZ2 Elevator Sounds",
 				"Variable": "tt16s.dez2_elevator_sounds",

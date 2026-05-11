@@ -1,9 +1,15 @@
 global bool tt16s.monitor_sounds
+global u8 tt16s.hcz_slide
+global u8 tt16s.icz_slide
+global u8 tt16s.soz_slide
+global bool tt16s.soz_jump
 global bool tt16s.dez2_elevator_sounds
 global bool tt16s.dez2_button_sounds
 
+
 global bool tt16s.monitorSoundTT16
 
+// DEZ2 Elevator
 //# address-hook(0x048d2c) end(0x048d60)
 function void fn048d2c()
 {
@@ -32,6 +38,58 @@ function void fn048d2c()
 	fn048d66()
 }
 
+// DEZ2 Intro Cutscene
+//# address-hook(0x07e3ca) end(0x07e3e8)
+function void fn07e3ca()
+{
+	if (!tt16s.dez2_elevator_sounds)
+	{
+		base.fn07e3ca()
+		return
+	}
+	
+	if (objA0.groundspeed == 0)
+		Audio.playAudio("elevator_start")
+	
+	objA0.groundspeed += 8
+	if (objA0.groundspeed == 0x0300)
+	{
+		Audio.playAudio("elevator_up")
+		objA0.update_address = 0x07e3ec
+		objA0.countdown_value = 0x24
+		u8[0xffffb000 + 0x0a] &= ~0x80
+	}
+
+	fn07eeee()
+}
+
+//# address-hook(0x07e3ec) end(0x07e41c)
+function void fn07e3ec()
+{
+	if (!tt16s.dez2_elevator_sounds)
+	{
+		base.fn07e3ec()
+		return
+	}
+	
+	--objA0.countdown_value
+	if (objA0.countdown_value < 0)
+	{
+		objA0.update_address = 0x07e420
+		objA0.velocity.y = -0x1000
+
+		A1 = 0xffffb000
+		objA0.position.x.u16 = objA1.position.x.u16
+		objA0.position.y.u16 = objA1.position.y.u16
+
+		
+	}
+
+	u16[0xffffb000 + 0x14] -= 0x10
+	fn07eeee()
+}
+
+// DEZ2 Gravity Buttons
 //# address-hook(0x048ad6) end(0x048b3a)
 function void fn048ad6()
 {
@@ -73,6 +131,7 @@ function void fn048ad6()
 	DrawOrUnloadObject()
 }
 
+// Monitor Sounds
 //# address-hook(0x01d716) end(0x01d7b6)
 function void MonitorIntact.Opening()
 {
@@ -97,4 +156,98 @@ function u64 Standalone.getModdedSoundKey(u64 soundKey, u8 sfxId, u8 soundRegTyp
     {
         return base.Standalone.getModdedSoundKey(soundKey, sfxId, soundRegType)
     }
+}
+
+// Water Slide
+//# address-hook(0x050e90) end(0x050e98)
+function void UpdateLevelTiles.HCZ2()
+{
+	base.UpdateLevelTiles.HCZ2()
+	
+	if tt16s.hcz_slide && u8[0xffffb000 + 0x20] == char.state.FALLING_PANIC && !(u8[0xffffb000 + 0x2a] & char.flag.IN_AIR) && !debug_mode.state
+	{
+		if tt16s.hcz_slide == 2 && !Audio.isPlayingAudio("character_slide")
+			Audio.playAudio("character_slide")
+		else if (((level.framecounter.low + 2) & 0x0f) == 0)
+		{
+			playSound(0xdb)
+		}
+	}
+}
+
+// Ice Slide
+//# address-hook(0x053662) end(0x053666)
+function void UpdateLevelTiles.ICZ1()
+{
+	base.UpdateLevelTiles.ICZ1()
+	
+	if tt16s.icz_slide && u8[0xffffb000 + 0x20] == char.state.GOT_HURT_PANIC && !(u8[0xffffb000 + 0x2a] & char.flag.IN_AIR) && !debug_mode.state
+	{
+		if (tt16s.icz_slide == 1)
+		{
+			if ((level.framecounter.low & 0x0f) == 0)
+			playSound(0xc8)
+		}
+		else if !Audio.isPlayingAudio(tt16s.icz_slide == 3 ? "character_slide" : "ice_slide")
+			Audio.playAudio(tt16s.icz_slide == 3 ? "character_slide" : "ice_slide")
+	}
+}
+
+// Mud/Sand Slide
+//# address-hook(0x055a4c) end(0x055a54)
+function void UpdateLevelTiles.SOZ1()
+{
+	base.UpdateLevelTiles.SOZ1()
+	
+	if tt16s.soz_slide && u8[0xffffb000 + 0x20] == char.state.GOT_HURT_PANIC && !(u8[0xffffb000 + 0x2a] & char.flag.IN_AIR) && !Audio.isPlayingAudio(tt16s.soz_slide == 2 ? "character_slide" : "mud_slide") && !debug_mode.state
+		Audio.playAudio(tt16s.soz_slide == 2 ? "character_slide" : "mud_slide")
+}
+
+//# address-hook(0x0561bc) end(0x0561c8)
+function void UpdateLevelTiles.SOZ2()
+{
+	base.UpdateLevelTiles.SOZ2()
+	
+	if tt16s.soz_slide && u8[0xffffb000 + 0x20] == char.state.GOT_HURT_PANIC && !(u8[0xffffb000 + 0x2a] & char.flag.IN_AIR) && !Audio.isPlayingAudio(tt16s.soz_slide == 2 ? "character_slide" : "mud_slide") && !debug_mode.state
+		Audio.playAudio(tt16s.soz_slide == 2 ? "character_slide" : "mud_slide")
+}
+
+global bool tt16s.sandJump
+
+function void playSound(u8 soundId)
+{
+	if (tt16s.soz_jump && tt16s.sandJump && soundId == SFX_JUMP)
+	{
+		Audio.playAudio("mud_jump")
+		return
+	}
+	
+	base.playSound(soundId)
+}
+
+// Mud/Sand Jump
+//# address-hook(0x03fd4e) end(0x03fe42)
+function void fn03fd4e()
+{
+	u8 bit = (1 << D6.u8)
+
+	if ((objA0.flags2a & bit) != 0)
+		tt16s.sandJump = true
+		
+	base.fn03fd4e()
+	
+	tt16s.sandJump = false
+}
+
+//# address-hook(0x03fe70) end(0x03ff7e)
+function void fn03fe70()
+{
+	u8 bit = (1 << D6.u8)
+
+	if ((objA0.flags2a & bit) != 0)
+		tt16s.sandJump = true
+		
+	base.fn03fe70()
+	
+	tt16s.sandJump = false
 }
