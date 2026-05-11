@@ -860,3 +860,36 @@ function void yieldExecution()
 	
 	base.yieldExecution()
 }
+
+// Intro Emerald Height fix... IDK what causes it...
+//# address-hook(0x067900) end(0x067932)
+function void fn067900()
+{
+	setupObjectAttributesFull(0x067a4e)
+
+	objA0.animation.sprite = objA0.subtype2c >> 1
+	objA0.update_address = 0x067938
+	objA0.hitbox_extends.y = 0x04
+
+	A1 = 0xffffb000
+	objA0.position.x.u16 = objA1.position.x.u16
+	objA0.position.y.u16 = objA1.position.y.u16
+
+	D0 = 0x40
+	fn0852d0()
+	
+	if objA0.animation.sprite == 0
+	{
+		objA0.velocity.x = -1
+		objA0.velocity.y = -1792
+	}
+		//System.writeDisplayLine(stringformat("%d", objA0.velocity.x))
+
+	
+#if STANDALONE
+	// Add just a little variation
+	objA0.velocity.y -= (getRandomNumber() & 0x1f) - 0x10
+#endif
+
+	fn067938()
+}
