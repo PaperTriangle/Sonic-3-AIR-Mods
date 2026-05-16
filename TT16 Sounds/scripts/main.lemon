@@ -166,12 +166,12 @@ function void UpdateLevelTiles.HCZ2()
 	
 	if tt16s.hcz_slide && u8[0xffffb000 + 0x20] == char.state.FALLING_PANIC && !(u8[0xffffb000 + 0x2a] & char.flag.IN_AIR) && !debug_mode.state
 	{
-		if tt16s.hcz_slide == 2 && !Audio.isPlayingAudio("character_slide")
-			Audio.playAudio("character_slide")
-		else if (((level.framecounter.low + 2) & 0x0f) == 0)
+		if (tt16s.hcz_slide == 1 && ((level.framecounter.low + 2) & 0x0f) == 0)
 		{
 			playSound(0xdb)
 		}
+		else if !Audio.isPlayingAudio(tt16s.hcz_slide == 3 ? "character_slide" : "ice_slide")
+			Audio.playAudio(tt16s.hcz_slide == 3 ? "character_slide" : "ice_slide")
 	}
 }
 
