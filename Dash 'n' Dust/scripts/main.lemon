@@ -17,6 +17,7 @@ function void SonicPressedJumpInMidAir()
 	if (!dd.hyper_dash || !super.active)
 	{
 		base.SonicPressedJumpInMidAir()
+		return
 	}
 	
 	// Remove control lock
