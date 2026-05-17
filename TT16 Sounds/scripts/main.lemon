@@ -6,7 +6,7 @@ global bool tt16s.soz_jump
 global bool tt16s.dez2_elevator_sounds
 global bool tt16s.dez2_button_sounds
 
-
+global bool tt16s.sandJump
 global bool tt16s.monitorSoundTT16
 
 // DEZ2 Elevator
@@ -152,77 +152,48 @@ function u64 Standalone.getModdedSoundKey(u64 soundKey, u8 sfxId, u8 soundRegTyp
     {
 		return "tt16_break"
 	}
+	else if (tt16s.soz_jump && tt16s.sandJump && sfxId == SFX_JUMP)
+	{
+		return "mud_jump"
+	}
     else
     {
         return base.Standalone.getModdedSoundKey(soundKey, sfxId, soundRegType)
     }
 }
 
-// Water Slide
-//# address-hook(0x050e90) end(0x050e98)
-function void UpdateLevelTiles.HCZ2()
+function void yieldExecution()
 {
-	base.UpdateLevelTiles.HCZ2()
-	
-	if tt16s.hcz_slide && u8[0xffffb000 + 0x20] == char.state.FALLING_PANIC && !(u8[0xffffb000 + 0x2a] & char.flag.IN_AIR) && !debug_mode.state
+	if (!global.game.paused && !debug_mode.state && !(u8[0xffffb000 + 0x2a] & char.flag.IN_AIR))
 	{
-		if (tt16s.hcz_slide == 1 && ((level.framecounter.low + 2) & 0x0f) == 0)
+		if (global.zone == 0x01 && tt16s.hcz_slide && u8[0xffffb000 + 0x20] == char.state.FALLING_PANIC) // Water Slide
 		{
-			playSound(0xdb)
+			if (tt16s.hcz_slide == 1 && ((level.framecounter.low + 2) & 0x0f) == 0)
+			{
+				playSound(0xdb)
+			}
+			else if !Audio.isPlayingAudio(tt16s.hcz_slide == 3 ? "character_slide" : "ice_slide")
+				Audio.playAudio(tt16s.hcz_slide == 3 ? "character_slide" : "ice_slide")
 		}
-		else if !Audio.isPlayingAudio(tt16s.hcz_slide == 3 ? "character_slide" : "ice_slide")
-			Audio.playAudio(tt16s.hcz_slide == 3 ? "character_slide" : "ice_slide")
-	}
-}
-
-// Ice Slide
-//# address-hook(0x053662) end(0x053666)
-function void UpdateLevelTiles.ICZ1()
-{
-	base.UpdateLevelTiles.ICZ1()
-	
-	if tt16s.icz_slide && u8[0xffffb000 + 0x20] == char.state.GOT_HURT_PANIC && !(u8[0xffffb000 + 0x2a] & char.flag.IN_AIR) && !debug_mode.state
-	{
-		if (tt16s.icz_slide == 1)
+		else if (global.zone == 0x05 && tt16s.icz_slide && u8[0xffffb000 + 0x20] == char.state.GOT_HURT_PANIC) // Ice Slide
 		{
-			if ((level.framecounter.low & 0x0f) == 0)
-			playSound(0xc8)
+			if (tt16s.icz_slide == 1)
+			{
+				if ((level.framecounter.low & 0x0f) == 0)
+				playSound(0xc8)
+			}
+			else if !Audio.isPlayingAudio(tt16s.icz_slide == 3 ? "character_slide" : "ice_slide")
+				Audio.playAudio(tt16s.icz_slide == 3 ? "character_slide" : "ice_slide")
 		}
-		else if !Audio.isPlayingAudio(tt16s.icz_slide == 3 ? "character_slide" : "ice_slide")
-			Audio.playAudio(tt16s.icz_slide == 3 ? "character_slide" : "ice_slide")
+		else if (global.zone == 0x08 && tt16s.soz_slide && u8[0xffffb000 + 0x20] == char.state.GOT_HURT_PANIC && !Audio.isPlayingAudio(tt16s.soz_slide == 2 ? "character_slide" : "mud_slide")) // Sand Slide
+		{
+			Audio.playAudio(tt16s.soz_slide == 2 ? "character_slide" : "mud_slide")
+		}
 	}
-}
-
-// Mud/Sand Slide
-//# address-hook(0x055a4c) end(0x055a54)
-function void UpdateLevelTiles.SOZ1()
-{
-	base.UpdateLevelTiles.SOZ1()
+	else if (Audio.isPlayingAudio("character_slide") || Audio.isPlayingAudio("ice_slide") || Audio.isPlayingAudio("mud_slide"))
+		Audio.stopChannel(0xab)
 	
-	if tt16s.soz_slide && u8[0xffffb000 + 0x20] == char.state.GOT_HURT_PANIC && !(u8[0xffffb000 + 0x2a] & char.flag.IN_AIR) && !Audio.isPlayingAudio(tt16s.soz_slide == 2 ? "character_slide" : "mud_slide") && !debug_mode.state
-		Audio.playAudio(tt16s.soz_slide == 2 ? "character_slide" : "mud_slide")
-}
-
-//# address-hook(0x0561bc) end(0x0561c8)
-function void UpdateLevelTiles.SOZ2()
-{
-	base.UpdateLevelTiles.SOZ2()
-	
-	if tt16s.soz_slide && u8[0xffffb000 + 0x20] == char.state.GOT_HURT_PANIC && !(u8[0xffffb000 + 0x2a] & char.flag.IN_AIR) && !Audio.isPlayingAudio(tt16s.soz_slide == 2 ? "character_slide" : "mud_slide") && !debug_mode.state
-		Audio.playAudio(tt16s.soz_slide == 2 ? "character_slide" : "mud_slide")
-}
-
-global bool tt16s.sandJump
-
-function void playSound(u8 soundId)
-{
-	if (tt16s.soz_jump && tt16s.sandJump && soundId == SFX_JUMP)
-	{
-		Audio.playAudio("mud_jump")
-		return
-	}
-	
-	base.playSound(soundId)
+	base.yieldExecution()
 }
 
 // Mud/Sand Jump

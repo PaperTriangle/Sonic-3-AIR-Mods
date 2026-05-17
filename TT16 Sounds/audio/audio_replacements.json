@@ -6,8 +6,8 @@
 	"elevator_down": { "File": "elevator_down.ogg",	"Type": "Sound" },
 	"gravity_switch_down": { "File": "gravity_switch_down.ogg",	"Type": "Sound" },
 	"gravity_switch_up": { "File": "gravity_switch_up.ogg",	"Type": "Sound" },
-	"character_slide": { "File": "character_slide.ogg",	"Type": "Sound" },
-	"ice_slide": { "File": "ice_slide.ogg",	"Type": "Sound" },
-	"mud_slide": { "File": "mud_slide.ogg",	"Type": "Sound" },
-	"mud_jump": { "File": "mud.ogg",	"Type": "Sound" }
+	"character_slide": { "File": "character_slide.ogg",	"Type": "Sound", "Channel": "AB" },
+	"ice_slide": { "File": "ice_slide.ogg",	"Type": "Sound", "Channel": "AB" },
+	"mud_slide": { "File": "mud_slide.ogg",	"Type": "Sound", "Channel": "AB" },
+	"mud_jump": { "File": "mud.ogg",	"Type": "Sound", }
 }
