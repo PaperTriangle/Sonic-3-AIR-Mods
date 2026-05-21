@@ -772,7 +772,7 @@ function void UpdateCameraPositionY()
 			}
 			else if (ac.airCamCheck)
 			{
-				if ac.hardLanding || (ac.oldCamDiff > 0 && ac.oldCamDiff < abs(D0.s16)) || (u8[0xffffb000 + 0x20] == char.state.GOT_HURT_PANIC && !(u8[0xffffb000 + 0x2a] & char.flag.IN_AIR))
+				if ac.hardLanding || (ac.oldCamDiff > 0 && ac.oldCamDiff <= abs(D0.s16)) || (u8[0xffffb000 + 0x20] == char.state.GOT_HURT_PANIC && !(u8[0xffffb000 + 0x2a] & char.flag.IN_AIR))
 					ac.catchUp++
 				
 				u16 camMulti = 0x40 * (1 + ac.catchUp)
