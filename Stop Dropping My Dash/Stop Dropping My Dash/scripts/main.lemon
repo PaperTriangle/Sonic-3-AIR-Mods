@@ -423,6 +423,42 @@ function void ExtraChar.DwayneRockBreak()
 	base.ExtraChar.DwayneRockBreak()
 }
 
+//-----------
+// MGZ Spiker
+//-----------
+
+
+//# address-hook(0x088c38) end(0x088c6c)
+function void fn088c38()
+{
+	System.writeDisplayLine(stringformat("0x%02x, 0x%02x", u8[0xffffb000 + 0x40]))
+	
+	Object.AnimationProgress.DistinctTimer(0x088e4a)
+	if (D2.u16 != 0 && objA0.animation.frame == 4)
+	{
+		A1 = 0xffff0000 + u16[A0 + 0x44]
+		u8[A1 + 0x05] = base_state.NORMAL
+		objA1.velocity.y = -0x600
+		objA1.flags2a |= char.flag.IN_AIR
+		u8[A1 + 0x2a] &= ~char.flag.ON_OBJECT
+
+		if (u8[A1 + 0x40] == 1)
+			balloonjump |= (A1 == char.ADDRESS_P2) ? 2 : 1				// This flag forces vertical velocity
+	}
+}
+
+//# address-hook(0x088da6) end(0x088dcc)
+function void fn088da6()
+{
+	u8[A1 + 0x05] = base_state.NORMAL
+	objA1.position.y.u16 += 6
+	objA1.velocity.y = 0
+	objA1.flags2a |= char.flag.IN_AIR
+	objA1.flags2a &= ~char.flag.CONTROL_LOCK
+
+	playSound(SFX_SPRING)
+}
+
 //-------------
 // CNZ Balloons
 //-------------
@@ -531,7 +567,8 @@ function void fn032f56()
 // Force vertical velocity
 function void Character.updateJumpMoves()
 {
-
+	bool glideBackup = knuckles.glideclimbstate
+	
 	s16 balloon_vel = char.velocity.y
 	if (balloon_vel >= 0)
 		balloonjump &= ~((A0 == char.ADDRESS_P2) ? 2 : 1)
@@ -545,6 +582,12 @@ function void Character.updateJumpMoves()
 	char.velocity.y = 0 											// Velocity was set to 0 here otherwise secondary jump actions would not work.
 	//u8 backupjumpstate = char.double_jump_state 
 	base.Character.updateJumpMoves()
+	
+	if (u8[A0 + 0x38] == CHARACTER_KNUCKLES) && glideBackup != knuckles.glideclimbstate
+	{
+		balloonjump &= ~((A0 == char.ADDRESS_P2) ? 2 : 1)
+		return
+	}
 	
 	if (!SDMD.canSmash(A0))
 		char.velocity.y = balloon_vel
