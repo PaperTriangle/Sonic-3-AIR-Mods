@@ -30,9 +30,9 @@
 				"Options":
 				{
 					"0": "Disabled",
-					"1": "Sonic 3 Water Run",
+					"1": "Sonic 3 Slide",
 					"2": "Ice Slide",
-					"3": "Generic Slide"
+					"3": "TT16 Slide"
 				}
 			},
 			{
@@ -43,9 +43,9 @@
 				"Options":
 				{
 					"0": "Disabled",
-					"1": "Sonic 3 Snowboarding",
+					"1": "Sonic 3 Slide",
 					"2": "Ice Slide",
-					"3": "Generic Slide"
+					"3": "TT16 Slide"
 				}
 			},
 			{
@@ -55,9 +55,9 @@
 				"DefaultValue": "2",
 				"Options":
 				{
-					"0": "Disabled",
+					"0": "Sonic 3 Slide",
 					"1": "Mud Slide",
-					"2": "Generic Slide"
+					"2": "TT16 Slide"
 				}
 			},
 			{

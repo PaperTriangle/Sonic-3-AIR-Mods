@@ -162,38 +162,72 @@ function u64 Standalone.getModdedSoundKey(u64 soundKey, u8 sfxId, u8 soundRegTyp
     }
 }
 
-function void yieldExecution()
+global bool tt16s.is_sliding
+
+//# post-update-hook
+function void PostFrameUpdate()
 {
-	if (!global.game.paused && !debug_mode.state && !(u8[0xffffb000 + 0x2a] & char.flag.IN_AIR))
+	if (!global.game.paused && !debug_mode.state)
 	{
-		if (global.zone == 0x01 && tt16s.hcz_slide && u8[0xffffb000 + 0x20] == char.state.FALLING_PANIC) // Water Slide
+		tt16s.is_sliding = TTS.playSlide(0xffffb000) || TTS.playSlide(0xffffb04a)
+		if !tt16s.is_sliding && (Audio.isPlayingAudio("character_slide") || Audio.isPlayingAudio("ice_slide") || Audio.isPlayingAudio("mud_slide"))
+			Audio.stopChannel(0xc8)
+	}
+	
+	base.PostFrameUpdate()
+}
+
+function bool TTS.playSlide(u32 AX)
+{
+	if !(u8[AX + 0x2a] & char.flag.IN_AIR)
+	{
+		if (global.zone == 0x01 && tt16s.hcz_slide && u8[AX + 0x20] == char.state.FALLING_PANIC) // Water Slide
 		{
-			if (tt16s.hcz_slide == 1 && ((level.framecounter.low + 2) & 0x0f) == 0)
+			if (tt16s.hcz_slide == 1)
 			{
-				playSound(0xdb)
+				if ((level.framecounter.low & 0x0f) == 0)
+					playSound(0xc8)
+				return false
 			}
 			else if !Audio.isPlayingAudio(tt16s.hcz_slide == 3 ? "character_slide" : "ice_slide")
 				Audio.playAudio(tt16s.hcz_slide == 3 ? "character_slide" : "ice_slide")
+				
+			return true
 		}
-		else if (global.zone == 0x05 && tt16s.icz_slide && u8[0xffffb000 + 0x20] == char.state.GOT_HURT_PANIC) // Ice Slide
+		else if (global.zone == 0x05 && tt16s.icz_slide && u8[AX + 0x20] == char.state.GOT_HURT_PANIC) // Ice Slide
 		{
 			if (tt16s.icz_slide == 1)
 			{
 				if ((level.framecounter.low & 0x0f) == 0)
-				playSound(0xc8)
+					playSound(0xc8)
+				return false
 			}
 			else if !Audio.isPlayingAudio(tt16s.icz_slide == 3 ? "character_slide" : "ice_slide")
 				Audio.playAudio(tt16s.icz_slide == 3 ? "character_slide" : "ice_slide")
+				
+			return true
 		}
-		else if (global.zone == 0x08 && tt16s.soz_slide && u8[0xffffb000 + 0x20] == char.state.GOT_HURT_PANIC && !Audio.isPlayingAudio(tt16s.soz_slide == 2 ? "character_slide" : "mud_slide")) // Sand Slide
+		else if (global.zone == 0x08 && tt16s.soz_slide && u8[AX + 0x20] == char.state.GOT_HURT_PANIC) // Sand Slide
 		{
-			Audio.playAudio(tt16s.soz_slide == 2 ? "character_slide" : "mud_slide")
+			if !Audio.isPlayingAudio(tt16s.soz_slide == 2 ? "character_slide" : "mud_slide")
+				Audio.playAudio(tt16s.soz_slide == 2 ? "character_slide" : "mud_slide")
+			
+			return true
 		}
+		
+		return false
 	}
-	else if (Audio.isPlayingAudio("character_slide") || Audio.isPlayingAudio("ice_slide") || Audio.isPlayingAudio("mud_slide"))
-		Audio.stopChannel(0xab)
+	else
+		return false
+}
+
+//# address-hook(0x001380) end(0x0013c0)
+function void PlaySound()
+{
+	if tt16s.is_sliding && D0.u8 == 0xc8
+		return
 	
-	base.yieldExecution()
+	base.PlaySound()
 }
 
 // Mud/Sand Jump
