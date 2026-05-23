@@ -738,6 +738,36 @@ function void fn04172e()
 	DrawOrUnloadObject()
 }
 
+
+//-----------------
+// DEZ2 Boss Bumper
+//-----------------
+
+//# address-hook(0x07fa7e) end(0x07faca)
+function void fn07fa7e()
+{
+	fn085870()
+	if (!_equal())
+	{
+		D0.u8 = u8[A0 + 0x3c]
+		D1.s8 = (global.framecounter.low & 0x03) - 2
+		D0.u16 += D1.s8
+		LookupSinCos()
+		D0.u16 <<= 3
+		D1.u16 <<= 3
+		objA1.velocity.x = D0.u16
+		objA1.velocity.y = D1.u16
+		objA1.flags2a |= char.flag.IN_AIR
+		objA1.flags2a &= ~(char.flag.CONTROL_LOCK | char.flag.PUSHING)
+
+		if (u8[A1 + 0x40] == 1)
+			balloonjump |= (A1 == char.ADDRESS_P2) ? 2 : 1				// This flag forces vertical velocity
+
+		objA0.state = 0x01
+		playSound(0xaa)
+	}
+}
+
 //---------------------------
 // Super then Hyper Compat...
 //---------------------------
