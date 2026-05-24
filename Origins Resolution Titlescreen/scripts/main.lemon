@@ -11,6 +11,74 @@ global u8 orts.waveon
 
 define u8 global.xtrachar = u8[0xffffe654]
 
+// Palette Loading
+function void ORTS.loadPalette(u32 PaletteAD, u8 PaletteLength, u32 TargetLine, u8 StartPos, bool preFade)
+{
+	u32 TargetAD = (preFade ? 0x802300 : 0x802000) + TargetLine * 0x20 + StartPos * 2
+	
+	{
+		for (u8 k = 0; k < PaletteLength; k += 1)
+		{
+			u16[TargetAD + 2*k] = u16[PaletteAD + 0x02 * k]
+		}
+	}
+}
+
+// Updated White Flash...
+//# address-hook(0x0007ba) end(0x0007d8)
+function void fn0007ba()
+{
+	fn004352()
+	fn000c50()
+
+	titlescreen.backup.control.pad1 = control.pad1
+	fn0017d8()
+
+	if (global.demo_countdown != 0)
+		--global.demo_countdown
+
+#if STANDALONE
+	// White flash effect fade
+	if (global.whiteflash_timeout > 0)
+	{
+		--global.whiteflash_timeout
+
+		u16 blendFactor = u16(global.whiteflash_timeout) * 0xff / 25
+		blendFactor = 0xff - (0xff - blendFactor) * (0xff - blendFactor) / 0xff
+		u32 paletteAddress = (water.fullscreen) ? 0xfffff080 : 0xfffffc00
+
+		for (u8 i = 0; i < 0x40; ++i)
+		{
+			u32 originalColor = unpackColor(u16[paletteAddress + i * 2])
+			u32 color = blendColors_BGR32(originalColor, 0xffffff, blendFactor)
+			if (i & 0x0f)
+				color |= 0xff000000
+			Renderer.setPaletteEntry(i, color)
+		}
+
+		if (EXTENDED_CHARACTER_PALETTES)
+		{
+			paletteAddress = water.fullscreen ? 0x802300 : 0x802000
+			for (u16 i = 0; i < 0xc0; ++i)
+			{
+				u32 originalColor = unpackColor(u16[paletteAddress + i * 2])
+				u32 color = blendColors_BGR32(originalColor, 0xffffff, blendFactor)
+				if (i & 0x0f)
+					color |= 0xff000000
+				Renderer.setPaletteEntry(0x40 + i, color)
+			}
+		}
+
+		globalComponentTintColorR = 0xff - blendFactor
+		globalComponentTintColorG = 0xff - blendFactor
+		globalComponentTintColorB = 0xff - blendFactor
+		globalComponentAddedColorR = blendFactor
+		globalComponentAddedColorG = blendFactor
+		globalComponentAddedColorB = blendFactor
+	}
+#endif
+}
+
 //-------------------------------------------------------//
 // Title Screen Main Function                            //
 //-------------------------------------------------------//
@@ -239,11 +307,18 @@ function void TitleScreen()
 			break
 	}
 	
-
+	
+	ORTS.loadPalette(0x60ada, 16, 0, 0, true)
+	u16[0x802322] = 0x0eee
+	u16[0x802324] = 0x0aae
+	u16[0x802326] = 0x0c66
+	u16[0x802328] = 0x0a42
+	u16[0x80232b] = 0x0028
 
 	// White screen
 	titleintro.animstep = 12
 	fillMemory_u16(0xfffffc00, 0x80, 0x0eee)
+	fillMemory_u16(0x802000, 0x40, 0x0eee)
 
 #if STANDALONE
 	titleintro.frames = 15
@@ -279,6 +354,13 @@ function void TitleScreen()
 #endif
 
 	copyMemory(0xfffffc80, 0x0047ac, 0x80)
+	ORTS.loadPalette(0x60ada, 16, 0, 0, false)
+	zeroMemory(0x802020, 0x20)
+	u16[0x802022] = 0x0eee
+	u16[0x802024] = 0x0eaa
+	u16[0x802026] = 0x0c66
+	u16[0x802028] = 0x0a42
+	u16[0x80202a] = 0x0820
 
 	// Load patterns used in title screen
 	{
@@ -475,7 +557,8 @@ function void fn0048dc()
 	}
 
 	u32[0xfffffcda] = u32[0x004904 + objA0.animation.frame]
-	DrawObject()
+	//DrawObject()
+
 
 #if STANDALONE
 	// Here is a good place to draw the widescreen background
@@ -518,11 +601,13 @@ function void fn0048dc()
 	else
 		orts.flash = 0
 
+	Renderer.drawCustomSprite(orts.title_type == 2 ? "new_s3_banner" : "s3_banner", px, py - 0x12, 0x30, SPRITE_FLAG_PRIO, 0x9f7e)
+
 	if (!orts.title_type)
 		Renderer.drawCustomSprite("title_screen_cr", getScreenWidth() - 88, 220, 0x00, 0, 0x9f7e)
 	
 	if (orts.title_type)
-		Renderer.drawCustomSprite("sonic_the_hedgehog", px, py + 1, 0x30, SPRITE_FLAG_PRIO, 0xa000)
+		Renderer.drawCustomSprite("sonic_the_hedgehog", px, py + 1, orts.title_type == 2 ? 0x50 : 0x30, SPRITE_FLAG_PRIO, 0xa000)
 
 	// Clear "Sonic The Hedgehog" text in VRAM
 	for (u16 x = 0xb000; x < 0xb700; x += 0x80)
@@ -622,7 +707,9 @@ function void fn00499c()
 {
 	D0.u16 = u16[0xffffb000 + 0x14] + 0x5c
 	objA0.position.y.u16 = D0.u16 - 0x02
-	DrawObject()
+	//DrawObject()
+	
+	Renderer.drawCustomSprite(orts.title_type == 2 ? "new_and_knuckles" : "and_knuckles", getScreenWidth() / 2, objA0.position.y.u16 - 0x80, 0x30, SPRITE_FLAG_PRIO, 0x9f7e)
 }
 
 // Copyright
