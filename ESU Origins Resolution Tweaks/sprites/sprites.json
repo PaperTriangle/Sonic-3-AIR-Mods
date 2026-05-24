@@ -31,6 +31,4 @@
 	"regular_titleCard_S3&K":  { "File": "regular_title_cards.png", "Rect": "198,0,66,224", "Center": "0,46" },
 	"regular_titleCard_S&K":  { "File": "regular_title_cards.png", "Rect": "66,0,66,224", "Center": "0,46" },
 	"regular_titleCard_S3":  { "File": "regular_title_cards.png", "Rect": "132,0,66,224", "Center": "0,46" },
-	
-	"mgz2_grass": { "File": "mgz2_grass.bmp", "Center": "0,0" },
 }
