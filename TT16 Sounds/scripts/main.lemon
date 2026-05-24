@@ -169,9 +169,13 @@ function void PostFrameUpdate()
 {
 	if (!global.game.paused && !debug_mode.state)
 	{
-		tt16s.is_sliding = TTS.playSlide(0xffffb000) || TTS.playSlide(0xffffb04a)
+		tt16s.is_sliding = TTS.playSlide(0xffffb000) 
+		tt16s.is_sliding += u32[0xffffb04a] ? TTS.playSlide(0xffffb04a) : 0
+		
 		if !tt16s.is_sliding && (Audio.isPlayingAudio("character_slide") || Audio.isPlayingAudio("ice_slide") || Audio.isPlayingAudio("mud_slide"))
 			Audio.stopChannel(0xc8)
+			
+		//System.writeDisplayLine(stringformat("%d", tt16s.is_sliding))
 	}
 	
 	base.PostFrameUpdate()
@@ -181,7 +185,7 @@ function bool TTS.playSlide(u32 AX)
 {
 	if !(u8[AX + 0x2a] & char.flag.IN_AIR)
 	{
-		if (global.zone == 0x01 && tt16s.hcz_slide && u8[AX + 0x20] == char.state.FALLING_PANIC) // Water Slide
+		if (global.zone_act == 0x0101 && tt16s.hcz_slide && u8[AX + 0x20] == char.state.FALLING_PANIC) // Water Slide
 		{
 			if (tt16s.hcz_slide == 1)
 			{
@@ -194,7 +198,7 @@ function bool TTS.playSlide(u32 AX)
 				
 			return true
 		}
-		else if (global.zone == 0x05 && tt16s.icz_slide && u8[AX + 0x20] == char.state.GOT_HURT_PANIC) // Ice Slide
+		else if (global.zone_act == 0x0500 && tt16s.icz_slide && u8[AX + 0x20] == char.state.GOT_HURT_PANIC) // Ice Slide
 		{
 			if (tt16s.icz_slide == 1)
 			{
