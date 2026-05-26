@@ -2703,7 +2703,7 @@ function void SOZ.drawDarkSandPit(u16 px, u16 py, u16 width)
 	{
 		for (u16 i = 0; i < width; i += 0x80)
 		{
-			SpriteHandle sandpit = Renderer.addSpriteHandle("dark_sand", px + i, py + 0x38, 0x8000)
+			SpriteHandle sandpit = Renderer.addSpriteHandle("dark_sand", px + i + (s16(camera.position.x.u16) - s16(camera.foreground.x.u16)), py + 0x38 + (s16(camera.position.y.u16) - s16(camera.foreground.y.u16)), 0x8000)
 			sandpit.setFlags(SPRITE_FLAG_WORLDSPACE | SPRITE_FLAG_PRIO)
 			sandpit.setBlendMode(BlendMode.SUBTRACTIVE)
 		}
@@ -2740,16 +2740,22 @@ function void UpdateLevelScrolling.HCZ1()
 
 function void HCZ.drawIntroSurface()
 {
+   	s16 mt.shakeX = s16(camera.position.x.u16) - s16(camera.foreground.x.u16)
+   	s16 mt.shakeY = s16(camera.position.y.u16) - s16(camera.foreground.y.u16)
+	
 	for (u8 width = 0; width < 5; ++width)
 	{
-		SpriteHandle hczsurface = Renderer.addSpriteHandle("hcz_water_surface", 0x0180 + 0x80 * u16(width) - mt.shakeX, 0x0500 - mt.shakeY, 0x9fff)
+		SpriteHandle hczsurface = Renderer.addSpriteHandle("hcz_water_surface", 0x0180 + 0x80 * u16(width) + mt.shakeX, 0x0500 + mt.shakeY, 0x9fff)
 		hczsurface.setFlags(SPRITE_FLAG_WORLDSPACE | SPRITE_FLAG_PRIO)
 	}
 }
 
 function void HCZ.drawIntroWater(u16 px, u16 py, u16 width, u16 height)
 {
-	SpriteHandle hczwater = Renderer.addSpriteHandle("hcz_water", px - mt.shakeX, py - mt.shakeY, 0x9fff)
+   	s16 mt.shakeX = s16(camera.position.x.u16) - s16(camera.foreground.x.u16)
+   	s16 mt.shakeY = s16(camera.position.y.u16) - s16(camera.foreground.y.u16)
+	
+	SpriteHandle hczwater = Renderer.addSpriteHandle("hcz_water", px + mt.shakeX, py + mt.shakeY, 0x9fff)
 	hczwater.setFlags(SPRITE_FLAG_WORLDSPACE | SPRITE_FLAG_PRIO)
 	hczwater.setBlendMode(BlendMode.SUBTRACTIVE)
 	hczwater.setScale(width, height)
@@ -2843,17 +2849,6 @@ function void fn02fe5e()
 #else
 	DrawOrUnloadObject()
 #endif
-}
-
-global s16 mt.shakeX
-global s16 mt.shakeY
-
-function void UpdateLevelDisplay()
-{
-    base.UpdateLevelDisplay()
-
-   	mt.shakeX = s16(camera.position.x.u16) - s16(camera.foreground.x.u16)
-   	mt.shakeY = s16(camera.position.y.u16) - s16(camera.foreground.y.u16)
 }
 
 function void WaterPlus.drawWater()
