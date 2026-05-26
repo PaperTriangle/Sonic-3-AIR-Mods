@@ -73,6 +73,10 @@ function void fn02dae6()
 	}
 	
 	ac.no_pause = 1
+
+	if (ac.hidehud == 2)
+		ac.no_hud = 1
+
 	
 	base.fn02dae6()
 }
@@ -267,7 +271,7 @@ function void fn06a270()
 //# address-hook(0x06a872) end(0x06a8c0)
 function void fn06a872()
 {
-	if (!ac.prevent || !ac.hcz)
+	if (!ac.hcz)
 	{
 		base.fn06a872()
 		return

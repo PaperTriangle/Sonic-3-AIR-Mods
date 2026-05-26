@@ -99,7 +99,8 @@
 				"Options":
 				{
 					"0": "Disabled",
-					"1": "Enabled"
+					"1": "Enabled",
+					"2": "Enabled (incl. Results)"
 				}
 			},
 			{
