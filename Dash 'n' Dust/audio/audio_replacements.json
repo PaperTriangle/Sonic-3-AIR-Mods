@@ -1,4 +1,7 @@
 {
-	"hyper_dropdash_charge": { "File": "s3air_hyper_dropdash_charge.ogg",	"Type": "Sound", "Channel": "AB" },
-	"MFT_hyper_dropdash_charge": { "File": "MFT_hyper_dropdash_charge.ogg",	"Type": "Sound", "Channel": "AB" },
+	"hyper_dropdash_charge": { "File": "hyper_dropdash_charge.ogg",	"Type": "Sound", "Channel": "AB" },
+	"mania_hyper_dropdash_charge": { "File": "mania_hyper_dropdash_charge.ogg",	"Type": "Sound", "Channel": "AB" },
+	"mania_dropdash_charge": { "File": "mania_dropdash_charge.ogg",	"Type": "Sound", "Channel": "AB" },
+	"mania_dropdash_release": { "File": "mania_dropdash_release.ogg", "Type": "Sound", "Channel": "AB" },
+	"mania_super_dropdash_release": { "File": "mania_super_dropdash_release.ogg", "Type": "Sound", "Channel": "AB" }
 }

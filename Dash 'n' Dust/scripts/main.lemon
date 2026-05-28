@@ -7,6 +7,8 @@ global bool dd.dropdash_animation
 global bool dd.no_air_dust
 global bool dd.super_screenclear
 global bool dd.camera_delay
+global bool dd.dropdash_sound
+global bool dd.super_release_sound
 
 //-----------------------------//
 // Hyper Dash Dropdash Charge! //
@@ -87,12 +89,7 @@ function void SonicPressedJumpInMidAir()
 				sonic.dropdash_counter = DROPDASH_FULLCHARGE
 				char.state = char.state.SONIC_DROPDASH
 				
-				u64 key = "hyper_dropdash_charge"
-				
-				if Mods.isModActive("Misc. Fixes and Tweaks")
-					key = "MFT_hyper_dropdash_charge"
-				
-				Audio.playAudio(key, AudioContext.CONTEXT_SOUND)
+				Audio.playAudio("hyper_dropdash_charge" , AudioContext.CONTEXT_SOUND)
 			}
 			
 			char.groundspeed = char.velocity.x
@@ -418,10 +415,17 @@ function void releaseDropDash()
 		if (dd.super_screenclear)
 			Character.ClearEnemiesOnScreen()
 			
-		playSound(0x49)
+		if (dd.super_release_sound)
+			Audio.playAudio(dd.dropdash_sound ? "mania_super_dropdash_release" : "peelout_release", AudioContext.CONTEXT_SOUND)
+		else
+		{
+			playSound(0x49)
+			Audio.playAudio("dropdash_release", AudioContext.CONTEXT_SOUND)
+		}
 	}
+	else
+		Audio.playAudio("dropdash_release", AudioContext.CONTEXT_SOUND)
 
-	Audio.playAudio("dropdash_release", AudioContext.CONTEXT_SOUND)
 #if STANDALONE
 	if (super.active)
 		Input.setControllerRumbleByAddress(A0, 0.5f, 1.0f, 200)
@@ -430,6 +434,20 @@ function void releaseDropDash()
 #endif
 }
 #endif
+
+//------------------------//
+// Mania Drop Dash Sounds //
+//------------------------//
+
+function void Audio.playAudio(u64 audioKey, u8 contextId)
+{
+	if dd.dropdash_sound && (audioKey == "dropdash_charge" || audioKey == "dropdash_release" || audioKey == "hyper_dropdash_charge")
+	{
+		audioKey = stringformat("mania_%s", audioKey)
+	}
+
+	base.Audio.playAudio(audioKey, contextId)
+}
 
 //------------------//
 // Underwater dust! //
