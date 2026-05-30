@@ -6,5 +6,9 @@
 	"fbz_chunks_outside":
 	{
 		"File": "fbz_chunks_outside.bin"
+	},
+	"fbz_chunks_mft":
+	{
+		"File": "fbz_chunks_mft.bin"
 	}
 }

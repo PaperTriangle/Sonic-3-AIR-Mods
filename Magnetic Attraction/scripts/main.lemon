@@ -380,6 +380,8 @@ function void yieldExecution()
 	{
 		if Mods.isModActive("FBZ's outside borders")
 			System.loadExternalRawData("fbz_chunks_outside", 0x001974a2)
+		else if Mods.isModActive("Misc. Fixes and Tweaks")
+			System.loadExternalRawData("fbz_chunks_mft", 0x001974a2)
 		else
 			System.loadExternalRawData("fbz_chunks", 0x001974a2)
 	}

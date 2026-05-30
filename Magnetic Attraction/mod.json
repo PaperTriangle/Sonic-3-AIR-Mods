@@ -5,7 +5,7 @@
 		"Author": "PaperTriangle",
 		"UniqueID": "magnetic-attraction",
 		"Description": "Magnets in FBZ attract Player 1 if they have the Lightning Shield.",
-		"ModVersion": "1.1"
+		"ModVersion": "1.2"
 	},
 	"Settings":
 	{
