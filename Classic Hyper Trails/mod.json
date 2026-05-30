@@ -5,7 +5,7 @@
 		"UniqueID": "classic-hyper-trails",
 		"Author": "PaperTriangle",
 		"Description": "Makes characters only have two hyper trail ghosts while the \"No Transparency\" mod is active.",
-		"ModVersion": "1.3"
+		"ModVersion": "1.4"
 	},
 	"OtherMods": {
 		"no-transparency":
@@ -53,6 +53,17 @@
 				"InternalName": "cht.transparent",
 				"DisplayName": "Sprite Transparency Bypass",
 				"Variable": "cht.transparent",	
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "cht.dynamic_trails",
+				"DisplayName": "Dynamic Trail Animation",
+				"Variable": "cht.dynamic_trails",	
 				"DefaultValue": "0",
 				"Options":
 				{

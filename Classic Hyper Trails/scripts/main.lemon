@@ -1,6 +1,12 @@
 global bool cht.transparent
 global u8 cht.number
 global bool cht.super_tails
+global bool cht.dynamic_trails
+
+global s64 player1BackupKey[7]
+global s64 tailsBackupKey[7] 
+global u8 player1BackupAngle[7]
+global u8 tailsBackupAngle[7] 
 
 function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 {
@@ -58,9 +64,29 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 					py0 &= level.height.bitmask
 				
 				Renderer.setSpriteTagWithPosition(characterAddress + 0x10 + i, px0, py0)
-				Renderer.drawCustomSprite(lastKey, px0, py0, lastAtex, lastFlags, lastRenderQueue - i, lastAngle, 0xd0 - i * (0x28 - 0x08 * ( (cht.number > 3) ? useAfterShoes + useHyperImages + useAfterImages : 0)))
-			}
+				
+				u64 renderKey = lastKey
+				u8 renderAngle = lastAngle
+				
+				if (cht.dynamic_trails)
+				{
+					if (A0 == 0xffffb000)
+					{
+						renderKey = player1BackupKey[i]
+						renderAngle = player1BackupAngle[i]
+					}
+					else if (objA0.mapping_offset == 0x344bb8)
+					{
+						renderKey = tailsBackupKey[i]
+						renderAngle = tailsBackupAngle[i]
+					}
+				}
+				
+				Renderer.drawCustomSprite(renderKey, px0, py0, lastAtex, lastFlags, lastRenderQueue - i, renderAngle, 0xd0 - i * (0x28 - 0x08 * ( (cht.number > 3) ? useAfterShoes + useHyperImages + useAfterImages : 0)))
+			}		
 		}
+		
+
 		
 		if (cht.transparent)
 			System.setGlobalVariableValueByName("renderTransparentPlz", false)
@@ -69,4 +95,73 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 	}
 	else
 		return base.Standalone.onWriteToSpriteTable(px, py, renderQueue)
+}
+
+
+function void Renderer.drawSprite(u64 key, s16 px, s16 py, u16 atex, u8 flags, u16 renderQueue, u8 angle, u8 alpha)
+{
+	if cht.dynamic_trails && System.getGlobalVariableValueByName("noRenderPlz") && (NT.PreventRendering(key) && alpha == 0xff && !NT.NotCharacter(key))
+	{
+		for (u8 i = 7; i > 0; i--)
+		{
+			if (A0 == 0xffffb000)
+			{
+				player1BackupKey[i] = player1BackupKey[i - 1]
+				player1BackupAngle[i] = player1BackupAngle[i - 1]
+			}
+			else if (objA0.mapping_offset == 0x344bb8)
+			{
+				tailsBackupKey[i] = tailsBackupKey[i - 1]
+				tailsBackupAngle[i] = tailsBackupAngle[i - 1]
+			}
+		}
+		
+		if (A0 == 0xffffb000)
+		{
+			player1BackupKey[0] = key
+			player1BackupAngle[0] = angle
+		}
+		else if (objA0.mapping_offset == 0x344bb8)
+		{
+			tailsBackupKey[0] = key
+			tailsBackupAngle[0] = angle
+		}
+	}
+
+	base.Renderer.drawSprite(key, px, py, atex, flags, renderQueue, angle, alpha)
+}
+
+function void Renderer.drawSpriteTinted(u64 key, s16 px, s16 py, u16 atex, u8 flags, u16 renderQueue, u8 angle, u32 tintColor, s32 scale)
+{
+	u8 alpha = tintColor
+
+	if cht.dynamic_trails && System.getGlobalVariableValueByName("noRenderPlz") && (NT.PreventRendering(key) && alpha == 0xff && !NT.NotCharacter(key))
+	{
+		for (u8 i = 7; i > 0; i--)
+		{
+			if (A0 == 0xffffb000)
+			{
+				player1BackupKey[i] = player1BackupKey[i - 1]
+				player1BackupAngle[i] = player1BackupAngle[i - 1]
+			}
+			else if (objA0.mapping_offset == 0x344bb8)
+			{
+				tailsBackupKey[i] = tailsBackupKey[i - 1]
+				tailsBackupAngle[i] = tailsBackupAngle[i - 1]
+			}
+		}
+		
+		if (A0 == 0xffffb000)
+		{
+			player1BackupKey[0] = key
+			player1BackupAngle[0] = angle
+		}
+		else if (objA0.mapping_offset == 0x344bb8)
+		{
+			tailsBackupKey[0] = key
+			tailsBackupAngle[0] = angle
+		}
+	}
+	
+	base.Renderer.drawSpriteTinted(key, px, py, atex, flags, renderQueue, angle, tintColor, scale)
 }
