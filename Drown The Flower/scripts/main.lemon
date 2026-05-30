@@ -26,5 +26,5 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 
 function u16 DTF.underwaterColour()
 {
-	return 0xa6c
+	return 0x80c
 }
