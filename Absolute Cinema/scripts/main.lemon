@@ -57,6 +57,19 @@ function void UpdateGamePause()
 	base.UpdateGamePause()
 }
 
+// Remove on Game/Time Over
+//# address-hook(0x02d5c6) end(0x02d60c)
+function void fn02d5c6()
+{
+	ac.no_pause = 1
+
+	if (ac.hidehud == 2)
+		ac.no_hud = 1
+
+	
+	base.fn02d5c6()
+}
+
 // Results Screen stops pausing.
 //# address-hook(0x02dae6) end(0x02dbc8)
 function void fn02dae6()
