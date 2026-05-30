@@ -192,6 +192,14 @@ function void fn0674ac()
 	base.fn0674ac()
 }
 
+//# address-hook(0x067472) end(0x06748a)
+function void fn067472()
+{
+	ac.no_pause = 1
+	
+	base.fn067472()
+}
+
 //# address-hook(0x02d690) end(0x02d69a)
 function void TitleCard.Update()
 {
