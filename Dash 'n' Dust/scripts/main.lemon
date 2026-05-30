@@ -9,6 +9,8 @@ global bool dd.super_screenclear
 global bool dd.camera_delay
 global bool dd.dropdash_sound
 global bool dd.super_release_sound
+global bool dd.dropdash_retry
+global bool dd.dropdash_used
 
 //-----------------------------//
 // Hyper Dash Dropdash Charge! //
@@ -447,6 +449,36 @@ function void Audio.playAudio(u64 audioKey, u8 contextId)
 	}
 
 	base.Audio.playAudio(audioKey, contextId)
+}
+
+//-------------------//
+// Drop Dash Disable //
+//-------------------//
+
+function void Character.updateJumpMoves()
+{
+#if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
+	if getECFCharBufferName(A0)
+		return base.Character.updateJumpMoves()
+#endif
+	
+	if (!dd.dropdash_retry && char.character == CHARACTER_SONIC)
+	{
+		if (char.double_jump_state == 0)
+			dd.dropdash_used = 0
+
+		if (dd.dropdash_used)
+			return
+
+		u8 dropdashState = char.state
+
+		base.Character.updateJumpMoves()
+		
+		if (dropdashState == char.state.SONIC_DROPDASH && char.state != char.state.SONIC_DROPDASH)
+			dd.dropdash_used = 1
+	}
+	else
+		base.Character.updateJumpMoves()
 }
 
 //------------------//
