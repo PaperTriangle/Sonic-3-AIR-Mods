@@ -62,13 +62,14 @@
 			},
 			{
 				"InternalName": "cht.dynamic_trails",
-				"DisplayName": "Dynamic Trail Animation",
+				"DisplayName": "Trail Frame Delay",
 				"Variable": "cht.dynamic_trails",	
 				"DefaultValue": "0",
 				"Options":
 				{
-					"0": "Disabled",
-					"1": "Enabled"
+					"0": "0 (Default)",
+					"1": "1 (Dynamic)",
+					"2": "2 (Origins/Mania Style)"
 				}
 			},
 			{

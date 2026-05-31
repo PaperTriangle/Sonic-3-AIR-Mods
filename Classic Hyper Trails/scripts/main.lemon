@@ -3,10 +3,10 @@ global u8 cht.number
 global bool cht.super_tails
 global bool cht.dynamic_trails
 
-global s64 player1BackupKey[7]
-global s64 tailsBackupKey[7] 
-global u8 player1BackupAngle[7]
-global u8 tailsBackupAngle[7] 
+global s64 player1BackupKey[14]
+global s64 tailsBackupKey[14] 
+global u8 player1BackupAngle[14]
+global u8 tailsBackupAngle[14] 
 
 function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 {
@@ -72,13 +72,13 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 				{
 					if (A0 == 0xffffb000)
 					{
-						renderKey = player1BackupKey[i]
-						renderAngle = player1BackupAngle[i]
+						renderKey = player1BackupKey[cht.dynamic_trails == 2 ? i*2 : i]
+						renderAngle = player1BackupAngle[cht.dynamic_trails == 2 ? i*2 : i]
 					}
 					else if (objA0.mapping_offset == 0x344bb8)
 					{
-						renderKey = tailsBackupKey[i]
-						renderAngle = tailsBackupAngle[i]
+						renderKey = tailsBackupKey[cht.dynamic_trails == 2 ? i*2 : i]
+						renderAngle = tailsBackupAngle[cht.dynamic_trails == 2 ? i*2 : i]
 					}
 				}
 				
@@ -102,7 +102,7 @@ function void Renderer.drawSprite(u64 key, s16 px, s16 py, u16 atex, u8 flags, u
 {
 	if cht.dynamic_trails && System.getGlobalVariableValueByName("noRenderPlz") && (NT.PreventRendering(key) && alpha == 0xff && !NT.NotCharacter(key))
 	{
-		for (u8 i = 7; i > 0; i--)
+		for (u8 i = 13; i > 0; i--)
 		{
 			if (A0 == 0xffffb000)
 			{
@@ -137,7 +137,7 @@ function void Renderer.drawSpriteTinted(u64 key, s16 px, s16 py, u16 atex, u8 fl
 
 	if cht.dynamic_trails && System.getGlobalVariableValueByName("noRenderPlz") && (NT.PreventRendering(key) && alpha == 0xff && !NT.NotCharacter(key))
 	{
-		for (u8 i = 7; i > 0; i--)
+		for (u8 i = 13; i > 0; i--)
 		{
 			if (A0 == 0xffffb000)
 			{
