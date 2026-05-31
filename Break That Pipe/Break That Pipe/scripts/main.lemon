@@ -16,12 +16,17 @@ function bool BTP.canBreak(u8 state.in, u8 isRocks)
 		return true
 #endif
 
-	return (global.xtrachar == 1 && A1 == 0xffffb000 && isRocks) || (global.xtrachar == 3 && (System.getGlobalVariableValueByName("Amy_HammerSpinAttacking") || super.active.tails)) || (global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.isBoosting")) || (btp.consistent_breaking && global.xtrachar == 0 && !ecfActyve && isMainCharacter(CHARACTER_SONIC) && (u8[A1 + 0x2b] & char.bonus.SHIELD_FIRE) && !(u8[A1 + 0x2b] & char.bonus.INVINCIBLE) && u8[A1 + 0x2f] > 0 && state.in == char.state.ROLLING)
+	return u8[A1 + 0x38] == CHARACTER_KNUCKLES || (global.xtrachar == 1 && A1 == 0xffffb000 && isRocks) || (global.xtrachar == 3 && (System.getGlobalVariableValueByName("Amy_HammerSpinAttacking") || super.active.tails)) || (global.xtrachar == 5 && System.getGlobalVariableValueByName("shadow.isBoosting")) || (btp.consistent_breaking && global.xtrachar == 0 && !ecfActyve && isMainCharacter(CHARACTER_SONIC) && (u8[A1 + 0x2b] & char.bonus.SHIELD_FIRE) && !(u8[A1 + 0x2b] & char.bonus.INVINCIBLE) && u8[A1 + 0x2f] > 0 && state.in == char.state.ROLLING)
 }
 
 function bool BTP.canBreak(u8 state.in)
 {
 	return BTP.canBreak(state.in, false)
+}
+
+function bool BTP.knucklesSpecial()
+{
+	return u8[A1 + 0x38] == CHARACTER_KNUCKLES || ( A1 == 0xffffb000 && global.xtrachar == 1)
 }
 
 function bool BTP.destroyObjectExternally()
@@ -84,23 +89,15 @@ function void fn027424()
 		D1.u16 = u16[A0 + 0x30]
 		if (D6.u16 & 0x01)
 		{
-			if (u8[A1 + 0x38] == CHARACTER_KNUCKLES)
+			if (super.active || BTP.canBreak(objA1.state))
 			{
-				// Knuckles can break all walls
+				// Super form breaks walls even when going slow, so can a hammer swinging Amy and a boosting Shadow!
 				canBreakWall = true
 			}
-			else
+			else if ((objA0.flags2a & object.flag.P1_PUSHING) || (!btp.consistent_breaking && u8[A1 + 0x2b] & char.bonus.SHIELD_FIRE))
 			{
-				if (super.active || BTP.canBreak(objA1.state))
-				{
-					// Super form breaks walls even when going slow, so can a hammer swinging Amy and a boosting Shadow!
-					canBreakWall = true
-				}
-				else if ((objA0.flags2a & object.flag.P1_PUSHING) || (!btp.consistent_breaking && u8[A1 + 0x2b] & char.bonus.SHIELD_FIRE))
-				{
-					// Normal Sonic and Tails need to quickly roll into a wall to break it (this includes the fire shield attack)
-					canBreakWall = (objA1.state == char.state.ROLLING && abs(D1.s16) >= 0x480)
-				}
+				// Normal Sonic and Tails need to quickly roll into a wall to break it (this includes the fire shield attack)
+				canBreakWall = (objA1.state == char.state.ROLLING && abs(D1.s16) >= 0x480)
 			}
 
 			if (canBreakWall)
@@ -112,7 +109,7 @@ function void fn027424()
 				{
 					// Check for second character
 					A1 = 0xffffb04a
-					if (u8[A1 + 0x38] == CHARACTER_KNUCKLES || objA1.state == char.state.ROLLING || BTP.canBreak(objA1.state))
+					if (objA1.state == char.state.ROLLING || BTP.canBreak(objA1.state))
 					{
 						objA1.velocity.x = u16[A0 + 0x36]
 						objA1.groundspeed = objA1.velocity.x
@@ -131,16 +128,8 @@ function void fn027424()
 
 			if (objA0.flags2a & object.flag.P2_PUSHING)
 			{
-				if (u8[A1 + 0x38] == CHARACTER_KNUCKLES)
-				{
-					// Knuckles can break all walls
-					canBreakWall = true
-				}
-				else
-				{
-					// Normal Sonic and Tails need to quickly roll into a wall to break it (this includes the fire shield attack)
-					canBreakWall = (objA1.state == char.state.ROLLING && abs(D1.s16) >= 0x480) || BTP.canBreak(objA1.state)
-				}
+				// Normal Sonic and Tails need to quickly roll into a wall to break it (this includes the fire shield attack)
+				canBreakWall = (objA1.state == char.state.ROLLING && abs(D1.s16) >= 0x480) || BTP.canBreak(objA1.state)
 			}
 
 			if (canBreakWall)
@@ -274,7 +263,7 @@ function void fn01fd08()
 		D1.u16 = u16[A0 + 0x30]
 		if (D6.u16 & 0x01)
 		{
-			if (u8[A1 + 0x38] == CHARACTER_KNUCKLES)
+			if (BTP.knucklesSpecial())
 			{
 				// Knuckles can break all walls
 				canBreakWall = true
@@ -305,7 +294,7 @@ function void fn01fd08()
 				{
 					// Check for second character
 					A1 = 0xffffb04a
-					if (u8[A1 + 0x38] == CHARACTER_KNUCKLES || objA1.state == char.state.ROLLING)
+					if (BTP.canBreak(objA1.state, true) || objA1.state == char.state.ROLLING)
 					{
 						objA1.velocity.x = u16[A0 + 0x36]
 						objA1.groundspeed = objA1.velocity.x
@@ -324,7 +313,7 @@ function void fn01fd08()
 
 			if (objA0.flags2a & object.flag.P2_PUSHING)
 			{
-				if (u8[A1 + 0x38] == CHARACTER_KNUCKLES)
+				if (BTP.knucklesSpecial())
 				{
 					// Knuckles can break all walls
 					canBreakWall = true
@@ -404,7 +393,7 @@ function void fn021568()
 	if (D6.u16 & 0x01)
 	{
 		bool canBreakWall = false
-		if (super.active || u8[A1 + 0x38] == CHARACTER_KNUCKLES || BTP.canBreak(objA1.state))
+		if (super.active || BTP.canBreak(objA1.state))
 		{
 			// Super/Hyper forms can break walls, and Knuckles can
 			canBreakWall = true
