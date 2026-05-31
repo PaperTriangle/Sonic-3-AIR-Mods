@@ -70,12 +70,12 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 				
 				if (cht.dynamic_trails)
 				{
-					if (A0 == 0xffffb000)
+					if (A0 == 0xffffb000 && player1BackupKey[cht.dynamic_trails == 2 ? i*2 : i] != "")
 					{
 						renderKey = player1BackupKey[cht.dynamic_trails == 2 ? i*2 : i]
 						renderAngle = player1BackupAngle[cht.dynamic_trails == 2 ? i*2 : i]
 					}
-					else if (objA0.mapping_offset == 0x344bb8)
+					else if (objA0.mapping_offset == 0x344bb8 && tailsBackupKey[cht.dynamic_trails == 2 ? i*2 : i] != "")
 					{
 						renderKey = tailsBackupKey[cht.dynamic_trails == 2 ? i*2 : i]
 						renderAngle = tailsBackupAngle[cht.dynamic_trails == 2 ? i*2 : i]
@@ -100,7 +100,7 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 
 function void Renderer.drawSprite(u64 key, s16 px, s16 py, u16 atex, u8 flags, u16 renderQueue, u8 angle, u8 alpha)
 {
-	if cht.dynamic_trails && System.getGlobalVariableValueByName("noRenderPlz") && (NT.PreventRendering(key) && alpha == 0xff && !NT.NotCharacter(key))
+	if cht.dynamic_trails && (NT.PreventRendering(key) && alpha == 0xff && !NT.NotCharacter(key))
 	{
 		for (u8 i = 13; i > 0; i--)
 		{
@@ -135,7 +135,7 @@ function void Renderer.drawSpriteTinted(u64 key, s16 px, s16 py, u16 atex, u8 fl
 {
 	u8 alpha = tintColor
 
-	if cht.dynamic_trails && System.getGlobalVariableValueByName("noRenderPlz") && (NT.PreventRendering(key) && alpha == 0xff && !NT.NotCharacter(key))
+	if cht.dynamic_trails && (NT.PreventRendering(key) && alpha == 0xff && !NT.NotCharacter(key))
 	{
 		for (u8 i = 13; i > 0; i--)
 		{
