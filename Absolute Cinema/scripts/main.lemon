@@ -48,7 +48,7 @@ function bool GamePause.BeginPause()
 //# address-hook(0x0013e4) end(0x0014e4)
 function void UpdateGamePause()
 {
-	if ac.prevent && (ac.no_pause || (u8[0xffffb000 + 0x20] == char.state.DIED || u8[0xffffb000 + 0x20] == char.state.DROWNED || u8[0xffffb000 + 0x20] == char.state.DIED_GREY) || global.zone == 0x0d)
+	if ac.prevent && (ac.no_pause || (u8[0xffffb000 + 0x20] == char.state.DIED || u8[0xffffb000 + 0x20] == char.state.DROWNED || u8[0xffffb000 + 0x20] == char.state.DIED_GREY) || global.zone == 0x0d) && !(ac.skip && isSonicIntro())
 	{
 		global.game.paused = false
 		return
@@ -280,7 +280,7 @@ function void fn0500da()
 //# address-hook(0x06a270) end(0x06a298)
 function void fn06a270()
 {
-	if ac.hcz && (level.results_done)
+	if (ac.hcz && level.results_done)
 	{
 		ac.no_pause = 1
 		ac.no_hud = 1
@@ -292,12 +292,6 @@ function void fn06a270()
 //# address-hook(0x06a872) end(0x06a8c0)
 function void fn06a872()
 {
-	if (!ac.hcz)
-	{
-		base.fn06a872()
-		return
-	}
-
 	fn06a916()
 	UpdateMovementStraightSimple()
 
@@ -325,7 +319,9 @@ function void fn06a872()
 	else
 	{
 		stopCharacterWinPose(0xffffb000)
+		screenmover_target.right = 0x6000
 		screenmover_target.top = 0
+		screenmover_target.bottom = 0x0b00
 		fn085de0()
 	}
 	UnloadObject()
