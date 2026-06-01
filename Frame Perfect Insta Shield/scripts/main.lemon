@@ -1,0 +1,37 @@
+global u8 fpis.instaShieldActive
+
+define u8 global.xtrachar = u8[0xffffe654]
+
+function void Character.updateJumpMoves()
+{
+#if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
+	if getECFCharBufferName(A0)
+		return base.Character.updateJumpMoves()
+#endif
+	
+	u8 oldJumpState = char.double_jump_state
+	
+	base.Character.updateJumpMoves()
+		
+	if (char.character == CHARACTER_SONIC && global.xtrachar == 0 && !oldJumpState && char.double_jump_state)
+		fpis.instaShieldActive = 10
+		
+}
+
+//# address-hook(0x010294) end(0x010364)
+function void Character.GettingHurt()
+{
+	if (fpis.instaShieldActive)
+		return
+	
+	base.Character.GettingHurt()
+}
+
+//# post-update-hook
+function void PostFrameUpdate()
+{
+	if (fpis.instaShieldActive > 0)
+		fpis.instaShieldActive--
+
+	base.PostFrameUpdate()
+}

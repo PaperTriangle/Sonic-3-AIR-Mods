@@ -58,6 +58,9 @@ Adds a partnered Mighty & Ray as Slot 4. This requires **ES Mighty** and **ES Ra
 ## Flying Hold Frame Fix
 Makes the animation while holding on to Tails less jumpy. Should be placed below other sprite mods. Should work with ESU if placed below it.
 
+## Frame Perfect Insta Shield
+Lets you do the frame perfect insta shield jump off spikes thing.
+
 ## Gotta Go Fast!
 A mod that adds in a Fast Run to Sonic and Knuckles. Can also override some ESU characters for consistency.
 
