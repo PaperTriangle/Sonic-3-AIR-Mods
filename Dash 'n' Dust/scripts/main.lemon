@@ -12,6 +12,8 @@ global bool dd.super_release_sound
 global bool dd.dropdash_retry
 global bool dd.dropdash_used
 
+define u8 global.xtrachar = u8[0xffffe654]
+
 //-----------------------------//
 // Hyper Dash Dropdash Charge! //
 //-----------------------------//
@@ -461,8 +463,8 @@ function void Character.updateJumpMoves()
 	if getECFCharBufferName(A0)
 		return base.Character.updateJumpMoves()
 #endif
-	
-	if (!dd.dropdash_retry && char.character == CHARACTER_SONIC)
+
+	if (!dd.dropdash_retry && char.character == CHARACTER_SONIC && global.xtrachar == 0)
 	{
 		if (char.double_jump_state == 0)
 			dd.dropdash_used = 0
@@ -479,6 +481,7 @@ function void Character.updateJumpMoves()
 	}
 	else
 		base.Character.updateJumpMoves()
+		
 }
 
 //------------------//
