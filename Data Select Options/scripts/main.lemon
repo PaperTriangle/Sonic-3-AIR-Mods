@@ -1299,7 +1299,7 @@ function void fn00d70c()
 					xShift -= 0x0b
 				}
 				
-				Renderer.drawCustomSprite("traded_emerald", D0.u16 - xShift, D1.u16 - yShift, 0x00, SPRITE_FLAG_PRIO, 0x9fe0, 0, lsds.traded_emeralds == 2 ? 0xa0 : 0xff) 
+				Renderer.drawCustomSprite("traded_emerald", D0.u16 - xShift, D1.u16 - yShift, 0x00, 0, 0x9fe0, 0, lsds.traded_emeralds == 2 ? 0xa0 : 0xff) 
 			}
 			else
 			{
