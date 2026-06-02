@@ -1,0 +1,12 @@
+{
+	"DrowningFix1":
+	{
+		"File": "patch1.bin",
+		"RomInject": "0x2DFAD0"
+	},
+	"DrowningFix2":
+	{
+		"File": "patch2.bin",
+		"RomInject": "0x2DFF00"
+	}
+}

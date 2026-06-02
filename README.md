@@ -44,6 +44,11 @@ Allows Knuckles' glide to land on dynamic objects and prevents the glide from st
 
 Also adds in a couple of extra frames to Knuckles from Origins and some other options like Hyper Stars for Hyper Knuckles.
 
+## Emulated Drowning Fix
+As mentioned in **[this YouTube video](https://www.youtube.com/watch?v=ReSQMww1JZI)**, there is an issue with the drowning music in Sonic 3 where a certain channel does not play.
+
+The video included Game Genie codes for a simple fix. I have simply just converted this into a rawdata mod that Sonic 3 A.I.R. will use to patch the rom so the track will emulate as originally intended.
+
 ## ESU Origins Resolution Tweaks
 Some tweaks for ESU characters so they work with the **Origins Screen Resolution** mod... Mostly around intro cutscenes. Also replaces the act clear icons with a PNG version of the UI symbol to prevent water palettes interacting with the HUD.
 

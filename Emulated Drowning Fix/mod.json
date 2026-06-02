@@ -1,0 +1,8 @@
+{
+  "Metadata": {
+    "Name": "Emulated Drowning Fix",
+    "Author": "PaperTriangle",
+    "Description": "Rawdata mod to restore the missing channel in the drowning track when emulated.",
+    "ModVersion": "1.0"
+  }
+}
