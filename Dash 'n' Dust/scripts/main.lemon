@@ -461,7 +461,7 @@ function void Character.updateJumpMoves()
 {
 #if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
 	if getECFCharBufferName(A0)
-		return base.Character.updateJumpMoves()
+		base.Character.updateJumpMoves()
 #endif
 
 	if (!dd.dropdash_retry && char.character == CHARACTER_SONIC && global.xtrachar == 0)
