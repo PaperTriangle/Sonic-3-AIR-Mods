@@ -2298,7 +2298,6 @@ function void MT.LoadBeamPalette(bool afterHPZCutscene)
 		else if (global.zone == 0x03 || global.zone == 0x05)
 		{
 			PaletteAD = mt.cnzpalette ? 0x0a977e : 0x066a14
-			PaletteAD = 0x0a977e
 			TargetAD = 0x802016 + offset
 		}
 	}
