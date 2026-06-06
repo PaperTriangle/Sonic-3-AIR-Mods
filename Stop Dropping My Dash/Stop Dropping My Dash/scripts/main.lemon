@@ -411,8 +411,11 @@ function void ExtraChar.AmyObjects()
 				return
 			}
 		}
-
-		DrawOrUnloadObject()
+		
+		if (global.zone_act == 0x0000)
+			DrawObject()
+		else
+			DrawOrUnloadObject()
 	}
 	else
 		base.ExtraChar.AmyObjects()
