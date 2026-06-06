@@ -5,7 +5,7 @@
 		"UniqueID": "absolute-cinema",
 		"Author": "PaperTriangle",
 		"Description": "Options to prevent the player from pausing in the more cinematic moments and also remove the HUD.",
-		"ModVersion": "1.5"
+		"ModVersion": "1.6"
 	},
 	"OtherMods":
 	{
@@ -167,6 +167,17 @@
 				{
 					"0": "Hide HUD Late",
 					"1": "Hide HUD Early"
+				}
+			},
+			{
+				"InternalName": "ac.screen_mover_tweak",
+				"DisplayName": "Screenmovers Aren't Children",
+				"Variable": "ac.screen_mover_tweak",
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
 				}
 			}
 		]
