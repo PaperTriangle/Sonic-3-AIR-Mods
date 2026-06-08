@@ -60,4 +60,28 @@ function void mushroomFade(u16 camPos, s16 width, u16 centrePoint, u32 palA1, u3
 	{
 		u16[0xfffffc40 + i*2] = blendColorsPacked(u16[palA1 + i*2], u16[palA2 + i*2], Math.roundToInt(fadeVal))
 	}
+	
+	mushroomGroundParticle(palA1, palA2, Math.roundToInt(fadeVal))
+}
+
+// New function to decide ground particle.
+// u8[0xfffff7c1] = 0xff -> Leaves
+// u8[0xfffff7c1] = 0x00 -> Pollen
+function void mushroomGroundParticle(u32 palA1, u32 palA2, u16 fadeVal)
+{
+	if (palA2 == 0x0a94bc && fadeVal == 0x100) || (palA1 == 0x0a94bc && fadeVal == 0)
+	{
+		u8[0xfffff7c1] = 0xff
+		u16[0xffffeed6] = 0xff
+	}
+	else if (palA2 == 0x0550fe && fadeVal == 0x100) || (palA1 == 0x0550fe && fadeVal == 0)
+	{
+		u8[0xfffff7c1] = 0xff
+		u16[0xffffeed6] = 0
+	}
+	else
+	{
+		u8[0xfffff7c1] = 0
+		u16[0xffffeed6] = 0
+	}
 }
