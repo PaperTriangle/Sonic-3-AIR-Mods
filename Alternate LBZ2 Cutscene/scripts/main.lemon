@@ -759,7 +759,7 @@ function void fn01408a()
 	}
 }
 
-// Sparn a chair in the Egg Mobile
+// Spawn a chair in the Egg Mobile
 //# address-hook(0x08d29c) end(0x08d2b0)
 function void fn08d29c()
 {
