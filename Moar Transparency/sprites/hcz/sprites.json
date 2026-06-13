@@ -1,0 +1,15 @@
+{
+	"hcz_waterfall": { "File": "waterfall.bmp" },
+	"hcz_waterfall_splash": { "File": "waterfall_splash.bmp" },
+	"tube_80": { "File": "tube_80.bmp" },
+	"tube_20": { "File": "tube_20.bmp" },
+	"tube_203": { "File": "tube_203.bmp" },
+	"hcz_flowing_water_0": { "File": "flowing_water.bmp", "Rect": "1,1,16,32", "Center": "0,0" },
+	"hcz_flowing_water_1": { "File": "flowing_water.bmp", "Rect": "18,1,16,32", "Center": "0,0" },
+	"hcz_flowing_water_2": { "File": "flowing_water.bmp", "Rect": "35,1,16,32", "Center": "0,0" },
+	"hcz_flowing_water_3": { "File": "flowing_water.bmp", "Rect": "52,1,16,32", "Center": "0,0" },
+	"hcz_flowing_water_top_0": { "File": "flowing_water_top.bmp", "Rect": "1,1,16,53", "Center": "0,21" },
+	"hcz_flowing_water_top_1": { "File": "flowing_water_top.bmp", "Rect": "18,1,16,53", "Center": "0,21" },
+	"hcz_flowing_water_top_2": { "File": "flowing_water_top.bmp", "Rect": "35,1,16,53", "Center": "0,21" },
+	"hcz_flowing_water_top_3": { "File": "flowing_water_top.bmp", "Rect": "52,1,16,53", "Center": "0,21" },
+}

@@ -1,0 +1,50 @@
+{
+	"aiz1_chunks":
+	{
+		"File": "aiz1_chunks.bin"
+	},
+	"aiz2_blocks_primary":
+	{
+		"File": "aiz2_blocks_primary.bin"
+	},
+	"aiz2_blocks_secondary":
+	{
+		"File": "aiz2_blocks_secondary.bin"
+	},
+	"aiz2_tiles_primary":
+	{
+		"File": "aiz2_tiles_primary.bin"
+	},
+	"aiz2_tiles_secondary":
+	{
+		"File": "aiz2_tiles_secondary.bin"
+	},
+	"hcz1_primary":
+	{
+		"File": "hcz1_primary.bin"
+	},
+	"hcz1_secondary":
+	{
+		"File": "hcz1_secondary.bin"
+	},
+	"hcz1_tiles_secondary":
+	{
+		"File": "hcz1_tiles_secondary.bin"
+	},
+	"hcz2_primary":
+	{
+		"File": "hcz2_primary.bin"
+	},
+	"hcz2_secondary":
+	{
+		"File": "hcz2_secondary.bin"
+	},
+	"hcz2_tiles_secondary":
+	{
+		"File": "hcz2_tiles_secondary.bin"
+	},
+	"hcz2_chunks_secondary":
+	{
+		"File": "hcz2_chunks_secondary.bin"
+	}
+}

@@ -1,0 +1,23 @@
+{
+	"aiz_waterfall_top": { "File": "aiz_waterfall_top.bmp" },
+	"aiz_waterfall_middle": { "File": "aiz_waterfall_middle.bmp" },
+	"aiz_waterfall_bottom": { "File": "aiz_waterfall_bottom.bmp" },
+	"aiz1_waterfall_bottom": { "File": "aiz1_waterfall_bottom.bmp" },
+	"aiz_waterfall_top_under": { "File": "aiz_waterfall_top_under.bmp" },
+	"aiz2_cutscene_waterfall": { "File": "aiz2_cutscene_waterfall.bmp" },
+	"aiz2_cutscene_wall": { "File": "aiz2_cutscene_wall.bmp" },
+	"left_foliage": { "File": "left_foliage.bmp" },
+	"right_foliage": { "File": "right_foliage.bmp" },
+	"bg_foliage": { "File": "bg_foliage.bmp" },
+	"bg_foliage_bottom": { "File": "bg_foliage_bottom.bmp" },
+	"tiny_waterfall_left_foliage": { "File": "tiny_waterfall_left_foliage.bmp" },
+	"tiny_waterfall": { "File": "tiny_waterfall.bmp" },
+	"tiny_waterfall_bg_foliage": { "File": "tiny_waterfall_bg_foliage.bmp" },
+	"aiz_rope_1": { "File": "rope_1.bmp" },
+	"aiz_rope_2": { "File": "rope_2.bmp" },
+	"aiz_rope_3": { "File": "rope_3.bmp" },
+	"tiny_waterfall_left_foliage_end": { "File": "tiny_waterfall_left_foliage_end.bmp" },
+	"tiny_waterfall_end": { "File": "tiny_waterfall_end.bmp" },
+	"tiny_waterfall_bg_foliage_end": { "File": "tiny_waterfall_bg_foliage_end.bmp" },
+	"flame_mobile_bge": { "File": "flame_mobile_bge.bmp", "Center": "55,45"  }
+}
