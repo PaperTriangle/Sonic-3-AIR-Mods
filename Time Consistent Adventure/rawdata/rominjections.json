@@ -203,6 +203,10 @@
 	{
 		"File": "LBZ/LBZ2_Blocks.bin"
 	},
+	"LBZ2_Blocks_NoWater": 
+	{
+		"File": "LBZ/LBZ2_Blocks_NoWater.bin"
+	},
 	"LBZ2_Tiles":
 	{
 		"File": "LBZ/LBZ2_Tiles.bin"

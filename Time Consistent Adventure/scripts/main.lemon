@@ -314,7 +314,12 @@ function void yieldExecution()
 		if (tca.lbz_clouds)
 		{
 			System.loadExternalRawData("LBZ2_Chunks", 0x3EAF04)
-			System.loadExternalRawData("LBZ2_Blocks", 0x3E5F70)
+			
+			if Mods.isModActive("Moar Transparency") && System.getGlobalVariableValueByName("mt.lbz2_tiles")
+				System.loadExternalRawData("LBZ2_Blocks_NoWater", 0x3E5F70)
+			else
+				System.loadExternalRawData("LBZ2_Blocks", 0x3E5F70)
+			
 			System.loadExternalRawData("LBZ2_Tiles", 0x3E77D0)
 			System.loadExternalRawData("LBZ2_Collision", 0x27BF60)
 			System.loadExternalRawData("LBZ2_Boss_Chunks", 0x3ED3D4)
