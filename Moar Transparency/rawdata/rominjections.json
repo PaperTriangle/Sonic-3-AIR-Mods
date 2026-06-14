@@ -3,6 +3,10 @@
 	{
 		"File": "aiz1_chunks.bin"
 	},
+	"aiz1_chunks_knux":
+	{
+		"File": "aiz1_chunks_knux.bin"
+	},
 	"aiz1_tiles_primary":
 	{
 		"File": "aiz1_tiles_primary.bin"
@@ -50,5 +54,13 @@
 	"hcz2_chunks_secondary":
 	{
 		"File": "hcz2_chunks_secondary.bin"
+	},
+	"lbz1_blocks_secondary":
+	{
+		"File": "lbz1_blocks_secondary.bin"
+	},
+	"lbz2_blocks_secondary":
+	{
+		"File": "lbz2_blocks_secondary.bin"
 	}
 }

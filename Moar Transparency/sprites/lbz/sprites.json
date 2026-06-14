@@ -1,0 +1,10 @@
+{
+	"lbz_waterfall": { "File": "lbz_waterfall.bmp" },
+	"lbz_waterfall_half": { "File": "lbz_waterfall_half.bmp" },
+	"lbz_waterfall_quarter": { "File": "lbz_waterfall_quarter.bmp" },
+	"lbz_tube_72": { "File": "tube_72.bmp" },
+	"lbz_tube_96": { "File": "tube_96.bmp" },
+	"lbz_tube_104": { "File": "tube_104.bmp" },
+	"lbz_inner_tube_96": { "File": "inner_tube_96.bmp" },
+	"lbz_inner_tube_104": { "File": "inner_tube_104.bmp" }
+}

@@ -490,6 +490,90 @@
 				}
 			},
 			{
+				"InternalName": "mt.aiz1_tiles",
+				"DisplayName": "AIZ1 Waterfalls",
+				"Variable": "mt.aiz1_tiles",
+				"Category": "Tile Transparency",	
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "mt.aiz1_background",
+				"DisplayName": "AIZ1 Waterfall Background",
+				"Variable": "mt.aiz1_background",
+				"Category": "Tile Transparency",	
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Foliage",
+					"1": "Rocks"
+				}
+			},
+			{
+				"InternalName": "mt.aiz2_tiles",
+				"DisplayName": "AIZ2 Waterfalls",
+				"Variable": "mt.aiz2_tiles",
+				"Category": "Tile Transparency",	
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "mt.hcz1_tiles",
+				"DisplayName": "HCZ1 Waterfalls & Tubes",
+				"Variable": "mt.hcz1_tiles",
+				"Category": "Tile Transparency",	
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "mt.hcz2_tiles",
+				"DisplayName": "HCZ2 Waterfalls & Tubes",
+				"Variable": "mt.hcz2_tiles",
+				"Category": "Tile Transparency",	
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "mt.lbz1_tiles",
+				"DisplayName": "LBZ1 Tubes",
+				"Variable": "mt.lbz1_tiles",
+				"Category": "Tile Transparency",	
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "mt.lbz2_tiles",
+				"DisplayName": "LBZ2 Waterfalls",
+				"Variable": "mt.lbz2_tiles",
+				"Category": "Tile Transparency",	
+				"DefaultValue": "0",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
 				"InternalName": "mt.teleframe",
 				"DisplayName": "Consistent Teleporters",
 				"Variable": "mt.teleframe",
