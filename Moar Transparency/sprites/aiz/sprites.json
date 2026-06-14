@@ -38,5 +38,9 @@
 	"tiny_waterfall_left_foliage_end": { "File": "tiny_waterfall_left_foliage_end.bmp" },
 	"tiny_waterfall_end": { "File": "tiny_waterfall_end.bmp" },
 	"tiny_waterfall_bg_foliage_end": { "File": "tiny_waterfall_bg_foliage_end.bmp" },
+	"s3_14_trickle": { "File": "s3_14_trickle.bmp" },
+	"s3_14_trickle_bg": { "File": "s3_14_trickle_bg.bmp" },
+	"flame_mobile": { "File": "flame_mobile.bmp", "Center": "55,45"  },
+	"flame_mobile_er": { "File": "flame_mobile_er.bmp", "Center": "55,45"  },
 	"flame_mobile_bge": { "File": "flame_mobile_bge.bmp", "Center": "55,45"  }
 }

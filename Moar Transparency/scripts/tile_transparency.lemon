@@ -138,6 +138,10 @@ function void PostFrameUpdate()
 					Renderer.drawCustomSprite("tiny_waterfall_bg_foliage_end", (i % 0x61) * 0x80 + mt.shakeX, (i - (i % 0x61)) / 0x61 * 0x80 + mt.shakeY, 0x00, SPRITE_FLAG_WORLDSPACE, 0x3fff)
 				}
 			}
+			
+			if Mods.isModActive("S3'14-like Knuckles AIZ Intro") && (isMainCharacter(CHARACTER_KNUCKLES) && u8[0xffffe654] == 0 && global.characters < 4)
+				Renderer.drawCustomSprite("s3_14_trickle_bg", 0x1280+0x70, 0x0380, 0x00, 0x20, 0x8001)
+				Renderer.drawCustomSprite("s3_14_trickle", 0x1280+0x70, 0x0380, 0x00, 0x20, 0x8002, 0, 0xb0)
 		}
 		else if mt.aiz2_tiles && (global.zone_act == 0x0001 || global.zone_act.apparent == 0x0001) && !mt.noRender
 		{
@@ -540,7 +544,7 @@ function void Object.CountdownAndTrigger()
 {
 	if mt.aiz2_tiles && (objA0.countdown_callback == 0x069228)
 	{
-		Renderer.drawCustomSprite("flame_mobile_bge", objA0.position.x.u16, objA0.position.y.u16 - 16 - objA0.countdown_value*2, 0x00, SPRITE_FLAG_WORLDSPACE | SPRITE_FLAG_PRIO, 0x1000)
+		Renderer.drawCustomSprite(isMainCharacter(CHARACTER_KNUCKLES) ? "flame_mobile_er" : (Mods.isModActive("Blue Glasses Eggman") ? "flame_mobile_bge" : "flame_mobile"), objA0.position.x.u16, objA0.position.y.u16 - 16 - objA0.countdown_value*2, 0x00, SPRITE_FLAG_WORLDSPACE | SPRITE_FLAG_PRIO, 0x1000)
 	}
 	
 	base.Object.CountdownAndTrigger()
@@ -550,7 +554,7 @@ function void Object.CountdownAndTrigger()
 function void fn06926c()
 {
 	if mt.aiz2_tiles
-		Renderer.drawCustomSprite("flame_mobile_bge", objA0.position.x.u16, objA0.position.y.u16 - 16, 0x00, SPRITE_FLAG_WORLDSPACE | SPRITE_FLAG_PRIO, 0x1000)
+		Renderer.drawCustomSprite(isMainCharacter(CHARACTER_KNUCKLES) ? "flame_mobile_er" : (Mods.isModActive("Blue Glasses Eggman") ? "flame_mobile_bge" : "flame_mobile"), objA0.position.x.u16, objA0.position.y.u16 - 16, 0x00, SPRITE_FLAG_WORLDSPACE | SPRITE_FLAG_PRIO, 0x1000)
 	
 	base.fn06926c()
 }
