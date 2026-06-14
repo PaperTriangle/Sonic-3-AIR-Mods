@@ -3,6 +3,10 @@
 	{
 		"File": "aiz1_chunks.bin"
 	},
+	"aiz1_tiles_primary":
+	{
+		"File": "aiz1_tiles_primary.bin"
+	},
 	"aiz2_blocks_primary":
 	{
 		"File": "aiz2_blocks_primary.bin"

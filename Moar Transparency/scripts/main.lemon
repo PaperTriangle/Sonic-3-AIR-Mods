@@ -2865,6 +2865,7 @@ function void PostFrameUpdate()
 	if (global.zone_act == 0x0000)
 	{
 		System.loadExternalRawData("aiz1_chunks", 0x1ABC40 + 0x200000)
+		System.loadExternalRawData("aiz1_tiles_primary", 0x1A566A + 0x200000)
 	
 	#if GAMEAPP >= 0x25021500
 		Renderer.resetLifetimeContext(2)
@@ -2875,11 +2876,20 @@ function void PostFrameUpdate()
 		{
 			if (u8[0xffff8088 + i] == 0x0d) || (u8[0xffff8088 + i] == 0x0e) || (u8[0xffff8088 + i] == 0x0f) || (u8[0xffff8088 + i] == 0x4f) || (u8[0xffff8088 + i] == 0x57) || (u8[0xffff8088 + i] == 0x7c) || (u8[0xffff8088 + i] == 0x56)
 			{
-				Renderer.drawCustomSprite("aiz_waterfall_middle", (i % 0x61) * 0x80, (i - (i % 0x61)) / 0x61 * 0x80, 0x00, SPRITE_FLAG_WORLDSPACE, 0x4000, 0, 0xb0)
+				Renderer.drawCustomSprite("aiz1_waterfall", (i % 0x61) * 0x80, (i - (i % 0x61)) / 0x61 * 0x80, 0x00, SPRITE_FLAG_WORLDSPACE, 0x4000, 0, 0xb0)
 			}
 			else if (u8[0xffff8088 + i] == 0x71) || (u8[0xffff8088 + i] == 0x70)
 			{
 				Renderer.drawCustomSprite("aiz1_waterfall_bottom", (i % 0x61) * 0x80, (i - (i % 0x61)) / 0x61 * 0x80, 0x00, SPRITE_FLAG_WORLDSPACE, 0x4000, 0, 0xb0)
+			}
+			else if (u8[0xffff8088 + i] == 0x64) || (u8[0xffff8088 + i] == 0x63) || (u8[0xffff8088 + i] == 0x62) || (u8[0xffff8088 + i] == 0x69) || (u8[0xffff8088 + i] == 0x6b) || (u8[0xffff8088 + i] == 0x7f) || (u8[0xffff8088 + i] == 0xb0)
+			{
+				Renderer.drawCustomSprite(stringformat("water_trickle_%d", u8[0xffff8088 + i]), (i % 0x61) * 0x80, (i - (i % 0x61)) / 0x61 * 0x80, 0x00, SPRITE_FLAG_WORLDSPACE, 0x4000, 0, 0xb0)
+			}
+			
+			if (u8[0xffff8088 + i] == 0x63) || (u8[0xffff8088 + i] == 0x64)
+			{
+				Renderer.drawCustomSprite(stringformat("wall_waterfall_%d", u8[0xffff8088 + i]), (i % 0x61) * 0x80, (i - (i % 0x61)) / 0x61 * 0x80, 0x00, SPRITE_FLAG_WORLDSPACE, 0x4000, 0, 0xb0)
 			}
 			
 			if (u8[0xffff8088 + i] == 0x0d)
