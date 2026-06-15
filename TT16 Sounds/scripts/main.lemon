@@ -185,7 +185,7 @@ function bool TTS.playSlide(u32 AX)
 {
 	if !(u8[AX + 0x2a] & char.flag.IN_AIR)
 	{
-		if (global.zone_act == 0x0101 && tt16s.hcz_slide && u8[AX + 0x20] == char.state.FALLING_PANIC) // Water Slide
+		if (global.zone_act == 0x0101 && tt16s.hcz_slide && u8[AX + 0x20] == char.state.FALLING_PANIC && hud.dirty.timer != 0) // Water Slide
 		{
 			if (tt16s.hcz_slide == 1)
 			{
