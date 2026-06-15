@@ -26,6 +26,14 @@ function void yieldExecution()
 		System.loadExternalRawData("aiz2_tiles_primary", 0x1B15D2 + 0x200000)
 		System.loadExternalRawData("aiz2_tiles_secondary", 0x1B3784 + 0x200000)
 	}
+	else if mt.aiz2_tiles && (global.zone_act == 0x0000)
+	{
+		// Load AIZ2 here due to stage transition
+		System.loadExternalRawData("aiz2_blocks_primary", 0x1B0052 + 0x200000)
+		System.loadExternalRawData("aiz2_blocks_secondary", 0x1B08F2 + 0x200000)
+		System.loadExternalRawData("aiz2_tiles_primary", 0x1B15D2 + 0x200000)
+		System.loadExternalRawData("aiz2_tiles_secondary", 0x1B3784 + 0x200000)
+	}
 	else if mt.aiz2_tiles && (global.zone_act == 0x0001)
 	{
 		System.loadExternalRawData("aiz2_blocks_primary", 0x1B0052 + 0x200000)
@@ -60,7 +68,10 @@ function void yieldExecution()
 //# post-update-hook
 function void PostFrameUpdate()
 {
-	if (global.game_mode == 0x0c)
+	if (Mods.isModActive("No Transparency"))
+		System.setGlobalVariableValueByName("renderTransparentPlz", true)
+
+	if ((global.game_mode | 0x80) == 0x8c)
 	{
 		s16 mt.shakeX = s16(camera.position.x.u16) - s16(camera.foreground.x.u16)
 		s16 mt.shakeY = s16(camera.position.y.u16) - s16(camera.foreground.y.u16)
@@ -140,8 +151,10 @@ function void PostFrameUpdate()
 			}
 			
 			if Mods.isModActive("S3'14-like Knuckles AIZ Intro") && (isMainCharacter(CHARACTER_KNUCKLES) && u8[0xffffe654] == 0 && global.characters < 4)
+			{
 				Renderer.drawCustomSprite("s3_14_trickle_bg", 0x1280+0x70, 0x0380, 0x00, 0x20, 0x8001)
 				Renderer.drawCustomSprite("s3_14_trickle", 0x1280+0x70, 0x0380, 0x00, 0x20, 0x8002, 0, 0xb0)
+			}
 		}
 		else if mt.aiz2_tiles && (global.zone_act == 0x0001 || global.zone_act.apparent == 0x0001) && !mt.noRender
 		{
@@ -291,11 +304,17 @@ function void PostFrameUpdate()
 		}
 	}
 
+	if (Mods.isModActive("No Transparency"))
+		System.setGlobalVariableValueByName("renderTransparentPlz", false)
+
 	base.PostFrameUpdate()
 }
 
 function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 {
+	if (Mods.isModActive("No Transparency"))
+		System.setGlobalVariableValueByName("renderTransparentPlz", true)
+	
 	if mt.aiz2_tiles && global.zone_act == 0x0001
 	{
 		// Eggman Head (Blue Glasses)
@@ -326,18 +345,23 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 		}
 	}
 	
+	if (Mods.isModActive("No Transparency"))
+		System.setGlobalVariableValueByName("renderTransparentPlz", false)
+	
 	return base.Standalone.onWriteToSpriteTable(px, py, renderQueue)
 }
 
 function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16 renderQueue)
 {
-
+	if (Mods.isModActive("No Transparency"))
+		System.setGlobalVariableValueByName("renderTransparentPlz", true)
+	
 	if mt.aiz1_tiles && global.zone_act == 0x0000
 	{
 		// Render the AIZ waterefall splashes semi-transparent
 		if (objA0.update_address == 0x02a36c || objA0.update_address == 0x02b72c) && index > 0x43d5
 		{
-			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 0xc0)
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 0xb0)
 			return true
 		}
 	}
@@ -346,14 +370,14 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		// Render the AIZ waterefall splashes semi-transparent
 		if (objA0.update_address == 0x02a36c || objA0.update_address == 0x02b72c) && index > 0x5000
 		{
-			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 0xc0)
+			Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 0xb0)
 			return true
 		}
 		
 		// Render the AIZ2 cutscene waterefall
 		if (objA0.update_address == 0x02b962)
 		{
-			//Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 0xc0)
+			//Renderer.drawVdpSpriteWithAlpha(px, py, size, index, renderQueue, 0xb0)
 			if (index == 0x603b)
 			{
 				Renderer.drawCustomSprite("aiz2_cutscene_wall", px, py - 0x10, 0x00, 0, 0x1fff)
@@ -448,11 +472,17 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 			return true
 		}
 	}
+	
+	if (Mods.isModActive("No Transparency"))
+		System.setGlobalVariableValueByName("renderTransparentPlz", false)
 
 	return base.Standalone.onDrawVdpSprite(px, py, size, index, renderQueue)
 }
 function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 index, u16 renderQueue, u8 spriteCounter)
 {
+	if (Mods.isModActive("No Transparency"))
+		System.setGlobalVariableValueByName("renderTransparentPlz", true)
+	
 	if mt.hcz1_tiles && global.zone_act == 0x0100
 	{
 		// HCZ Geyser
@@ -477,6 +507,9 @@ function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 in
 			}
 		}
 	}
+	
+	if (Mods.isModActive("No Transparency"))
+		System.setGlobalVariableValueByName("renderTransparentPlz", false)
 	
 	return base.Standalone.onDrawVdpSpriteCompound(px, py, size, index, renderQueue, spriteCounter)
 }
@@ -581,4 +614,17 @@ function u32 System.loadExternalRawData(string key, u32 targetAddress)
 		return 0
 
 	return base.System.loadExternalRawData(key, targetAddress)
+}
+
+// Different AIZ tiles...
+//# address-hook(0x06852c) end(0x068550)
+function void fn06852c()
+{
+	base.fn06852c()
+	
+#if STANDALONE
+	// Change the extended chunks for consistency...
+	u8[0xffff832f] = u8[0xffff832d]
+	u8[0xffff8390] = u8[0xffff838e]
+#endif
 }

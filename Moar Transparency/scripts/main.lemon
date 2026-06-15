@@ -2748,7 +2748,8 @@ function void HCZ.drawIntroSurface()
 	{
 		SpriteHandle hczsurface = Renderer.addSpriteHandle("hcz_water_surface", 0x0180 + 0x80 * u16(width) + mt.shakeX, 0x0500 + mt.shakeY, 0x9fff)
 		hczsurface.setFlags(SPRITE_FLAG_WORLDSPACE | SPRITE_FLAG_PRIO)
-		hczsurface.setTintColorRGBA(0xffffffb8)
+		if (mt.aiz1_tiles)
+			hczsurface.setTintColorRGBA(0xffffffb0)
 	}
 }
 
@@ -2820,7 +2821,7 @@ function void fn02fe5e()
 		u16 px = baseX - offset
 		u16 py = baseY - offset * 2
 
-		Renderer.drawCustomSprite("hcz_waterfront", px, py, 0x00, SPRITE_FLAG_WORLDSPACE, 0x9fff, 0, 0xb0)
+		Renderer.drawCustomSprite("hcz_waterfront", px, py, 0x00, SPRITE_FLAG_WORLDSPACE, 0x9fff, 0, mt.aiz1_tiles ? 0xb0 : 0xff)
 
 		// Change everything to the left to wet, and everything to the right to dry
 		px += 0x20
