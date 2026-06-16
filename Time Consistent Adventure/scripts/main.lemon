@@ -19,6 +19,7 @@ global bool tca.fbz_bg
 global bool tca.fbz_explosions
 global bool tca.icz_trans_point
 global bool tca.icz_trans_fade
+global u8 tca.snow_line
 global bool tca.lbz_clouds
 global u8 tca.ssz_trans_point
 global bool tca.ssz_knux_csfix
@@ -1072,6 +1073,16 @@ function void fn23e20e()
 // LBZ Specific Features
 //----------------------
 
+// Extended palette snow
+//# address-hook(0x053f22) end(0x053fa2)
+function void UpdateLevelTiles.LBZ1()
+{
+	if (tca.snow_line)
+		Renderer.drawCustomSprite("lbz_snow", 0, 0x59e, 0xa0 + tca.snow_line * 0x10, SPRITE_FLAG_WORLDSPACE | SPRITE_FLAG_PRIO, 0x4000)
+
+	base.UpdateLevelTiles.LBZ1()
+}
+
 //# address-hook(0x072e30)
 function void fn072e30()
 {
@@ -1444,6 +1455,19 @@ function void TitleCard.Show()
 		System.loadExternalRawData("MGZ_Palette_Original", 0x0A8F5C)
 	
 	base.TitleCard.Show()
+	
+	// LBZ Snow Palette
+	if (tca.snow_line && global.zone_act == 0x0600)
+	{
+		u16 offset = 3 * 0x40 + tca.snow_line * 0x20
+		
+		u16[0x802182 + offset] = 0x0eee
+		u16[0x802184 + offset] = 0x0eec
+		u16[0x802186 + offset] = 0x0ea8
+		u16[0x802188 + offset] = 0x0e88
+		u16[0x80218a + offset] = 0x0c66
+		u16[0x80218c + offset] = 0x0a44
+	}
 }
 
 // Sonic 3 Complete Level Select Plus Compat
