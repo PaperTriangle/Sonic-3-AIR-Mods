@@ -9,54 +9,53 @@ global bool mt.aiz1_background
 
 function void yieldExecution()
 {
-	if mt.aiz1_tiles && (global.zone_act == 0x0000)
+	if (global.zone == 0x00)
 	{
-		if Mods.isModActive("S3'14-like Knuckles AIZ Intro") && (isMainCharacter(CHARACTER_KNUCKLES) && u8[0xffffe654] == 0 && global.characters < 4)
-			System.loadExternalRawData("aiz1_chunks_knux", 0x1ABC40 + 0x200000)
-		else
-			System.loadExternalRawData("aiz1_chunks", 0x1ABC40 + 0x200000)
+		if (mt.aiz1_tiles)
+		{
+			if Mods.isModActive("S3'14-like Knuckles AIZ Intro") && (isMainCharacter(CHARACTER_KNUCKLES) && u8[0xffffe654] == 0 && global.characters < 4)
+				System.loadExternalRawData("aiz1_chunks_knux", 0x1ABC40 + 0x200000)
+			else
+				System.loadExternalRawData("aiz1_chunks", 0x1ABC40 + 0x200000)
+			
+			System.loadExternalRawData("aiz1_tiles_primary", 0x1A566A + 0x200000)
+			
+			// Load AIZ2 here due to stage transition
+			System.loadExternalRawData("aiz2_blocks_primary", 0x1B0052 + 0x200000)
+			System.loadExternalRawData("aiz2_blocks_secondary", 0x1B08F2 + 0x200000)
+			System.loadExternalRawData("aiz2_tiles_primary", 0x1B15D2 + 0x200000)
+			System.loadExternalRawData("aiz2_tiles_secondary", 0x1B3784 + 0x200000)
+		}
+
+		if (mt.aiz2_tiles)
+		{
+			System.loadExternalRawData("aiz2_blocks_primary", 0x1B0052 + 0x200000)
+			System.loadExternalRawData("aiz2_blocks_secondary", 0x1B08F2 + 0x200000)
+			System.loadExternalRawData("aiz2_tiles_primary", 0x1B15D2 + 0x200000)
+			System.loadExternalRawData("aiz2_tiles_secondary", 0x1B3784 + 0x200000)
+		}
+	}
+	else if (global.zone == 0x01)
+	{
+		if (mt.hcz1_tiles)
+		{
+			System.loadExternalRawData("hcz1_primary", 0x1B91F8 + 0x200000)
+			System.loadExternalRawData("hcz1_secondary", 0x1BA5EA + 0x200000)
+			System.loadExternalRawData("hcz1_tiles_secondary", 0x1BAE7A + 0x200000)
+		}
 		
-		System.loadExternalRawData("aiz1_tiles_primary", 0x1A566A + 0x200000)
+		if (mt.hcz2_tiles)
+		{
+			System.loadExternalRawData("hcz2_tiles_secondary", 0x1BFA6C + 0x200000)
+			System.loadExternalRawData("hcz2_chunks_secondary", 0x1C18EE + 0x200000)
+		}
+	}
+	else if (global.zone == 0x06)
+	{
+		if (mt.lbz1_tiles)
+			System.loadExternalRawData("lbz1_blocks_secondary", 0x1DEFCC + 0x200000)
 		
-		// Load AIZ2 here due to stage transition
-		System.loadExternalRawData("aiz2_blocks_primary", 0x1B0052 + 0x200000)
-		System.loadExternalRawData("aiz2_blocks_secondary", 0x1B08F2 + 0x200000)
-		System.loadExternalRawData("aiz2_tiles_primary", 0x1B15D2 + 0x200000)
-		System.loadExternalRawData("aiz2_tiles_secondary", 0x1B3784 + 0x200000)
-	}
-	else if mt.aiz2_tiles && (global.zone_act == 0x0000)
-	{
-		// Load AIZ2 here due to stage transition
-		System.loadExternalRawData("aiz2_blocks_primary", 0x1B0052 + 0x200000)
-		System.loadExternalRawData("aiz2_blocks_secondary", 0x1B08F2 + 0x200000)
-		System.loadExternalRawData("aiz2_tiles_primary", 0x1B15D2 + 0x200000)
-		System.loadExternalRawData("aiz2_tiles_secondary", 0x1B3784 + 0x200000)
-	}
-	else if mt.aiz2_tiles && (global.zone_act == 0x0001)
-	{
-		System.loadExternalRawData("aiz2_blocks_primary", 0x1B0052 + 0x200000)
-		System.loadExternalRawData("aiz2_blocks_secondary", 0x1B08F2 + 0x200000)
-		System.loadExternalRawData("aiz2_tiles_primary", 0x1B15D2 + 0x200000)
-		System.loadExternalRawData("aiz2_tiles_secondary", 0x1B3784 + 0x200000)
-	}
-	else if mt.hcz1_tiles && (global.zone_act == 0x0100)
-	{
-		System.loadExternalRawData("hcz1_primary", 0x1B91F8 + 0x200000)
-		System.loadExternalRawData("hcz1_secondary", 0x1BA5EA + 0x200000)
-		System.loadExternalRawData("hcz1_tiles_secondary", 0x1BAE7A + 0x200000)
-	}
-	else if mt.hcz2_tiles && (global.zone_act == 0x0101)
-	{
-		System.loadExternalRawData("hcz2_tiles_secondary", 0x1BFA6C + 0x200000)
-		System.loadExternalRawData("hcz2_chunks_secondary", 0x1C18EE + 0x200000)
-	}
-	else if mt.lbz1_tiles && (global.zone_act == 0x0600)
-	{
-		System.loadExternalRawData("lbz1_blocks_secondary", 0x1DEFCC + 0x200000)
-	}
-	else if mt.lbz2_tiles && (global.zone_act == 0x0601)
-	{
-		if !(Mods.isModActive("Time Consistent Adventure") && System.getGlobalVariableValueByName("tca.lbz_clouds"))
+		if (mt.lbz2_tiles) && !(Mods.isModActive("Time Consistent Adventure") && System.getGlobalVariableValueByName("tca.lbz_clouds"))
 			System.loadExternalRawData("lbz2_blocks_secondary", 0x1E5F70 + 0x200000)
 	}
 
