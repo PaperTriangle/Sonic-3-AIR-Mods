@@ -459,8 +459,10 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 			{
 				Renderer.drawCustomSprite("aiz2_cutscene_wall", px, py - 0x10, 0x00, 0, 0x1fff)
 				Renderer.drawCustomSprite("aiz2_cutscene_waterfall", px, py - 0x10, 0x00, 0, 0x2000, 0, 0xb0)
+				return true
 			}
-			return true
+			else if (index == 0x6043)
+				return true
 		}
 		
 		// AIZ Eggman Behind Waterfall
