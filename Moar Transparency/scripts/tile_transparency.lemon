@@ -241,7 +241,7 @@ function void UpdateLevelTiles.HCZ1()
 			}
 			else if (u8[0xffff8088 + i] == 0x92) || (u8[0xffff8088 + i] == 0x9a) || (u8[0xffff8088 + i] == 0x98) || (u8[0xffff8088 + i] == 0x99) || (u8[0xffff8088 + i] == 0x83) || (u8[0xffff8088 + i] == 0x8a) || (u8[0xffff8088 + i] == 0xba) || (u8[0xffff8088 + i] == 0xbb) || (u8[0xffff8088 + i] == 0xbf) || (u8[0xffff8088 + i] == 0xc0) || (u8[0xffff8088 + i] == 0xc1)
 			{
-				Renderer.drawCustomSprite("hcz_waterfall", (i % 0x70) * 0x80 + mt.shakeX, (i - (i % 0x70)) / 0x70 * 0x80 + mt.shakeY, 0x00, SPRITE_FLAG_WORLDSPACE, 0xc000, 0, 0x90)
+				Renderer.drawCustomSprite("hcz_waterfall", (i % 0x70) * 0x80 + mt.shakeX, (i - (i % 0x70)) / 0x70 * 0x80 + mt.shakeY, 0x00, SPRITE_FLAG_WORLDSPACE | SPRITE_FLAG_PRIO, 0xc000, 0, 0x90)
 			}
 			else if (u8[0xffff8088 + i] == 0x95)
 			{
@@ -287,7 +287,7 @@ function void UpdateLevelTiles.HCZ2()
 		{
 			if (u8[0xffff8088 + i] == 0x50) || (u8[0xffff8088 + i] == 0x3d)
 			{
-				Renderer.drawCustomSprite("tube_80", (i % 0x90) * 0x80 + mt.shakeX, (i - (i % 0x90)) / 0x90 * 0x80 + mt.shakeY, 0x00, SPRITE_FLAG_WORLDSPACE, 0xc000, 0, 0x90)
+				Renderer.drawCustomSprite("tube_80", (i % 0x90) * 0x80 + mt.shakeX, (i - (i % 0x90)) / 0x90 * 0x80 + mt.shakeY, 0x00, SPRITE_FLAG_WORLDSPACE | SPRITE_FLAG_PRIO, 0xc000, 0, 0x90)
 			}
 			else if (u8[0xffff8088 + i] == 0x1c)
 			{
