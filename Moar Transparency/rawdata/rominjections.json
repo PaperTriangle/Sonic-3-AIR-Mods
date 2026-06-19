@@ -27,25 +27,17 @@
 	{
 		"File": "aiz2_tiles_secondary.bin"
 	},
-	"hcz1_primary":
+	"hcz1_blocks_primary":
 	{
-		"File": "hcz1_primary.bin"
+		"File": "hcz1_blocks_primary.bin"
 	},
-	"hcz1_secondary":
+	"hcz1_blocks_secondary":
 	{
-		"File": "hcz1_secondary.bin"
+		"File": "hcz1_blocks_secondary.bin"
 	},
 	"hcz1_tiles_secondary":
 	{
 		"File": "hcz1_tiles_secondary.bin"
-	},
-	"hcz2_primary":
-	{
-		"File": "hcz2_primary.bin"
-	},
-	"hcz2_secondary":
-	{
-		"File": "hcz2_secondary.bin"
 	},
 	"hcz2_tiles_secondary":
 	{

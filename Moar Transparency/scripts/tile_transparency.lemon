@@ -39,8 +39,8 @@ function void yieldExecution()
 	{
 		if (mt.hcz1_tiles)
 		{
-			System.loadExternalRawData("hcz1_primary", 0x1B91F8 + 0x200000)
-			System.loadExternalRawData("hcz1_secondary", 0x1BA5EA + 0x200000)
+			System.loadExternalRawData("hcz1_blocks_primary", 0x1B91F8 + 0x200000)
+			System.loadExternalRawData("hcz1_blocks_secondary", 0x1BA5EA + 0x200000)
 			System.loadExternalRawData("hcz1_tiles_secondary", 0x1BAE7A + 0x200000)
 		}
 		
@@ -341,7 +341,7 @@ function void UpdateLevelTiles.LBZ1()
 			else if (u8[0xffff8088 + i] == 0x60) || (u8[0xffff8088 + i] == 0x68)
 			{
 				Renderer.drawCustomSprite(stringformat("lbz_tube_%d", u8[0xffff8088 + i]), (i % 0xa0) * 0x80 + mt.shakeX, (i - (i % 0xa0)) / 0xa0 * 0x80 + mt.shakeY, 0x00, SPRITE_FLAG_WORLDSPACE, 0xa000, 0, 0x90)
-				Renderer.drawCustomSprite(stringformat("lbz_inner_tube_%d", u8[0xffff8088 + i]), (i % 0xa0) * 0x80 + mt.shakeX, (i - (i % 0xa0)) / 0xa0 * 0x80 + mt.shakeY, 0x00, SPRITE_FLAG_WORLDSPACE, 0x4000, 0, 0x90)
+				Renderer.drawCustomSprite(stringformat("lbz_inner_tube_%d", u8[0xffff8088 + i]), (i % 0xa0) * 0x80 + mt.shakeX, (i - (i % 0xa0)) / 0xa0 * 0x80 + mt.shakeY, 0x00, SPRITE_FLAG_WORLDSPACE, 0x4000, 0, 0x60)
 			}
 		}
 
