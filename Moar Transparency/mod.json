@@ -5,7 +5,7 @@
 		"UniqueID": "moar-transparency",
 		"Author": "PaperTriangle",
 		"Description": "Adds varying levels of transparency to more objects! Credit to Useott and Raine for some code that was adapted from A.I.R. Freshener.",
-		"ModVersion": "2.5"
+		"ModVersion": "2.6"
 	},
 	"OtherMods": {
 		"time-consistent-adventure":
@@ -494,7 +494,7 @@
 				"DisplayName": "AIZ1 Waterfalls",
 				"Variable": "mt.aiz1_tiles",
 				"Category": "Tile Transparency",	
-				"DefaultValue": "0",
+				"DefaultValue": "1",
 				"Options":
 				{
 					"0": "Disabled",
@@ -518,7 +518,7 @@
 				"DisplayName": "AIZ2 Waterfalls",
 				"Variable": "mt.aiz2_tiles",
 				"Category": "Tile Transparency",	
-				"DefaultValue": "0",
+				"DefaultValue": "1",
 				"Options":
 				{
 					"0": "Disabled",
@@ -530,7 +530,7 @@
 				"DisplayName": "HCZ1 Waterfalls & Tubes",
 				"Variable": "mt.hcz1_tiles",
 				"Category": "Tile Transparency",	
-				"DefaultValue": "0",
+				"DefaultValue": "1",
 				"Options":
 				{
 					"0": "Disabled",
@@ -542,7 +542,7 @@
 				"DisplayName": "HCZ2 Waterfalls & Tubes",
 				"Variable": "mt.hcz2_tiles",
 				"Category": "Tile Transparency",	
-				"DefaultValue": "0",
+				"DefaultValue": "1",
 				"Options":
 				{
 					"0": "Disabled",
@@ -554,7 +554,7 @@
 				"DisplayName": "LBZ1 Tubes",
 				"Variable": "mt.lbz1_tiles",
 				"Category": "Tile Transparency",	
-				"DefaultValue": "0",
+				"DefaultValue": "1",
 				"Options":
 				{
 					"0": "Disabled",
@@ -566,7 +566,7 @@
 				"DisplayName": "LBZ2 Waterfalls",
 				"Variable": "mt.lbz2_tiles",
 				"Category": "Tile Transparency",	
-				"DefaultValue": "0",
+				"DefaultValue": "1",
 				"Options":
 				{
 					"0": "Disabled",
@@ -578,7 +578,7 @@
 				"DisplayName": "Consistent Teleporters",
 				"Variable": "mt.teleframe",
 				"Category": "Consistent Teleporters",	
-				"DefaultValue": "0",
+				"DefaultValue": "1",
 				"Options":
 				{
 					"0": "Disabled",
