@@ -196,15 +196,15 @@ function void UpdateLevelTiles.AIZ2()
 		{
 			if (u8[0xffff8088 + i] == 0x0d)
 			{
-				Renderer.drawCustomSprite("aiz_waterfall_top", (i % 0x99) * 0x80 + mt.shakeX, (i - (i % 0x99)) / 0x99 * 0x80 + mt.shakeY, 0x00, SPRITE_FLAG_WORLDSPACE, 0x1001, 0, 0xb0)
+				Renderer.drawCustomSprite("aiz_waterfall_top", (i % 0x99) * 0x80 + mt.shakeX, (i - (i % 0x99)) / 0x99 * 0x80 + mt.shakeY, 0x00, SPRITE_FLAG_WORLDSPACE, 0x1fff, 0, 0xb0)
 			}
 			else if (u8[0xffff8088 + i] == 0x0e) || (u8[0xffff8088 + i] == 0x85) || (u8[0xffff8088 + i] == 0x86) || (u8[0xffff8088 + i] == 0x87) || (u8[0xffff8088 + i] == 0x80) || (u8[0xffff8088 + i] == 0x8d) || (u8[0xffff8088 + i] == 0x8e) || (u8[0xffff8088 + i] == 0x8f) || (u8[0xffff8088 + i] == 0x90) || (u8[0xffff8088 + i] == 0x95) || (u8[0xffff8088 + i] == 0x9d) || (u8[0xffff8088 + i] == 0xd9) || (u8[0xffff8088 + i] == 0x17) || (u8[0xffff8088 + i] == 0x89) || (u8[0xffff8088 + i] == 0xa8) || (u8[0xffff8088 + i] == 0xa9) || (u8[0xffff8088 + i] == 0xbe) || (u8[0xffff8088 + i] == 0xd3)
 			{
-				Renderer.drawCustomSprite("aiz_waterfall_middle", (i % 0x99) * 0x80 + mt.shakeX, (i - (i % 0x99)) / 0x99 * 0x80 + mt.shakeY, 0x00, SPRITE_FLAG_WORLDSPACE, 0x1001, 0, 0xb0)
+				Renderer.drawCustomSprite("aiz_waterfall_middle", (i % 0x99) * 0x80 + mt.shakeX, (i - (i % 0x99)) / 0x99 * 0x80 + mt.shakeY, 0x00, SPRITE_FLAG_WORLDSPACE, 0x1fff, 0, 0xb0)
 			}
 			else if (u8[0xffff8088 + i] == 0x0f) || (u8[0xffff8088 + i] == 0xa2) || (u8[0xffff8088 + i] == 0xa5)
 			{
-				Renderer.drawCustomSprite("aiz_waterfall_bottom", (i % 0x99) * 0x80 + mt.shakeX, (i - (i % 0x99)) / 0x99 * 0x80 + mt.shakeY, 0x00, SPRITE_FLAG_WORLDSPACE, 0x1001, 0, 0xb0)
+				Renderer.drawCustomSprite("aiz_waterfall_bottom", (i % 0x99) * 0x80 + mt.shakeX, (i - (i % 0x99)) / 0x99 * 0x80 + mt.shakeY, 0x00, SPRITE_FLAG_WORLDSPACE, 0x1fff, 0, 0xb0)
 			}
 		}
 		
