@@ -245,7 +245,7 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 	}
 	
 	// Skidding Dust
-	if (dd.underwater_dust && (gameMode == 0x0c || gameMode == 0x08) && (objA0.update_address == 0x018b3e && objA0.state == 0x03))
+	if (dd.underwater_dust && (gameMode == 0x0c || gameMode == 0x08) && (objA0.update_address == 0x018b3e && objA0.state == 0x03 && objA0.animation.sprite > 0))
 	{
 		u8 renderFlags = ((objA0.sprite_attributes & sprite_attribute.PRIORITY) != 0 ? SPRITE_FLAG_PRIO : 0)
 		Renderer.drawCustomSprite(stringformat("skid_dust_%d", objA0.animation.sprite - 17), px, py, 0x00, renderFlags, renderQueue)
