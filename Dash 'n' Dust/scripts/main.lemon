@@ -748,11 +748,12 @@ function void fn06a4f4()
 
 constant array<u16> SPLASH_PALETTES = {0xeee, 0xecc, 0xee2, 0xea4, 0xe64, 0xeee, 0xecc, 0xee2, 0xec4, 0xea4, 0xeee, 0xecc, 0xec0, 0xea0, 0xc80, 0xeee, 0xecc, 0xc60, 0xc22, 0xa20, 0xeee, 0xecc, 0xc80, 0xa20, 0x620, 0xeee, 0xecc, 0xea0, 0xe64, 0xe42, 0xeee, 0xecc, 0xec0, 0xe60, 0xc22}
 
-function void DD.LoadWaterPlusPalette(bool afterTitle)
+function void DND.LoadWaterPlusPalette(bool afterTitle)
 {
 	u16 offset = 3 * 0x40 + dd.waterplus_palette * 0x20
 	
-	u32 TargetAD = (afterTitle ? 0x802016 : 0x802182) + offset
+	u32 TargetAD = (afterTitle ? 0x802002 : 0x802182) + offset
+	u32 TargetUAD = (afterTitle ? 0x802002 : 0x802482) + offset
 	
 	u8 palOffset = 0x1e
 	
@@ -774,6 +775,12 @@ function void DD.LoadWaterPlusPalette(bool afterTitle)
 	u16[TargetAD + 2*0x0c] = SPLASH_PALETTES[palOffset+2]
 	u16[TargetAD + 2*0x0d] = SPLASH_PALETTES[palOffset+3]
 	u16[TargetAD + 2*0x0e] = SPLASH_PALETTES[palOffset+4]
+	
+	u16[TargetUAD + 2*0x0a] = SPLASH_PALETTES[palOffset]
+	u16[TargetUAD + 2*0x0b] = SPLASH_PALETTES[palOffset+1]
+	u16[TargetUAD + 2*0x0c] = SPLASH_PALETTES[palOffset+2]
+	u16[TargetUAD + 2*0x0d] = SPLASH_PALETTES[palOffset+3]
+	u16[TargetUAD + 2*0x0e] = SPLASH_PALETTES[palOffset+4]
 }
 
 // Load Custom Palettes
@@ -783,5 +790,20 @@ function void TitleCard.Show()
 	base.TitleCard.Show()
 	
 	if (Mods.isModActive("Water+") && dd.waterplus_palette > 0)
-		DD.LoadWaterPlusPalette(false)
+	{
+		if (objA0.countdown_value == 0)
+			DND.LoadWaterPlusPalette(true)
+		else
+			DND.LoadWaterPlusPalette(false)
+	}
+}
+
+// AIZ1 Transition
+//# address-hook(0x0500d6) end(0x0500d6)
+function void fn0500d6()
+{
+	base.fn0500d6()
+	
+	if (Mods.isModActive("Water+") && dd.waterplus_palette > 0)
+		DND.LoadWaterPlusPalette(true)
 }
