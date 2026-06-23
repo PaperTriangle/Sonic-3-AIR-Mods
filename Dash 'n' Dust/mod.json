@@ -5,7 +5,7 @@
 		"UniqueID": "dash-n-dust",
 		"Author": "PaperTriangle",
 		"Description": "Add Hyper Mania's dropdash charge hyper dash and removes the dust from the Spindash while the character is in the air and starts it again once they hit the ground... Also adds dust to the Dropdash! (Thanks to MiaCDi for the Accurate Sonic 3 Dropdash sprites)",
-		"ModVersion": "2.7"
+		"ModVersion": "2.8"
 	},
 	"OtherMods":
 	{
@@ -149,6 +149,21 @@
 				{
 					"0": "Disabled",
 					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "dd.waterplus_palette",
+				"DisplayName": "Water+ Custom Graphic",
+				"Variable": "dd.waterplus_palette",
+				"DefaultValue": "4",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Use Palette Line 11",
+					"2": "Use Palette Line 12",
+					"3": "Use Palette Line 13",
+					"4": "Use Palette Line 14",
+					"5": "Use Palette Line 15"
 				}
 			},
 			{

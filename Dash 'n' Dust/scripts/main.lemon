@@ -11,6 +11,7 @@ global bool dd.dropdash_sound
 global bool dd.super_release_sound
 global bool dd.dropdash_retry
 global bool dd.dropdash_used
+global u8 dd.waterplus_palette
 
 define u8 global.xtrachar = u8[0xffffe654]
 
@@ -193,46 +194,33 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 			if (objA0.animation.sprite == 0)
 				return true
 			
-			if (objA0.animation.sprite == 1)
+			if (objA0.animation.sprite == 1 && !objA0.flags2e)
 			{
 				if (s16[0xffff0000 + objA0.dustcloud.character_address + 0x1a] >= 0x2ae || s16[0xffff0000 + objA0.dustcloud.character_address + 0x1a] < -0x600)
 					objA0.flags2e = true
 				else objA0.flags2e = false
 			}
 			
-			key = stringformat("waterplus_splash1_%d", (objA0.animation.sprite / 2))
+			key = stringformat((dd.waterplus_palette > 0) ? "custom_waterplus_splash1_%d" : "waterplus_splash1_%d", (objA0.animation.sprite / 2))
 			if (objA0.flags2e == 1)
-				key = stringformat("waterplus_splash2_%d", (objA0.animation.sprite / 2))
+				key = stringformat((dd.waterplus_palette > 0) ? "custom_waterplus_splash2_%d" : "waterplus_splash2_%d", (objA0.animation.sprite / 2))
 		}
 		else
 			key = stringformat("water_splash_%d", objA0.animation.sprite)
 		
 		u8 alpha = 0xff
+		u8 atex = 0x00
 		
 		Mods.isModActive("Moar Transparency")		
 			if (System.getGlobalVariableValueByName("mt.watersurface"))
 				alpha = 192
+				
+		if (dd.waterplus_palette > 0)
+			atex = 0xa0 + dd.waterplus_palette * 0x10
 		
 		if (Renderer.hasCustomSprite(key))
-			Renderer.drawSprite(key, px, py + 2, 0x00, (prioFlag ? SPRITE_FLAG_PRIO : 0), renderQueue - 0x80, 0, alpha)
+			Renderer.drawSprite(key, px, py + 2, atex, (prioFlag ? SPRITE_FLAG_PRIO : 0), renderQueue - 0x80, 0, alpha)
 
-		return true
-	}
-	
-	// HCZ1 Boss Splashes
-	if Mods.isModActive("Water+") && (objA0.update_address == 0x06a504)
-	{
-		u64 key = stringformat("waterplus_splash2_%d", (objA0.animation.sprite / 2))
-		
-		u8 alpha = 0xff
-		
-		Mods.isModActive("Moar Transparency")		
-			if (System.getGlobalVariableValueByName("mt.watersurface"))
-				alpha = 192
-		
-		if (Renderer.hasCustomSprite(key))
-			Renderer.drawSprite(key, px, py + 2, 0x00, 0, renderQueue, 0, alpha)
-		
 		return true
 	}
 	
@@ -699,6 +687,8 @@ function void fn018bc8()
 		objA1.animation.timer = 5
 		
 		objA1.dustcloud.character_address = objA0.dustcloud.character_address
+		
+		objA1.flags2e = false
 	}
 	
 	objA0.state = 0
@@ -722,4 +712,76 @@ function void DND.splashUpdate()
 		DrawObject()
 	else
 		UnloadObject()
+}
+
+// HCZ1 Boss Splashes
+//# address-hook(0x06a4f4) end(0x06a502)
+function void fn06a4f4()
+{
+	if (!dd.splash_object)
+	{
+		base.fn06a4f4()
+		return
+	}
+	
+	if (allocDynamicObjectStd())
+	{
+		objA1.update_address = 0x251208
+		objA1.render_flags = objA0.render_flags
+		objA1.sprite_attributes = objA0.sprite_attributes
+
+		objA1.box_size.x = 0x20
+		objA1.box_size.y = 0x20
+
+		objA1.position.x.u16 = objA0.position.x.u16
+		objA1.position.y.u16 = objA0.position.y.u16
+		
+		objA1.animation.timer = 5
+		
+		objA1.flags2e = true
+	}
+	
+	objA0.countdown_callback = 0x08522c
+}
+
+// Water Plus Bonus Compat!
+
+constant array<u16> SPLASH_PALETTES = {0xeee, 0xecc, 0xee2, 0xea4, 0xe64, 0xeee, 0xecc, 0xee2, 0xec4, 0xea4, 0xeee, 0xecc, 0xec0, 0xea0, 0xc80, 0xeee, 0xecc, 0xc60, 0xc22, 0xa20, 0xeee, 0xecc, 0xc80, 0xa20, 0x620, 0xeee, 0xecc, 0xea0, 0xe64, 0xe42, 0xeee, 0xecc, 0xec0, 0xe60, 0xc22}
+
+function void DD.LoadWaterPlusPalette(bool afterTitle)
+{
+	u16 offset = 3 * 0x40 + dd.waterplus_palette * 0x20
+	
+	u32 TargetAD = (afterTitle ? 0x802016 : 0x802182) + offset
+	
+	u8 palOffset = 0x1e
+	
+	if (global.zone_act == 0x0000)
+		palOffset = 0x0
+	else if (global.zone_act == 0x0001)
+		palOffset = 0x05
+	else if (global.zone == 0x01)
+		palOffset = 0x0a
+	else if (global.zone_act == 0x0301)
+		palOffset = 0x0f
+	else if (global.zone_act == 0x0501)
+		palOffset = 0x14
+	else if (global.zone_act == 0x0601)
+		palOffset = 0x19
+
+	u16[TargetAD + 2*0x0a] = SPLASH_PALETTES[palOffset]
+	u16[TargetAD + 2*0x0b] = SPLASH_PALETTES[palOffset+1]
+	u16[TargetAD + 2*0x0c] = SPLASH_PALETTES[palOffset+2]
+	u16[TargetAD + 2*0x0d] = SPLASH_PALETTES[palOffset+3]
+	u16[TargetAD + 2*0x0e] = SPLASH_PALETTES[palOffset+4]
+}
+
+// Load Custom Palettes
+//# address-hook(0x02d856) end(0x02d8dc)
+function void TitleCard.Show()
+{
+	base.TitleCard.Show()
+	
+	if (Mods.isModActive("Water+") && dd.waterplus_palette > 0)
+		DD.LoadWaterPlusPalette(false)
 }

@@ -1,0 +1,9 @@
+{
+	"custom_waterplus_splash1_0": { "File": "splash1.bmp", "Rect": "0,0,32,32", "Center": "16,32" },
+	"custom_waterplus_splash1_1": { "File": "splash1.bmp", "Rect": "32,0,32,32", "Center": "16,32" },
+	"custom_waterplus_splash1_2": { "File": "splash1.bmp", "Rect": "64,0,32,32", "Center": "16,32" },
+	"custom_waterplus_splash2_0": { "File": "splash2.bmp", "Rect": "0,0,32,64", "Center": "16,64" },
+	"custom_waterplus_splash2_1": { "File": "splash2.bmp", "Rect": "32,0,32,64", "Center": "16,64" },
+	"custom_waterplus_splash2_2": { "File": "splash2.bmp", "Rect": "64,0,32,64", "Center": "16,64" },
+	"custom_waterplus_splash2_3": { "File": "splash2.bmp", "Rect": "96,0,32,64", "Center": "16,64" }
+}
