@@ -900,6 +900,71 @@ function void yieldExecution()
 	base.yieldExecution()
 }
 
+//-----------------------------------------------//
+// Adjust the ice blocks to prevent harsh camera //
+//-----------------------------------------------//
+
+//# address-hook(0x08b384) end(0x08b3a4)
+function void fn08b384()
+{
+	if (!ac.smooth_landing)
+	{
+		base.fn08b384()
+		return
+	}
+
+	objA0.value3a = u8[0xffffb000 + 0x20]
+	objA0.value3b = u8[0xffffb04a + 0x20]
+
+	D1 = 0x23
+	D2 = 0x00
+	D3 = 0x10
+	D4.u16 = objA0.position.x.u16
+	fn01dc56()
+
+	fn08b3aa()
+	DrawOrUnloadObject()
+}
+
+//# address-hook(0x089f38) end(0x089f64)
+function void fn089f38()
+{
+	if (!ac.smooth_landing)
+	{
+		base.fn089f38()
+		return
+	}
+	
+	D0 = objA0.base_state
+	D1.u16 = u16[0x089f6a + D0.u16]
+	u16 backupPosition = objA0.position.x.u16
+
+	// Targets:
+	//  - 0x089f7e	-> D0.u16 = 0x00
+	//  - 0x089fb6	-> D0.u16 = 0x02
+	//  - 0x089fd6	-> D0.u16 = 0x04
+	//  - 0x089ff2	-> D0.u16 = 0x08
+	//  - 0x08a036	-> D0.u16 = 0x0a
+	//  - 0x08a11c	-> D0.u16 = 0x0c
+	//  - 0x08a176	-> D0.u16 = 0x0e
+	//  - 0x08a178	-> D0.u16 = 0x10
+	//  - 0x08a192	-> D0.u16 = 0x12
+	//  - 0x08a1ae	-> D0.u16 = 0x14
+	call 0x089f6a + D1.u16
+
+	D1 = 0x2b
+	D2 = 0x00
+	D3 = 0x14
+	D4.u16 = backupPosition
+	if ((objA0.flags2a & 0x80) == 0)
+	{
+		fn01dc56()
+		fn08a3c4()
+	}
+
+	DrawOrUnloadObject()
+}
+
 //------------------------------------------------//
 // Fix for Screen Movers sometimes not loading... //
 //------------------------------------------------// 
