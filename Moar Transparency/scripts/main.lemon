@@ -2810,7 +2810,7 @@ function void fn02fe5e()
 
 #if STANDALONE
 
-	checkForUnloadObjectAtPosition(objA0.position.x.u16)
+	checkForUnloadObjectAtPosition(objA0.position.x.u16, 0x600)
 
 	u16 baseX = objA0.position.x.u16 - 0x30 + ((objA0.animation.sprite == 1) ? 0x10 : 0)
 	u16 baseY = objA0.position.y.u16
