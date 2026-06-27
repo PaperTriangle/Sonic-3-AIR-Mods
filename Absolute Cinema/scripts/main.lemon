@@ -715,6 +715,7 @@ function void UpdateCameraPositionY()
 	}
 
 	D0.s16 = char.position.y.u16 - u16[A1] - (getScreenHeight() - 224)/2
+
 	if (level.vertical_wrap == 0xff00)
 	{
 		D0.s16 &= level.height.bitmask
@@ -898,6 +899,109 @@ function void yieldExecution()
 		ac.hardLanding = false	
 	
 	base.yieldExecution()
+}
+
+//------------------------------//
+// Maybe adjust FBZ Monkeybars? //
+//------------------------------//
+
+
+//# address-hook(0x03ac86) end(0x03ad88)
+function void fn03ac86()
+{
+	if (!ac.smooth_landing)
+	{
+		base.fn03ac86()
+		return
+	}
+
+	if (u8[A2 + 0x02] != 0)
+	{
+		--u8[A2 + 0x02]
+		if (u8[A2 + 0x02] != 0)
+			return
+	}
+
+	D2.u16 = objA0.value3e
+	D0.u16 = objA1.position.x.u16 - objA0.position.x.u16 + D2.u16
+	D1.u16 = objA1.position.y.u16 - objA0.position.y.u16
+	D2.u16 *= 2
+	if (D0.u16 < D2.u16 && D1.u16 < 0x18)
+	{
+		if (s8[A1 + 0x2e] >= 0 && u8[A1 + 0x05] < base_state.HURT && debug_mode.state == 0)
+		{
+		#if STANDALONE
+			// Ignore for Tails while he's carrying the main player
+			//  -> The other way round gets handled further below
+			if (A1 == 0xffffb04a && tails.carrying)
+				return
+		#endif
+
+			if (u8[A1 + 0x2a] & char.flag.ON_OBJECT)
+			{
+				A3 = 0xffff0000 + u16[A1 + 0x42]
+				if (u32[A3] == 0x03a84c)
+					return
+			}
+
+			D0.u16 &= 0xffe0
+			if (objA0.subtype2c & 0x40)
+			{
+				if (objA0.flags2a & 0x01)
+				{
+					if (D0.u16 == 0)
+						return
+				}
+				else
+				{
+					D2.u16 -= 0x20
+					if (D0.u16 == D2.u16)
+						return
+				}
+			}
+
+		#if STANDALONE
+			if (A1 == 0xffffb000)
+				globalCameraOffsetX += objA1.position.x.u16 - (objA0.position.x.u16 + 0x10 + D0.u16 - objA0.value3e)
+		#endif
+
+			// Character grabs the monkey bar
+			objA1.flags2a &= ~char.flag.IN_AIR // Remove flagh to make camera smoother
+			objA1.render_flags &= ~render_flag.FLIP_Y
+			objA1.position.x.u16 = objA0.position.x.u16 + 0x10 + D0.u16 - objA0.value3e
+			objA1.position.y.u16 = objA0.position.y.u16 + 0x12
+			objA1.velocity.x = 0
+			objA1.velocity.y = 0
+			objA1.groundspeed = 0
+			objA1.state = char.state.HANGING
+			objA1.animation.sprite = 0x91		// Set player character's hanging sprite
+			u8[A1 + 0x2a] |= char.flag.ON_OBJECT
+			u8[A1 + 0x2e] = (control_flag.DISABLE_ANIMATION | control_flag.DISABLE_UPDATE)
+			u16[A1 + 0x42] = A0.u16
+			
+			u8[A2] = 0x01
+			u8[A2 + 0x02] = 0
+			u8[A2 + 0x04] = 0
+			u8[A2 + 0x06] = 0
+			
+			D0 = objA1.animation.sprite
+			u32 backupA2 = A2
+			SetCharacterSpritePatterns()
+			A2 = backupA2
+
+			playSound(SFX_GRAB)
+
+		#if STANDALONE
+			u8[A1 + 0x3d] = 0	// Clear char.spindash
+
+			// If player is carried by Tails, this connection should better get resolved now
+			if (tails.carrying)
+			{
+				tails.carrying = 0		// Seems to be this simple, or is anything else needed here?
+			}
+		#endif
+		}
+	}
 }
 
 //-----------------------------------------------//
