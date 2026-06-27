@@ -385,7 +385,7 @@ function void Character.UpdateKnucklesUprightOnGround()
 // Force setting the slide state here as well otherwise Knuckles flickers between falling and walking.
 function bool Standalone.drawCharacterSprite(u8 character, u8 variant, s16 px, s16 py, bool asSmallGhost)
 {
-	if (dsmg.slide_setting && isMainCharacter(CHARACTER_KNUCKLES))
+	if (dsmg.slide_setting && A0 == 0xffffb000 && isMainCharacter(CHARACTER_KNUCKLES))
 	{
 		if (u8[0xffffb000 + 0x2f] == 3 && dsmg.knux_slide)
 		{
