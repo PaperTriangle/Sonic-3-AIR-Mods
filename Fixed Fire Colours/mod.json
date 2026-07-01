@@ -15,7 +15,7 @@
 				"InternalName": "ffc.bmpline",
 				"DisplayName": "Fire Effect BMP Line",
 				"Variable": "ffc.bmpline",
-				"DefaultValue": "4",
+				"DefaultValue": "1",
 				"Options":
 				{
 					"0": "10",
