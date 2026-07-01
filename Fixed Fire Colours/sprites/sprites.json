@@ -1,0 +1,11 @@
+{
+	"aiz_flames_0x00":    { "File": "aiz_flames.bmp",  "Rect": "1,1,16,24",  "Center": "8,0" },
+	"aiz_flames_0x01":    { "File": "aiz_flames.bmp",  "Rect": "18,1,16,24",  "Center": "8,0" },
+	"aiz_flames_0x02":    { "File": "aiz_flames.bmp",  "Rect": "35,1,16,24",  "Center": "8,0" },
+	"aiz_flames_0x03":    { "File": "aiz_flames.bmp",  "Rect": "52,1,16,24",  "Center": "8,0" },
+	"aiz_flames_0x04":    { "File": "aiz_flames.bmp",  "Rect": "69,1,16,24",  "Center": "8,0" },
+	"aiz_flames_0x05":    { "File": "aiz_flames.bmp",  "Rect": "1,26,16,32",  "Center": "8,0" },
+	"aiz_flames_0x06":    { "File": "aiz_flames.bmp",  "Rect": "18,26,16,32",  "Center": "8,0" },
+	"aiz_flames_0x07":    { "File": "aiz_flames.bmp",  "Rect": "35,26,16,32",  "Center": "8,0" },
+	"aiz_flames_0x08":    { "File": "aiz_flames.bmp",  "Rect": "52,26,16,32",  "Center": "8,0" },
+}

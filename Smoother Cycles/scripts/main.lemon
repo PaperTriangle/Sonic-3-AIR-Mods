@@ -1,0 +1,414 @@
+// ICZ
+
+//# address-hook(0x00244e) end(0x002506)
+function void LevelPaletteUpdate.ICZ()
+{
+	--level.palettefx.timer_1
+	if (s16(level.palettefx.timer_1) < 0)
+	{
+		level.palettefx.timer_1 = 5
+		A0 = 0x002fd6
+		D0.u16 = level.palettefx.frame_1
+		level.palettefx.frame_1 = (level.palettefx.frame_1 + 4) % 64
+		u32[0xfffffc5c] = u32[A0 + D0.u16]
+	}
+
+	--level.palettefx.timer_2
+	if (s16(9 - (level.palettefx.timer_2 + 1)) % 5 == 0)
+	{
+		// Crystals
+
+		s16 newFrame = (level.palettefx.frame_2 + 4) % 72
+		s16 oldFrame = (level.palettefx.frame_2) % 72
+		
+		A0 = 0x003016
+
+		if (u16[0xffffeee8] != 0)
+		{
+			for (u8 i = 0; i < 2; i++)
+			{
+				u16[0xfffffc7c + i*2] = blendColorsPacked(u16[A0 + oldFrame + i*2], u16[A0 + newFrame + i*2], min(0x100, Math.roundToInt(0x100 * s16(9 - (level.palettefx.timer_2 + 1)) / 10.0f)))
+			}
+		}
+		
+		if (s16(level.palettefx.timer_2) < 0)
+		{
+			level.palettefx.timer_2 = 9
+			
+			level.palettefx.frame_2 = (level.palettefx.frame_2 + 4) % 72
+		}
+	}
+	
+	--level.palettefx.timer_3
+	if (s16(7 - (level.palettefx.timer_3 + 1)) % 4 == 0)
+	{
+		// Crystals
+
+		s16 newFrame = (level.palettefx.frame_3 + 8) % 24
+		s16 oldFrame = (level.palettefx.frame_3) % 24
+		
+		A0 = 0x00305e
+
+		if (u16[0xffffeee8] != 0)
+		{
+			for (u8 i = 0; i < 2; i++)
+			{
+				u16[0xfffffc78 + i*2] = blendColorsPacked(u16[A0 + oldFrame + i*2], u16[A0 + newFrame + i*2], min(0x100, Math.roundToInt(0x100 * s16(15 - (level.palettefx.timer_3 + 1)) / 16.0f)))
+			}
+		}
+
+		newFrame = (level.palettefx.frame_4 + 8) % 64
+		oldFrame = (level.palettefx.frame_4) % 64
+		
+		A0 = 0x003076
+
+		for (u8 i = 0; i < 2; i++)
+		{
+			u16[0xfffffc58 + i*2] = blendColorsPacked(u16[A0 + oldFrame + i*2], u16[A0 + newFrame + i*2], min(0x100, Math.roundToInt(0x100 * s16(15 - (level.palettefx.timer_3 + 1)) / 16.0f)))
+		}
+		
+		if (s16(level.palettefx.timer_3) < 0)
+		{
+			level.palettefx.timer_3 = 15
+			
+			level.palettefx.frame_3 = (level.palettefx.frame_3 + 8) % 24
+			level.palettefx.frame_4 = (level.palettefx.frame_4 + 8) % 64
+		}
+	}
+}
+
+// LRZ / HPZ
+
+//# address-hook(0x0026f2) end(0x00277c)
+function void LevelPaletteUpdate.LRZ2()
+{
+	--level.palettefx.timer_1
+	if ((11 - s16(level.palettefx.timer_1 + 1)) % 6 == 0)
+	{
+		// Lamps and Lava
+		
+		s16 newFrame = level.palettefx.frame_1
+		s16 oldFrame = level.palettefx.frame_1 - 8
+		
+		if (oldFrame < 0)
+			oldFrame = 120
+		
+		A0 = 0x00327e
+		
+		for (u8 i = 0; i < 4; i++)
+		{
+			u16[0xfffffc42 + i*2] = blendColorsPacked(u16[A0 + oldFrame + i*2], u16[A0 + newFrame + i*2], min(0x100, Math.roundToInt(0x100 * (11 - s16(level.palettefx.timer_1 + 1)) / 12.0f)))
+		}
+
+		if (s16(level.palettefx.timer_1) < 0)
+		{
+			level.palettefx.timer_1 = 11
+			level.palettefx.frame_1 += 8
+			if (level.palettefx.frame_1 >= 128)
+				level.palettefx.frame_1 = 0
+		}
+	}
+
+	--level.palettefx.timer_2
+	if ((15 - s16(level.palettefx.timer_2 + 1)) % 8 == 0)
+	{
+		// Background Glow
+
+		s16 newFrame = level.palettefx.frame_2
+		s16 oldFrame = level.palettefx.frame_2 - 4
+		
+		if (oldFrame < 0)
+			oldFrame = 24
+		
+		A0 = 0x0032fe
+		
+		for (u8 i = 0; i < 2; i++)
+		{
+			u16[0xfffffc62 + i*2] = blendColorsPacked(u16[A0 + oldFrame + i*2], u16[A0 + newFrame + i*2], min(0x100, Math.roundToInt(0x100 * (15 - s16(level.palettefx.timer_2 + 1)) / 16.0f)))
+		}
+		
+		if (s16(level.palettefx.timer_2) < 0)
+		{
+			level.palettefx.timer_2 = 0x0f
+				
+			level.palettefx.frame_2 += 4
+			if (level.palettefx.frame_2 >= 28)
+				level.palettefx.frame_2 = 0
+		}
+	}
+
+	--level.palettefx.timer_3
+	if (s16(15 - (level.palettefx.timer_3 + 1)) % 8 == 0)
+	{
+		// Crystals
+		
+		s16 newFrame = level.palettefx.frame_4
+		s16 oldFrame = level.palettefx.frame_4 - 8
+		
+		if (oldFrame < 0)
+			oldFrame = 248
+		
+		A0 = 0x003344
+
+		for (u8 i = 0; i < 4; i++)
+		{
+			u16[0xfffffc76 + i*2] = blendColorsPacked(u16[A0 + oldFrame + i*2], u16[A0 + newFrame + i*2], min(0x100, Math.roundToInt(0x100 * s16(15 - (level.palettefx.timer_3 + 1)) / 16.0f)))
+		}
+		
+		if (s16(level.palettefx.timer_3) < 0)
+		{
+			level.palettefx.timer_3 = 0x0f
+			
+			level.palettefx.frame_4 += 8
+			if (level.palettefx.frame_4 >= 256)
+				level.palettefx.frame_4 = 0
+		}
+	}
+}
+
+//# address-hook(0x00266c) end(0x0026f0)
+function void LevelPaletteUpdate.LRZ1()
+{
+	--level.palettefx.timer_1
+	if ((11 - s16(level.palettefx.timer_1 + 1)) % 6 == 0)
+	{
+		// Lamps and Lava
+		
+		s16 newFrame = level.palettefx.frame_1
+		s16 oldFrame = level.palettefx.frame_1 - 8
+		
+		if (oldFrame < 0)
+			oldFrame = 120
+		
+		A0 = 0x00327e
+		
+		for (u8 i = 0; i < 4; i++)
+		{
+			u16[0xfffffc42 + i*2] = blendColorsPacked(u16[A0 + oldFrame + i*2], u16[A0 + newFrame + i*2], min(0x100, Math.roundToInt(0x100 * (11 - s16(level.palettefx.timer_1 + 1)) / 12.0f)))
+		}
+
+		if (s16(level.palettefx.timer_1) < 0)
+		{
+			level.palettefx.timer_1 = 11
+			level.palettefx.frame_1 += 8
+			if (level.palettefx.frame_1 >= 128)
+				level.palettefx.frame_1 = 0
+		}
+	}
+	
+	--level.palettefx.timer_2
+	if (s16(15 - (level.palettefx.timer_2 + 1)) % 8 == 0)
+	{
+		// Pipe / Background Glow
+
+		s16 newFrame = level.palettefx.frame_2
+		s16 oldFrame = level.palettefx.frame_2 - 4
+		
+		if (oldFrame < 0)
+			oldFrame = 24
+		
+		A0 = 0x0032fe
+		
+		for (u8 i = 0; i < 2; i++)
+		{
+			u16[0xfffffc62 + i*2] = blendColorsPacked(u16[A0 + oldFrame + i*2], u16[A0 + newFrame + i*2], min(0x100, Math.roundToInt(0x100 * (15 - s16(level.palettefx.timer_2 + 1)) / 16.0f)))
+		}
+		
+		if (s16(level.palettefx.timer_2) < 0)
+		{
+			level.palettefx.timer_2 = 0x0f
+				
+			level.palettefx.frame_2 += 4
+			if (level.palettefx.frame_2 >= 28)
+				level.palettefx.frame_2 = 0
+		}
+	}
+
+	--level.palettefx.timer_3
+	if (s16(23 - (level.palettefx.timer_3 + 1)) % 6 == 0)
+	{
+		// Rock Glow
+		
+		s16 newFrame = level.palettefx.frame_3
+		s16 oldFrame = level.palettefx.frame_3 - 6
+		
+		if (oldFrame < 0)
+			oldFrame = 30
+		
+		A0 = 0x003322
+		
+		u16[0xfffffc56] = blendColorsPacked(u16[A0 + oldFrame], u16[A0 + newFrame], min(0x100, Math.roundToInt(0x100 * s16(23 - (level.palettefx.timer_3 + 1)) / 24.0f)))
+		
+		if (s16(level.palettefx.timer_3) < 0)
+		{
+			level.palettefx.timer_3 = 23
+			
+			level.palettefx.frame_3 += 6
+			if (level.palettefx.frame_3 >= 34)
+				level.palettefx.frame_3 = 0
+		}
+	}
+}
+
+//# address-hook(0x002a50) end(0x002abe)
+function void LevelPaletteUpdate.LRZ_Boss()
+{
+	base.LevelPaletteUpdate.LRZ_Boss()
+
+	if (level.capsule_opened && camera.position.x.u16 >= 0x0b40)
+		level.palettefx.state = 0
+		
+	if (level.palettefx.state == 0)
+	{
+		--level.palettefx.timer_3
+		if (s16(level.palettefx.timer_3 + 1) % 8 == 0)
+		{
+			//Restore earlier palette
+			copyMemory(0xfffffc4c, 0x0a9d08, 0x36)
+			
+			// Crystals
+			
+			s16 newFrame = level.palettefx.frame_4
+			s16 oldFrame = level.palettefx.frame_4 - 8
+			
+			if (oldFrame < 0)
+				oldFrame = 248
+			
+			A0 = 0x003344
+
+			for (u8 i = 0; i < 4; i++)
+			{
+				u16[0xfffffc76 + i*2] = blendColorsPacked(u16[A0 + oldFrame + i*2], u16[A0 + newFrame + i*2], min(0x100, Math.roundToInt(0x100 * s16(15 - (level.palettefx.timer_3 + 1)) / 16.0f)))
+			}
+			
+			if (s16(level.palettefx.timer_3) < 0)
+			{
+				level.palettefx.timer_3 = 0x0f
+				
+				level.palettefx.frame_4 += 8
+				if (level.palettefx.frame_4 >= 256)
+					level.palettefx.frame_4 = 0
+			}
+		}
+	}
+}
+
+//# address-hook(0x002ac0) end(0x002af4)
+function void LevelPaletteUpdate.HPZ()
+{
+	base.LevelPaletteUpdate.HPZ()
+	
+	--level.palettefx.timer_3
+	if (s16(15 - (level.palettefx.timer_3 + 1)) % 8 == 0) && (camera.position.x.u16 < 0x0310)
+	{
+		// Crystals
+		
+		s16 newFrame = level.palettefx.frame_4
+		s16 oldFrame = level.palettefx.frame_4 - 8
+		
+		if (oldFrame < 0)
+			oldFrame = 248
+		
+		A0 = 0x003344
+
+		for (u8 i = 0; i < 4; i++)
+		{
+			u16[0xfffffc76 + i*2] = blendColorsPacked(u16[A0 + oldFrame + i*2], u16[A0 + newFrame + i*2], min(0x100, Math.roundToInt(0x100 * s16(15 - (level.palettefx.timer_3 + 1)) / 16.0f)))
+		}
+		
+		if (s16(level.palettefx.timer_3) < 0)
+		{
+			level.palettefx.timer_3 = 0x0f
+			
+			level.palettefx.frame_4 += 8
+			if (level.palettefx.frame_4 >= 256)
+				level.palettefx.frame_4 = 0
+		}
+	}
+}
+
+// DEZ
+
+//# address-hook(0x00277e) end(0x0027ac)
+function void LevelPaletteUpdate.DEZ1()
+{
+	--level.palettefx.timer_3
+	if ((15 - s16(level.palettefx.timer_3 + 1)) % 8 == 0)
+	{
+		{
+			// Glowing Things...
+			
+			s16 newFrame = level.palettefx.frame_3
+			s16 oldFrame = level.palettefx.frame_3 - 8
+			
+			if (oldFrame < 0)
+				oldFrame = 40
+			
+			A0 = 0x00349c
+
+			for (u8 i = 0; i < 4; i++)
+			{
+				u16[0xfffffc78 + i*2] = blendColorsPacked(u16[A0 + oldFrame + i*2], u16[A0 + newFrame + i*2], min(0x100, Math.roundToInt(0x100 * (15 - s16(level.palettefx.timer_3 + 1)) / 16.0f)))
+			}
+			
+			if (s16(level.palettefx.timer_3) < 0)
+			{
+				level.palettefx.timer_3 = 15
+				
+				level.palettefx.frame_3 += 8
+				if (level.palettefx.frame_3 >= 48)
+					level.palettefx.frame_3 = 0
+			}
+		}
+	}
+
+	LevelPaletteUpdate.DEZ2()
+}
+
+//# address-hook(0x0027b2) end(0x002818)
+function void LevelPaletteUpdate.DEZ2()
+{
+	--level.palettefx.timer_1
+	if (s16(level.palettefx.timer_1) < 0)
+	{
+		level.palettefx.timer_1 = 4
+	
+		D0.u16 = level.palettefx.frame_1
+		level.palettefx.frame_1 += 4
+		if (level.palettefx.frame_1 >= 48)
+			level.palettefx.frame_1 = 0
+	
+		A0 = 0x003444
+		u32[0xfffffc5a] = u32[A0 + D0.u16]
+	}
+
+	--level.palettefx.timer_2
+	if ((19 - s16(level.palettefx.timer_2 + 1)) % 5 == 0)
+	{
+		{
+			// Glowing Things...
+			
+			s16 newFrame = level.palettefx.frame_2
+			s16 oldFrame = level.palettefx.frame_2 - 10
+			
+			if (oldFrame < 0)
+				oldFrame = 30
+			
+			A0 = 0x003474
+
+			for (u8 i = 0; i < 5; i++)
+			{
+				u16[0xfffffc50 + i*2] = blendColorsPacked(u16[A0 + oldFrame + i*2], u16[A0 + newFrame + i*2], min(0x100, Math.roundToInt(0x100 * (19 - s16(level.palettefx.timer_2 + 1)) / 20.0f)))
+			}
+			
+			if (s16(level.palettefx.timer_2) < 0)
+			{
+				level.palettefx.timer_2 = 19
+				
+				level.palettefx.frame_2 += 10
+				if (level.palettefx.frame_2 >= 40)
+					level.palettefx.frame_2 = 0
+			}
+		}
+	}
+}

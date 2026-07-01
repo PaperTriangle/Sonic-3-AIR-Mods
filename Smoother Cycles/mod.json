@@ -1,0 +1,11 @@
+{
+	"Metadata":
+	{
+		"Name": "Smoother Cycles",
+		"UniqueID": "smoother-cycles",
+		"Author": "PaperTriangle",
+		"Description": "Makes some level palette cycles that would normally have a greater than 8 frame delay a bit smoother.",
+		"ModVersion": "1.0"
+	}
+}
+

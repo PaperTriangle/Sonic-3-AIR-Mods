@@ -1,0 +1,32 @@
+{
+	"Metadata":
+	{
+		"Name": "Fixed Fire Colours",
+		"UniqueID": "fixed-fire-colours",
+		"Author": "PaperTriangle",
+		"Description": "Such a minor fix... But it annoyed me so much!",
+		"ModVersion": "1.0"
+	},
+	"Settings":
+	{
+		"List":
+		[
+			{
+				"InternalName": "ffc.bmpline",
+				"DisplayName": "Fire Effect BMP Line",
+				"Variable": "ffc.bmpline",
+				"DefaultValue": "4",
+				"Options":
+				{
+					"0": "10",
+					"1": "11",
+					"2": "12",
+					"3": "13",
+					"4": "14",
+					"5": "15"
+				}
+			}
+		]
+	}
+}
+

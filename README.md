@@ -60,6 +60,9 @@ Adds a partnered Mighty & Ray as Slot 4. This requires **ES Mighty** and **ES Ra
 
 **PLEASE NOTE:** This mod is in an experimental and untested state!
 
+## Fixed Fire colours
+Renders the flame effects from AIZ2 on extended palette lines, fixs a small issue where the palettes are messed up for a few frames during the "Fire Wall" transition in Act 1! Also changes the new AIR logic to just prevent rendering the objects while underwater instead of unloading them, restoring that one flame in the draining sequence.
+
 ## Flying Hold Frame Fix
 Makes the animation while holding on to Tails less jumpy. Should be placed below other sprite mods. Should work with ESU if placed below it.
 
@@ -119,6 +122,11 @@ Hud Elements have compatibility with **Haru's Forever-esque HUD**. Lives icon ha
 
 ## Paper's Pause
 Adds a new pause menu that is how I may have imagined it if the game was re-released in the '90s.
+
+## Smoother Cycles
+Makes some stage palette cycles a smit smoother. This is mostly for cycles that take longer than 8 frames noormally, such as Lava, LRZ Crystals, those ICZ Green Crystals and the DEZ Orange thingies.
+
+**PLEASE NOTE:** Recommended to turn off the **Misc. Fixes and Tweaks** settings for LRZ Glowing Crystals and restoring the cooled palette after the boss as this mod does the same thing and if both are enabled it acts funky.
 
 ## Smoother Skies
 Makes the fades of sky palettes smoother during the MGZ to CNZ transition, the ICZ post Big Icedus sky fade and the Big Arm intro and outro fade.

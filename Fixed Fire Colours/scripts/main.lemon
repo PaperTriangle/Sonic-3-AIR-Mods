@@ -1,0 +1,43 @@
+global u8 ffc.bmpline
+
+//# address-hook(0x04ff16) end(0x04ff22)
+function void UpdateLevelTiles.AIZ2()
+{
+	u32 target_palette_line = 0x802000 + 3 * 0x40 + ffc.bmpline * 0x20
+	copyMemory(target_palette_line, 0x0a8bdc + 0x40, 0x20)
+	
+	u16[target_palette_line + 0x02] = u16[0xfffffc62]
+	u16[target_palette_line + 0x16] = u16[0xfffffc76]
+
+	base.UpdateLevelTiles.AIZ2()
+}
+
+function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16 renderQueue)
+{
+	if (objA0.update_address == 0x02bf5a) && (objA0.sprite_attributes == (sprite_attribute.PALETTE.LINE3 | 0x02e9) && objA0.mapping_offset == 0x02bfda)
+	{
+		Renderer.drawSprite(stringformat("aiz_flames_0x%02x", objA0.animation.sprite), px + 8, py, 0xa0 + ffc.bmpline * 0x10, objA0.render_flags, renderQueue)
+		
+		return true
+	}
+	
+	return base.Standalone.onDrawVdpSprite(px, py, size, index, renderQueue)
+}
+
+//# address-hook(0x02bf5a) end(0x02bf66)
+function void GenericObject.Update()
+{
+	Object.animationUpdate(0x02bf9c)
+	
+	// Check if it's an underwater flame in AIZ
+	if (objA0.sprite_attributes == (sprite_attribute.PALETTE.LINE3 | 0x02e9) && objA0.mapping_offset == 0x02bfda)
+	{
+		if (objA0.position.y.u16 >= water.height.current - 10)
+		{
+			CheckForUnloadObject()
+			return
+		}
+	}
+	
+	DrawOrUnloadObject()
+}

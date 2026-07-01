@@ -30,7 +30,7 @@ function void Character.GettingHurt()
 //# post-update-hook
 function void PostFrameUpdate()
 {
-	if (fpis.instaShieldActive > 0)
+	if (fpis.instaShieldActive > 0 && !global.game.paused)
 		fpis.instaShieldActive--
 
 	base.PostFrameUpdate()
