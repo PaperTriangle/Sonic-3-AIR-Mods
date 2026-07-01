@@ -901,10 +901,76 @@ function void yieldExecution()
 	base.yieldExecution()
 }
 
+//-----------//
+// AIZ Vines //
+//-----------//
+
+
+//# address-hook(0x0222f4) end(0x02237c)
+function void fn0222f4()
+{
+	if (!ac.smooth_landing)
+	{
+		base.fn0222f4()
+		return
+	}
+	
+	if (u8[A2 + 2] != 0)
+	{
+		--u8[A2 + 2]
+		if (u8[A2 + 2] != 0)
+		{
+			return
+		}
+	}
+
+#if STANDALONE
+	// Increase the hit box a bit
+	u16 dx = objA1.position.x.u16 - objA0.position.x.u16 + 0x12
+	u16 dy = objA1.position.y.u16 - objA0.position.y.u16 + 0x04
+	//debugDrawRect(objA0.position.x.u16 - 0x12, objA0.position.y.u16 - 0x04, 0x24, 0x1c, 0x80ffffff)
+	if (dx < 0x24 && dy < 0x1c)
+#else
+	u16 dx = objA1.position.x.u16 - objA0.position.x.u16 + 0x10
+	u16 dy = objA1.position.y.u16 - objA0.position.y.u16
+	if (dx < 0x20 && dy < 0x18)
+#endif
+	{
+		if (u8[A1 + 0x2e] == 0 && u8[A1 + 0x05] < base_state.HURT && debug_mode.state == 0)
+		{
+		#if STANDALONE
+			// Ignore for Tails while he's carrying the main player
+			if (A1 == 0xffffb04a && tails.carrying)
+				return
+		#endif
+		
+		#if STANDALONE
+			if (A1 == 0xffffb000)
+				globalCameraOffsetX += objA1.position.x.u16 - objA0.position.x.u16
+		#endif
+		
+			objA1.render_flags &= ~render_flag.FLIP_Y
+			objA1.position.x.u16 = objA0.position.x.u16
+			objA1.position.y.u16 = objA0.position.y.u16 + 0x14
+			objA1.velocity.x = 0
+			objA1.velocity.y = 0
+			objA1.groundspeed = 0
+			objA1.state = char.state.HANGING
+			u8[A1 + 0x2e] = 3
+			u8[A1 + 0x3d] = 0
+			
+			if (A1 == 0xffffb000 && u8[A1 + 0x38] == 0)
+				u8[A1 + 0x25] = 0
+
+			u8[A2] = 1
+			playSound(SFX_GRAB)
+		}
+	}
+}
+
 //------------------------------//
 // Maybe adjust FBZ Monkeybars? //
 //------------------------------//
-
 
 //# address-hook(0x03ac86) end(0x03ad88)
 function void fn03ac86()
@@ -979,6 +1045,9 @@ function void fn03ac86()
 			u8[A1 + 0x2e] = (control_flag.DISABLE_ANIMATION | control_flag.DISABLE_UPDATE)
 			u16[A1 + 0x42] = A0.u16
 			
+			if (A1 == 0xffffb000 && u8[A1 + 0x38] == 0)
+				u8[A1 + 0x25] = 0
+			
 			u8[A2] = 0x01
 			u8[A2 + 0x02] = 0
 			u8[A2 + 0x04] = 0
@@ -1004,69 +1073,544 @@ function void fn03ac86()
 	}
 }
 
+//# address-hook(0x03a8b8) end(0x03aa58)
+function void fn03a8b8()
+{
+	if (u8[A2] != 0)
+	{
+		if ((objA1.render_flags & render_flag.VISIBLE) && debug_mode.state == 0 && u8[A1 + 0x05] < base_state.HURT)
+		{
+			// Check if jump button pressed
+			D0.u8 &= CONTROL_ABC
+			if (D0.u8 == 0)
+			{
+				if (D0 & 0x0400)		// CONTROL_LEFT held
+				{
+					objA1.flags2a |= char.flag.FACING_LEFT
+				}
+				if (D0 & 0x0800)		// CONTROL_RIGHT held
+				{
+					objA1.flags2a &= ~char.flag.FACING_LEFT
+				}
+				objA1.render_flags &= ~char.flag.FACING_LEFT
+				objA1.render_flags |= (u8[A1 + 0x2a] & char.flag.FACING_LEFT)
+				objA1.position.y.u16 = objA0.position.y.u16 + 0x9c
+			}
+			else
+			{
+				u8[A1 + 0x2e] = 0
+				u8[A2] = 0
+				u8[A2 + 0x02] = 0x12
+				D0.u16 &= 0x0f00			// Any direction held?
+				if (D0.u16 != 0)
+				{
+					u8[A2 + 0x02] = 0x3c
+				}
+				if (D0 & 0x0400)		// CONTROL_LEFT held
+				{
+					objA1.velocity.x = -0x200
+				}
+				if (D0 & 0x0800)		// CONTROL_RIGHT held
+				{
+					objA1.velocity.x = 0x0200
+				}
+				objA1.velocity.y = -0x380
+				objA1.hitbox_extends.x = char.hitbox.x.ROLLING
+				objA1.hitbox_extends.y = char.hitbox.y.ROLLING
+				objA1.state = char.state.ROLLING
+				u8[A1 + 0x27] = 0
+				objA1.flags2a |= (char.flag.IN_AIR | char.flag.ROLLING)
+				objA1.flags2a &= ~(char.flag.ON_OBJECT | char.flag.CONTROL_LOCK)
+				u8[A1 + 0x40] = 1
+				u16[A1 + 0x42] = 0
+			}
+		}
+		else
+		{
+			u8[A2] = 0
+			u8[A2 + 0x02] = 0x3c
+
+			u8[A1 + 0x2e] = 0
+			u8[A1 + 0x2a] &= ~char.flag.ON_OBJECT
+			u16[A1 + 0x42] = 0
+		}
+		return
+	}
+
+	if (u8[A2 + 0x02] != 0)
+	{
+		--u8[A2 + 0x02]
+		if (u8[A2 + 0x02] != 0)
+			return
+	}
+
+	D0.u16 = objA1.position.x.u16 - objA0.position.x.u16 + 0x10
+	D1.u16 = objA1.position.y.u16 - objA0.position.y.u16 - 0x90
+	if (D0.u16 < 0x20 && D1.u16 < 0x18)
+	{
+		if (s8[A1 + 0x2e] >= 0 && u8[A1 + 0x05] < base_state.HURT && debug_mode.state == 0)
+		{
+		#if STANDALONE
+			// Ignore for Tails while he's carrying the main player
+			//  -> The other way round gets handled further below
+			if (A1 == 0xffffb04a && tails.carrying)
+				return
+		#endif
+
+			if (u8[A1 + 0x2a] & char.flag.ON_OBJECT)
+			{
+				A3 = 0xffff0000 + u16[A1 + 0x42]
+				if (u32[A3] == 0x03aa5a)
+				{
+					D0.u16 = A2.u16 - A0.u16
+					A3 += D0.u16
+					if (u8[A3 + 0x04] != 0)
+						return
+
+					u8[A3] = 0
+					u8[A3 + 0x02] = 0x3c
+				}
+			}
+			
+		#if STANDALONE
+			if (A1 == 0xffffb000)
+				globalCameraOffsetX += objA1.position.x.u16 - objA0.position.x.u16
+		#endif
+		
+			objA1.flags2a &= ~char.flag.IN_AIR // Remove flagh to make camera smoother
+			objA1.velocity.x = 0
+			objA1.velocity.y = 0
+			objA1.groundspeed = 0
+			objA1.position.x.u16 = objA0.position.x.u16
+			objA1.position.y.u16 = objA0.position.y.u16 + 0x9c
+			objA1.state = char.state.HANGING
+			objA1.flags2a |= char.flag.ON_OBJECT
+			u8[A1 + 0x2e] = control_flag.DISABLE_UPDATE
+			u16[A1 + 0x42] = A0.u16
+
+			if (A1 == 0xffffb000 && u8[A1 + 0x38] == 0)
+				u8[A1 + 0x25] = 0
+
+			u8[A2] = 0x01
+			playSound(SFX_GRAB)
+
+		#if STANDALONE
+			u8[A1 + 0x3d] = 0	// Clear char.spindash
+
+			// If player is carried by Tails, this connection should better get resolved now
+			if (tails.carrying)
+			{
+				tails.carrying = 0		// Seems to be this simple, or is anything else needed here?
+			}
+		#endif
+		}
+	}
+}
+
 //-----------------------------------------------//
 // Adjust the ice blocks to prevent harsh camera //
 //-----------------------------------------------//
 
-//# address-hook(0x08b384) end(0x08b3a4)
-function void fn08b384()
+//# address-hook(0x08a3c4) end(0x08a3e0)
+function void fn08a3c4()
 {
-	if (!ac.smooth_landing)
+	u8[0xffffee39] = 0
+	if (abs(objA0.velocity.x) > 0x500 || abs(objA0.velocity.y) > 0x500)
 	{
-		base.fn08b384()
-		return
+		if (objA0.flags2a & object.flag.P1_ON_OBJECT)
+		{
+			u8[0xffffee39] = 0xff
+		}
 	}
-
-	objA0.value3a = u8[0xffffb000 + 0x20]
-	objA0.value3b = u8[0xffffb04a + 0x20]
-
-	D1 = 0x23
-	D2 = 0x00
-	D3 = 0x10
-	D4.u16 = objA0.position.x.u16
-	fn01dc56()
-
-	fn08b3aa()
-	DrawOrUnloadObject()
 }
 
-//# address-hook(0x089f38) end(0x089f64)
-function void fn089f38()
+//-----------------//
+// LBZ Ridegrapple //
+//-----------------//
+
+//# address-hook(0x0267a4) end(0x02682c)
+function void fn0267a4()
 {
 	if (!ac.smooth_landing)
 	{
-		base.fn089f38()
+		base.fn0267a4()
 		return
 	}
 	
-	D0 = objA0.base_state
-	D1.u16 = u16[0x089f6a + D0.u16]
-	u16 backupPosition = objA0.position.x.u16
-
-	// Targets:
-	//  - 0x089f7e	-> D0.u16 = 0x00
-	//  - 0x089fb6	-> D0.u16 = 0x02
-	//  - 0x089fd6	-> D0.u16 = 0x04
-	//  - 0x089ff2	-> D0.u16 = 0x08
-	//  - 0x08a036	-> D0.u16 = 0x0a
-	//  - 0x08a11c	-> D0.u16 = 0x0c
-	//  - 0x08a176	-> D0.u16 = 0x0e
-	//  - 0x08a178	-> D0.u16 = 0x10
-	//  - 0x08a192	-> D0.u16 = 0x12
-	//  - 0x08a1ae	-> D0.u16 = 0x14
-	call 0x089f6a + D1.u16
-
-	D1 = 0x2b
-	D2 = 0x00
-	D3 = 0x14
-	D4.u16 = backupPosition
-	if ((objA0.flags2a & 0x80) == 0)
+	if (u8[A2 + 0x02] != 0)
 	{
-		fn01dc56()
-		fn08a3c4()
+		--u8[A2 + 0x02]
+		if (u8[A2 + 0x02] != 0)
+			return
 	}
 
-	DrawOrUnloadObject()
+	D0.u16 = objA1.position.x.u16 - objA0.position.x.u16 + 0x10
+	D1.u16 = objA1.position.y.u16 - objA0.position.y.u16 - 0x18
+	if (D0.u16 < 0x20 && D1.u16 < 0x18)
+	{
+		if (u8[A1 + 0x2e] == 0 && u8[A1 + 0x05] < base_state.HURT && debug_mode.state == 0)
+		{
+		#if STANDALONE
+			// Ignore for Tails while he's carrying the main player
+			if (A1 == 0xffffb04a && tails.carrying)
+				return
+		#endif
+
+		#if STANDALONE
+			if (A1 == 0xffffb000)
+				globalCameraOffsetX += objA1.position.x.u16 - objA0.position.x.u16
+		#endif
+
+			objA0.flags2a = u8[A1 + 0x2a]
+			objA1.flags2a &= ~char.flag.IN_AIR // Remove flagh to make camera smoother
+			objA1.velocity.x = 0
+			objA1.velocity.y = 0
+			objA1.groundspeed = 0
+			objA1.position.x.u16 = objA0.position.x.u16
+			objA1.position.y.u16 = objA0.position.y.u16 + 0x24
+			objA1.state = char.state.HANGING
+			u8[A1 + 0x2e] = (control_flag.DISABLE_ANIMATION | control_flag.DISABLE_UPDATE)
+			u8[A1 + 0x3d] = 0
+
+			if (A1 == 0xffffb000 && u8[A1 + 0x38] == 0)
+				u8[A1 + 0x25] = 0
+
+			u8[A2] = 1
+			fn026768()
+		}
+	}
+}
+
+//# address-hook(0x0266b0) end(0x026792)
+function void fn0266b0()
+{
+	if (!ac.smooth_landing)
+	{
+		base.fn0266b0()
+		return
+	}
+	
+#if STANDALONE
+	if (debug_mode.state)
+		return
+#endif
+
+	if (u8[A2] == 0)
+	{
+		fn0267a4()
+		return
+	}
+
+	if ((objA1.render_flags & render_flag.VISIBLE) && u8[A1 + 0x05] < base_state.HURT)
+	{
+		// Check if jump button pressed
+		D0.u8 &= CONTROL_ABC
+		if (D0.u8 == 0)
+		{
+			if (D0 & 0x0400)		// CONTROL_LEFT held
+			{
+				u8[A1 + 0x2a] |= 0x01
+			}
+			if (D0 & 0x0800)		// CONTROL_RIGHT held
+			{
+				u8[A1 + 0x2a] &= ~0x01
+			}
+
+			objA0.flags2a = u8[A1 + 0x2a]
+			objA1.render_flags = (objA1.render_flags & ~char.flag.FACING_LEFT) | (u8[A1 + 0x2a] & char.flag.FACING_LEFT)
+			objA1.position.x.u16 = u16[A3 + 0x10]
+			objA1.position.y.u16 = u16[A3 + 0x14] + 0x24
+			if (objA0.velocity.x != 0)
+				u8[A1 + 0x2a] |= char.flag.IN_AIR
+
+			fn026768()
+		}
+		else
+		{
+			u8[A1 + 0x2e] = 0
+			u8[A2] = 0
+			u8[A2 + 2] = (D0.u16 & 0x0f00) ? 0x3c : 0x12		// Any direction held?
+
+			objA1.velocity.x = objA0.velocity.x
+			objA1.velocity.y = -0x380
+			objA1.hitbox_extends.x = char.hitbox.x.ROLLING
+			objA1.hitbox_extends.y = char.hitbox.y.ROLLING
+			objA1.state = char.state.ROLLING
+			objA1.flags2a |= (char.flag.IN_AIR | char.flag.ROLLING)
+			u8[A1 + 0x40] = 0x01
+		}
+	}
+	else
+	{
+		u8[A1 + 0x2e] = 0
+		u8[A2] = 0
+		u8[A2 + 2] = 0x3c
+	}
+}
+
+//--------------//
+// MHZ Elevator //
+//--------------//
+
+//# address-hook(0x03e682) end(0x03e71e)
+function void fn03e682()
+{
+	if (!ac.smooth_landing)
+	{
+		base.fn03e682()
+		return
+	}
+	
+	if (u8[A2 + 0x02] != 0)
+	{
+		--u8[A2 + 0x02]
+		if (u8[A2 + 0x02] != 0)
+			return
+	}
+
+	D0.u16 = objA1.position.x.u16 - objA0.position.x.u16 + 0x10
+	D1.u16 = objA1.position.y.u16 - objA0.position.y.u16 - 0x30
+	if (D0.u16 < 0x20 && D1.u16 < 0x18)
+	{
+		if (u8[A1 + 0x2e] == 0 && u8[A1 + 0x05] < base_state.HURT && debug_mode.state == 0)
+		{
+			if (objA1.velocity.y > 0)
+			{
+			#if STANDALONE
+				// Ignore for Tails while he's carrying the main player
+				if (A1 == 0xffffb04a && tails.carrying)
+					return
+			#endif
+			
+			#if STANDALONE
+				if (A1 == 0xffffb000)
+					globalCameraOffsetX += objA1.position.x.u16 - objA0.position.x.u16
+			#endif
+
+				objA1.velocity.x = 0
+				objA1.velocity.y = 0
+				objA1.groundspeed = 0
+				objA1.position.x.u16 = objA0.position.x.u16
+				objA1.position.y.u16 = objA0.position.y.u16 + 0x42
+				objA1.state = char.state.HANGING
+				u8[A1 + 0x2e] = (control_flag.DISABLE_ANIMATION | control_flag.DISABLE_UPDATE)
+				u8[A1 + 0x3d] = 0
+				objA1.render_flags &= ~render_flag.FLIP_Y
+				
+				if (A1 == 0xffffb000 && u8[A1 + 0x38] == 0)
+					u8[A1 + 0x25] = 0
+
+				u8[A2] = 1
+				D1.u8 = 0x90
+
+				playSound(SFX_GRAB)
+				fn03e658()
+			}
+		}
+	}
+}
+
+//------------------------//
+// Fix for SSZ Moving Bar //
+//------------------------//
+
+//# address-hook(0x0453e6) end(0x045526)
+function void fn0453e6()
+{
+	if (!ac.smooth_landing)
+	{
+		base.fn0453e6()
+		return
+	}
+	
+	if (u8[A2] == 0)
+	{
+		if (u8[A2 + 0x02] != 0)
+		{
+			--u8[A2 + 0x02]
+			if (u8[A2 + 0x02] != 0)
+				return
+			objA0.sprite_priority = 0x0180
+		}
+
+		D0.u16 = objA1.position.x.u16 - objA0.position.x.u16 + 0x28
+		if (D0.u16 >= 0x50)
+			return
+
+		D0.u16 = objA1.position.y.u16 - objA0.position.y.u16
+		if (D0.u16 >= 0x18)
+			return
+
+		if (u8[A1 + 0x2e] != 0 || u8[A1 + 0x05] >= base_state.HURT || debug_mode.state != 0)
+			return
+
+		playSound(SFX_GRAB)
+		u8[A2] = 0xff
+
+		objA1.flags2a &= ~char.flag.IN_AIR
+		objA1.position.y.u16 = objA0.position.y.u16 + D1.u16
+		objA1.velocity.x = 0
+		objA1.groundspeed = 0
+		u8[A1 + 0x3d] = 0
+		u8[A1 + 0x2e] = (control_flag.DISABLE_ANIMATION | control_flag.DISABLE_UPDATE)
+		objA1.render_flags &= ~(render_flag.FLIP_X | render_flag.FLIP_Y)
+		u8[A1 + 0x20] = 0
+
+		if (A1 == 0xffffb000 && u8[A1 + 0x38] == 0)
+			u8[A1 + 0x25] = 0
+
+		D0.u16 = (u8[A1 + 0x2a] & char.flag.FACING_LEFT) ? 0xe9 : 0xe5		// Player characters' hanging sprites, facing forward or back
+		objA1.animation.sprite = D0.u8
+		SetCharacterSpritePatterns()
+	}
+	else
+	{
+		objA1.position.y.u16 = objA0.position.y.u16 + D1.u16
+		if (u8[A1 + 0x05] >= base_state.HURT)
+		{
+			u8[A1 + 0x2e] = 0
+			u8[A2] = 0
+			u8[A2 + 0x02] = 0x3c
+		}
+		else
+		{
+			D1.u16 = D0.u16 & 0xff70
+			if (D1.u8 != 0)
+			{
+				u8[A1 + 0x2e] = 0
+				u8[A2] = 0
+				u8[A2 + 0x02] = 0x1e
+				objA0.sprite_priority = 0x80
+
+				D1.u16 = -0x200
+				D2.u16 = -0x400
+				if ((D0 & 0x0400) == 0)		// CONTROL_LEFT not held
+				{
+					objA0.sprite_priority = 0x0180
+					D1.s16 = -D1.s16
+					if ((D0 & 0x0800) == 0)		// CONTROL_RIGHT not held
+					{
+						D1 = 0
+						if (D0 & 0x0200)	// CONTROL_DOWN held
+						{
+							D2 = 0
+						}
+					}
+				}
+
+				objA1.velocity.x = D1.u16
+				D0 = s32[A0 + 0x2e] >> 8
+				D0.u16 += D2.u16
+				objA1.velocity.y = D0.u16
+				objA1.hitbox_extends.x = char.hitbox.x.ROLLING
+				objA1.hitbox_extends.y = char.hitbox.y.ROLLING
+				objA1.state = char.state.ROLLING
+				objA1.flags2a |= (char.flag.IN_AIR | char.flag.ROLLING)
+				u8[A1 + 0x40] = 0x01
+
+				playSound(SFX_JUMP)
+			}
+		}
+	}
+}
+
+//--------------------------//
+// Fix for DEZ Hang Carrier //
+//--------------------------//
+
+//# address-hook(0x04703e) end(0x04717c)
+function void fn04703e()
+{
+	if (!ac.smooth_landing)
+	{
+		base.fn04703e()
+		return
+	}
+	
+	if (u8[A2] != 0)
+	{
+		if ((objA1.render_flags & render_flag.VISIBLE) && u8[A1 + 0x05] < base_state.HURT)
+		{
+			if ((D0.u8 & CONTROL_ABC) == 0)
+			{
+				objA1.position.x.u16 = objA0.position.x.u16
+				objA1.position.y.u16 = objA0.position.y.u16 + 0x28
+				if ((level.framecounter.low & 0x0f) == 0)
+				{
+					playSound(0xd0)
+				}
+				return
+			}
+
+			u8[A2] = 0
+			u8[A2 + 0x02] = 0x12
+
+			if (D0.u16 & 0x0f00)	// Any direction held?
+			{
+				u8[A2 + 0x02] = 0x3c
+				if (D0 & 0x0800)		// CONTROL_RIGHT held
+				{
+					objA1.velocity.x = 0x200
+				}
+				else if (D0 & 0x0400)		// CONTROL_LEFT held
+				{
+					objA1.velocity.x = -0x200
+				}
+			}
+
+			objA1.velocity.y = -0x380
+			objA1.hitbox_extends.x = char.hitbox.x.ROLLING
+			objA1.hitbox_extends.y = char.hitbox.y.ROLLING
+			objA1.state = char.state.ROLLING
+			u8[A1 + 0x27] = 0
+			objA1.flags2a |= (char.flag.IN_AIR | char.flag.ROLLING)
+			objA1.flags2a &= ~char.flag.CONTROL_LOCK
+			u8[A1 + 0x2e] = 0
+			u8[A1 + 0x40] = 1
+		}
+		else
+		{
+			u8[A1 + 0x2e] = 0
+			u8[A2] = 0
+			u8[A2 + 0x02] = 0x3c
+		}
+		return
+	}
+
+	if (u8[A2 + 0x02] != 0)
+	{
+		--u8[A2 + 0x02]
+		return
+	}
+
+	D0.u16 = objA1.position.x.u16 - objA0.position.x.u16 + 0x10
+	D1.u16 = objA1.position.y.u16 - objA0.position.y.u16 - 0x18
+	if (D0.u16 < 0x20 && D1.u16 < 0x18)
+	{
+		if ((u8[A1 + 0x2e] & control_flag.DISABLE_INTERACTION) == 0 && u8[A1 + 0x05] < base_state.HURT && debug_mode.state == 0)
+		{
+		
+		#if STANDALONE
+			if (A1 == 0xffffb000)
+				globalCameraOffsetX += objA1.position.x.u16 - objA0.position.x.u16
+		#endif
+		
+			objA1.velocity.x = 0
+			objA1.velocity.y = 0
+			u16[A1 + 0x1c] = 0
+			objA1.position.x.u16 = objA0.position.x.u16
+			objA1.position.y.u16 = objA0.position.y.u16 + 0x28
+			objA1.state = char.state.HANGING
+			objA1.flags2a &= ~char.flag.IN_AIR
+			u8[A1 + 0x2e] = 1
+
+			if (A1 == 0xffffb000 && u8[A1 + 0x38] == 0)
+				u8[A1 + 0x25] = 0
+
+			u8[A2] = 1
+			playSound(SFX_CLICK)
+		}
+	}
 }
 
 //------------------------------------------------//
