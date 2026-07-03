@@ -482,10 +482,11 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 		#if MISC_ACTIVE
 			if (slotnum > 3)
 			{
-				if (objA0.update_address == 0x00d42c && objA0.animation.frame > 0x17 && u8[A0 + 0x38] == 0xff && u16[0xffffb04a + 0x30] == 0)
+				if (objA0.update_address == 0x00d42c && objA0.animation.frame != 0x17 && u8[A0 + 0x38] == 0xff && u16[0xffffb04a + 0x30] == 0)
 				{
-					px = (objA0.position.x.u16 - 0xa8) //+ 40
+					px = (objA0.position.x.u16 - 0xa8) + 40
 					string key = MISC.getClearPortrait(objA0.value3b, slotnum)
+					objA0.compound.count = 1
 					if (Renderer.hasCustomSprite(key))
 					{
 						MISC.drawPortraitSprite(key, px, py - (lsds.nodetail ? 0x10 : 0), 0x00, SPRITE_FLAG_PRIO, renderQueue - 1, slotnum)
