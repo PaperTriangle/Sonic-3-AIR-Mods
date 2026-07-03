@@ -1,0 +1,74 @@
+function void Character.updateBonusEffects()
+{
+#if STANDALONE
+	// Super Cancel
+	if (Game.getSetting(SETTING_SUPER_CANCEL) && Input.buttonPressed(BUTTON_Y))
+	{
+		bool isSuperActive = (char.character == CHARACTER_TAILS) ? super.active.tails : super.active
+		u8 transformingState = (char.character == CHARACTER_TAILS) ? char.state.TAILS_TRANSFORM : char.state.TRANSFORMING
+		if (isSuperActive && char.state != transformingState)
+		{
+			// Not in Doomsday and not in Sonic's AIZ intro
+			if (global.zone_act != 0x0c00 && (char.control_flags & control_flag.DISABLE_WALLS) == 0)
+			{
+				Character.cancelSuperTransformation()
+				chooseFittingMusic()
+				char.jumping = 0		// Do not allow another transformation until hit the ground
+			}
+		}
+	}
+#endif
+
+	bool doRender = true
+	if (char.invuln.countdown > 0)
+	{
+		doRender = ((char.invuln.countdown & 0x04) != 0)
+		--char.invuln.countdown
+	}
+	if (doRender)
+	{
+		DrawObject()
+	}
+
+	if ((char.bonus_effect & char.bonus.INVINCIBLE) && char.invinc.countdown > 0)
+	{
+		if ((level.framecounter & 0x07) == 0)
+		{
+			--char.invinc.countdown
+			if (char.invinc.countdown == 0)
+			{
+				// Back to normal
+				if (!level.boss_encounter && char.drown_countdown >= 12)
+				{
+					playMusic(level.default_music)
+				}
+				char.bonus_effect &= ~char.bonus.INVINCIBLE
+			}
+		}
+	}
+
+	if ((char.bonus_effect & char.bonus.SPEED_UP) && char.speedup.countdown > 0)
+	{
+		if ((level.framecounter & 0x07) == 0)
+		{
+			--char.speedup.countdown
+			if (char.speedup.countdown == 0)
+			{
+				char.bonus_effect &= ~char.bonus.SPEED_UP
+
+				if (char.character != CHARACTER_KNUCKLES && competition_mode.active)
+				{
+					A1 = 0x1e3c00 + (char.character * 8)
+					u16[A4] = u16[A1]
+					u16[A4+2] = u16[A1+2]
+					u16[A4+4] = u16[A1+4]
+				}
+				else
+				{
+					setSpeedCapProperties(A4)
+					changeMusicTempo(0)
+				}
+			}
+		}
+	}
+}

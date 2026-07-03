@@ -101,6 +101,9 @@ Adds transparency effects to more objects in the game. The effects can be *incre
 
 There are also some options in here to make the teleporters within the game more consistent across the zones.
 
+## No Extra Invuln
+Removes the extra second of invulnerability after being invincible... I wish this was a setting...
+
 ## No Transparency
 Remove the transparency effects from Sonic 3 AIR. This can be used with **Moar Transparency** to fine tune exactly what you want to be transparent.
 
