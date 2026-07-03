@@ -28,7 +28,7 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 	ecfActyve = getECFCharBufferName(0xffffb000) ? 1 : 0
 #endif
 	
-	if (!ecfActyve && sff.victory_animation && global.xtrachar == 0 && A0 == 0xffffcc0a && u8[0xffff0000 + u16[A0 + 0x30] + 0x22] == 0xa6)
+	if (!ecfActyve && sff.victory_animation && global.xtrachar == 0 && A0 == 0xffffcc0a && u8[0xffff0000 + u16[A0 + 0x30] + 0x22] == 0xa6 && !(global.game_mode == 0x2c || global.game_mode == 0x30 || global.game_mode == 0x4c))
 	{
 		prioFlag = (u16[0xffffcc0a + 0x0a] & sprite_attribute.PRIORITY) == sprite_attribute.PRIORITY
 		
