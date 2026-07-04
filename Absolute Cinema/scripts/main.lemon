@@ -905,6 +905,25 @@ function void yieldExecution()
 // AIZ Vines //
 //-----------//
 
+//# address-hook(0x022040) end(0x022072)
+//# address-hook(0x02254a) end(0x02257c)
+function void fn022040()
+{
+	if (!ac.smooth_landing)
+	{
+		base.fn022040()
+		return
+	}
+	
+	// Move with parent object
+	A1 = 0xffff0000 + u16[A0 + 0x3c]
+	u8 angle = u8[A1 + 0x26]
+	s16 dx = (8 - lookupSin(angle)) >> 4
+	s16 dy = (8 + lookupCos(angle)) >> 4
+	
+	objA0.position.x.u16 = objA1.position.x.u16 + dx
+	objA0.position.y.u16 = objA1.position.y.u16 + dy
+}
 
 //# address-hook(0x0222f4) end(0x02237c)
 function void fn0222f4()
@@ -1406,6 +1425,118 @@ function void fn03e682()
 				playSound(SFX_GRAB)
 				fn03e658()
 			}
+		}
+	}
+}
+
+//----------------//
+// MHZ Swing Vine //
+//----------------//
+
+//# address-hook(0x022a5c) end(0x022ad4)
+function void fn022a5c()
+{
+	if (!ac.smooth_landing)
+	{
+		base.fn022a5c()
+		return
+	}
+	
+	A3 = 0xffff0000 + u16[A0 + 0x3c]
+	u8 angle = u8[A3 + 0x26]
+	if (u8[A1 + 0x2a] & char.flag.FACING_LEFT)
+		angle = -angle
+	u16 offset = (u8(angle + 0x10) >> 5) * 2
+
+	u8[A1 + 0x20] = 0
+	objA1.animation.sprite = u8[0x022ad8 + offset]		// Player characters' bar spinning sprites
+	D2.s16 = s8[0x022ae8 + offset]
+	D3.s16 = s8[0x022ae9 + offset]
+	if (u8[A1 + 0x2a] & char.flag.FACING_LEFT)
+		D2.s16 = -D2.s16
+
+	A3 = 0xffff0000 + u16[A0 + 0x3c]
+	D0.u8 = (u8[A3 + 0x26] + 4)
+	LookupSinCos()
+	s16 px = (8 - D0.s16) >> 4
+	s16 py = (8 + D1.s16) >> 4
+
+#if STANDALONE
+	// Set character rotation and offset
+	u8[A1 + 0x26] = (u8[A3 + 0x26] + 4) & 0xf8
+
+	D2.s16 = px * 0x16 / 0x10
+	D3.s16 = py * 0x16 / 0x10
+#endif
+
+			#if STANDALONE
+				if (A1 == 0xffffb000) && !camera.use_forced_target
+				{
+					globalCameraOffsetX += objA1.position.x.u16 - (u16[A3 + 0x10] + D2.u16 + px)
+				}
+			#endif
+
+	objA1.position.x.u16 = u16[A3 + 0x10] + D2.u16 + px
+	objA1.position.y.u16 = u16[A3 + 0x14] + D3.u16 + py
+
+	fn022a28()
+}
+
+//# address-hook(0x022af8) end(0x022b9c)
+function void fn022af8()
+{
+	if (!ac.smooth_landing)
+	{
+		base.fn022af8()
+		return
+	}
+	
+	if (u8[A2 + 0x02] != 0)
+	{
+		--u8[A2 + 0x02]
+		if (u8[A2 + 0x02] != 0)
+			return
+	}
+
+	D0.u16 = objA1.position.x.u16 - objA0.position.x.u16 + 0x10
+	D1.u16 = objA1.position.y.u16 - objA0.position.y.u16
+	u16 maxDiffY = 0x28
+#if STANDALONE
+	// Always grab the handle if fast enough, no matter its current angle / position
+	maxDiffY = 0x38
+#endif
+	if (D0.u16 < 0x20 && D1.u16 < maxDiffY)
+	{
+		if (objA1.velocity.x < 0x0400 && D1.u16 >= 0x18)
+			return
+
+		if (u8[A1 + 0x2e] == 0 && u8[A1 + 0x05] < base_state.HURT && debug_mode.state == 0)
+		{
+			u8[A2] = 0x01
+			if (objA1.velocity.x >= 0x0400)
+			{
+				u8[A2] = 0x81
+				playSound(SFX_GRAB)
+			}
+
+			#if STANDALONE
+				if (A1 == 0xffffb000)
+					globalCameraOffsetX += objA1.position.x.u16 - objA0.position.x.u16
+			#endif
+
+			objA1.flags2a &= ~char.flag.IN_AIR
+			objA1.velocity.x = 0
+			objA1.velocity.y = 0
+			objA1.groundspeed = 0
+			objA1.position.x.u16 = objA0.position.x.u16
+			objA1.position.y.u16 = objA0.position.y.u16 + 0x14
+			objA1.state = char.state.HANGING
+			u8[A1 + 0x3d] = 0
+			u8[A1 + 0x2e] = (control_flag.DISABLE_ANIMATION | control_flag.DISABLE_UPDATE)
+			objA1.render_flags &= ~render_flag.FLIP_Y
+			
+			if (A1 == 0xffffb000 && u8[A1 + 0x38] == 0)
+				u8[A1 + 0x25] = 0
 		}
 	}
 }

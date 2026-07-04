@@ -549,26 +549,6 @@ function void fn0221ec()
 	fn022224()
 }
 
-// AIZ Vine Tweak
-//# address-hook(0x022040) end(0x022072)
-//# address-hook(0x02254a) end(0x02257c)
-function void fn022040()
-{
-	if (!sff.vine_tweak)
-	{
-		base.fn022040()
-		return
-	}
-	
-	// Move with parent object
-	A1 = 0xffff0000 + u16[A0 + 0x3c]
-	u8 angle = u8[A1 + 0x26]
-	s16 dx = (8 - lookupSin(angle)) >> 4
-	s16 dy = (8 + lookupCos(angle)) >> 4
-	objA0.position.x.u16 = objA1.position.x.u16 + dx
-	objA0.position.y.u16 = objA1.position.y.u16 + dy
-}
-
 // Prevent collapse
 //# address-hook(0x020594) end(0x0205b0)
 function void CollapsingCliff.Update()
