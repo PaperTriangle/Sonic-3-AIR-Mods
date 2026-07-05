@@ -258,30 +258,33 @@ function void LevelPaletteUpdate.LRZ_Boss()
 {
 	if (s8(level.palettefx.state) >= 0)
 	{
-		--level.palettefx.timer_1
-		if ((15 - s16(level.palettefx.timer_1 + 1)) % 8 == 0)
+		if (!level.capsule_opened)
 		{
-			// Lamps and Lava
-			
-			s16 newFrame = level.palettefx.frame_1
-			s16 oldFrame = level.palettefx.frame_1 - 8
-			
-			if (oldFrame < 0)
-				oldFrame = 120
-			
-			A0 = 0x00327e
-			
-			for (u8 i = 0; i < 4; i++)
+			--level.palettefx.timer_1
+			if ((15 - s16(level.palettefx.timer_1 + 1)) % 8 == 0)
 			{
-				u16[0xfffffc42 + i*2] = blendColorsPacked(u16[A0 + oldFrame + i*2], u16[A0 + newFrame + i*2], min(0x100, Math.roundToInt(0x100 * (15 - s16(level.palettefx.timer_1 + 1)) / 16.0f)))
-			}
+				// Lamps and Lava
+				
+				s16 newFrame = level.palettefx.frame_1
+				s16 oldFrame = level.palettefx.frame_1 - 8
+				
+				if (oldFrame < 0)
+					oldFrame = 120
+				
+				A0 = 0x00327e
+				
+				for (u8 i = 0; i < 4; i++)
+				{
+					u16[0xfffffc42 + i*2] = blendColorsPacked(u16[A0 + oldFrame + i*2], u16[A0 + newFrame + i*2], min(0x100, Math.roundToInt(0x100 * (15 - s16(level.palettefx.timer_1 + 1)) / 16.0f)))
+				}
 
-			if (s16(level.palettefx.timer_1) < 0)
-			{
-				level.palettefx.timer_1 = 15
-				level.palettefx.frame_1 += 8
-				if (level.palettefx.frame_1 >= 128)
-					level.palettefx.frame_1 = 0
+				if (s16(level.palettefx.timer_1) < 0)
+				{
+					level.palettefx.timer_1 = 15
+					level.palettefx.frame_1 += 8
+					if (level.palettefx.frame_1 >= 128)
+						level.palettefx.frame_1 = 0
+				}
 			}
 		}
 
