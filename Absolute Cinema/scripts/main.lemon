@@ -716,6 +716,19 @@ function void UpdateCameraPositionY()
 
 	D0.s16 = char.position.y.u16 - u16[A1] - (getScreenHeight() - 224)/2
 
+#if STANDALONE
+	// Handle additional camera offset
+	//  -> This was only introduced to smooth the camera while using the LRZ2 turbines
+	if (globalCameraOffsetY != 0)
+	{
+		if (abs(globalCameraOffsetY) >= 8)
+			globalCameraOffsetY += clamp(-globalCameraOffsetY, -4, 4)
+		else
+			globalCameraOffsetY += clamp(-globalCameraOffsetY, -1, 1)
+		D0.s16 += globalCameraOffsetY/4
+	}
+#endif
+
 	if (level.vertical_wrap == 0xff00)
 	{
 		D0.s16 &= level.height.bitmask
@@ -1537,6 +1550,118 @@ function void fn022af8()
 			
 			if (A1 == 0xffffb000 && u8[A1 + 0x38] == 0)
 				u8[A1 + 0x25] = 0
+		}
+	}
+}
+
+//---------------//
+// LRZ2 Turbines //
+//---------------//
+
+global s16 globalCameraOffsetY
+
+//# address-hook(0x04450a) end(0x044550)
+function void fn04450a()
+{
+	if (!ac.smooth_landing)
+	{
+		base.fn04450a()
+		return
+	}
+	
+	D0 = u8[A2 + 0x04] >> 3
+	D1.u8 = u8[0x044552 + D0.u16]		// Player characters' bar spinning sprites
+	u8[A1 + 0x22] = D1.u8
+	D0.u16 &= 0x1f
+	
+#if STANDALONE
+	if (A1 == 0xffffb000)
+		globalCameraOffsetY += objA1.position.y.u16 - (objA0.position.y.u16 + s8[0x044572 + D0.u16])
+#endif
+	
+	System.writeDisplayLine(stringformat("%d", globalCameraOffsetY))
+	
+	objA1.position.y.u16 = objA0.position.y.u16 + s8[0x044572 + D0.u16]
+	objA1.sprite_priority = 0x0100
+	objA1.sprite_attributes |= sprite_attribute.PRIORITY
+
+	D0.u8 = u8[A2 + 0x04]
+	if (D0.s8 < 0)
+	{
+		objA1.sprite_priority = 0x0280
+		objA1.sprite_attributes &= ~sprite_attribute.PRIORITY
+	}
+	D0.u8 += 4
+	u8[A2 + 0x04] = D0.u8
+}
+
+//# address-hook(0x044434) end(0x044508)
+function void fn044434()
+{
+	if (!ac.smooth_landing)
+	{
+		base.fn044434()
+		return
+	}
+	
+	if (u8[A2 + 0x02] != 0)
+	{
+		--u8[A2 + 0x02]
+		if (u8[A2 + 0x02] == 0)
+		{
+			objA1.sprite_priority = 0x0100
+		}
+		return
+	}
+
+	D0.u16 = objA1.position.x.u16 - objA0.position.x.u16 + 0x10
+	if (D0.u16 < 0x20)
+	{
+		D1 = 0x70
+		D0.u16 = objA1.position.y.u16 - objA0.position.y.u16 + 0x50
+		if (D0.u16 >= 0x18)
+		{
+			D1 = 0x30
+			D0.u16 -= 0x40
+			if (D0.u16 >= 0x18)
+			{
+				D0.u16 -= 0x40
+				if (D0.u16 >= 0x18)
+					return
+
+				D1 = -0x10
+			}
+		}
+
+		if (debug_mode.state == 0 && u8[A1 + 0x05] < base_state.HURT && u8[A1 + 0x2e] == 0)
+		{
+			if (D1.u8 == 0x30 && s16[A1 + 0x0a] >= 0)
+				return
+
+		#if STANDALONE
+			if (A1 == 0xffffb000)
+				globalCameraOffsetX += objA1.position.x.u16 - objA0.position.x.u16
+		#endif
+
+			objA1.velocity.x = 0
+			objA1.velocity.y = 0
+			objA1.groundspeed = 0
+			objA1.render_flags &= ~(render_flag.FLIP_X | render_flag.FLIP_Y)
+			objA1.position.x.u16 = objA0.position.x.u16
+
+			D0.u8 = ((level.framecounter.low & 0x07) - 4) * 4
+			D1.u8 += D0.u8
+			u8[A2 + 0x04] = D1.u8
+			u8[A1 + 0x20] = 0
+			u8[A1 + 0x2e] = 3
+			u8[A2] = 1
+
+			fn04450a()
+
+			D0 = objA1.animation.sprite
+			u32 backupA2 = A2
+			SetCharacterSpritePatterns()
+			A2 = backupA2
 		}
 	}
 }
