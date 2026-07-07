@@ -148,6 +148,16 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 			
 		}
 		
+		// Titlecard text and banner.
+		if (objA0.update_address == 0x02d8e2)
+		{
+			return base.Standalone.onWriteToSpriteTable(px, py, 0xf000)
+		}
+		else if (objA0.update_address == 0x02d95c)
+		{
+			return base.Standalone.onWriteToSpriteTable(px, py, 0xf001)
+		}
+		
 		// Doing this to support SSZ Clouds and Extra Slot character names.
 		if (objA0.update_address == 0x02dd98)
 		{
@@ -1249,7 +1259,14 @@ function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 in
 {
 	if (Mods.isModActive("No Transparency"))
 		System.setGlobalVariableValueByName("renderTransparentPlz", true)
-	
+
+	// Titlecard Text
+	if (objA0.update_address == 0x02d95c)
+	{
+		Renderer.drawVdpSprite(px, py, size, index, 0xf001)
+		return true
+	}
+
 	// Doing this here to support rendering on top of SSZ clouds.
 	if (objA0.update_address == 0x02dd98)
 	{
