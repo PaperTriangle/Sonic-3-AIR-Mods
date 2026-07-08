@@ -209,8 +209,8 @@ function void yieldExecution()
 			System.loadExternalRawData("FBZ_Palette_Boss", 0x3fff30)
 			System.loadExternalRawData("FBZ_Palette_Released", 0x3fff60)
 			
-			transition_time += 4
-			if (transition_time % 40 == 0 || !tca.fadetype)
+			transition_time += 2
+			if (transition_time % 30 == 0 || !tca.fadetype)
 			{
 				for (u8 i = 0; i < 8; i++)
 				{
@@ -251,8 +251,8 @@ function void yieldExecution()
 			System.loadExternalRawData("ICZ_Morning_Palette", 0x3fff30)
 			System.loadExternalRawData("ICZ_New_Palette", 0x3fff60)
 			
-			transition_time += 4
-			if (transition_time % 40 == 0 || !tca.fadetype)
+			transition_time += 2
+			if (transition_time % 30 == 0 || !tca.fadetype)
 			{
 				for (u8 i = 0; i < 15; i++)
 				{
@@ -360,8 +360,8 @@ function void yieldExecution()
 		
 		if (transition_state == 1 && transition_time <= 0x78) && (!global.game.paused) && tca.inssz1forreal
 		{	
-			transition_time += 4
-			if (transition_time % 40 == 0 || !tca.fadetype)
+			transition_time += 2
+			if (transition_time % 30 == 0 || !tca.fadetype)
 			{
 				System.loadExternalRawData("SSZ1_Palette_Original", 0x3fff30)
 							
@@ -448,8 +448,8 @@ function void yieldExecution()
 			else if (transition_state == 2 && transition_time <= 0x78) && (!global.game.paused)
 			{
 				System.loadExternalRawData(tca.pal_ssz_dawn ? "SSZK_Palette_Morning_Pink" : "SSZK_Palette_Morning", 0x0A979C)
-				transition_time += 4
-				if (transition_time % 40 == 0 || !tca.fadetype)
+				transition_time += 2
+				if (transition_time % 30 == 0 || !tca.fadetype)
 				{
 					System.loadExternalRawData("SSZK_Palette_Original", 0x3fff30)
 					
@@ -474,8 +474,8 @@ function void yieldExecution()
 			else if (transition_state == 1 && transition_time <= 0x78) && (!global.game.paused)
 			{
 				System.loadExternalRawData(tca.pal_ssz_dawn ? "SSZK_Palette_Morning_Pink" : "SSZK_Palette_Morning", 0x0A979C)
-				transition_time += 4
-				if (transition_time % 40 == 0 || !tca.fadetype)
+				transition_time += 2
+				if (transition_time % 30 == 0 || !tca.fadetype)
 				{
 					System.loadExternalRawData("SSZK_Palette_Original", 0x3fff30)
 					
