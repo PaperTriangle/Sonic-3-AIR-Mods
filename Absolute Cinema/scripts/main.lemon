@@ -1532,10 +1532,10 @@ function void fn022af8()
 				playSound(SFX_GRAB)
 			}
 
-			#if STANDALONE
-				if (A1 == 0xffffb000)
-					globalCameraOffsetX += objA1.position.x.u16 - objA0.position.x.u16
-			#endif
+		#if STANDALONE
+			if (A1 == 0xffffb000)
+				globalCameraOffsetX += objA1.position.x.u16 - objA0.position.x.u16
+		#endif
 
 			objA1.flags2a &= ~char.flag.IN_AIR
 			objA1.velocity.x = 0
@@ -1550,6 +1550,167 @@ function void fn022af8()
 			
 			if (A1 == 0xffffb000 && u8[A1 + 0x38] == 0)
 				u8[A1 + 0x25] = 0
+		}
+	}
+}
+
+//-------------//
+// SOZ Zipline //
+//-------------//
+
+//# address-hook(0x04b130) end(0x04b1ce)
+function void fn04b130()
+{
+	if (u8[A2 + 0x02] != 0)
+	{
+		--u8[A2 + 0x02]
+		if (u8[A2 + 0x02] != 0)
+			return
+	}
+
+	D0.u16 = objA1.position.x.u16 - objA0.position.x.u16 + 0x10
+	D1.u16 = objA1.position.y.u16 - objA0.position.y.u16
+	if (D0.u16 < 0x20 && D1.u16 < 0x18)
+	{
+		if (u8[A1 + 0x2e] == 0 && u8[A1 + 0x05] < base_state.HURT && debug_mode.state == 0)
+		{
+		
+		#if STANDALONE
+			if (A1 == 0xffffb000)
+				globalCameraOffsetX += objA1.position.x.u16 - objA0.position.x.u16
+		#endif
+		
+			objA1.render_flags &= ~(render_flag.FLIP_X | render_flag.FLIP_Y)
+			objA1.flags2a &= ~char.flag.IN_AIR
+			objA1.velocity.x = 0
+			objA1.velocity.y = 0
+			objA1.groundspeed = 0
+			objA1.position.x.u16 = objA0.position.x.u16
+			objA1.position.y.u16 = objA0.position.y.u16 + 0x14
+			objA1.state = char.state.HANGING
+			u8[A1 + 0x2e] = (control_flag.DISABLE_ANIMATION | control_flag.DISABLE_UPDATE)
+			u8[A1 + 0x3d] = 0
+
+			D0.u8 = u8[A3 + 0x2a] & char.flag.FACING_LEFT
+			objA1.render_flags |= D0.u8
+			u8[A1 + 0x2a] &= ~0x03
+			u8[A1 + 0x2a] |= D0.u8
+			u8[A2] = 0x01
+
+			playSound(SFX_GRAB)
+		}
+	}
+}
+
+//-------------------//
+// SOZ2 Light Switch //
+//-------------------//
+
+//# address-hook(0x040f52) end(0x04108e)
+function void fn040f52()
+{
+	if (u8[A2] != 0)
+	{
+		if ((objA1.render_flags & render_flag.VISIBLE) && u8[A1 + 0x05] < base_state.HURT)
+		{
+			// Check if jump button pressed
+			D0.u8 &= CONTROL_ABC
+			if (D0.u8 == 0)
+			{
+				bool goto040fd8 = false
+				if (s8[A0 + 0x2c] < 0)
+				{
+					push(A2)
+					push(A1)
+					fn00f8ea()
+					A1 = pop()
+					A2 = pop()
+
+					goto040fd8 = (D1.s16 <= 0)
+				}
+
+				if (!goto040fd8)
+				{
+					objA1.position.y.u16 = objA0.velocity.y + 0x30
+					return
+				}
+			}
+			else
+			{
+				u8[A1 + 0x2e] = 0
+				u8[A2] = 0
+				u8[A2+2] = 0x12
+
+				if (D0.u16 & 0x0f00)		// Any direction held?
+				{
+					u8[A2+2] = 0x3c
+				}
+
+				if (D0.u16 & 0x0800)		// CONTROL_RIGHT held
+				{
+					objA1.velocity.x = 0x200
+				}
+				else if (D0.u16 & 0x0400)		// CONTROL_LEFT held
+				{
+					objA1.velocity.x = -0x200
+				}
+
+				objA1.velocity.y = -0x380
+				objA1.hitbox_extends.x = char.hitbox.x.ROLLING
+				objA1.hitbox_extends.y = char.hitbox.y.ROLLING
+				objA1.state = char.state.ROLLING
+				u8[A1 + 0x27] = 0
+				objA1.flags2a |= (char.flag.IN_AIR | char.flag.ROLLING)
+				objA1.flags2a &= ~char.flag.CONTROL_LOCK
+				u8[A1 + 0x40] = 1
+				return
+			}
+		}
+
+		u8[A1 + 0x2e] = 0
+		u8[A2] = 0
+		u8[A2+2] = 0x3c
+	}
+	else
+	{
+		if (u8[A2+2] != 0)
+		{
+			--u8[A2+2]
+			if (u8[A2+2] != 0)
+				return
+		}
+
+		#if STANDALONE
+			// Don't react for any of the two if Tails is carrying the other character
+			if (tails.carrying)
+				return
+		#endif
+
+		u16 dx = objA1.position.x.u16 - objA0.position.x.u16 + 0x10
+		u16 dy = objA1.position.y.u16 - objA0.velocity.y - 0x30
+		if (dx < 0x20 && dy < 0x18)
+		{
+			if (s8[A1 + 0x2e] >= 0 && u8[A1 + 0x05] < base_state.HURT && debug_mode.state == 0)
+			{
+			
+			#if STANDALONE
+				if (A1 == 0xffffb000)
+					globalCameraOffsetX += objA1.position.x.u16 - objA0.position.x.u16
+			#endif
+			
+				objA1.flags2a &= ~char.flag.IN_AIR
+				objA1.velocity.x = 0
+				objA1.velocity.y = 0
+				objA1.groundspeed = 0
+				objA1.position.x.u16 = objA0.position.x.u16
+				objA1.position.y.u16 = objA0.velocity.y + 0x30
+				objA1.state = char.state.HANGING
+				u8[A1 + 0x2e] = 1
+
+				u8[A2] = 1
+
+				playSound(SFX_CLICK)
+			}
 		}
 	}
 }
