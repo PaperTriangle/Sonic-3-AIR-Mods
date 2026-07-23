@@ -35,3 +35,45 @@ function void PostFrameUpdate()
 
 	base.PostFrameUpdate()
 }
+
+// Horizontal Spikes Fix... Figured I'd put this here...
+//# address-hook(0x0240e2) end(0x024138)
+function void fn0240e2()
+{
+	fn0242b6()
+
+	D1 = objA0.box_size.x + 11
+	D2 = objA0.box_size.y - 1
+	D3.u16 = D2.u16 + 1
+	D4.u16 = objA0.position.x.u16
+	fn01dc56()
+
+	D6 = (D6 << 16) + (D6 >> 16)
+	D6.u16 &= 0x03
+	if (D6.u16 != 0)
+	{
+		D0.u8 = D6.u8 & 0x01
+		if (D0.u8 != 0)
+		{
+			A1 = 0xffffb000
+			if ((objA0.render_flags & render_flag.FLIP_X) ? objA1.position.x.u16 > objA0.position.x.u16 : objA1.position.x.u16 < objA0.position.x.u16)
+			{
+				DamageCharacter()
+				objA0.flags2a &= ~object.flag.P1_PUSHING
+			}
+		}
+		D6.u8 &= 0x02
+		if (D6.u8 != 0)
+		{
+			A1 = 0xffffb04a
+			if ((objA0.render_flags & render_flag.FLIP_X) ? objA1.position.x.u16 > objA0.position.x.u16 : objA1.position.x.u16 < objA0.position.x.u16)
+			{
+				DamageCharacter()
+				objA0.flags2a &= ~object.flag.P1_PUSHING
+			}
+		}
+	}
+
+	D0.u16 = u16[A0 + 0x30]
+	DrawOrUnloadObjectByD0()
+}
