@@ -15,6 +15,24 @@ define u8 global.xtrachar = u8[0xffffe654]
 global u16 oldposy = 0
 global bool inDataSelect
 
+// OSR Compat Functions
+
+function void LSDS.SetOriginsResolution()
+{
+	//if (System.getGlobalVariableValueByName("res_preset") == 0 && System.getGlobalVariableValueByName("screen_width") <= 426) || (System.getGlobalVariableValueByName("res_preset") > 0 && System.getGlobalVariableValueByName("res_preset") < 8)
+	{
+		SetResolution()
+		System.setGlobalVariableValueByName("set_screen_size", 1)
+	}
+}
+
+function void SetResolution()
+{
+	base.SetResolution()
+}
+
+// Main mod
+
 function void DataSelect.setup()
 {
 	inDataSelect = true
@@ -27,7 +45,7 @@ function void DataSelect.setup()
 		u16[0xffffb000 + 0x14] += 0x05
 	}
 	
-	if Mods.isModActive("Origins Screen Resolution")
+	if (Mods.isModActive("Origins Screen Resolution") && getScreenHeight() == 240)
 		u16[0xffffb000 + 0x14] += 0x06
 
 }
@@ -43,8 +61,7 @@ function void EntryFunctions.dataSelect()
 {
 	if Mods.isModActive("Origins Screen Resolution")
 	{
-		Renderer.setScreenSize(System.getGlobalVariableValueByName("screen_width"), 240)
-		System.setGlobalVariableValueByName("set_screen_size", 1)
+		LSDS.SetOriginsResolution()
 	}
 	
 	base.EntryFunctions.dataSelect()
@@ -377,7 +394,7 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 
 	if (inDataSelect)
 	{
-		if Mods.isModActive("Origins Screen Resolution")
+		if (Mods.isModActive("Origins Screen Resolution") && getScreenHeight() == 240)
 			py += 8
 		
 		if ((objA0.mapping_offset == 0x00ce0e || objA0.mapping_offset == 0x20bd68))
@@ -548,7 +565,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 {
 	u8 gameMode = global.game_mode & 0x7f
 
-	if (inDataSelect) && Mods.isModActive("Origins Screen Resolution")
+	if (inDataSelect) && (Mods.isModActive("Origins Screen Resolution") && getScreenHeight() == 240)
 	{
 		Renderer.drawVdpSprite(px, py + 0x08, size, index, renderQueue)
 		return true
@@ -566,16 +583,16 @@ function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 in
 		// New Save Slot Arrows
 		if (lsds.nodetail && objA0.update_address == 0x00d42c && (index == 0x93bd || index == 0x83bd) && u8[A0 + 0x38] == 0)
 		{
-			Renderer.drawVdpSprite(px, py + (Mods.isModActive("Origins Screen Resolution") ? 0x18 : 0x10), size, index, renderQueue)
+			Renderer.drawVdpSprite(px, py + ((Mods.isModActive("Origins Screen Resolution") && getScreenHeight() == 240) ? 0x18 : 0x10), size, index, renderQueue)
 			return true
 		}
 		else if (objA0.update_address == 0x00d42c && (index == 0x93bd || index == 0x83bd))
 		{
-			Renderer.drawVdpSprite(px, py + (Mods.isModActive("Origins Screen Resolution") ? 0x08 : 0x00), size, index, 0x9ffa)
+			Renderer.drawVdpSprite(px, py + ((Mods.isModActive("Origins Screen Resolution") && getScreenHeight() == 240) ? 0x08 : 0x00), size, index, 0x9ffa)
 			return true
 		}
 		
-		if Mods.isModActive("Origins Screen Resolution")
+		if (Mods.isModActive("Origins Screen Resolution") && getScreenHeight() == 240)
 		{
 			if Mods.isModActive("Time Consistent Adventure") && (objA0.update_address == 0x00d42c && (index == 0x93bd || index == 0x83bd))
 				return base.Standalone.onDrawVdpSpriteCompound(px, py + 0x08, size, index, renderQueue, spriteCounter)
@@ -637,7 +654,7 @@ function void fn00d9f4()
 		return
 	}
 
-	if Mods.isModActive("Origins Screen Resolution") && (A1 != 0x00db31)
+	if Mods.isModActive("Origins Screen Resolution") && (getScreenHeight() == 240) && (A1 != 0x00db31)
 		D0.u16 += 0x100
 
 	base.fn00d9f4()
@@ -649,7 +666,7 @@ function void fn00c97a()
 	if (lsds.nodetail)
 		return
 	
-	if Mods.isModActive("Origins Screen Resolution")
+	if Mods.isModActive("Origins Screen Resolution") && (getScreenHeight() == 240) 
 	{
 		A2 = 0x00da8a
 		A3 = 0xffffb128
@@ -770,7 +787,7 @@ function void fn00c890()
 	// Render "New" or static noise for the slots
 	D0.u16 = level.framecounter & 0x0c
 	A2 = 0x200000 + u32[0x3a216a + D0.u16]
-	D7.u16 = Mods.isModActive("Origins Screen Resolution") ? 0xc31a : 0xc21a
+	D7.u16 = (Mods.isModActive("Origins Screen Resolution") && getScreenHeight() == 240) ? 0xc31a : 0xc21a
 	A0 = 0xffffe6ac
 	for (u8 slot = 0; slot < 8; ++slot)
 	{
@@ -785,7 +802,7 @@ function void fn00c890()
 	}
 
 	A3 = 0xffffb128
-	D7.u16 = Mods.isModActive("Origins Screen Resolution") ? 0xcb20 : 0xca20
+	D7.u16 = (Mods.isModActive("Origins Screen Resolution") && getScreenHeight() == 240) ? 0xcb20 : 0xca20
 	A0 = 0xffffe6ac
 	for (u8 slot = 0; slot < 8; ++slot)
 	{
@@ -953,8 +970,7 @@ function void EntryFunctions.levelSelect()
 {
 	if Mods.isModActive("Origins Screen Resolution")
 	{
-		Renderer.setScreenSize(System.getGlobalVariableValueByName("screen_width"), 240)
-		System.setGlobalVariableValueByName("set_screen_size", 1)
+		LSDS.SetOriginsResolution()
 	}
 
 	Renderer.resetSprites()
@@ -967,7 +983,7 @@ function void Renderer.drawCustomSprite(u64 key, s16 px, s16 py, u8 atex, u8 fla
 {
 	if Mods.isModActive("Origins Screen Resolution")
 	{
-		if (global.game_mode == 0x28 || global.game_mode == 0x1c)
+		if (global.game_mode == 0x28 || global.game_mode == 0x1c) && (getScreenHeight() == 240)
 			py += 8
 		
 	#if EXTRA_CHARACTERS_UNLIMITED
@@ -999,7 +1015,7 @@ function void LevelSelect.init()
 		Renderer.drawCustomSprite("custom_ls_bg", s16(getScreenWidth() - 426)/2 - 43, -8, 0x10, 0, 0x1000)
 	}
 	
-	if Mods.isModActive("Origins Screen Resolution")
+	if (Mods.isModActive("Origins Screen Resolution") && getScreenHeight() == 240)
 		scrolloffset.y.planeA -= 8
 }
 
@@ -1089,8 +1105,7 @@ function void fn05c2e0()
 {
 	if Mods.isModActive("Origins Screen Resolution")
 	{
-		Renderer.setScreenSize(System.getGlobalVariableValueByName("screen_width"), 240)
-		System.setGlobalVariableValueByName("set_screen_size", 1)
+		LSDS.SetOriginsResolution()
 	}
 
 	base.fn05c2e0()
@@ -1101,7 +1116,7 @@ function void fn05c2e0()
 //# address-hook(0x05c52a) end(0x05c59c)
 function void fn05c52a()
 {
-	if !Mods.isModActive("Origins Screen Resolution")
+	if !(Mods.isModActive("Origins Screen Resolution") && getScreenHeight() == 240)
 	{
 		base.fn05c52a()
 		return
@@ -1122,7 +1137,7 @@ function void fn05c52a()
 //# address-hook(0x05c684) end(0x05c6b0)
 function void fn05c684()
 {
-	if !Mods.isModActive("Origins Screen Resolution")
+	if !(Mods.isModActive("Origins Screen Resolution") && getScreenHeight() == 240)
 	{
 		base.fn05c684()
 		return
@@ -1147,7 +1162,7 @@ function void fn05c684()
 //# address-hook(0x05c718) end(0x05c7a4)
 function void fn05c718()
 {
-	if !Mods.isModActive("Origins Screen Resolution")
+	if !(Mods.isModActive("Origins Screen Resolution") && getScreenHeight() == 240)
 	{
 		base.fn05c718()
 		return
@@ -1170,7 +1185,7 @@ function void fn05c718()
 //# address-hook(0x05c838) end(0x05c886)
 function void fn05c838()
 {
-	if !Mods.isModActive("Origins Screen Resolution")
+	if !(Mods.isModActive("Origins Screen Resolution") && getScreenHeight() == 240)
 	{
 		base.fn05c838()
 		return
@@ -1206,7 +1221,7 @@ function void fn05c838()
 //# address-hook(0x05c972) end(0x05c9be)
 function void fn05c972()
 {
-	if !Mods.isModActive("Origins Screen Resolution")
+	if !(Mods.isModActive("Origins Screen Resolution") && getScreenHeight() == 240)
 	{
 		base.fn05c972()
 		return
@@ -1271,7 +1286,7 @@ function void fn00d70c()
 			if (D5.u16 == 2)
 			{
 				u16 xShift = 0x80
-				u16 yShift = Mods.isModActive("Origins Screen Resolution") ? 0x80 : 0x88
+				u16 yShift = Mods.isModActive("Origins Screen Resolution") && getScreenHeight() == 240 ? 0x80 : 0x88
 				
 				if D3.s16 == 6
 					yShift += 0x24

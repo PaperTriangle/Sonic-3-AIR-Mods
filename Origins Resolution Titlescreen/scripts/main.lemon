@@ -79,6 +79,12 @@ function void fn0007ba()
 #endif
 }
 
+// Origins Screen Resolution compat
+function void SetResolution()
+{
+	base.SetResolution()
+}
+
 //-------------------------------------------------------//
 // Title Screen Main Function                            //
 //-------------------------------------------------------//
@@ -88,7 +94,11 @@ function void TitleScreen()
 {
 	if Mods.isModActive("Origins Screen Resolution")
 	{
-		Renderer.setScreenSize(System.getGlobalVariableValueByName("screen_width"), 240)
+		if (System.getGlobalVariableValueByName("res_preset") == 0 && System.getGlobalVariableValueByName("screen_height") == 240) || (System.getGlobalVariableValueByName("res_preset") == 2 || System.getGlobalVariableValueByName("res_preset") == 4 || System.getGlobalVariableValueByName("res_preset") == 6 || System.getGlobalVariableValueByName("res_preset") == 7 || System.getGlobalVariableValueByName("res_preset") == 9)
+			SetResolution()
+		else
+			Renderer.setScreenSize(426, 240)
+		
 		System.setGlobalVariableValueByName("set_screen_size", 1)
 	}
 	else
