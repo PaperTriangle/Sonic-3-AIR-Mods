@@ -326,6 +326,20 @@ function void fn01f7ce()
 	}
 }
 
+// MGZ Spinny Run
+//# address-hook(0x033cac) end(0x033f64)
+function void fn033cac()
+{
+	u8 bit = (1 << D6.u8)
+	
+	base.fn033cac()
+	
+	if ((objA0.flags2a & bit) != 0)
+	{
+		objA1.flags2a &= ~char.flag.ROLLING
+	}
+}
+
 // Running in FBZ static cylinder.
 //# address-hook(0x03a314) end(0x03a466)
 function void fn03a314()
