@@ -99,9 +99,12 @@ function void fn02dae6()
 //# address-hook(0x003af0) end(0x003b12)
 function void Menu.FadeInAfterInit()
 {
-	ac.no_pause = 0
-	ac.no_hud = 0
-	ac.check_act = 0
+	if (global.game_mode != 0x14)
+	{
+		ac.no_pause = 0
+		ac.no_hud = 0
+		ac.check_act = 0
+	}
 	base.Menu.FadeInAfterInit()
 }
 
@@ -690,6 +693,14 @@ function void fn08029c()
 	base.fn08029c()
 }
 
+//# address-hook(0x05c2e0) end(0x05c4d4)
+function void fn05c2e0()
+{
+	ac.no_pause = 1
+	ac.no_hud = 1
+	
+	base.fn05c2e0()
+}
 //-----------------------//
 // Smooth Landing Camera //
 //-----------------------//
