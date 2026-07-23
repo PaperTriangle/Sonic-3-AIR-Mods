@@ -159,7 +159,7 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 		}
 		
 		// Doing this to support SSZ Clouds and Extra Slot character names.
-		if (objA0.update_address == 0x02dd98)
+		if (objA0.update_address == 0x02dd98 || objA0.update_address == 0x02d612 || objA0.update_address == 0x02d638)
 		{
 			return base.Standalone.onWriteToSpriteTable(px, py, 0xd000)
 		}
@@ -254,6 +254,13 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 
 	if (Mods.isModActive("No Transparency"))
 		System.setGlobalVariableValueByName("renderTransparentPlz", true)
+
+	// Doing this here to support rendering on top of SSZ clouds.
+	if (objA0.update_address == 0x02d612 || objA0.update_address == 0x02d638)
+	{
+		Renderer.drawVdpSprite(px, py, size, index, 0xd000)
+		return true
+	}
 
 	// Dithered Plume Effects
 	if (mt.flameplumes)
