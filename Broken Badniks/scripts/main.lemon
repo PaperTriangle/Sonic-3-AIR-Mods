@@ -760,6 +760,12 @@ function void fn08741c()
 //# address-hook(0x0872cc) end(0x0872de)
 function void fn0872cc()
 {
+	if (!bb.monkeydude)
+	{
+		base.fn0872cc()
+		return
+	}
+
 	fn087500()
 
 	// Targets:
