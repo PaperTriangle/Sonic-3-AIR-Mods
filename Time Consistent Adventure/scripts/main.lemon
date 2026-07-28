@@ -174,7 +174,7 @@ function void yieldExecution()
 			}
 		}
 	}
-	else if (tca.fbz && global.zone_act == 0x0400 && (tca.intended && !(isMainCharacter(CHARACTER_KNUCKLES) && tca.knux_fbz))) // FBZ Act 1
+	else if (tca.fbz && global.zone_act == 0x0400 && (tca.intended && !(isKnucklesRoute() && tca.knux_fbz))) // FBZ Act 1
 	{
 		System.loadExternalRawData("FBZ_Palette", 0x052dd0)
 		
@@ -192,11 +192,11 @@ function void yieldExecution()
 		}
 		
 	}
-	else if (tca.fbz && global.zone_act == 0x0400 && (!tca.intended || (tca.intended && (isMainCharacter(CHARACTER_KNUCKLES) && tca.knux_fbz)))) // FBZ Act 1 (As Released) ****
+	else if (tca.fbz && global.zone_act == 0x0400 && (!tca.intended || (tca.intended && (isKnucklesRoute() && tca.knux_fbz)))) // FBZ Act 1 (As Released) ****
 	{
 		System.loadExternalRawData("FBZ_Palette_Released", 0x052dd0)
 	}
-	else if (tca.fbz && global.zone_act == 0x0401 && (tca.intended && !(isMainCharacter(CHARACTER_KNUCKLES) && tca.knux_fbz))) // FBZ Act 2 (Intended)
+	else if (tca.fbz && global.zone_act == 0x0401 && (tca.intended && !(isKnucklesRoute() && tca.knux_fbz))) // FBZ Act 2 (Intended)
 	{
 
 		if (camera.position.x.u16 >= 0x29a8 - getScreenExtend())
@@ -219,7 +219,7 @@ function void yieldExecution()
 			}
 		}
 	}
-	else if (tca.fbz && global.zone_act == 0x0401 && (!tca.intended || (tca.intended && (isMainCharacter(CHARACTER_KNUCKLES) && tca.knux_fbz)))) // FBZ Act 2 (As Released) ****
+	else if (tca.fbz && global.zone_act == 0x0401 && (!tca.intended || (tca.intended && (isKnucklesRoute() && tca.knux_fbz)))) // FBZ Act 2 (As Released) ****
 	{
 
 		if (camera.position.x.u16 >= 0x29a8 - getScreenExtend())
@@ -374,7 +374,7 @@ function void yieldExecution()
 	}
 	else if (tca.ssz_knux && global.zone_act == 0x0a01 && tca.intended) // SSZ Knuckles (Intended)
 	{
-		if !(isMainCharacter(CHARACTER_KNUCKLES) && tca.knux_fbz == 1) // Normal Mode (Knuckles skips FBZ)
+		if !(isKnucklesRoute() && tca.knux_fbz == 1) // Normal Mode (Knuckles skips FBZ)
 		{
 			if (transition_state == 0 )
 			{
