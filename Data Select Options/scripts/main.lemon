@@ -1116,45 +1116,19 @@ function void fn05c2e0()
 //# address-hook(0x05c52a) end(0x05c59c)
 function void fn05c52a()
 {
-	if !(Mods.isModActive("Origins Screen Resolution") && getScreenHeight() == 240)
-	{
-		base.fn05c52a()
-		return
-	}
-	
-	objA0.mapping_offset = 0x05cc4a
-	objA0.sprite_attributes = (ContinueScreen.Characters.targetInVRAM >> 5)
-	objA0.sprite_priority = 0x0280
-	objA0.box_size.x = 0x0c
-	objA0.box_size.y = 0x14
-	objA0.position.x.u16 = 0x0118 + getScreenExtend()
-	objA0.position.y.u16 = 0x0120 + 0x10
+	base.fn05c52a()
 
-	objA0.update_address = 0x05c55c
-	fn05c55c()
+	if (Mods.isModActive("Origins Screen Resolution") && getScreenHeight() == 240)
+		objA0.position.y.u16 += 0x10
 }
 
 //# address-hook(0x05c684) end(0x05c6b0)
 function void fn05c684()
 {
-	if !(Mods.isModActive("Origins Screen Resolution") && getScreenHeight() == 240)
-	{
-		base.fn05c684()
-		return
-	}
+	base.fn05c684()
 	
-	// Sonic running after Knuckles when continuing
-
-	objA0.base_state = 0x02
-	objA0.mapping_offset = 0x146620
-	objA0.sprite_attributes = (Char.Player1.targetInVRAM >> 5)
-	objA0.sprite_priority = 0x0280
-	objA0.box_size.x = 0x0c
-	objA0.box_size.y = 0x14
-	objA0.position.x.u16 = 0x0120 + getScreenExtend()
-	objA0.position.y.u16 = 0x0120 + 0x10
-
-	fn05c6b6()
+	if (Mods.isModActive("Origins Screen Resolution") && getScreenHeight() == 240)
+		objA0.position.y.u16 += 0x10
 }
 
 // Tails
@@ -1162,22 +1136,10 @@ function void fn05c684()
 //# address-hook(0x05c718) end(0x05c7a4)
 function void fn05c718()
 {
-	if !(Mods.isModActive("Origins Screen Resolution") && getScreenHeight() == 240)
-	{
-		base.fn05c718()
-		return
-	}
+	base.fn05c718()
 	
-	objA0.mapping_offset = 0x05cc4a
-	objA0.sprite_attributes = (ContinueScreen.Characters.targetInVRAM >> 5)
-	objA0.sprite_priority = 0x0200
-	objA0.box_size.x = 0x10
-	objA0.box_size.y = 0x14
-	objA0.position.x.u16 = 0x012c + getScreenExtend()
-	objA0.position.y.u16 = 0x0120 + 0x10
-
-	objA0.update_address = 0x05c74a
-	fn05c74a()
+	if (Mods.isModActive("Origins Screen Resolution") && getScreenHeight() == 240)
+		objA0.position.y.u16 += 0x10
 }
 
 // Knuckles
@@ -1185,35 +1147,10 @@ function void fn05c718()
 //# address-hook(0x05c838) end(0x05c886)
 function void fn05c838()
 {
-	if !(Mods.isModActive("Origins Screen Resolution") && getScreenHeight() == 240)
-	{
-		base.fn05c838()
-		return
-	}
+	base.fn05c838()
 	
-	if (!isMainCharacter(CHARACTER_KNUCKLES))
-	{
-		A1 = 0x05c8c8
-		objA0.position.x.u16 = 0x40
-		objA0.position.y.u16 = 0x0120 + 0x10
-
-		objA0.update_address = 0x05c8c8
-		fn05c8c8()
-	}
-	else
-	{
-		A1 = 0x05c85a
-		objA0.mapping_offset = 0x05cc4a
-		objA0.sprite_attributes = (sprite_attribute.PALETTE.LINE3 | (ContinueScreen.Characters.targetInVRAM >> 5))
-		objA0.sprite_priority = 0x0200
-		objA0.box_size.x = 0x10
-		objA0.box_size.y = 0x18
-		objA0.position.x.u16 = 0x011c + getScreenExtend()
-		objA0.position.y.u16 = 0x0120 + 0x10
-
-		objA0.update_address = 0x05c88c
-		fn05c88c()
-	}
+	if (Mods.isModActive("Origins Screen Resolution") && getScreenHeight() == 240)
+		objA0.position.y.u16 += 0x10
 }
 
 // Egg Robo (only when playing as Knuckles)
@@ -1221,27 +1158,10 @@ function void fn05c838()
 //# address-hook(0x05c972) end(0x05c9be)
 function void fn05c972()
 {
-	if !(Mods.isModActive("Origins Screen Resolution") && getScreenHeight() == 240)
-	{
-		base.fn05c972()
-		return
-	}
-	
-	setupObjectAttributesFull(0x0919a6)
+	base.fn05c972()
 
-	objA0.render_flags &= ~render_flag.WORLD
-	objA0.render_flags |= render_flag.FLIP_X
-	objA0.update_address = 0x05c9c4
-	objA0.position.x.u16 = 0x60
-	objA0.position.y.u16 = 0xf0 + 0x10
-	objA0.velocity.x = 0x0600
-	fn0685e2()
-
-	// "spawnChildObjects(0x0919d0)" replaced by:
-	spawnChildObject(0x0916a8, 0x00, -12, 28)
-	spawnChildObject(0x0916ee, 0x02, -28, -4)
-
-	Kosinski.addToDMAQueue(0x17b17e, 0xa000)		// Egg Robo badnik sprites
+	if (Mods.isModActive("Origins Screen Resolution") && getScreenHeight() == 240)
+		objA0.position.y.u16 += 0x10
 }
 
 //# address-hook(0x00d70c) end(0x00d77c)
