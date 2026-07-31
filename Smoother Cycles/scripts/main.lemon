@@ -492,3 +492,51 @@ function void LevelPaletteUpdate.DEZ2()
 		}
 	}
 }
+
+global s8 current_me_timer
+
+//# address-hook(0x085a1a) end(0x085a58)
+function void fn085a1a()
+{
+	//System.writeDisplayLine(stringformat("%d, %d", current_me_timer, s8(objA0.value3a - 1)))
+
+	if s8(objA0.value3a) > 0 && (u8[0xfffffabf] == 0) && (current_me_timer/2 == s8(objA0.value3a - 1))
+	{
+
+		u32 A1_backup = A1
+		u32 A3_backup = A3
+		u8 bbb_backup = objA0.value3b
+		u8 aaa_backup = objA0.value3a
+		
+		objA0.value3a = s8(0)
+		
+		u8 numColours = u16[A1 + 4]
+		u16 backupEmeraldColours[16]
+		
+		for (s8 i = numColours; i >= 0; i--)
+		{
+			backupEmeraldColours[i] = u16[A2 + i*2]
+		}
+		
+		base.fn085a1a()
+		
+		for (s8 i = numColours; i >= 0; i--)
+		{
+			u16[A2 + i*2] = blendColorsPacked(backupEmeraldColours[i], u16[A2 + i*2], 0x80)
+		}
+		
+		A1 = A1_backup
+		A3 = A3_backup
+		objA0.value3b = bbb_backup
+		objA0.value3a = aaa_backup - 1
+		
+	}
+	else
+	{
+		u8 aaa_backup = objA0.value3a
+		base.fn085a1a()
+		
+		if (s8(objA0.value3a) > aaa_backup)
+			current_me_timer = s8(objA0.value3a)
+	}
+}
