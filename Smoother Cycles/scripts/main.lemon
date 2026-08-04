@@ -1,8 +1,148 @@
+global bool sc.aiz
+global bool sc.hcz
+global bool sc.icz
+global bool sc.lrz
+global bool sc.dez
+global bool sc.master_emerald
+
+// AIZ
+
+//# address-hook(0x0021be) end(0x00227a)
+function void LevelPaletteUpdate.AIZ1()
+{
+	if (!sc.aiz) || (level.palettefx.aiz_intro != 0)
+	{
+		base.LevelPaletteUpdate.AIZ1()
+		return
+	}
+	
+	--level.palettefx.timer_1
+	if (s16(7 - (level.palettefx.timer_1 + 1)) % 4 == 0)
+	{
+		// Water
+	
+		s16 newFrame = level.palettefx.frame_1
+		s16 oldFrame = level.palettefx.frame_1 - 8
+		
+		if (oldFrame < 0)
+			oldFrame = 24
+		
+		A0 = 0x002af6
+	
+		for (u8 i = 0; i < 4; i++)
+		{
+			u16[0xfffffc56 + i*2] = blendColorsPacked(u16[A0 + oldFrame + i*2], u16[A0 + newFrame + i*2], min(0x100, Math.roundToInt(0x100 * s16(7 - (level.palettefx.timer_1 + 1)) / 8.0f)))
+		}
+		
+		if (s16(level.palettefx.timer_1) < 0)
+		{
+			level.palettefx.timer_1 = 7
+			
+			level.palettefx.frame_1 += 8
+			if (level.palettefx.frame_1 >= 0x20)
+				level.palettefx.frame_1 = 0
+		}
+	}
+
+	if (level.palettefx.state == 0)
+	{
+		--level.palettefx.timer_2
+		if (s16(7 - (level.palettefx.timer_2 + 1)) % 4 == 0)
+		{
+			// Water
+		
+			s16 newFrame = level.palettefx.frame_2
+			s16 oldFrame = level.palettefx.frame_2 - 6
+			
+			if (oldFrame < 0)
+				oldFrame = 36
+			
+			A0 = 0x002bf6
+		
+			for (u8 i = 0; i < 3; i++)
+			{
+				u16[0xfffffc78 + i*2] = blendColorsPacked(u16[A0 + oldFrame + i*2], u16[A0 + newFrame + i*2], min(0x100, Math.roundToInt(0x100 * s16(7 - (level.palettefx.timer_2 + 1)) / 8.0f)))
+			}
+			
+			if (s16(level.palettefx.timer_2) < 0)
+			{
+				level.palettefx.timer_2 = 7
+				
+				level.palettefx.frame_2 += 6
+				if (level.palettefx.frame_2 >= 42)
+					level.palettefx.frame_2 = 0
+			}
+		}
+	}
+}
+
+// Don't load the middle palette line, it makes the waterfall jump.
+//# address-hook(0x083c7c) end(0x083c8e)
+function void fn083c7c()
+{
+	if (!sc.aiz)
+	{
+		base.fn083c7c()
+		return
+	}
+	
+	// Loads palette colors 0x10 .. 0x3f
+	copyMemory(0xfffffc20, 0x0a8b7c, 0x20)
+	copyMemory(0xfffffc60, 0x0a8bbc, 0x20)
+}
+
+// HCZ
+
+//# address-hook(0x002334) end(0x002380)
+function void LevelPaletteUpdate.HCZ1()
+{
+	if (!sc.hcz || level.palettefx.state != 0)
+	{
+		base.LevelPaletteUpdate.HCZ1()
+		return
+	}
+	
+	--level.palettefx.timer_1
+	if (s16(9 - (level.palettefx.timer_1 + 1)) % 5 == 0)
+	{
+		// Water
+	
+		s16 newFrame = level.palettefx.frame_1
+		s16 oldFrame = level.palettefx.frame_1 - 8
+		
+		if (oldFrame < 0)
+			oldFrame = 24
+		
+		A0 = 0x002d0e
+	
+		for (u8 i = 0; i < 4; i++)
+		{
+			u16[0xfffffc46 + i*2] = blendColorsPacked(u16[A0 + oldFrame + i*2], u16[A0 + newFrame + i*2], min(0x100, Math.roundToInt(0x100 * s16(9 - (level.palettefx.timer_1 + 1)) / 10.0f)))
+			u16[0xfffff0c6 + i*2] = blendColorsPacked(u16[A0 + oldFrame + i*2], u16[A0 + newFrame + i*2], min(0x100, Math.roundToInt(0x100 * s16(9 - (level.palettefx.timer_1 + 1)) / 10.0f)))
+		}
+		
+		if (s16(level.palettefx.timer_1) < 0)
+		{
+			level.palettefx.timer_1 = 9
+			
+			level.palettefx.frame_1 += 8
+			if (level.palettefx.frame_1 >= 32)
+				level.palettefx.frame_1 = 0
+		}
+	}
+}
+
 // ICZ
 
 //# address-hook(0x00244e) end(0x002506)
 function void LevelPaletteUpdate.ICZ()
 {
+	if (!sc.icz)
+	{
+		base.LevelPaletteUpdate.ICZ()
+		return
+	}
+	
 	--level.palettefx.timer_1
 	if (s16(level.palettefx.timer_1) < 0)
 	{
@@ -82,10 +222,16 @@ function void LevelPaletteUpdate.ICZ()
 //# address-hook(0x0026f2) end(0x00277c)
 function void LevelPaletteUpdate.LRZ2()
 {
+	if (!sc.lrz)
+	{
+		base.LevelPaletteUpdate.LRZ2()
+		return
+	}
+	
 	if level.wait_for_results || camera.position.x.u16 >= 0x0940
 	{	
 		--level.palettefx.timer_1
-		if ((15 - s16(level.palettefx.timer_1 + 1)) % 8 == 0)
+		if ((15 - s16(level.palettefx.timer_1 + 1)) % 4 == 0)
 		{
 			// Lamps and Lava
 			
@@ -113,7 +259,7 @@ function void LevelPaletteUpdate.LRZ2()
 	}
 
 	--level.palettefx.timer_2
-	if ((15 - s16(level.palettefx.timer_2 + 1)) % 8 == 0)
+	if ((15 - s16(level.palettefx.timer_2 + 1)) % 4 == 0)
 	{
 		// Background Glow
 
@@ -141,7 +287,7 @@ function void LevelPaletteUpdate.LRZ2()
 	}
 
 	--level.palettefx.timer_3
-	if (s16(15 - (level.palettefx.timer_3 + 1)) % 8 == 0)
+	if (s16(15 - (level.palettefx.timer_3 + 1)) % 4 == 0)
 	{
 		// Crystals
 		
@@ -172,8 +318,14 @@ function void LevelPaletteUpdate.LRZ2()
 //# address-hook(0x00266c) end(0x0026f0)
 function void LevelPaletteUpdate.LRZ1()
 {
+	if (!sc.lrz)
+	{
+		base.LevelPaletteUpdate.LRZ1()
+		return
+	}
+	
 	--level.palettefx.timer_1
-	if ((15 - s16(level.palettefx.timer_1 + 1)) % 8 == 0)
+	if ((15 - s16(level.palettefx.timer_1 + 1)) % 4 == 0)
 	{
 		// Lamps and Lava
 		
@@ -200,7 +352,7 @@ function void LevelPaletteUpdate.LRZ1()
 	}
 	
 	--level.palettefx.timer_2
-	if (s16(15 - (level.palettefx.timer_2 + 1)) % 8 == 0)
+	if (s16(15 - (level.palettefx.timer_2 + 1)) % 4 == 0)
 	{
 		// Pipe / Background Glow
 
@@ -256,12 +408,18 @@ function void LevelPaletteUpdate.LRZ1()
 //# address-hook(0x002a50) end(0x002abe)
 function void LevelPaletteUpdate.LRZ_Boss()
 {
+	if (!sc.lrz)
+	{
+		base.LevelPaletteUpdate.LRZ_Boss()
+		return
+	}
+	
 	if (s8(level.palettefx.state) >= 0)
 	{
 		if (!level.capsule_opened)
 		{
 			--level.palettefx.timer_1
-			if ((15 - s16(level.palettefx.timer_1 + 1)) % 8 == 0)
+			if ((15 - s16(level.palettefx.timer_1 + 1)) % 4 == 0)
 			{
 				// Lamps and Lava
 				
@@ -291,17 +449,31 @@ function void LevelPaletteUpdate.LRZ_Boss()
 		if (level.palettefx.state != 0)
 		{
 			--level.palettefx.timer_2
-			if (s16(level.palettefx.timer_2) < 0)
+			if (s16(level.palettefx.timer_2 + 1) % 4 == 0)
 			{
-				level.palettefx.timer_2 = 7
-
-				D0.u16 = level.palettefx.frame_3
-				level.palettefx.frame_3 += 4
-				if (level.palettefx.frame_3 >= 0x3c)
-					level.palettefx.frame_3 = 0
-
+				// Hot Crystals
+				
+				s16 newFrame = level.palettefx.frame_3
+				s16 oldFrame = level.palettefx.frame_3 - 4
+				
+				if (oldFrame < 0)
+					oldFrame = 56
+				
 				A0 = 0x0036ec
-				u32[0xfffffc78] = u32[A0 + D0.u16]
+
+				for (u8 i = 0; i < 2; i++)
+				{
+					u16[0xfffffc78 + i*2] = blendColorsPacked(u16[A0 + oldFrame + i*2], u16[A0 + newFrame + i*2], min(0x100, Math.roundToInt(0x100 * s16(15 - (level.palettefx.timer_2 + 1)) / 16.0f)))
+				}
+				
+				if (s16(level.palettefx.timer_2) < 0)
+				{
+					level.palettefx.timer_2 = 7
+					
+					level.palettefx.frame_3 += 4
+					if (level.palettefx.frame_3 >= 60)
+						level.palettefx.frame_3 = 0
+				}
 			}
 		}
 	}
@@ -312,7 +484,7 @@ function void LevelPaletteUpdate.LRZ_Boss()
 	if (level.palettefx.state == 0)
 	{
 		--level.palettefx.timer_3
-		if (s16(level.palettefx.timer_3 + 1) % 8 == 0)
+		if (s16(level.palettefx.timer_3 + 1) % 4 == 0)
 		{
 			//Restore earlier palette
 			copyMemory(0xfffffc4c, 0x0a9d08, 0x36)
@@ -347,10 +519,16 @@ function void LevelPaletteUpdate.LRZ_Boss()
 //# address-hook(0x002ac0) end(0x002af4)
 function void LevelPaletteUpdate.HPZ()
 {
-	if (level.palettefx.state == 0)
+	if (!sc.lrz)
 	{
-		--level.palettefx.timer_1
-		if (s16(7 - (level.palettefx.timer_1 + 1)) % 4 == 0)
+		base.LevelPaletteUpdate.HPZ()
+		return
+	}
+	
+	if (level.palettefx.state == 0) && !sc.hpz_visible_emerald
+	{
+		--level.palettefx.timer_2
+		if (s16(7 - (level.palettefx.timer_2 + 1)) % 4 == 0)
 		{
 			// Red Pulse
 			
@@ -364,12 +542,12 @@ function void LevelPaletteUpdate.HPZ()
 
 			for (u8 i = 0; i < 2; i++)
 			{
-				u16[0xfffffc62 + i*2] = blendColorsPacked(u16[A0 + oldFrame + i*2], u16[A0 + newFrame + i*2], min(0x100, Math.roundToInt(0x100 * s16(7 - (level.palettefx.timer_1 + 1)) / 8.0f)))
+				u16[0xfffffc62 + i*2] = blendColorsPacked(u16[A0 + oldFrame + i*2], u16[A0 + newFrame + i*2], min(0x100, Math.roundToInt(0x100 * s16(7 - (level.palettefx.timer_2 + 1)) / 8.0f)))
 			}
 			
-			if (s16(level.palettefx.timer_1) < 0)
+			if (s16(level.palettefx.timer_2) < 0)
 			{
-				level.palettefx.timer_1 = 7
+				level.palettefx.timer_2 = 7
 				
 				level.palettefx.frame_1 += 4
 				if (level.palettefx.frame_1 >= 40)
@@ -379,7 +557,7 @@ function void LevelPaletteUpdate.HPZ()
 	}
 	
 	--level.palettefx.timer_3
-	if (s16(15 - (level.palettefx.timer_3 + 1)) % 8 == 0) && (camera.position.x.u16 < 0x0310)
+	if (s16(15 - (level.palettefx.timer_3 + 1)) % 4 == 0) && (camera.position.x.u16 < (Mods.isModActive("Sonic 3: D.A. Garden Edition") ? 0x0280 : 0x0310))
 	{
 		// Crystals
 		
@@ -407,13 +585,37 @@ function void LevelPaletteUpdate.HPZ()
 	}
 }
 
+global bool sc.hpz_visible_emerald
+
+//# address-hook(0x090700) end(0x09072e)
+function void fn090700()
+{
+	if (objA0.render_flags & render_flag.VISIBLE)
+		sc.hpz_visible_emerald = true
+
+	base.fn090700()
+}
+
+//# address-hook(0x05a12e) end(0x05a152)
+function void InitLevelTiles.HPZ()
+{
+	sc.hpz_visible_emerald = false
+	base.InitLevelTiles.HPZ()
+}
+
 // DEZ
 
 //# address-hook(0x00277e) end(0x0027ac)
 function void LevelPaletteUpdate.DEZ1()
 {
+	if (!sc.dez)
+	{
+		base.LevelPaletteUpdate.DEZ1()
+		return
+	}
+	
 	--level.palettefx.timer_3
-	if ((15 - s16(level.palettefx.timer_3 + 1)) % 8 == 0)
+	if ((15 - s16(level.palettefx.timer_3 + 1)) % 4 == 0)
 	{
 		{
 			// Glowing Things...
@@ -448,6 +650,12 @@ function void LevelPaletteUpdate.DEZ1()
 //# address-hook(0x0027b2) end(0x002818)
 function void LevelPaletteUpdate.DEZ2()
 {
+	if (!sc.dez)
+	{
+		base.LevelPaletteUpdate.DEZ2()
+		return
+	}
+	
 	--level.palettefx.timer_1
 	if (s16(level.palettefx.timer_1) < 0)
 	{
@@ -493,14 +701,20 @@ function void LevelPaletteUpdate.DEZ2()
 	}
 }
 
-global s8 current_me_timer
+global s8 sc.current_me_timer
 
 //# address-hook(0x085a1a) end(0x085a58)
 function void fn085a1a()
 {
-	//System.writeDisplayLine(stringformat("%d, %d", current_me_timer, s8(objA0.value3a - 1)))
+	if (!sc.master_emerald)
+	{
+		base.fn085a1a()
+		return
+	}
+	
+	//System.writeDisplayLine(stringformat("%d, %d", sc.current_me_timer + 1,((sc.current_me_timer + 1) / (sc.current_me_timer + 1 > 10 ? 4 : 2))))
 
-	if s8(objA0.value3a) > 0 && (u8[0xfffffabf] == 0) && (current_me_timer/2 == s8(objA0.value3a - 1))
+	if s8(objA0.value3a) > 0 && (u8[0xfffffabf] == 0) && (s8(objA0.value3a - 1) % ((sc.current_me_timer + 1) / (sc.current_me_timer + 1 > 10 ? 4 : 2)) == 0)
 	{
 
 		u32 A1_backup = A1
@@ -510,7 +724,7 @@ function void fn085a1a()
 		
 		objA0.value3a = s8(0)
 		
-		u8 numColours = u16[A1 + 4]
+		s8 numColours = s8(u16[A1 + 4])
 		u16 backupEmeraldColours[16]
 		
 		for (s8 i = numColours; i >= 0; i--)
@@ -537,6 +751,6 @@ function void fn085a1a()
 		base.fn085a1a()
 		
 		if (s8(objA0.value3a) > aaa_backup)
-			current_me_timer = s8(objA0.value3a)
+			sc.current_me_timer = s8(objA0.value3a)
 	}
 }
