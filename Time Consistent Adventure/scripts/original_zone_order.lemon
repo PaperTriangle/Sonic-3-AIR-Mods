@@ -11,7 +11,7 @@ global u8 tca.flyingBatteryPropellorFrame
 function void yieldExecution()
 {
 	// CNZ to FBZ
-	if (tca.intended && global.zone_act == 0x0301 && !global.game.paused)
+	if (tca.intended && global.zone_act == 0x0301 && !isKnucklesRoute() && !global.game.paused)
 	{
 		if !(camera.position.x.u16 > 0x4996 && player1.control_override)
 		{
@@ -394,7 +394,7 @@ function void fn06e7e4()
 	if (u8[0xffff0000 + u16[A0 + 0x44] + 0x31] == 0x01)
 		player2.control_override = 0xff
 	
-	if (!tca.intended)
+	if (!tca.intended || isKnucklesRoute())
 	{
 		base.fn06e7e4()
 		return
@@ -435,7 +435,7 @@ function void fn06e80c()
 //# address-hook(0x052224) end(0x052228)
 function void UpdateLevelScrolling.CNZ2()
 {
-	if (tca.intended)
+	if (tca.intended && !isKnucklesRoute())
 	{
 		string key = stringformat("flyingbattery_transition_%d", tca.flyingBatteryPropellorFrame + 1)
 		SpriteHandle flyingbattery.num = Renderer.addSpriteHandle(key, tca.flyingBatteryXPosition, tca.flyingBatteryYPosition, 0x4000)
