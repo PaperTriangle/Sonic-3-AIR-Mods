@@ -262,7 +262,7 @@ function void UpdateLevelTiles.HCZ1()
 		}
 		
 		// That one waterfall that is an object
-		Renderer.drawCustomSprite("hcz_waterfall", 0xf00, 0x200, 0x00, SPRITE_FLAG_WORLDSPACE | SPRITE_FLAG_PRIO, 0xc000, 0, 0xb0)
+		Renderer.drawCustomSprite("hcz_waterfall", 0xf00 + mt.shakeX, 0x200 + mt.shakeY, 0x00, SPRITE_FLAG_WORLDSPACE | SPRITE_FLAG_PRIO, 0xc000, 0, 0xb0)
 
 		if (Mods.isModActive("No Transparency"))
 			System.setGlobalVariableValueByName("renderTransparentPlz", false)
