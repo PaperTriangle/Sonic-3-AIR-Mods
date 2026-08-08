@@ -656,7 +656,7 @@ function void Object.CountdownAndTrigger()
 {
 	if mt.aiz2_tiles && (objA0.countdown_callback == 0x069228)
 	{
-		Renderer.drawCustomSprite(isMainCharacter(CHARACTER_KNUCKLES) ? "flame_mobile_er" : (Mods.isModActive("Blue Glasses Eggman") ? "flame_mobile_bge" : "flame_mobile"), objA0.position.x.u16, objA0.position.y.u16 - 16 - objA0.countdown_value*2, 0x00, SPRITE_FLAG_WORLDSPACE | SPRITE_FLAG_PRIO, 0x1000)
+		Renderer.drawCustomSprite(isMainCharacter(CHARACTER_KNUCKLES) ? "flame_mobile_er" : (Mods.isModActive("Blue Glasses Eggman") ? "flame_mobile_bge" : "flame_mobile"), objA0.position.x.u16, objA0.position.y.u16 - 16 - objA0.countdown_value*2, 0x00, SPRITE_FLAG_WORLDSPACE | SPRITE_FLAG_PRIO, 0x1800)
 	}
 	
 	base.Object.CountdownAndTrigger()
@@ -668,7 +668,7 @@ function void Object.CountdownAndTrigger()
 function void fn06926c()
 {
 	if mt.aiz2_tiles
-		Renderer.drawCustomSprite(isMainCharacter(CHARACTER_KNUCKLES) ? "flame_mobile_er" : (Mods.isModActive("Blue Glasses Eggman") ? "flame_mobile_bge" : "flame_mobile"), objA0.position.x.u16, objA0.position.y.u16 - 16, 0x00, SPRITE_FLAG_WORLDSPACE | SPRITE_FLAG_PRIO, 0x1000)
+		Renderer.drawCustomSprite(isMainCharacter(CHARACTER_KNUCKLES) ? "flame_mobile_er" : (Mods.isModActive("Blue Glasses Eggman") ? "flame_mobile_bge" : "flame_mobile"), objA0.position.x.u16, objA0.position.y.u16 - 16, 0x00, SPRITE_FLAG_WORLDSPACE | SPRITE_FLAG_PRIO, 0x1800)
 	
 	base.fn06926c()
 }
