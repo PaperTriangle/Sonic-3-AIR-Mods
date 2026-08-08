@@ -397,7 +397,7 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 		// Eggman Head (Blue Glasses)
 		if (objA0.update_address == 0x067b66)  && u8[0xffff0000 + u16[0xffff0000 + u16[A0 + 0x46] + 0x46] + 0x05] >= 0x0a
 		{
-			return base.Standalone.onWriteToSpriteTable(px, py, 0x1000)
+			return base.Standalone.onWriteToSpriteTable(px, py, 0x1800)
 		}
 	}
 	else if mt.hcz1_tiles && global.zone_act == 0x0100
@@ -468,22 +468,22 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		// AIZ Eggman Behind Waterfall
 		if (objA0.update_address == 0x06923e) && objA0.base_state >= 0x0a
 		{
-			Renderer.drawVdpSprite(px, py, size, index, 0x1000)
+			Renderer.drawVdpSprite(px, py, size, index, 0x1800)
 			return true
 		}
 		else if (objA0.update_address == 0x069622) && u8[0xffff0000 + u16[A0 + 0x46] + 0x05] >= 0x0a
 		{
-			Renderer.drawVdpSprite(px, py, size, index, 0x1000)
+			Renderer.drawVdpSprite(px, py, size, index, 0x1800)
 			return true
 		}
 		else if (objA0.update_address == 0x067d42) && u8[0xffff0000 + u16[A0 + 0x46] + 0x05] >= 0x0a
 		{
-			Renderer.drawVdpSprite(px, py, size, index, 0x1000)
+			Renderer.drawVdpSprite(px, py, size, index, 0x1800)
 			return true
 		}
 		else if (objA0.update_address == 0x069738) && u8[0xffff0000 + u16[0xffff0000 + u16[A0 + 0x46] + 0x46] + 0x05] >= 0x0a
 		{
-			Renderer.drawVdpSprite(px, py, size, index, 0x1000)
+			Renderer.drawVdpSprite(px, py, size, index, 0x1800)
 			return true
 		}
 		else if (objA0.update_address == 0x069a1a || objA0.update_address == 0x0699ea)
@@ -495,7 +495,7 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		// Eggman Head
 		if (objA0.update_address == 0x067b66) && u8[0xffff0000 + u16[0xffff0000 + u16[A0 + 0x46] + 0x46] + 0x05] >= 0x0a
 		{
-			Renderer.drawVdpSprite(px, py, size, index, 0x1000)
+			Renderer.drawVdpSprite(px, py, size, index, 0x1800)
 			return true
 		}
 	}
