@@ -99,7 +99,7 @@ function void TitleScreen()
 		else
 			Renderer.setScreenSize(426, 240)
 		
-		System.setGlobalVariableValueByName("set_screen_size", 1)
+		System.setGlobalVariableValueByName("set_screen_size", 0)
 	}
 	else
 		Renderer.setScreenSize(426, 240)
@@ -107,6 +107,7 @@ function void TitleScreen()
 	global.xtrachar = 0
 	levelselect.characters = 0
 	levelselect.selection = 0
+	u8[0x818080] = 0 // reset useCustomVScrollBuffer
 
 	playMusic(MUSIC_CTRL_FADEOUT)
 	kosinski.queue_size = 0
