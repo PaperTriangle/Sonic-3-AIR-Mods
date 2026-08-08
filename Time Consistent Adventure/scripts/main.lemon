@@ -28,7 +28,9 @@ global bool tca.ssz_knux_longdawn
 global bool tca.ssz_knux_emerald
 global u8 tca.bmpline
 global bool tca.bg_stars
-global bool tca.bg_twinkle
+global u8 tca.bg_twinkle
+global u8 tca.fbz_star_line
+global u8 tca.ssz_star_line
 global bool tca.zone_icons
 global bool tca.ssz_icon
 
@@ -187,7 +189,10 @@ function void yieldExecution()
 			
 			for (u16 fs = 0 ; fs*128 < getScreenWidth() + 128; fs++)
 			{
-				Renderer.drawSprite(stringformat("fbz_stars_%d", tca.bg_twinkle ? (level.framecounter >> 4) % 4 : 1), 128 + fs*128 - ((level.framecounter + camera.position.x.u16) % 1152) / 9, 128 - tca.stars_offset - camera.screenshake.offset, 0, SPRITE_FLAG_PRIO, 0x1001)
+				if (!tca.fbz_star_line || !tca.bg_twinkle)
+					Renderer.drawSprite(stringformat("fbz_stars_%d", tca.bg_twinkle ? (level.framecounter >> 4) % 4 : 1), 128 + fs*128 - ((level.framecounter + camera.position.x.u16) % 1152) / 9, 128 - tca.stars_offset - camera.screenshake.offset, 0, SPRITE_FLAG_PRIO, 0x1001)
+				else
+					Renderer.drawSprite("fbz_stars", 128 + fs*128 - ((level.framecounter + camera.position.x.u16) % 1152) / 9, 128 - tca.stars_offset - camera.screenshake.offset, 0xa0 + tca.fbz_star_line * 0x10, SPRITE_FLAG_PRIO, 0x1001)
 			}
 		}
 		
@@ -384,7 +389,13 @@ function void yieldExecution()
 					
 					for (u16 fs = 0 ; fs*128 < getScreenWidth(); fs++)
 					{
-						Renderer.drawSprite(stringformat("knux_stars_%d", tca.bg_twinkle ? (level.framecounter >> 4) % 4 : 1), 128 + fs*128 - (camera.position.x.u16 % 1024) / 8, -1 * (camera.position.y.u16 - 0x400) - camera.screenshake.offset + 80, 0, SPRITE_FLAG_PRIO, 0x2001)
+						//Renderer.drawSprite(stringformat("knux_stars_%d", tca.bg_twinkle ? (level.framecounter >> 4) % 4 : 1), 128 + fs*128 - (camera.position.x.u16 % 1024) / 8, -1 * (camera.position.y.u16 - 0x400) - camera.screenshake.offset + 80, 0, SPRITE_FLAG_PRIO, 0x2001)
+						
+						if (!tca.ssz_star_line || !tca.bg_twinkle)
+							Renderer.drawSprite(stringformat("knux_stars_%d", tca.bg_twinkle ? (level.framecounter >> 4) % 4 : 1), 128 + fs*128 - (camera.position.x.u16 % 1024) / 8, -1 * (camera.position.y.u16 - 0x400) - camera.screenshake.offset + 80, 0, SPRITE_FLAG_PRIO, 0x2001)
+						else
+							Renderer.drawSprite("knux_stars", 128 + fs*128 - (camera.position.x.u16 % 1024) / 8, -1 * (camera.position.y.u16 - 0x400) - camera.screenshake.offset + 80, 0xa0 + tca.ssz_star_line * 0x10, SPRITE_FLAG_PRIO, 0x2001)
+						
 					}
 				}
 
@@ -916,7 +927,52 @@ function void fn07092a()
 	}
 	
 	base.fn07092a()
+}
 
+// Custom palette method
+//# address-hook(0x002440) end(0x00244c)
+function void LevelPaletteUpdate.FBZ()
+{
+	if (global.zone_act == 0x0400 && tca.fbz_star_line && !tca.fade_white)
+	{
+		--level.palettefx.timer_1
+		if (s16(15 - (level.palettefx.timer_1 + 1)) % (tca.bg_twinkle == 2 ? 4 : 16) == 0)
+		{
+			// Starry Skies
+			
+			A0 = 0x052dd0
+			
+			u16 offset = 3 * 0x40 + tca.fbz_star_line * 0x20
+		
+			if (tca.bg_twinkle != 2)
+			{
+				u16[0x802002 + offset + 2*2] = u16[A0 + 4 + (2 - abs((level.palettefx.frame_1 + 0) % 4 - 2))*2]
+				u16[0x802002 + offset + 3*2] = u16[A0 + 4 + (2 - abs((level.palettefx.frame_1 + 1) % 4 - 2))*2]
+				u16[0x802002 + offset + 4*2] = u16[A0 + 4 + (2 - abs((level.palettefx.frame_1 + 2) % 4 - 2))*2]
+				u16[0x802002 + offset + 0*2] = u16[A0 + 0 + (level.palettefx.frame_1 & 1)*2]
+				u16[0x802002 + offset + 1*2] = u16[A0 + 4 + (level.palettefx.frame_1 & 1)*2]
+			}
+			else
+			{
+				u16[0x802002 + offset + 2*2] = blendColorsPacked(u16[A0 + 4 + (2 - abs((level.palettefx.frame_1 + 0) % 4 - 2))*2], u16[A0 + 4 + (2 - abs((level.palettefx.frame_1 + 1) % 4 - 2))*2], min(0x100, Math.roundToInt(0x100 * s16(15 - (level.palettefx.timer_1 + 1)) / 16.0f))) 
+				u16[0x802002 + offset + 3*2] = blendColorsPacked(u16[A0 + 4 + (2 - abs((level.palettefx.frame_1 + 1) % 4 - 2))*2], u16[A0 + 4 + (2 - abs((level.palettefx.frame_1 + 2) % 4 - 2))*2], min(0x100, Math.roundToInt(0x100 * s16(15 - (level.palettefx.timer_1 + 1)) / 16.0f))) 
+				u16[0x802002 + offset + 4*2] = blendColorsPacked(u16[A0 + 4 + (2 - abs((level.palettefx.frame_1 + 2) % 4 - 2))*2], u16[A0 + 4 + (2 - abs((level.palettefx.frame_1 + 3) % 4 - 2))*2], min(0x100, Math.roundToInt(0x100 * s16(15 - (level.palettefx.timer_1 + 1)) / 16.0f))) 
+				u16[0x802002 + offset + 0*2] = blendColorsPacked(u16[A0 + 0 + (level.palettefx.frame_1 & 1)*2], u16[A0 + 0 + ((level.palettefx.frame_1 + 1) & 1)*2], min(0x100, Math.roundToInt(0x100 * s16(15 - (level.palettefx.timer_1 + 1)) / 16.0f)))  
+				u16[0x802002 + offset + 1*2] = blendColorsPacked(u16[A0 + 4 + (level.palettefx.frame_1 & 1)*2], u16[A0 + 4 + ((level.palettefx.frame_1 + 1) & 1)*2], min(0x100, Math.roundToInt(0x100 * s16(15 - (level.palettefx.timer_1 + 1)) / 16.0f)))  
+			}
+			
+			if (s16(level.palettefx.timer_1) < 0)
+			{
+				level.palettefx.timer_1 = 15
+				
+				level.palettefx.frame_1 += 1
+				if (level.palettefx.frame_1 >= 4)
+					level.palettefx.frame_1 = 0
+			}
+		}
+	}
+	
+	base.LevelPaletteUpdate.FBZ()
 }
 
 //-----------------------
@@ -1423,6 +1479,51 @@ function void fn085a1a()
 	}
 }
 
+// SSZ Palette Effect
+//# address-hook(0x0021bc) end(0x0021bc)
+function void LevelPaletteUpdate.Empty()
+{
+	if (global.zone_act == 0x0a01 && tca.ssz_star_line && !tca.fade_white)
+	{
+		--level.palettefx.timer_1
+		if (s16(15 - (level.palettefx.timer_1 + 1)) % (tca.bg_twinkle == 2 ? 4 : 16) == 0)
+		{
+			// Starry Skies			
+			A0 = 0x0a97de
+			
+			u16 offset = 3 * 0x40 + tca.ssz_star_line * 0x20
+		
+			if (tca.bg_twinkle != 2)
+			{
+				u16[0x802002 + offset + 2*2] = u16[A0 + 4 + (2 - abs((level.palettefx.frame_1 + 0) % 4 - 2))*2]
+				u16[0x802002 + offset + 3*2] = u16[A0 + 4 + (2 - abs((level.palettefx.frame_1 + 1) % 4 - 2))*2]
+				u16[0x802002 + offset + 4*2] = u16[A0 + 4 + (2 - abs((level.palettefx.frame_1 + 2) % 4 - 2))*2]
+				u16[0x802002 + offset + 0*2] = u16[A0 + 0 + (level.palettefx.frame_1 & 1)*2]
+				u16[0x802002 + offset + 1*2] = u16[A0 + 4 + (level.palettefx.frame_1 & 1)*2]
+			}
+			else
+			{
+				u16[0x802002 + offset + 2*2] = blendColorsPacked(u16[A0 + 4 + (2 - abs((level.palettefx.frame_1 + 0) % 4 - 2))*2], u16[A0 + 4 + (2 - abs((level.palettefx.frame_1 + 1) % 4 - 2))*2], min(0x100, Math.roundToInt(0x100 * s16(15 - (level.palettefx.timer_1 + 1)) / 16.0f))) 
+				u16[0x802002 + offset + 3*2] = blendColorsPacked(u16[A0 + 4 + (2 - abs((level.palettefx.frame_1 + 1) % 4 - 2))*2], u16[A0 + 4 + (2 - abs((level.palettefx.frame_1 + 2) % 4 - 2))*2], min(0x100, Math.roundToInt(0x100 * s16(15 - (level.palettefx.timer_1 + 1)) / 16.0f))) 
+				u16[0x802002 + offset + 4*2] = blendColorsPacked(u16[A0 + 4 + (2 - abs((level.palettefx.frame_1 + 2) % 4 - 2))*2], u16[A0 + 4 + (2 - abs((level.palettefx.frame_1 + 3) % 4 - 2))*2], min(0x100, Math.roundToInt(0x100 * s16(15 - (level.palettefx.timer_1 + 1)) / 16.0f))) 
+				u16[0x802002 + offset + 0*2] = blendColorsPacked(u16[A0 + 0 + (level.palettefx.frame_1 & 1)*2], u16[A0 + 0 + ((level.palettefx.frame_1 + 1) & 1)*2], min(0x100, Math.roundToInt(0x100 * s16(15 - (level.palettefx.timer_1 + 1)) / 16.0f)))  
+				u16[0x802002 + offset + 1*2] = blendColorsPacked(u16[A0 + 4 + (level.palettefx.frame_1 & 1)*2], u16[A0 + 4 + ((level.palettefx.frame_1 + 1) & 1)*2], min(0x100, Math.roundToInt(0x100 * s16(15 - (level.palettefx.timer_1 + 1)) / 16.0f)))  
+			}
+			
+			if (s16(level.palettefx.timer_1) < 0)
+			{
+				level.palettefx.timer_1 = 15
+				
+				level.palettefx.frame_1 += 1
+				if (level.palettefx.frame_1 >= 4)
+					level.palettefx.frame_1 = 0
+			}
+		}
+	}
+	
+	base.LevelPaletteUpdate.Empty()
+}
+
 //------------------
 // Generic Functions
 //------------------
@@ -1433,6 +1534,7 @@ function void TitleCard.Show()
 	transition_state = 0
 	transition_time = 0
 	tca.knux_stars_off = 0
+	tca.fade_white = 0
 	
 	if (tca.fbz && global.zone_act == 0x0400)
 		tca.infbz1forreal = 1
@@ -1456,6 +1558,32 @@ function void TitleCard.Show()
 	
 	base.TitleCard.Show()
 	
+	// FBZ Starry Skies Palette
+	if (tca.fbz_star_line && global.zone_act == 0x0400)
+	{
+		u16 offset = 3 * 0x40 + tca.fbz_star_line * 0x20
+		
+		u16[0x802002 + offset + 2*2] = u16[0x052dd0 + 4]
+		u16[0x802002 + offset + 3*2] = u16[0x052dd0 + 6]
+		u16[0x802002 + offset + 4*2] = u16[0x052dd0 + 8]
+		u16[0x802002 + offset + 0*2] = u16[0x052dd0 + 0]
+		u16[0x802002 + offset + 1*2] = u16[0x052dd0 + 4]
+		u16[0x802002 + offset + 5*2] = u16[0x052dd0 + 10]
+	}
+
+	// SSZ Starry Skies Palette
+	if (tca.ssz_star_line && global.zone_act == 0x0a01)
+	{
+		u16 offset = 3 * 0x40 + tca.ssz_star_line * 0x20
+		
+		u16[0x802002 + offset + 2*2] = u16[0x0a97de + 4]
+		u16[0x802002 + offset + 3*2] = u16[0x0a97de + 6]
+		u16[0x802002 + offset + 4*2] = u16[0x0a97de + 8]
+		u16[0x802002 + offset + 0*2] = u16[0x0a97de + 0]
+		u16[0x802002 + offset + 1*2] = u16[0x0a97de + 4]
+		u16[0x802002 + offset + 5*2] = u16[0x0a97de + 10]
+	}
+
 	// LBZ Snow Palette
 	if (tca.snow_line && global.zone_act == 0x0600)
 	{
@@ -1468,6 +1596,44 @@ function void TitleCard.Show()
 		u16[0x80218a + offset] = 0x0c66
 		u16[0x80218c + offset] = 0x0a44
 	}
+}
+
+// Fix issues with white fade
+
+global bool tca.fade_white
+
+//# address-hook(0x085e64) end(0x085e70)
+function void fn085e64()
+{
+	tca.fade_white = 1
+
+	base.fn085e64()
+}
+
+//# address-hook(0x085ef8) end(0x085f24)
+function void fn085ef8()
+{
+	if (s8(objA0.value39) == 0)
+		tca.fade_white = 0
+	
+	base.fn085ef8()
+}
+
+//# address-hook(0x07d09c) end(0x07d0a2)
+function void fn07d09c()
+{
+	tca.fade_white = 1
+
+	base.fn07d09c()
+}
+
+//# address-hook(0x07d0e0) end(0x07d116)
+function void fn07d0e0()
+{
+	if (s8(objA0.value39) == 0)
+		tca.fade_white = 0
+	
+	base.fn07d0e0()
 }
 
 // Sonic 3 Complete Level Select Plus Compat
