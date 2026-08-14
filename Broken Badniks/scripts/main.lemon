@@ -16,6 +16,7 @@ global bool bb.lbztriggers
 global bool bb.hyper
 global bool bb.claw
 global bool bb.bounce
+global bool bb.save_animals
 
 define u8 global.xtrachar = u8[0xffffe654]
 
@@ -1312,4 +1313,59 @@ function void Character.OnCollisionWithDynamicObject()
 		playSound(0x6b)
 	
 	base.Character.OnCollisionWithDynamicObject()
+}
+
+//-------------------------//
+// Don't kill the animals! //
+//-------------------------//
+
+//# address-hook(0x08fb76) end(0x08fb8a)
+function void fn08fb76()
+{
+	base.fn08fb76()
+	
+	if (bb.save_animals)
+	{
+		if (allocDynamicObjectStd())
+		{
+			// Create a freed critter
+			objA1.update_address = addressof(FreedAnimal.BaseUpdate)
+			objA1.position.x.u16 = objA0.position.x.u16
+			objA1.position.y.u16 = objA0.position.y.u16
+			u16[A1 + 0x3e] = objA0.value3e
+			objA1.flags38 = 49
+		}
+	}
+}
+
+//# address-hook(0x06b77c) end(0x06b79c)
+function void fn06b77c()
+{
+	base.fn06b77c()
+	
+	if (bb.save_animals)
+	{
+		if (allocDynamicObjectStd())
+		{
+			// Create a freed critter
+			objA1.update_address = addressof(FreedAnimal.BaseUpdate)
+			objA1.position.x.u16 = objA0.position.x.u16
+			objA1.position.y.u16 = objA0.position.y.u16
+			u16[A1 + 0x3e] = objA0.value3e
+			objA1.flags38 = 49
+		}
+	}
+}
+
+//# address-hook(0x02c8b8) end(0x02c9d4)
+function void fn02c8b8()
+{
+	u8 base_state_backup = objA0.base_state
+	
+	base.fn02c8b8()
+	
+	if (objA0.flags38 == 49)
+	{
+		objA0.base_state = base_state_backup + 2
+	}
 }
