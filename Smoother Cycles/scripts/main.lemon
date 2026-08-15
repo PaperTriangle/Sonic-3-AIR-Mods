@@ -323,7 +323,7 @@ function void LevelPaletteUpdate.LRZ1()
 		base.LevelPaletteUpdate.LRZ1()
 		return
 	}
-	
+
 	--level.palettefx.timer_1
 	if ((15 - s16(level.palettefx.timer_1 + 1)) % 4 == 0)
 	{
@@ -403,6 +403,16 @@ function void LevelPaletteUpdate.LRZ1()
 				level.palettefx.frame_3 = 0
 		}
 	}
+}
+
+//# address-hook(0x078528) end(0x078536)
+function void fn078528()
+{
+	objA0.update_address = 0x078538
+	A1 = 0x078e2a
+	
+	if (!sc.lrz)
+		fn078b38()
 }
 
 //# address-hook(0x002a50) end(0x002abe)
