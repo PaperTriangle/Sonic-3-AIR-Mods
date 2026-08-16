@@ -12,6 +12,7 @@ global bool tca.ssz_knux
 
 global bool tca.intended
 global bool tca.fadetype
+global bool tca.mgz_camlock
 global bool tca.mgz2boss
 global bool tca.leftescape
 global bool tca.fbz_s3_icon
@@ -836,6 +837,61 @@ function void fn01c96e()
 		move_area.right.target = D0.u16
 
 		camera.update_routine -= 2
+	}
+}
+
+// Earthquake area handler objects
+
+global bool tca.camera_lock_knux
+
+//# address-hook(0x051abc) end(0x051ace)
+function void fn051abc()
+{
+	if (tca.mgz_camlock)
+	{
+		tca.camera_lock_knux = true
+		move_area.bottom.current = 0x47d - getScreenHeight()
+		move_area.bottom.target = 0x47d - getScreenHeight()
+	}
+	
+	base.fn051abc()
+}
+
+
+//# address-hook(0x051ad0) end(0x051ae2)
+function void fn051ad0()
+{
+	if (tca.mgz_camlock)
+	{
+		tca.camera_lock_knux = false
+		move_area.bottom.current = 0xb7d - getScreenHeight()
+		move_area.bottom.target = 0xb7d - getScreenHeight()
+	}
+	
+	base.fn051ad0()
+}
+
+//# address-hook(0x051b1c) end(0x051b92)
+function void fn051b1c()
+{
+	u16 temp_ls = u16[0xffffb04a + 0x14]
+	
+	base.fn051b1c()
+	
+	if (tca.mgz_camlock)
+	{
+		if (tca.camera_lock_knux)
+		{
+			move_area.bottom.current = 0x47d - getScreenHeight() - u16[0xffffeed4]
+			move_area.bottom.target = 0x47d - getScreenHeight() - u16[0xffffeed4]
+			camera.position.y.u16 += (u16[0xffffb04a + 0x14] - temp_ls)
+		}
+		else
+		{
+			move_area.bottom.current = 0xb7d - getScreenHeight() - u16[0xffffeed4]
+			move_area.bottom.target = 0xb7d - getScreenHeight() - u16[0xffffeed4]
+			camera.position.y.u16 += (u16[0xffffb04a + 0x14] - temp_ls)
+		}
 	}
 }
 
