@@ -851,8 +851,8 @@ function void fn051abc()
 	if (tca.mgz_camlock)
 	{
 		tca.camera_lock_knux = true
-		move_area.bottom.current = 0x47d - getScreenHeight()
-		move_area.bottom.target = 0x47d - getScreenHeight()
+		move_area.bottom.current = 0x474 - getScreenHeight()
+		move_area.bottom.target = 0x474 - getScreenHeight()
 	}
 	
 	base.fn051abc()
@@ -865,8 +865,8 @@ function void fn051ad0()
 	if (tca.mgz_camlock)
 	{
 		tca.camera_lock_knux = false
-		move_area.bottom.current = 0xb7d - getScreenHeight()
-		move_area.bottom.target = 0xb7d - getScreenHeight()
+		move_area.bottom.current = 0xb74 - getScreenHeight()
+		move_area.bottom.target = 0xb74 - getScreenHeight()
 	}
 	
 	base.fn051ad0()
@@ -883,14 +883,14 @@ function void fn051b1c()
 	{
 		if (tca.camera_lock_knux)
 		{
-			move_area.bottom.current = 0x47d - getScreenHeight() - u16[0xffffeed4]
-			move_area.bottom.target = 0x47d - getScreenHeight() - u16[0xffffeed4]
+			move_area.bottom.current = 0x474 - getScreenHeight() - u16[0xffffeed4]
+			move_area.bottom.target = 0x474 - getScreenHeight() - u16[0xffffeed4]
 			camera.position.y.u16 += (u16[0xffffb04a + 0x14] - temp_ls)
 		}
 		else
 		{
-			move_area.bottom.current = 0xb7d - getScreenHeight() - u16[0xffffeed4]
-			move_area.bottom.target = 0xb7d - getScreenHeight() - u16[0xffffeed4]
+			move_area.bottom.current = 0xb74 - getScreenHeight() - u16[0xffffeed4]
+			move_area.bottom.target = 0xb74 - getScreenHeight() - u16[0xffffeed4]
 			camera.position.y.u16 += (u16[0xffffb04a + 0x14] - temp_ls)
 		}
 	}
