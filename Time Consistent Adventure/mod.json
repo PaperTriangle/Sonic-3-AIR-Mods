@@ -160,6 +160,18 @@
 				}
 			},
 			{
+				"InternalName": "tca.mgz_clouds",
+				"DisplayName": "MGZ2 Clouds Always Move",
+				"Variable": "tca.mgz_clouds",
+				"Category": "MGZ Settings",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
 				"InternalName": "tca.mgz2boss",
 				"DisplayName": "MGZ2 Eggman Boss Cutscene",
 				"Variable": "tca.mgz2boss",

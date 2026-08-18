@@ -13,6 +13,7 @@ global bool tca.ssz_knux
 global bool tca.intended
 global bool tca.fadetype
 global bool tca.mgz_camlock
+global bool tca.mgz_clouds
 global bool tca.mgz2boss
 global bool tca.leftescape
 global bool tca.fbz_s3_icon
@@ -893,6 +894,15 @@ function void fn051b1c()
 			camera.position.y.u16 += (u16[0xffffb04a + 0x14] - temp_ls)
 		}
 	}
+}
+
+//# address-hook(0x23d24c) end(0x23d2bc)
+function void fn23d24c()
+{
+	if (tca.mgz_clouds)
+		u16[0xffffeee0] = 0
+	
+	base.fn23d24c()
 }
 
 //-----------------------
