@@ -1629,9 +1629,9 @@ function void TitleCard.Show()
 	{
 		u16 offset = 3 * 0x40 + tca.fbz_star_line * 0x20
 		
-		u16[0x802002 + offset + 2*2] = u16[0x052dd0 + 4]
+		u16[0x802002 + offset + 2*2] = u16[0x052dd0 + 8]
 		u16[0x802002 + offset + 3*2] = u16[0x052dd0 + 6]
-		u16[0x802002 + offset + 4*2] = u16[0x052dd0 + 8]
+		u16[0x802002 + offset + 4*2] = u16[0x052dd0 + 4]
 		u16[0x802002 + offset + 0*2] = u16[0x052dd0 + 0]
 		u16[0x802002 + offset + 1*2] = u16[0x052dd0 + 4]
 		u16[0x802002 + offset + 5*2] = u16[0x052dd0 + 10]
