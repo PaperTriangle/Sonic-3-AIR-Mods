@@ -153,7 +153,7 @@
 			},
 			{
 				"InternalName": "dd.waterplus_palette",
-				"DisplayName": "Water+ Custom Graphic",
+				"DisplayName": "Custom Splash Graphic",
 				"Variable": "dd.waterplus_palette",
 				"DefaultValue": "4",
 				"Options":

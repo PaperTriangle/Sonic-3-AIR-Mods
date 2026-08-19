@@ -189,7 +189,7 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 	{
 		u64 key
 		
-		if Mods.isModActive("Water+")
+		if Mods.isModActive("Water+") || (dd.waterplus_palette > 0)
 		{
 			if (objA0.animation.sprite == 0)
 				return true
@@ -202,7 +202,7 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 			}
 			
 			key = stringformat((dd.waterplus_palette > 0) ? "custom_waterplus_splash1_%d" : "waterplus_splash1_%d", (objA0.animation.sprite / 2))
-			if (objA0.flags2e == 1)
+			if (objA0.flags2e == 1) && Mods.isModActive("Water+")
 				key = stringformat((dd.waterplus_palette > 0) ? "custom_waterplus_splash2_%d" : "waterplus_splash2_%d", (objA0.animation.sprite / 2))
 		}
 		else
@@ -210,6 +210,9 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 		
 		u8 alpha = 0xff
 		u8 atex = 0x00
+		
+		if (Mods.isModActive("No Transparency"))
+			System.setGlobalVariableValueByName("renderTransparentPlz", true)
 		
 		Mods.isModActive("Moar Transparency")		
 			if (System.getGlobalVariableValueByName("mt.watersurface"))
@@ -220,6 +223,9 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 		
 		if (Renderer.hasCustomSprite(key))
 			Renderer.drawSprite(key, px, py + 2, atex, (prioFlag ? SPRITE_FLAG_PRIO : 0), renderQueue - 0x80, 0, alpha)
+			
+		if (Mods.isModActive("No Transparency"))
+			System.setGlobalVariableValueByName("renderTransparentPlz", false)
 
 		return true
 	}
@@ -789,7 +795,7 @@ function void TitleCard.Show()
 {
 	base.TitleCard.Show()
 	
-	if (Mods.isModActive("Water+") && dd.waterplus_palette > 0)
+	if (dd.waterplus_palette > 0)
 	{
 		if (objA0.countdown_value == 0)
 			DND.LoadWaterPlusPalette(true)
@@ -804,6 +810,6 @@ function void fn0500d6()
 {
 	base.fn0500d6()
 	
-	if (Mods.isModActive("Water+") && dd.waterplus_palette > 0)
+	if (dd.waterplus_palette > 0)
 		DND.LoadWaterPlusPalette(true)
 }
