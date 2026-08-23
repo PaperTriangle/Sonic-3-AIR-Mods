@@ -15,6 +15,7 @@ global bool altlbz2cs.eggchair
 global u8 altlbz2cs.knuxpipe
 global bool altlbz2cs.eggmanflames
 global bool altlbz2cs.eggmandebris
+global bool altlbz2cs.ballcamera
 
 // We cut a lot from this section as we are doing the winning poses later
 // We also skip straight to 0x072c0a, spawning 0x072d24 there instead!
@@ -1094,42 +1095,14 @@ function void fn07397a()
 //# address-hook(0x073906) end(0x073954)
 function void fn073906()
 {
-	setupObjectAttributesFull(0x0740ec)
+	base.fn073906()
 
-	boss.remaining_hits = 8
-	objA0.countdown_callback = 0x073960
-	A1 = 0x0738ce
-	objA0.value26 = MUSIC_MAINBOSS
-	StartBossFight()
-
-#if STANDALONE
-	if (getScreenWidth() > 320)
+	if (altlbz2cs.ballcamera && getScreenWidth() > 320)
 	{
 		// Both are 0x3a20 originally
 		level.bossarea.left = 0x3a20 - getScreenExtend() * 3
 		level.bossarea.right = 0x3a20 - getScreenExtend()
 	}
-    level.bossarea.top -= (getScreenHeight() - 224)
-    level.bossarea.bottom -= (getScreenHeight() - 224)
-#endif
-
-	// "spawnChildObjects(0x07414c)" replaced by:
-	spawnChildObject(0x073e0e, 0x00, 0, -8)		// Robotnik head, Egg Mobile empty seat
-	spawnChildObject(0x073ea2, 0x02, -24, -112)
-
-	requestLoadingPatterns(0x77)		// Robotnik running + ship and boss explosion sprites
-
-	Kosinski.addToDMAQueue(0x376542, 0x84a0)		// Boss sprites
-
-	loadPaletteLine1(0x0741fe)
-
-#if STANDALONE
-	// If you made it here and stayed dry, you've earned this achievement
-	if (Game.getAchievementValue(ACHIEVEMENT_LBZ_STAY_DRY) == 1)
-	{
-		Game.setAchievementComplete(ACHIEVEMENT_LBZ_STAY_DRY)
-	}
-#endif
 }
 
 global bool altlbz2cs.noclearvramplz

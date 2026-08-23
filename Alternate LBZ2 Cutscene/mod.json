@@ -5,7 +5,7 @@
 		"UniqueID": "alt-lbz2-cutscene",
 		"Author": "PaperTriangle",
 		"Description": "A more Origins like cutscene for LBZ2.",
-		"ModVersion": "2.9"
+		"ModVersion": "2.10"
 	},
 	"OtherMods":
 	{
@@ -56,6 +56,18 @@
 	{
 		"List":
 		[
+			{
+				"InternalName": "altlbz2cs.ballcamera",
+				"DisplayName": "Ball Shooter Camera",
+				"Variable": "altlbz2cs.ballcamera",
+				"Category": "Pre-Fight Settings",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Default",
+					"1": "Adjusted"
+				}
+			},
 			{
 				"InternalName": "altlbz2cs.tailsflight",
 				"DisplayName": "Tails Flies Ahead",
