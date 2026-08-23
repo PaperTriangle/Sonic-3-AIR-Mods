@@ -759,7 +759,7 @@ function void DND.LoadWaterPlusPalette(bool afterTitle)
 	u16 offset = 3 * 0x40 + dd.waterplus_palette * 0x20
 	
 	u32 TargetAD = (afterTitle ? 0x802002 : 0x802182) + offset
-	u32 TargetUAD = (afterTitle ? 0x802002 : 0x802482) + offset
+	u32 TargetUAD = (afterTitle ? 0x802302 : 0x802482) + offset
 	
 	u8 palOffset = 0x1e
 	
