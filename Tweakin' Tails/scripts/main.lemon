@@ -269,17 +269,34 @@ function void UpdatePaletteEffects.SuperForm.applyGeneral(u8 characterVersion, u
 	base.UpdatePaletteEffects.SuperForm.applyGeneral(characterVersion, source)
 }
 
+global bool sff.nobirdz
 
 // Make flicky palette rotate if modded
 //# address-hook(0x003750) end(0x00398c)
 function void UpdatePaletteEffects.SuperForm()
-{	
+{
+	if (getMainCharacter() + 1) == 2
+		sff.nobirdz = true
+	
 	base.UpdatePaletteEffects.SuperForm()
+	
+	sff.nobirdz = false
 	
 	bool isSuperPaletteModded = System.hasExternalPaletteData(getCharacterPaletteKey(CHARACTER_SONIC), 5)		// Check line index 5, for Super/Hyper form palette
 	
 	if (sff.super_sonic_palette && isSuperPaletteModded)
 		moddedFlickyPalette()
+}
+
+function void UpdatePaletteEffects.UpdateSuperSonic.Smoothed(u8 characterVersion)
+{
+	if sff.nobirdz
+	{
+		UpdatePaletteEffects.UpdateSuperSonic.Original(0xff)
+		return
+	}
+	
+	base.UpdatePaletteEffects.UpdateSuperSonic.Smoothed(characterVersion)
 }
 
 //-------------------//
