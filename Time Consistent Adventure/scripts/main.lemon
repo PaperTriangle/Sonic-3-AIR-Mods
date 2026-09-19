@@ -558,7 +558,7 @@ function void fn00d96a()
 			tca.knux_route = true
 	}
 		
-	u16 posY = 0x10 + ((Mods.isModActive("Data Select Options") && Mods.isModActive("Origins Screen Resolution")) ? 0x08 : 0x00)
+	u16 posY = 0x10 + ((Mods.isModActive("Data Select Options") && Mods.isModActive("Origins Screen Resolution") && getScreenHeight() == 240) ? 0x08 : 0x00)
 	
 	if (tca.zone_icons && tca.intended)
 	{		
