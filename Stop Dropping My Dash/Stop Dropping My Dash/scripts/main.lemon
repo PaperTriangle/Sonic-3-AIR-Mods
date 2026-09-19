@@ -581,10 +581,10 @@ function void Character.updateJumpMoves()
 	}
 
 	char.velocity.y = 0 											// Velocity was set to 0 here otherwise secondary jump actions would not work.
-	//u8 backupjumpstate = char.double_jump_state 
+	u8 backupjumpstate = char.double_jump_state 
 	base.Character.updateJumpMoves()
 	
-	if (u8[A0 + 0x38] == CHARACTER_KNUCKLES) && glideBackup != knuckles.glideclimbstate
+	if (u8[A0 + 0x38] == CHARACTER_KNUCKLES && glideBackup != knuckles.glideclimbstate) || (u8[A0 + 0x38] == CHARACTER_SONIC && (char.bonus_effect & char.bonus.ELEMENTAL_SHIELDS) && backupjumpstate != char.double_jump_state)
 	{
 		balloonjump &= ~((A0 == char.ADDRESS_P2) ? 2 : 1)
 		return
