@@ -22,7 +22,7 @@ function void LSDS.SetOriginsResolution()
 	//if (System.getGlobalVariableValueByName("res_preset") == 0 && System.getGlobalVariableValueByName("screen_width") <= 426) || (System.getGlobalVariableValueByName("res_preset") > 0 && System.getGlobalVariableValueByName("res_preset") < 8)
 	{
 		SetResolution()
-		System.setGlobalVariableValueByName("set_screen_size", 1)
+		System.setGlobalVariableValueByName("set_screen_size", 0)
 	}
 }
 
