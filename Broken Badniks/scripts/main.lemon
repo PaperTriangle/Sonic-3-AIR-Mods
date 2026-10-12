@@ -575,6 +575,82 @@ function void Enemy.addScore(u32 enemyAddress, u32 scoreLookup)
 	base.Enemy.addScore(enemyAddress, scoreLookup)
 }
 
+//# address-hook(0x08d94a) end(0x08d9a6)
+function void fn08d94a()
+{
+	if (!bb.madmole)
+	{
+		base.fn08d94a()
+		return
+	}
+	
+	D0.u8 = u8[A0 + 0x29]
+	if (D0.u8 != 0)
+	{
+		u8[A0 + 0x29] = 0
+		D0.u16 = (D0.u16 & 0x03) * 2
+
+		// A2 is assigned 0xffffb000 for D0.u16 == 2,
+		//            and 0xffffb04a for D0.u16 == 4 or D0.u16 == 6
+		A1 = 0x08d942 + D0.u16
+		A2 = 0xffff0000 + u16[(A1+=2)-2]
+		if ((u8[A2 + 0x2b] & char.bonus.INVINCIBLE) == 0)
+		{
+			if (u8[A2 + 0x2e] == 0)
+			{
+				u16[A0 + 0x44] = A2.u16
+				objA0.base_state = 0x08
+				objA0.sprite_priority = 0
+				objA0.countdown_callback = 0x08d846
+				playSound(0xae)
+				u8[A2 + 0x2a] |= char.flag.IN_AIR
+				u8[A2 + 0x2e] = control_flag.DISABLE_UPDATE
+				u8[A2 + 0x20] = char.state.GOT_HURT_PANIC
+				u8[A2 + 0x3d] = 0
+			}
+		}
+	}
+}
+
+//# address-hook(0x08d8e6) end(0x08d942)
+function void fn08d8e6()
+{
+	if (!bb.madmole)
+	{
+		base.fn08d8e6()
+		return
+	}
+	
+	D0.u8 = u8[A0 + 0x29]
+	if (D0.u8 != 0)
+	{
+		u8[A0 + 0x29] = 0
+		D0.u16 = (D0.u16 & 0x03) * 2
+
+		// A2 is assigned 0xffffb000 for D0.u16 == 2,
+		//            and 0xffffb04a for D0.u16 == 4 or D0.u16 == 6
+		A1 = 0x08d942 + D0.u16
+		A2 = 0xffff0000 + u16[(A1+=2)-2]
+		if ((u8[A2 + 0x2b] & char.bonus.INVINCIBLE) == 0)
+		{
+			if (u8[A2 + 0x2e] == 0)
+			{
+				u16[A0 + 0x44] = A2.u16
+				objA0.base_state = 0x06
+				playSound(0xae)
+
+				D0.u16 = objA0.velocity.x << 1
+				u16[A2 + 0x18] = D0.u16
+				u16[A2 + 0x1c] = D0.u16
+				u16[A2 + 0x1a] = -0x200
+				u8[A2 + 0x2a] |= char.flag.IN_AIR
+				u8[A2 + 0x20] = char.state.GOT_HURT_PANIC
+				u8[A2 + 0x3d] = 0
+			}
+		}
+	}
+}
+
 //------------//
 // Mushmeanie //
 //------------//
