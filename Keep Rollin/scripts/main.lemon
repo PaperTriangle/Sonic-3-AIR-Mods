@@ -2,6 +2,9 @@ global bool kr.deztube
 global bool kr.vertical_roll
 global bool kr.sticky_collision
 
+global bool kr.look_fix
+global bool kr.dash_fix
+
 define u32 char.ADDRESS_P1 = 0xffffb000
 define u32 char.ADDRESS_P2 = 0xffffb04a
 
@@ -598,4 +601,61 @@ function void fn049986()
 	}
 	
 	A1 = backupA1
+}
+
+//# address-hook(0x01174a) end(0x0117d8)
+//# address-hook(0x014f74) end(0x015000)
+function void Character.CheckForStartRolling()
+{
+	base.Character.CheckForStartRolling()
+	
+	if (kr.look_fix)
+	{
+		u8 input_state = (char.character == CHARACTER_TAILS) ? control.tails.state : control.player1.state
+
+		if ((char.bonus_effect & char.bonus.INFINITE_INERTIA) == 0)
+		{
+			if ((input_state & (CONTROL_LEFT | CONTROL_RIGHT)) == 0) && (abs(char.groundspeed) < 0x100)
+			{
+				if (input_state & CONTROL_DOWN)
+				{
+					char.state = char.state.COWERING
+					if (char.groundspeed <= -4)
+						char.groundspeed += 4
+					else if (char.groundspeed >= 4)
+						char.groundspeed -= 4
+				}
+				else if (input_state & CONTROL_UP)
+				{
+					char.state = char.state.LOOKING_UP
+					if (char.groundspeed <= -4)
+						char.groundspeed += 4
+					else if (char.groundspeed >= 4)
+						char.groundspeed -= 4
+				}
+			}
+		}
+	}
+}
+
+function void releaseSpindash()
+{
+	base.releaseSpindash()
+	
+	if (kr.dash_fix)
+	{
+		if (char.flags & char.flag.ON_OBJECT)
+			char.position.y.u16 -= (global.inv_gravity) ? -5 : 5
+	}
+}
+
+function void releaseDropDash()
+{
+	base.releaseDropDash()
+
+	if (kr.dash_fix)
+	{
+		if (char.flags & char.flag.ON_OBJECT)
+			char.position.y.u16 -= (global.inv_gravity) ? -5 : 5
+	}
 }

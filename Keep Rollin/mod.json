@@ -5,7 +5,7 @@
 		"UniqueID": "keep-rollin",
 		"Author": "PaperTriangle",
 		"Description": "Keep rolling over certain objects and small gaps.",
-		"ModVersion": "2.3"
+		"ModVersion": "2.4"
 	},
 	"Settings":
 	{
@@ -16,6 +16,7 @@
 				"DisplayName": "Use Sticky Collision Check",
 				"Variable": "kr.sticky_collision",
 				"DefaultValue": "1",
+				"Category": "Rolling Fix",
 				"Options":
 				{
 					"0": "Disabled",
@@ -27,6 +28,31 @@
 				"DisplayName": "Act the same Vertically",
 				"Variable": "kr.vertical_roll",
 				"DefaultValue": "0",
+				"Category": "Rolling Fix",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "kr.look_fix",
+				"DisplayName": "Look When Moving on Objects",
+				"Variable": "kr.look_fix",
+				"DefaultValue": "0",
+				"Category": "Experimental Settings",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
+				"InternalName": "kr.dash_fix",
+				"DisplayName": "Spindash on Objects Fix",
+				"Variable": "kr.dash_fix",
+				"DefaultValue": "0",
+				"Category": "Experimental Settings",
 				"Options":
 				{
 					"0": "Disabled",
@@ -38,6 +64,7 @@
 				"DisplayName": "Prevent Rolling in DEZ Tubes",
 				"Variable": "kr.deztube",
 				"DefaultValue": "0",
+				"Category": "Experimental Settings",
 				"Options":
 				{
 					"0": "Disabled",
@@ -51,6 +78,12 @@
 		"gotta-go-fast":
 		{
 			"DisplayName": "Gotta Go Fast!",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		},
+		"dash-n-dust":
+		{
+			"DisplayName": "Dash 'n' Dust",
 			"IsRequired": "0",
 			"Priority": "Lower"
 		},
