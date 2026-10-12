@@ -5,7 +5,7 @@
 		"UniqueID": "tweakin-tails",
 		"Author": "PaperTriangle",
 		"Description": "Fixes handling of the super flicky to use Sonic's extended palette and provides some other tweaks for tails.",
-		"ModVersion": "2.1"
+		"ModVersion": "2.2"
 	},
 	"OtherMods":
 	{
@@ -158,6 +158,18 @@
 					"0": "Disabled",
 					"1": "Enabled",
 					"2": "Enabled (Tails & Ray)"
+				}
+			},
+			{
+				"InternalName": "sff.no_jump",
+				"DisplayName": "No Escaping Cutscene Tails",
+				"Variable": "sff.no_jump",
+				"Category": "Tails Settings",
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
 				}
 			},
 			{

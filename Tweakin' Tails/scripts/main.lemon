@@ -5,6 +5,7 @@ global bool sff.super_stars
 global bool sff.tails_flight
 global bool sff.super_drown
 global bool sff.no_up
+global bool sff.no_jump
 global u8 sff.super_breaks_stuff
 global bool sff.lookup_animation_fix
 global bool sff.victory_animation
@@ -990,4 +991,29 @@ function bool BTP.canBreak(u8 state.in)
 		return base.BTP.canBreak(state.in)
 		
 	return true
+}
+
+//----------------------------//
+// Prevent Sonic Jumping Away //
+//----------------------------//
+//# address-hook(0x010a94) end(0x010ae8)
+function void Character.BaseUpdate.Sonic()
+{
+	if (sff.no_jump && tails.ai_routine == 0x0e)
+	{
+		control.pad1.state &= ~CONTROL_ABC
+		control.pad1.pressed &= ~CONTROL_ABC
+	}
+	base.Character.BaseUpdate.Sonic()
+}
+
+//# address-hook(0x016444) end(0x016498)
+function void Character.BaseUpdate.Knuckles()
+{
+	if (sff.no_jump && tails.ai_routine == 0x0e)
+	{
+		control.pad1.state &= ~CONTROL_ABC
+		control.pad1.pressed &= ~CONTROL_ABC
+	}
+	base.Character.BaseUpdate.Knuckles()
 }
