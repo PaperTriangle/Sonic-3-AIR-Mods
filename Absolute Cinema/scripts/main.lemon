@@ -660,7 +660,7 @@ function void fn07ce1e()
 //# address-hook(0x07ccb0) end(0x07ccf8)
 function void fn07ccb0()
 {
-	if (objA0.countdown_value = 1) || (Mods.isModActive("Time Consistent Adventure") && System.getGlobalVariableValueByName("tca.ssz_knux_csfix"))
+	if (objA0.countdown_value == 1) || (Mods.isModActive("Time Consistent Adventure") && System.getGlobalVariableValueByName("tca.ssz_knux_csfix"))
 		ac.no_pause = 0
 
 	base.fn07ccb0()
