@@ -1472,7 +1472,7 @@ function void fn085ee6()
 //# address-hook(0x07ccb0) end(0x07ccf8)
 function void fn07ccb0()
 {
-	if (!tca.ssz_knux_csfix)
+	if (!tca.ssz_knux_csfix || getMainCharacter() != CHARACTER_KNUCKLES)
 	{
 		base.fn07ccb0()
 		return
