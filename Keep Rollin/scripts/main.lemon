@@ -333,11 +333,11 @@ function void fn01f7ce()
 //# address-hook(0x033cac) end(0x033f64)
 function void fn033cac()
 {
-	u8 bit = (1 << D6.u8)
+	u8 bit = (objA0.flags2a & (1 << D6.u8)) != 0
 	
 	base.fn033cac()
 	
-	if ((objA0.flags2a & bit) != 0)
+	if (bit)
 	{
 		objA1.flags2a &= ~char.flag.ROLLING
 	}
