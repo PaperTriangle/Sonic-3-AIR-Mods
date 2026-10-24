@@ -6,6 +6,7 @@ global bool mt.lbz1_tiles
 global bool mt.lbz2_tiles
 
 global bool mt.aiz1_background
+global bool mt.aiz_platform
 
 function void yieldExecution()
 {
@@ -556,6 +557,15 @@ function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16
 		System.setGlobalVariableValueByName("renderTransparentPlz", false)
 
 	return base.Standalone.onDrawVdpSprite(px, py, size, index, renderQueue)
+}
+
+//# address-hook(0x02a2d6)
+function void AIZWaterfallRock.Update()
+{
+	base.AIZWaterfallRock.Update()
+	
+	if (mt.aiz_platform)
+		Renderer.drawCustomSprite("aiz_waterfall_platform", objA0.position.x.u16, objA0.position.y.u16, 0x00, SPRITE_FLAG_WORLDSPACE, 0x1eff)
 }
 
 function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 index, u16 renderQueue, u8 spriteCounter)

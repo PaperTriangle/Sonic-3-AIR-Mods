@@ -526,6 +526,18 @@
 				}
 			},
 			{
+				"InternalName": "mt.aiz_platform",
+				"DisplayName": "AIZ2 Waterfall Platforms",
+				"Variable": "mt.aiz_platform",
+				"Category": "Tile Transparency",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
+				}
+			},
+			{
 				"InternalName": "mt.hcz1_tiles",
 				"DisplayName": "HCZ1 Waterfalls & Tubes",
 				"Variable": "mt.hcz1_tiles",
