@@ -1453,6 +1453,55 @@ function void fn03e682()
 	}
 }
 
+//----------------------//
+// 	MHZ Horizontal Pole //
+//----------------------//
+
+//# address-hook(0x03ed46) end(0x03ed68)
+function void HorizontalPole.Update()
+{
+	A2 = A0 + 0x30
+	A3 = A0 + 0x3a
+	A1 = 0xffffb000
+	bool attach_check = u8[A0 + 0x30]
+	u16 backup_y_pos = objA1.position.y.u16
+	D1.u16 = control.player1
+	fn03ed6e()
+
+	++A2
+	A3 = A0 + 0x3c
+	A1 = 0xffffb04a
+	D1.u16 = control.tails
+	fn03ed6e()
+
+	A1 = 0xffffb000
+	if (!attach_check && u8[A0 + 0x30] != 0)
+	{
+		globalCameraOffsetY += backup_y_pos - objA0.position.y.u16
+		objA1.flags2a &= ~char.flag.IN_AIR
+	}
+	
+	if(u8[A0 + 0x30] != 0)
+	{
+		camera.use_forced_target = true
+		camera.forced_target.x = objA1.position.x.u16
+		camera.forced_target.y = objA0.position.y.u16
+	}
+
+#if STANDALONE
+	bool player2attached = u8[A0 + 0x31]
+	DrawOrUnloadObject()
+
+	// Handle second character if he's still attached to the pole
+	if (objA0.update_address == 0 && player2attached)
+	{
+		u8[0xffffb04a + 0x2e] &= ~(control_flag.DISABLE_ANIMATION | control_flag.DISABLE_UPDATE)
+	}
+#else
+	DrawOrUnloadObject()
+#endif
+}
+
 //----------------//
 // MHZ Swing Vine //
 //----------------//
@@ -1750,8 +1799,6 @@ function void fn04450a()
 	if (A1 == 0xffffb000)
 		globalCameraOffsetY += objA1.position.y.u16 - (objA0.position.y.u16 + s8[0x044572 + D0.u16])
 #endif
-	
-	System.writeDisplayLine(stringformat("%d", globalCameraOffsetY))
 	
 	objA1.position.y.u16 = objA0.position.y.u16 + s8[0x044572 + D0.u16]
 	objA1.sprite_priority = 0x0100
