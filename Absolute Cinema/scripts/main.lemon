@@ -1460,6 +1460,12 @@ function void fn03e682()
 //# address-hook(0x03ed46) end(0x03ed68)
 function void HorizontalPole.Update()
 {
+	if (!ac.smooth_landing)
+	{
+		base.HorizontalPole.Update()
+		return
+	}
+	
 	A2 = A0 + 0x30
 	A3 = A0 + 0x3a
 	A1 = 0xffffb000
