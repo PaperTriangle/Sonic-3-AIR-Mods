@@ -15,5 +15,6 @@
 	"custom_ls_bg":  { "File": "custom_ls_bg.png", "Center": "-43,0" },
 	
 	"sonic_clear":  { "File": "sonic_clear.bmp", "Rect": "0,0,80,56", "Center": "40,120" },
-	"super_sonic_clear":  { "File": "super_sonic_clear.bmp", "Rect": "0,0,80,56", "Center": "40,120" }
+	"super_sonic_clear":  { "File": "super_sonic_clear.bmp", "Rect": "0,0,80,56", "Center": "40,120" },
+	"original_clear":  { "File": "original_clear.bmp", "Rect": "0,0,80,56", "Center": "40,120" }
 }

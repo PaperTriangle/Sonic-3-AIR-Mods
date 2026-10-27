@@ -426,31 +426,46 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 		#endif
 			
 			// ES Amy Icon for regular charactersprite
-			if (lsds.amyicon && u8[A0 + 0x23] == 0x1b && (slotnum < 4) && !ecf_slot && (u8[A0 + 0x38] == 0xff && objA0.animation.timer == 0 && u16[0xffffb04a + 0x30] == 0))
+			if (u8[A0 + 0x23] == 0x1b && (slotnum < 4) && !ecf_slot && (u8[A0 + 0x38] == 0xff && objA0.animation.timer == 0 && u16[0xffffb04a + 0x30] == 0))
 			{
-				u64 portrait = "Clear_slot3"
-				u16 py_shift = 0
-				if (lsds.amyicon == 2)
+				if (lsds.amyicon)
 				{
-				#if AMY_GALORE_PLUS_ACTIVE
-					portrait = "character_amgal_galore_portrait_clear"
-					SpriteHandle AmySprite = Renderer.addSpriteHandle("character_amgal_galore_portrait_clear_bmp", px, py, renderQueue+1)
-					AmySprite.setFlags(SPRITE_FLAG_PRIO)
-					AmySprite.setPalette(AmyMISC.Palette.GetBasePal(1), 0)
-					objA0.compound.count = 1
-				#endif
+					u64 portrait = "Clear_slot3"
+					u16 py_shift = 0
+					if (lsds.amyicon == 2)
+					{
+					#if AMY_GALORE_PLUS_ACTIVE
+						portrait = "character_amgal_galore_portrait_clear"
+						SpriteHandle AmySprite = Renderer.addSpriteHandle("character_amgal_galore_portrait_clear_bmp", px, py, renderQueue+1)
+						AmySprite.setFlags(SPRITE_FLAG_PRIO)
+						AmySprite.setPalette(AmyMISC.Palette.GetBasePal(1), 0)
+						objA0.compound.count = 1
+					#endif
+					}
+					else if (lsds.amyicon == 3)
+					{
+						portrait = "saveimage_JUWL-Amy_3"
+						py_shift += 0x78
+					}
+					
+					if (Renderer.hasCustomSprite(portrait))
+					{
+						Renderer.drawCustomSprite(portrait, px, py - py_shift - (lsds.nodetail ? 0x10 : 0), 0, SPRITE_FLAG_PRIO, renderQueue)
+						u8[A0 + 0x23] = 0
+					}
 				}
-				else if (lsds.amyicon == 3)
+			#if AMY_GALORE_PLUS_ACTIVE
+				else if (!lsds.amyicon)
 				{
-					portrait = "saveimage_JUWL-Amy_3"
-					py_shift += 0x78
+					u64 portrait = "original_clear"
+					
+					if (Renderer.hasCustomSprite(portrait))
+					{
+						Renderer.drawCustomSprite(portrait, px, py - (lsds.nodetail ? 0x10 : 0), 0x30, SPRITE_FLAG_PRIO, renderQueue)
+						u8[A0 + 0x23] = 0
+					}
 				}
-				
-				if (Renderer.hasCustomSprite(portrait))
-				{
-					Renderer.drawCustomSprite(portrait, px, py - py_shift - (lsds.nodetail ? 0x10 : 0), 0, SPRITE_FLAG_PRIO, renderQueue)
-					u8[A0 + 0x23] = 0
-				}
+			#endif
 			}
 			
 			// Majestic
