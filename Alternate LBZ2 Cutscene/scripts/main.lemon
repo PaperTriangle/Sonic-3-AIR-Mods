@@ -550,10 +550,30 @@ function void fn074fd2()
 {
 	base.fn074fd2()
 	
-	if (altlbz2cs.stopmusic == 1 && objA0.update_address == 0x08566a)
-		Standalone.playAudio(MUSIC_CTRL_FADEOUT)
-	else if (altlbz2cs.stopmusic == 2 && objA0.update_address == 0x08566a)
+	if (altlbz2cs.stopmusic == 2 && objA0.update_address == 0x08566a)
 		objA0.update_address = 0x085668
+}
+
+//# address-hook(0x08566a)
+function void fn08566a()
+{
+	// Same as above, but without music fade-out (used after Big Arms)
+	--objA0.countdown_value
+	if (objA0.countdown_value >= 0)
+	{
+		DrawObject()
+	}
+	else
+	{
+		objA0.render_flags &= ~render_flag.VISIBLE
+		objA0.countdown_value = 119
+
+		if (altlbz2cs.stopmusic == 1)
+			Standalone.playAudio(MUSIC_CTRL_FADEOUT)
+
+		A1 = objA0.countdown_callback
+		call A1
+	}
 }
 
 // Restore music for Knuckles
