@@ -195,6 +195,10 @@
 	{
 		"File": "ZoneCards/LBZ_Zone_Card.bin"
 	},
+	"LBZ_Zone_Card_Majtastic":
+	{
+		"File": "ZoneCards/LBZ_Zone_Card_Majtastic.bin"
+	},
 	"LBZ2_Chunks":
 	{
 		"File": "LBZ/LBZ2_Chunks.bin"

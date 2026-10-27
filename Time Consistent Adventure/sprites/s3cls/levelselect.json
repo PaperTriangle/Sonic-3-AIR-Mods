@@ -2,6 +2,7 @@
 	"S3CompleteSelect_FBZ": { "File": "fbz_icon.png"},	
 	"S3CompleteSelect_FBZ_S3": { "File": "fbz_icon_s3.png"},	
 	"S3CompleteSelect_LBZ": { "File": "lbz_icon.png"},	
+	"S3CompleteSelect_LBZ_Majtastic": { "File": "lbz_icon_majtastic.png"},	
 	"S3CompleteSelect_LBZ_Knux": { "File": "lbz_icon_knux.png"},	
 	"S3CompleteSelect_SOZ": { "File": "soz_icon.png"},	
 	"S3CompleteSelect_SOZ_Knux": { "File": "soz_icon_knux.png"},	

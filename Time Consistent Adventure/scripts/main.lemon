@@ -593,7 +593,7 @@ function void fn00d96a()
 			System.loadExternalRawData("FBZ_Zone_Card_S3", 0x00CBF8)
 
 		if (tca.lbz)
-			System.loadExternalRawData("LBZ_Zone_Card", 0x00CBB8)
+			System.loadExternalRawData(Mods.isModActive("Majtastic Fixes") && System.getGlobalVariableValueByName("MF.LBZPORTRAIT") ? "LBZ_Zone_Card_Majtastic" : "LBZ_Zone_Card", 0x00CBB8)
 
 		if (u16[A0 + 0x36] == 0x007 && s16[0xffffb04a + 0x2e] == 0)
 		{
@@ -612,7 +612,7 @@ function void fn00d96a()
 		{
 			if (tca.lbz)
 			{	
-				u64 lbzkey = "lbz_icon"
+				u64 lbzkey = Mods.isModActive("Majtastic Fixes") && System.getGlobalVariableValueByName("MF.LBZPORTRAIT") ? "lbz_icon_majtastic" : "lbz_icon"
 				if (tca.ds_char == 0x03 || tca.ds_char == 0x04)
 					lbzkey = "lbz_icon_knux"
 					
@@ -666,13 +666,13 @@ function void fn00d96a()
 		if (tca.fbz_s3_icon)
 			System.loadExternalRawData("FBZ_Zone_Card_S3", 0x00CBF8)
 		if (tca.lbz)
-			System.loadExternalRawData("LBZ_Zone_Card", 0x00CBB8)
+			System.loadExternalRawData(Mods.isModActive("Majtastic Fixes") && System.getGlobalVariableValueByName("MF.LBZPORTRAIT") ? "LBZ_Zone_Card_Majtastic" : "LBZ_Zone_Card", 0x00CBB8)
 	
 		if (u16[A0 + 0x36] == 0x005 && s16[0xffffb04a + 0x2e] == 0)
 		{
 			if (tca.lbz)
 			{	
-				u64 lbzkey = "lbz_icon"
+				u64 lbzkey = Mods.isModActive("Majtastic Fixes") && System.getGlobalVariableValueByName("MF.LBZPORTRAIT") ? "lbz_icon_majtastic" : "lbz_icon"
 				if (tca.knux_route)
 					lbzkey = "lbz_icon_knux"
 					
@@ -711,7 +711,15 @@ function void fn00d96a()
 		}
 	}
 	
-	base.fn00d96a()
+	if (Mods.isModActive("Majtastic Fixes")) // It's a hack, but gets the job done!
+	{
+		u8 backupMFVal = System.getGlobalVariableValueByName("MF.LBZPORTRAIT")
+		System.setGlobalVariableValueByName("MF.LBZPORTRAIT", 0)
+		base.fn00d96a()
+		System.setGlobalVariableValueByName("MF.LBZPORTRAIT", backupMFVal)
+	}
+	else
+		base.fn00d96a()
 }
 
 function bool Standalone.onDrawVdpSpriteCompound(s16 px, s16 py, u8 size, u16 index, u16 renderQueue, u8 spriteCounter)
@@ -1720,7 +1728,7 @@ function void Renderer.drawCustomSprite(u64 key, s16 px, s16 py, u8 atex, u8 fla
 	else if (key == "S3CompleteSelect_Zone6")
 	{
 		if (tca.lbz)
-			key = (levelselect.characters == 3 || levelselect.characters == 4) ? "S3CompleteSelect_LBZ_Knux" : "S3CompleteSelect_LBZ"
+			key = (levelselect.characters == 3 || levelselect.characters == 4) ? "S3CompleteSelect_LBZ_Knux" : (Mods.isModActive("Majtastic Fixes") && System.getGlobalVariableValueByName("MF.LBZPORTRAIT") ? "S3CompleteSelect_LBZ_Majtastic" : "S3CompleteSelect_LBZ")
 	}
 	else if (key == "S3CompleteSelect_Zone12")
 	{
