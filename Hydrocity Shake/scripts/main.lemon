@@ -2,6 +2,7 @@ global u8 hs.bmpline
 global bool hs.underwater_flash
 global bool hs.bubbles
 global bool hs.bubble_shrink
+global bool hs.flashbits
 
 //# address-hook(0x06b7bc) end(0x06b7ea)
 function void fn06b7bc()
@@ -1022,4 +1023,23 @@ function void fn02fbb2()
 	
 	HS.SpawnBubble()
 	UnloadObject()
+}
+
+// Flashing agitator bits
+//# address-hook(0x06a8ee) end(0x06a910)
+function void fn06a8ee()
+{
+	if (!hs.flashbits)
+	{
+		base.fn06a8ee()
+		return
+	}
+	
+	setupObjectAttributesBasic(0x06ad48)
+	objA0.update_address = 0x085102
+
+	objA0.animation.sprite = 0x1f + (objA0.subtype2c >> 1)
+
+	D0 = 0x1c
+	fn0852d0()
 }
