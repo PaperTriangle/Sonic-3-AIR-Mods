@@ -1418,10 +1418,10 @@ function void fn0659cc()
 }
 
 // Transition at switch
-//# address-hook(0x0658f2) end(0x065944)
-function void fn0658f2()
+//# address-hook(0x06594a) end(0x0659b0)
+function void fn06594a()
 {
-	base.fn0658f2()
+	base.fn06594a()
 	if (tca.ssz_trans_point == 1)
 		transition_state = 1
 }
