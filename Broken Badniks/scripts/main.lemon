@@ -213,8 +213,12 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 		}
 		else if (objA0.state == 14)																	// Monkeydude
 		{
-			if (objA0.animation.sprite == 1)
+			if (objA0.animation.sprite > 0)
+			{
 				key = BB.customBadniks() ? "monkey_dude_hand" : "monkeydude_hand"
+				if (objA0.animation.sprite == 2)
+					flags |= SPRITE_FLAG_FLIP_X
+			}
 			else
 				key = BB.customBadniks() ? "monkey_dude_arm_circle" : "monkeydude_joint"
 		}
@@ -801,10 +805,11 @@ function void BB.BreakMonkeydudeHand()
 		if (objA0.animation.sprite == 6)
 		{
 			BB.SpawnPart(System.rand() & 1 ? System.rand() % 0x80 * -1 - 0x80 : System.rand() % 0x80 + 0x80 , System.rand() % 0x100 * -1 - 0x200, 0x0d, 0)
-			BB.SpawnPart(System.rand() & 1 ? System.rand() % 0x80 * -1 - 0x80 : System.rand() % 0x80 + 0x80 , System.rand() % 0x100 * -1 - 0x200, 0x0e, 1)
+
+			BB.SpawnPart(System.rand() & 1 ? System.rand() % 0x80 * -1 - 0x80 : System.rand() % 0x80 + 0x80 , System.rand() % 0x100 * -1 - 0x200, 0x0e, (Mods.isModActive("The Works") && objA0.flags38 & 0x01 && objA0.flags38 & 0x08 && _equal()) ? 2 : 1)
 		}
 		else
-			BB.SpawnPart(System.rand() & 1 ? System.rand() % 0x80 * -1 - 0x80 : System.rand() % 0x80 + 0x80 , System.rand() % 0x100 * -1 - 0x200, 0x0e, 1)
+			BB.SpawnPart(System.rand() & 1 ? System.rand() % 0x80 * -1 - 0x80 : System.rand() % 0x80 + 0x80 , System.rand() % 0x100 * -1 - 0x200, 0x0e, (Mods.isModActive("The Works") && objA0.flags38 & 0x01 && objA0.flags38 & 0x08 && _equal()) ? 2 : 1)
 		
 		Object.TriggerUnloading()
 	}
@@ -878,7 +883,7 @@ function void BB.BreakMonkeydudeArm()
 //# address-hook(0x0871da) end(0x087246)
 function void fn0871da()
 {
-	if (!bb.monkeysmooth)
+	if (!bb.monkeysmooth || (Mods.isModActive("The Works") && System.getGlobalVariableValueByName("TW_MONKEYDUDE")))
 	{
 		base.fn0871da()
 		return
@@ -927,7 +932,7 @@ function void fn087172()
 {
 	base.fn087172()
 
-	if (bb.monkeysmooth)
+	if (bb.monkeysmooth && !(Mods.isModActive("The Works") && System.getGlobalVariableValueByName("TW_MONKEYDUDE")))
 		objA0.value39 *= 8 			// I made it move 8 times less so it needs to be 8 times.
 
 }
