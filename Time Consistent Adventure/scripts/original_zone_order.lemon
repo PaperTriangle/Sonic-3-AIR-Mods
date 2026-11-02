@@ -158,6 +158,12 @@ function bool fn00d458()
 		}
 	}
 	
+	if (Mods.isModActive("The Works"))
+	{
+		D1.u16 = u16[A0 + 0x36]
+		fn00d96a()
+	}
+	
 	return originalScripts
 }
 
