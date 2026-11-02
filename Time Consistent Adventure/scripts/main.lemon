@@ -718,7 +718,7 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 	// New data select zone icons!
 	if (tca.zone_icons && objA0.update_address == 0x00d42c)
 	{
-		if (objA0.compound.count >= 2 && TCA.renderDataSelectPortraits(px-0x28, py-0x78, renderQueue))
+		if (objA0.compound.count >= 2 && TCA.renderDataSelectPortraits(px-0x28, py-0x78, renderQueue-1))
 			objA0.compound.count = 1
 	}
 	

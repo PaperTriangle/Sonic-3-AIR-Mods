@@ -485,7 +485,7 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 				}
 			}
 			// Majestic
-			else if (Mods.isModActive("Majtastic Fixes"))
+			else if (Mods.isModActive("Majtastic Fixes")) && !(Mods.isModActive("Time Consistent Adventure") && System.getGlobalVariableValueByName("tca.lbz") && System.getGlobalVariableValueByName("tca.zone_icons")))
 			{
 				if (objA0.compound.count >= 2 && MF.useNewPortraits()) // portrait stuff!
 				{
