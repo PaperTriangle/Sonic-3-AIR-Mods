@@ -562,8 +562,6 @@ function u8 MISC.getAllowedZones(u8 slotnum)
 //# address-hook(0x00d96a) end(0x00d9f2)
 function void fn00d96a()
 {
-	u16 posY = 0x10 + ((Mods.isModActive("Data Select Options") && Mods.isModActive("Origins Screen Resolution") && getScreenHeight() == 240) ? 0x08 : 0x00)
-	
 	if (tca.zone_icons && tca.intended)
 	{		
 		if isKnucklesDataSelect()
@@ -718,7 +716,8 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 	// New data select zone icons!
 	if (tca.zone_icons && objA0.update_address == 0x00d42c)
 	{
-		if (objA0.compound.count >= 2 && TCA.renderDataSelectPortraits(px-0x28, py-0x78, renderQueue-1))
+		u16 dso_shift = (Mods.isModActive("Data Select Options") && System.getGlobalVariableValueByName("lsds.nodetail") ? 0x10 : 0)
+		if (objA0.compound.count >= 2 && TCA.renderDataSelectPortraits(px-0x28, py-0x78-dso_shift, renderQueue-1))
 			objA0.compound.count = 1
 	}
 	
@@ -1712,4 +1711,14 @@ function void Renderer.drawCustomSprite(u64 key, s16 px, s16 py, u8 atex, u8 fla
 	}
 	
 	base.Renderer.drawCustomSprite(key, px, py, atex, flags, renderQueue)
+}
+
+// Majtastic Fixes Compat
+function bool MF.useNewPortraits()
+{
+	u8 zone = u16[A0 + 0x28]
+	if (tca.lbz && tca.zone_icons && zone == 5)
+		return false
+	
+	return base.MF.useNewPortraits()
 }

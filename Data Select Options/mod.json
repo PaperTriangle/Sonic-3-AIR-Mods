@@ -26,6 +26,18 @@
 			"DisplayName": "Sonic 3 Complete Level Select+",
 			"IsRequired": "0",
 			"Priority": "Lower"
+		},
+		"maj-nabbup-spritefixes":
+		{
+			"DisplayName": "Majtastic Fixes",
+			"IsRequired": "0",
+			"Priority": "Lower"
+		},
+		"nabbup-the-works":
+		{
+			"DisplayName": "The Works",
+			"IsRequired": "0",
+			"Priority": "Lower"
 		}
 	},
 	"Settings":

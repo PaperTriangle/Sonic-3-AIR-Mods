@@ -484,8 +484,9 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 					u8[A0 + 0x23] = 0
 				}
 			}
+			
 			// Majestic
-			else if (Mods.isModActive("Majtastic Fixes")) && !(Mods.isModActive("Time Consistent Adventure") && System.getGlobalVariableValueByName("tca.lbz") && System.getGlobalVariableValueByName("tca.zone_icons")))
+			if (Mods.isModActive("Majtastic Fixes"))
 			{
 				if (objA0.compound.count >= 2 && MF.useNewPortraits()) // portrait stuff!
 				{
@@ -1293,6 +1294,9 @@ function void fn00d70c()
 
 function bool MF.useNewPortraits()
 {
+	if (lsds.sonic_icons && objA0.animation.frame != 0x17 && u16[A0 + 0x34] <= CHARS_SONIC_ALONE && objA0.value3b < 3)
+		return false
+	
 	return base.MF.useNewPortraits()
 }
 
