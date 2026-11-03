@@ -518,9 +518,9 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 						zone.setFlags(SPRITE_FLAG_PRIO)
 						zone.setPaletteOffset(0x30)
 						objA0.compound.count = 1
-						return false
+						//return false
 					}
-					return false
+					//return false //This was here to ensure l&c did not show...
 				}
 			}
 		#endif
@@ -577,7 +577,7 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 				
 				ExtraChar.DataSelect.drawCharacterSprite(px, py, renderQueue)
 				
-				return false
+				//return false //This was here to ensure l&c did not show...
 				
 			}
 			else if (objA0.animation.sprite == 5 && objA0.animation.timer != 0)
@@ -589,6 +589,14 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 	}
 
 	return base.Standalone.onWriteToSpriteTable(px, py, renderQueue)
+}
+
+function void ExtraChar.DataSelect.drawCharacterIconsSprite(s16 px, s16 py, u16 renderQueue)
+{
+	if (lsds.nodetail)
+		return
+	
+	base.ExtraChar.DataSelect.drawCharacterIconsSprite(px, py, renderQueue)
 }
 
 function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16 renderQueue)
