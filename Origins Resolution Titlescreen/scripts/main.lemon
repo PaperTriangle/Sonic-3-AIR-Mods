@@ -612,13 +612,13 @@ function void fn0048dc()
 	else
 		orts.flash = 0
 
-	Renderer.drawCustomSprite(orts.title_type == 2 ? "new_s3_banner" : "s3_banner", px, py - 0x12, 0x30, SPRITE_FLAG_PRIO, 0x9f7e)
+	Renderer.drawCustomSprite(orts.title_type == 2 || orts.title_type == 4 ? "new_s3_banner" : "s3_banner", px, py - 0x12, 0x30, SPRITE_FLAG_PRIO, 0x9f7e)
 
 	if (!orts.title_type)
 		Renderer.drawCustomSprite("title_screen_cr", getScreenWidth() - 88, 220, 0x00, 0, 0x9f7e)
 	
 	if (orts.title_type)
-		Renderer.drawCustomSprite("sonic_the_hedgehog", px, py + 1, orts.title_type == 2 ? 0x50 : 0x30, SPRITE_FLAG_PRIO, 0xa000)
+		Renderer.drawCustomSprite("sonic_the_hedgehog", px, py + 1, orts.title_type == 2 || orts.title_type == 4 ? 0x50 : 0x30, SPRITE_FLAG_PRIO, 0xa000)
 
 	// Clear "Sonic The Hedgehog" text in VRAM
 	for (u16 x = 0xb000; x < 0xb700; x += 0x80)
@@ -695,7 +695,7 @@ function void fn00496a()
 {
 
 	// Leave this out in S3AIR
-	if (!orts.title_type)
+	if !(orts.title_type == 1 || orts.title_type == 2)
 	{
 		UnloadObject()
 		return
@@ -775,7 +775,7 @@ function void fn00486c()
 	objA0.position.y.u16 = D0.u16
 #if STANDALONE
 	// Move it down
-	objA0.position.y.u16 += orts.title_type ? 0x0e : 0x1c
+	objA0.position.y.u16 += (orts.title_type == 1 || orts.title_type == 2) ? 0x0e : 0x1c
 #else
 
 	// Movement of Sonic and the ring around him
@@ -785,7 +785,7 @@ function void fn00486c()
 	}
 #endif
 
-	if (orts.title_type) && (scrolloffset.y.planeA != 0x02) && (global.framecounter & 0x01)
+	if (orts.title_type == 1 || orts.title_type == 2) && (scrolloffset.y.planeA != 0x02) && (global.framecounter & 0x01)
 	{
 		++scrolloffset.y.planeA
 	}
