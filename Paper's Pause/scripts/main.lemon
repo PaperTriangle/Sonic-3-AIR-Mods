@@ -181,7 +181,7 @@ function void GamePause.Menu()
 				// First open the dialog menu for Exit Game
 				if (pp.exittotitle)
 				{
-					if (global.game_mode = 0x34)
+					if (global.game_mode == 0x34)
 						fromSS = 1
 					
 					global.game_mode = 0x04
@@ -358,7 +358,7 @@ function void FadeOutPalette()
 	if (restartOn && fromSS)
 	{
 		Renderer.setViewport(0, 0, getScreenWidth(), getScreenHeight(), 0xfeff) // Fix for Competition Mode not having the upper bar visible
-		Renderer.drawRect(0, 0, getScreenWidth(), getScreenHeight(), 0x15, 0xffff, false)
+		Renderer.drawRect(0, 0, getScreenWidth(), getScreenHeight(), 0x20, 0xffff, false)
 		return
 	}
 	
