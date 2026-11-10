@@ -72,10 +72,20 @@ function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
 		}
 		else
 		{
-			if (isCyclePalette)
-				cycles = isHyperEffect ? 0x07 : 0x0b
+			if (Mods.isModActive("Smoother Cycles"))
+			{
+				if (isCyclePalette)
+					cycles = isHyperEffect ? 0x04 : 0x06
+				else
+					cycles = isHyperEffect ? (useHyperPalette ? 0x04 : 0x02) : 0x04
+			}
 			else
-				cycles = isHyperEffect ? 0x04 : 0x06
+			{
+				if (isCyclePalette)
+					cycles = isHyperEffect ? 0x07 : 0x0b
+				else
+					cycles = isHyperEffect ? 0x04 : 0x06
+			}
 		}
 		
 		// Set Up blending
@@ -105,6 +115,21 @@ function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
 				blendFactor = (super.palettefx.frame % 2 == 0) ? flashStrength : 0
 				nextFrame = (super.palettefx.frame + 1) % 12
 			}
+			else if (Mods.isModActive("Smoother Cycles"))
+			{
+				if (isCyclePalette)
+				{
+					u8 tempFrame = super.palettefx.frame >= 5 ? 10 - super.palettefx.frame : super.palettefx.frame
+					blendFactor = tempFrame * flashStrength / 5
+					nextFrame = (super.palettefx.frame + 1) % 10
+				}
+				else
+				{
+					u8 tempFrame = super.palettefx.frame >= 4 ? 8 - super.palettefx.frame : super.palettefx.frame
+					blendFactor = tempFrame * flashStrength / 4
+					nextFrame = (super.palettefx.frame + 1) % 8
+				}
+			}
 			else if (isCyclePalette)
 			{
 				u8 tempFrame = super.palettefx.frame >= 4 ? 6 - super.palettefx.frame : super.palettefx.frame
@@ -117,12 +142,28 @@ function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
 				nextFrame = (super.palettefx.frame + 1) % 4
 			}
 			
+			
 			if (characterVersion == 2)
 			{
 				if (useHyperPalette && isHyperEffect)
 				{
 					blendFactor = (super.palettefx.frame.tails % 2 == 0) ? flashStrength : 0
 					nextFrame = (super.palettefx.frame.tails + 1) % 12
+				}
+				else if (Mods.isModActive("Smoother Cycles"))
+				{
+					if (isCyclePalette)
+					{
+						u8 tempFrame = super.palettefx.frame.tails >= 5 ? 10 - super.palettefx.frame.tails : super.palettefx.frame.tails
+						blendFactor = tempFrame * flashStrength / 5
+						nextFrame = (super.palettefx.frame.tails + 1) % 10
+					}
+					else
+					{
+						u8 tempFrame = super.palettefx.frame.tails >= 4 ? 8 - super.palettefx.frame.tails : super.palettefx.frame.tails
+						blendFactor = tempFrame * flashStrength / 4
+						nextFrame = (super.palettefx.frame.tails + 1) % 8
+					}
 				}
 				else if (isCyclePalette)
 				{
@@ -369,6 +410,8 @@ function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
 			--super.palettefx.timer
 		}
 	}
+	
+	System.callFunctionByName("PHUD.ClonePalette")
 }
 
 function u8 getModdedPaletteLineAsReleased(u8 character, bool isHyperEffect, bool underwater, u8 cycle)
@@ -694,10 +737,20 @@ function void UpdatePaletteEffects.SuperForm.endpose.moddingVersion(u8 character
 	}
 	else
 	{
-		if (isCyclePalette)
-			cycles = isHyperEffect ? 0x07 : 0x0b
+		if (Mods.isModActive("Smoother Cycles"))
+		{
+			if (isCyclePalette)
+				cycles = isHyperEffect ? 0x04 : 0x06
+			else
+				cycles = isHyperEffect ? (useHyperPalette ? 0x04 : 0x02) : 0x04
+		}
 		else
-			cycles = isHyperEffect ? 0x04 : 0x06
+		{
+			if (isCyclePalette)
+				cycles = isHyperEffect ? 0x07 : 0x0b
+			else
+				cycles = isHyperEffect ? 0x04 : 0x06
+		}
 	}
 	
 	// Set Up blending
@@ -727,6 +780,21 @@ function void UpdatePaletteEffects.SuperForm.endpose.moddingVersion(u8 character
 			blendFactor = (super.palettefx.frame % 2 == 0) ? flashStrength : 0
 			nextFrame = (super.palettefx.frame + 1) % 12
 		}
+		else if (Mods.isModActive("Smoother Cycles"))
+		{
+			if (isCyclePalette)
+			{
+				u8 tempFrame = super.palettefx.frame >= 5 ? 10 - super.palettefx.frame : super.palettefx.frame
+				blendFactor = tempFrame * flashStrength / 5
+				nextFrame = (super.palettefx.frame + 1) % 10
+			}
+			else
+			{
+				u8 tempFrame = super.palettefx.frame >= 4 ? 8 - super.palettefx.frame : super.palettefx.frame
+				blendFactor = tempFrame * flashStrength / 4
+				nextFrame = (super.palettefx.frame + 1) % 8
+			}
+		}
 		else if (isCyclePalette)
 		{
 			u8 tempFrame = super.palettefx.frame >= 4 ? 6 - super.palettefx.frame : super.palettefx.frame
@@ -739,12 +807,28 @@ function void UpdatePaletteEffects.SuperForm.endpose.moddingVersion(u8 character
 			nextFrame = (super.palettefx.frame + 1) % 4
 		}
 		
+		
 		if (characterVersion == 2)
 		{
 			if (useHyperPalette && isHyperEffect)
 			{
 				blendFactor = (super.palettefx.frame.tails % 2 == 0) ? flashStrength : 0
 				nextFrame = (super.palettefx.frame.tails + 1) % 12
+			}
+			else if (Mods.isModActive("Smoother Cycles"))
+			{
+				if (isCyclePalette)
+				{
+					u8 tempFrame = super.palettefx.frame.tails >= 5 ? 10 - super.palettefx.frame.tails : super.palettefx.frame.tails
+					blendFactor = tempFrame * flashStrength / 5
+					nextFrame = (super.palettefx.frame.tails + 1) % 10
+				}
+				else
+				{
+					u8 tempFrame = super.palettefx.frame.tails >= 4 ? 8 - super.palettefx.frame.tails : super.palettefx.frame.tails
+					blendFactor = tempFrame * flashStrength / 4
+					nextFrame = (super.palettefx.frame.tails + 1) % 8
+				}
 			}
 			else if (isCyclePalette)
 			{
