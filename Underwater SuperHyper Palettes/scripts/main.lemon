@@ -72,7 +72,7 @@ function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
 		}
 		else
 		{
-			if (Mods.isModActive("Smoother Cycles"))
+			if (Mods.isModActive("Smoother Cycles") && System.getGlobalVariableValueByName("sc.master_emerald"))
 			{
 				if (isCyclePalette)
 					cycles = isHyperEffect ? 0x04 : 0x06
@@ -115,7 +115,7 @@ function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
 				blendFactor = (super.palettefx.frame % 2 == 0) ? flashStrength : 0
 				nextFrame = (super.palettefx.frame + 1) % 12
 			}
-			else if (Mods.isModActive("Smoother Cycles"))
+			else if (Mods.isModActive("Smoother Cycles") && System.getGlobalVariableValueByName("sc.master_emerald"))
 			{
 				if (isCyclePalette)
 				{
@@ -150,7 +150,7 @@ function void UpdatePaletteEffects.SuperForm.moddingVersion(u8 characterVersion)
 					blendFactor = (super.palettefx.frame.tails % 2 == 0) ? flashStrength : 0
 					nextFrame = (super.palettefx.frame.tails + 1) % 12
 				}
-				else if (Mods.isModActive("Smoother Cycles"))
+				else if (Mods.isModActive("Smoother Cycles") && System.getGlobalVariableValueByName("sc.master_emerald"))
 				{
 					if (isCyclePalette)
 					{
@@ -737,7 +737,7 @@ function void UpdatePaletteEffects.SuperForm.endpose.moddingVersion(u8 character
 	}
 	else
 	{
-		if (Mods.isModActive("Smoother Cycles"))
+		if (Mods.isModActive("Smoother Cycles") && System.getGlobalVariableValueByName("sc.master_emerald"))
 		{
 			if (isCyclePalette)
 				cycles = isHyperEffect ? 0x04 : 0x06
@@ -780,7 +780,7 @@ function void UpdatePaletteEffects.SuperForm.endpose.moddingVersion(u8 character
 			blendFactor = (super.palettefx.frame % 2 == 0) ? flashStrength : 0
 			nextFrame = (super.palettefx.frame + 1) % 12
 		}
-		else if (Mods.isModActive("Smoother Cycles"))
+		else if (Mods.isModActive("Smoother Cycles") && System.getGlobalVariableValueByName("sc.master_emerald"))
 		{
 			if (isCyclePalette)
 			{
@@ -815,7 +815,7 @@ function void UpdatePaletteEffects.SuperForm.endpose.moddingVersion(u8 character
 				blendFactor = (super.palettefx.frame.tails % 2 == 0) ? flashStrength : 0
 				nextFrame = (super.palettefx.frame.tails + 1) % 12
 			}
-			else if (Mods.isModActive("Smoother Cycles"))
+			else if (Mods.isModActive("Smoother Cycles") && System.getGlobalVariableValueByName("sc.master_emerald"))
 			{
 				if (isCyclePalette)
 				{
