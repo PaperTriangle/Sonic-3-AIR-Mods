@@ -730,7 +730,7 @@ function void fn05b514()
 // # address-hook(0x054608) end(0x05480a)
 function void UpdateBackground.LBZ2()
 {
-	System.writeDisplayLine(stringformat("0x%04x", camera.foreground.y.u16))
+	//System.writeDisplayLine(stringformat("0x%04x", camera.foreground.y.u16))
 	D3.u16 = camera.screenshake.offset
 	D0.u32 = (camera.foreground.y.u16 >= 0xfff0 ? 0 : camera.foreground.y.u16)  * 0x0580/(0x0580 - getScreenHeightExtend()) - D3.u16 - 0x05f0
 	D1.u16 = D0.u16
