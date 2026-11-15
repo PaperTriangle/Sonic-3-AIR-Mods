@@ -329,11 +329,21 @@ function void DD.SpawnDust()
 #if STANDALONE
 function void releaseDropDash()
 {
+
+	// The Works Compat...
+	if (Mods.isModActive("The Works"))
+	{
+		if DroppinFunctions() && A0 == 0xffffb000 && System.getGlobalVariableValueByName("TW_ENHANCED_DROPDASH")
+			return
+	}
+	
 	// Release drop dash!
 
 	// Show dust cloud
-	if (dd.dropdash_dust)
+	if (dd.dropdash_dust && !competition_mode.active)
 		DD.SpawnDust()
+	else if (Mods.isModActive("The Works") && System.getGlobalVariableValueByName("TW_DROPDASH_DUST"))
+		DD.SpawnTWDust()
 	else if (char.drown_countdown >= 12 && abs(s8(char.rotation)) < 0x1c)
 	{
 		u8[A6 + 0x20] = 0x02
@@ -432,6 +442,13 @@ function void releaseDropDash()
 	else
 		Input.setControllerRumbleByAddress(A0, 0.0f, 1.0f, 150)
 #endif
+
+	// The Works Compat Strikes Back...
+	if (Mods.isModActive("The Works") && System.getGlobalVariableValueByName("TW_ENHANCED_DROPDASH"))
+	{
+		char.velocity.x = char.groundspeed
+	}
+
 }
 #endif
 
@@ -812,4 +829,28 @@ function void fn0500d6()
 	
 	if (dd.waterplus_palette > 0)
 		DND.LoadWaterPlusPalette(true)
+}
+
+// The Works Compat
+function void DD.SpawnTWDust()
+{
+	if (allocDynamicObjectStd() && (!competition_mode.active))
+	{
+		objA1.update_address = makeCallable(TW.newDropdash)
+		objA1.position.x.u16 = char.position.x.u16
+		objA1.position.y.u16 = char.position.y.u16
+		objA1.sprite_attributes = char.sprite_attributes
+		objA1.render_flags = char.render_flags
+		objA1.render_flags &= ~render_flag.FLIP_X
+		if (char.flags & char.flag.FACING_LEFT)
+			objA1.render_flags |= render_flag.FLIP_X
+		objA1.sprite_priority = char.sprite_priority - 0x80
+		objA1.box_size.x = 0x10
+		objA1.box_size.y = 0x10
+	}
+}
+
+function void TW.newDropdash()
+{
+	base.TW.newDropdash()
 }
