@@ -850,6 +850,11 @@ function void DD.SpawnTWDust()
 	}
 }
 
+function bool DroppinFunctions()
+{
+	return base.DroppinFunctions()
+}
+
 function void TW.newDropdash()
 {
 	base.TW.newDropdash()
