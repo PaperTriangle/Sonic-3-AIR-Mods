@@ -158,7 +158,7 @@ function bool fn00d458()
 		}
 	}
 	
-	if (Mods.isModActive("The Works"))
+	if (Mods.isModActive("The Works") && objA0.animation.frame == 0x17)
 	{
 		D1.u16 = u16[A0 + 0x36]
 		fn00d96a()

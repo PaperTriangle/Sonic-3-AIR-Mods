@@ -435,11 +435,17 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 					if (lsds.amyicon == 2)
 					{
 					#if AMY_GALORE_PLUS_ACTIVE
-						portrait = "character_amgal_galore_portrait_clear"
-						SpriteHandle AmySprite = Renderer.addSpriteHandle("character_amgal_galore_portrait_clear_bmp", px, py, renderQueue+1)
-						AmySprite.setFlags(SPRITE_FLAG_PRIO)
-						AmySprite.setPalette(AmyMISC.Palette.GetBasePal(1), 0)
-						objA0.compound.count = 1
+						if (AmyMISC.OverrideBasePorts())
+						{
+							px = (objA0.position.x.u16 - 0xa8) + 40
+							string key = MISC.getClearPortrait(objA0.value3b, 4)
+							objA0.compound.count = 1
+							if (Renderer.hasCustomSprite(key))
+							{
+								MISC.drawPortraitSprite(key, px, py - (lsds.nodetail ? 0x10 : 0), 0x00, SPRITE_FLAG_PRIO, renderQueue - 1, 4)
+								u8[A0 + 0x23] = 0
+							}
+						}
 					#endif
 					}
 					else if (lsds.amyicon == 3)
@@ -454,19 +460,21 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 						u8[A0 + 0x23] = 0
 					}
 				}
-			#if AMY_GALORE_PLUS_ACTIVE
-				else if (!lsds.amyicon)
-				{
-					u64 portrait = "original_clear"
-					
-					if (Renderer.hasCustomSprite(portrait))
-					{
-						Renderer.drawCustomSprite(portrait, px, py - (lsds.nodetail ? 0x10 : 0), 0x30, SPRITE_FLAG_PRIO, renderQueue)
-						u8[A0 + 0x23] = 0
-					}
-				}
-			#endif
+			// Leaving this here commented out if I ever want to add a custom clear icon feature.
+			//#if AMY_GALORE_PLUS_ACTIVE
+			//	else if (!lsds.amyicon)
+			//	{
+			//		u64 portrait = "original_clear"
+			//		
+			//		if (Renderer.hasCustomSprite(portrait))
+			//		{
+			//			Renderer.drawCustomSprite(portrait, px, py - (lsds.nodetail ? 0x10 : 0), 0x30, SPRITE_FLAG_PRIO, renderQueue)
+			//			u8[A0 + 0x23] = 0
+			//		}
+			//	}
+			//#endif
 			}
+			
 			
 			// New Sonic Icons
 			if (lsds.sonic_icons && (slotnum < 2) && !ecf_slot && (u8[A0 + 0x38] == 0xff && objA0.animation.timer == 0 && u16[0xffffb04a + 0x30] == 0))
@@ -474,19 +482,21 @@ function bool Standalone.onWriteToSpriteTable(s16 px, s16 py, u16 renderQueue)
 				if u8[A0 + 0x23] == 0x18
 				{
 					System.loadExternalRawData("sonic_clear_palette", 0x00cab8)
+					copyMemory(0xfffffc60, 0x00cab8, 0x20)
 					Renderer.drawCustomSprite("sonic_clear", px, py - (lsds.nodetail ? 0x10 : 0), 0x30, SPRITE_FLAG_PRIO, renderQueue)
 					u8[A0 + 0x23] = 0
 				}
 				else if u8[A0 + 0x23] == 0x19
 				{
 					System.loadExternalRawData(lsds.sonic_icons == 2 ? "super_sonic_clear_palette_alt" : "super_sonic_clear_palette", 0x00cad8)
+					copyMemory(0xfffffc60, 0x00cad8, 0x20)
 					Renderer.drawCustomSprite("super_sonic_clear", px, py - (lsds.nodetail ? 0x10 : 0), 0x30, SPRITE_FLAG_PRIO, renderQueue)
 					u8[A0 + 0x23] = 0
 				}
 			}
 			
 			// Majestic
-			if (Mods.isModActive("Majtastic Fixes"))
+			if (Mods.isModActive("Majtastic Fixes") && !(Mods.isModActive("Time Consistent Adventure") && System.getGlobalVariableValueByName("tca.lbz") && System.getGlobalVariableValueByName("tca.zone_icons")))
 			{
 				if (objA0.compound.count >= 2 && MF.useNewPortraits()) // portrait stuff!
 				{
@@ -1311,4 +1321,22 @@ function bool MF.useNewPortraits()
 function void MF.renderDataSelectPortraits(s16 px, s16 py, s16 renderQueue)
 {
 	base.MF.renderDataSelectPortraits(px, py, renderQueue)
+}
+
+// Amy Galore tweak.
+function bool AmyMISC.OverrideBasePorts()
+{
+	if (lsds.amyicon != 2)
+	{
+		u8 slotnum = max(s16(u16[A0 + 0x34] - 1), 0) // Character selection AFTER Knuckles & Tails
+		bool ecf_slot = false
+	#if EXTRA_CHARACTER_FRAMEWORK_ACTIVE
+		if ECF_dataselect_getStr()
+			ecf_slot = true
+	#endif
+		if (slotnum < 4) && !ecf_slot
+			return false
+	}
+	
+	return base.AmyMISC.OverrideBasePorts()
 }
