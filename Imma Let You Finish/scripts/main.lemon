@@ -1,4 +1,8 @@
 global bool ilyf.tailspleasestop
+global bool ilyf.pressdabutton
+
+define u32 char.ADDRESS_P1 = 0xffffb000
+define u32 char.ADDRESS_P2 = 0xffffb04a
 
 //# address-hook(0x0868f8) end(0x086930)
 function void fn0868f8()
@@ -136,4 +140,185 @@ function void fn083a70()
 		return
 	
 	base.fn083a70()
+}
+
+// Push da button!
+
+//# address-hook(0x08672a) end(0x086750)
+function void fn08672a()
+{
+	if (!ilyf.pressdabutton)
+	{
+		base.fn08672a()
+		return
+	}
+	
+	fn086a3e_2()
+	
+	if (objA0.flags2a & (object.flag.P1_ON_OBJECT | object.flag.P2_ON_OBJECT))
+	{
+		if (objA0.value32 < 7)
+			objA0.value32 += 2
+	}
+	else
+	{
+		if (objA0.value32 > 0)
+			objA0.value32 -= objA0.value32 == 1 ? 1 : 2
+	}
+		
+	
+	if (objA0.value32 >= 7)
+	{
+		objA0.update_address = 0x086754
+		A1 = 0xffff0000 + u16[A0 + 0x46]
+		objA1.flags38 |= 0x02
+		objA0.animation.sprite = 0x0c
+		objA0.value32 = 0
+	}
+	Child.DrawSprite()
+}
+
+function void fn086a3e_2()
+{
+	D1.u16 = 0x1b
+	D2.u16 = 0x04
+	D3.u16 = 0x06 + (7-objA0.value32)
+	D4.u16 = objA0.position.x.u16
+	fn01dc56()
+}
+
+//# address-hook(0x086770) end(0x0867be)
+function void fn086770()
+{
+	if (!ilyf.pressdabutton)
+	{
+		base.fn086770()
+		return
+	}
+	
+	MoveWithParent()
+	fn086a54_2()
+
+	A1 = 0x0867c2
+	fn0858f8()
+
+		if (u16[char.ADDRESS_P1 + 0x14] < u16[char.ADDRESS_P2 + 0x10]) && (u16[char.ADDRESS_P1 + 0x10] > objA0.position.x.u16 - 0x12 && u16[char.ADDRESS_P1 + 0x10] < objA0.position.x.u16 + 0x12 && u16[char.ADDRESS_P1 + 0x14] < objA0.position.y.u16 + 0x1c && u16[char.ADDRESS_P1 + 0x14] > objA0.position.y.u16)
+		{
+			if (objA0.value32 < 7)
+				objA0.value32 = s16((objA0.position.y.u16 - u16[char.ADDRESS_P1 + 0x14]) + 0x19) >= 0 ? (objA0.position.y.u16 - u16[char.ADDRESS_P1 + 0x14]) + 0x19 : objA0.value32
+		}
+		else if (u16[char.ADDRESS_P2 + 0x10] > objA0.position.x.u16 - 0x12 && u16[char.ADDRESS_P2 + 0x10] < objA0.position.x.u16 + 0x12 && u16[char.ADDRESS_P2 + 0x14] < objA0.position.y.u16 + 0x1c && u16[char.ADDRESS_P2 + 0x14] > objA0.position.y.u16)
+		{
+			if (objA0.value32 < 7)
+				objA0.value32 = objA0.value32 = s16((objA0.position.y.u16 - u16[char.ADDRESS_P2 + 0x14]) + 0x19) >= 0 ? (objA0.position.y.u16 - u16[char.ADDRESS_P2 + 0x14]) + 0x19 : objA0.value32
+		}
+		else
+		{
+			if (objA0.value32 > 0)
+				objA0.value32 -= objA0.value32 == 1 ? 1 : 2
+		}
+
+	if (D0 != 0)
+	{
+		if (objA0.value32 >= 7)
+		{
+			objA0.update_address = 0x0867ca
+			u8[A0 + 0x43] -= 0x08
+			A1 = 0xffff0000 + u16[A0 + 0x46]
+			u8[A1 + 0x38] |= 0x02
+		}
+	}
+	Child.DrawSprite()
+}
+
+
+function void fn086a54_2()
+{
+	D2 = 0x00
+	D1 = 0x1b
+	D3 = 0x06
+	D4.u16 = objA0.position.x.u16
+	fn01dc56()
+}
+
+//# address-hook(0x0867ca) end(0x0867d2)
+function void fn0867ca()
+{
+	objA0.value32 = 0
+	base.fn0867ca()
+}
+
+function bool Standalone.onDrawVdpSprite(s16 px, s16 py, u8 size, u16 index, u16 renderQueue)
+{
+	if (ilyf.pressdabutton)
+	{
+		if (objA0.update_address == 0x08672a)
+		{
+			Renderer.drawVdpSpriteWithAlpha(px, py+objA0.value32, size, index, renderQueue, 255)
+			return true
+		}
+		else if (objA0.update_address == 0x086770 || objA0.update_address == 0x0867ca)
+		{
+			Renderer.drawVdpSpriteWithAlpha(px, py-objA0.value32, size, index, renderQueue, 255)
+			return true
+		}
+	}
+	
+	return base.Standalone.onDrawVdpSprite(px, py, size, index, renderQueue)
+}
+
+//# address-hook(0x06f010) end(0x06f054)
+function void fn06f010()
+{
+	if (!ilyf.pressdabutton)
+	{
+		base.fn06f010()
+		return
+	}
+	
+	A1 = 0xffff0000 + u16[A0 + 0x46]
+
+	if ((u8[A1 + 0x2a] & 0x80) == 0)
+	{
+		
+		if ((objA0.flags2a & object.flag.P1_ON_OBJECT) == 0 && (u8[A1 + 0x38] & 0x04) == 0)
+		{
+			u8[A1 + 0x38] &= ~0x01
+		}
+		else
+		{
+			u8[A1 + 0x38] |= 0x01
+		}
+		
+		if !(objA0.flags2a & (object.flag.P1_ON_OBJECT | object.flag.P2_ON_OBJECT)) && (u8[A1 + 0x38] & 0x04) == 0
+		{
+			if (objA0.value39 > 0)
+			{
+				objA0.position.y.u16 -= objA0.value39 == 1 ? 1 : 2
+				objA0.value39 -= objA0.value39 == 1 ? 1 : 2
+			}
+		}
+		else
+		{
+			System.writeDisplayLine(stringformat("%d", u8[A1 + 0x38] & 0x04))
+			if (objA0.value39 < 7)
+			{
+				if ((u8[A1 + 0x38] & 0x04) == 0)
+				{
+					objA0.position.y.u16++
+					objA0.value39++
+				}
+				else
+				{
+					objA0.position.y.u16 += objA0.value39 + 3 > 6 ? 7 - objA0.value39 : 3
+					objA0.value39 += objA0.value39 + 3 > 6 ? 7 - objA0.value39 : 3
+				}
+			}
+		}
+	}
+	else
+	{
+		objA0.update_address = 0x06f056
+		objA0.position.y.u16 += 8
+	}
 }

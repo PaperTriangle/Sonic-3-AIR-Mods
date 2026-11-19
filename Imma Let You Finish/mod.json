@@ -5,7 +5,7 @@
 		"UniqueID": "imma-let-you-finish",
 		"Author": "PaperTriangle",
 		"Description": "Forces the characters to stop moving around so the act finishes.",
-		"ModVersion": "1.4"
+		"ModVersion": "1.5"
 	},
 	"Settings":
 	{
@@ -21,6 +21,18 @@
 				{
 					"0": "Can Bounce It",
 					"1": "No Interaction"
+				}
+			},
+			{
+				"InternalName": "ilyf.pressdabutton",
+				"DisplayName": "Dynamic Capsule Button",
+				"Variable": "ilyf.pressdabutton",
+				"Category": "General Settings",	
+				"DefaultValue": "1",
+				"Options":
+				{
+					"0": "Disabled",
+					"1": "Enabled"
 				}
 			}
 		]
