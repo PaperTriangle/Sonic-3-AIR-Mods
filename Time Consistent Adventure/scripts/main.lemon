@@ -651,7 +651,7 @@ function bool TCA.renderDataSelectPortraits(s16 px, s16 py, s16 renderQueue)
 		if (isKnucklesDataSelect())
 			key = "lbz_icon_knux"
 	}
-	else if (zone == 8)
+	else if (zone == 8 && tca.soz)
 		key = "soz_icon"
 	else if (zone == 11)
 	{
