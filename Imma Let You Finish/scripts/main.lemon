@@ -202,21 +202,21 @@ function void fn086770()
 	A1 = 0x0867c2
 	fn0858f8()
 
-		if (u16[char.ADDRESS_P1 + 0x14] < u16[char.ADDRESS_P2 + 0x10]) && (u16[char.ADDRESS_P1 + 0x10] > objA0.position.x.u16 - 0x12 && u16[char.ADDRESS_P1 + 0x10] < objA0.position.x.u16 + 0x12 && u16[char.ADDRESS_P1 + 0x14] < objA0.position.y.u16 + 0x1c && u16[char.ADDRESS_P1 + 0x14] > objA0.position.y.u16)
-		{
-			if (objA0.value32 < 7)
-				objA0.value32 = s16((objA0.position.y.u16 - u16[char.ADDRESS_P1 + 0x14]) + 0x19) >= 0 ? (objA0.position.y.u16 - u16[char.ADDRESS_P1 + 0x14]) + 0x19 : objA0.value32
-		}
-		else if (u16[char.ADDRESS_P2 + 0x10] > objA0.position.x.u16 - 0x12 && u16[char.ADDRESS_P2 + 0x10] < objA0.position.x.u16 + 0x12 && u16[char.ADDRESS_P2 + 0x14] < objA0.position.y.u16 + 0x1c && u16[char.ADDRESS_P2 + 0x14] > objA0.position.y.u16)
-		{
-			if (objA0.value32 < 7)
-				objA0.value32 = objA0.value32 = s16((objA0.position.y.u16 - u16[char.ADDRESS_P2 + 0x14]) + 0x19) >= 0 ? (objA0.position.y.u16 - u16[char.ADDRESS_P2 + 0x14]) + 0x19 : objA0.value32
-		}
-		else
-		{
-			if (objA0.value32 > 0)
-				objA0.value32 -= objA0.value32 == 1 ? 1 : 2
-		}
+	if (u16[char.ADDRESS_P1 + 0x14] < u16[char.ADDRESS_P2 + 0x10] || u16[char.ADDRESS_P2] == 0) && (u16[char.ADDRESS_P1 + 0x10] > objA0.position.x.u16 - 0x12 && u16[char.ADDRESS_P1 + 0x10] < objA0.position.x.u16 + 0x12 && u16[char.ADDRESS_P1 + 0x14] < objA0.position.y.u16 + 0x1c && u16[char.ADDRESS_P1 + 0x14] > objA0.position.y.u16)
+	{
+		if (objA0.value32 < 7)
+			objA0.value32 = s16((objA0.position.y.u16 - u16[char.ADDRESS_P1 + 0x14]) + 0x19) >= 0 ? (objA0.position.y.u16 - u16[char.ADDRESS_P1 + 0x14]) + 0x19 : objA0.value32
+	}
+	else if (u16[char.ADDRESS_P2 + 0x10] > objA0.position.x.u16 - 0x12 && u16[char.ADDRESS_P2 + 0x10] < objA0.position.x.u16 + 0x12 && u16[char.ADDRESS_P2 + 0x14] < objA0.position.y.u16 + 0x1c && u16[char.ADDRESS_P2 + 0x14] > objA0.position.y.u16)
+	{
+		if (objA0.value32 < 7)
+			objA0.value32 = objA0.value32 = s16((objA0.position.y.u16 - u16[char.ADDRESS_P2 + 0x14]) + 0x19) >= 0 ? (objA0.position.y.u16 - u16[char.ADDRESS_P2 + 0x14]) + 0x19 : objA0.value32
+	}
+	else
+	{
+		if (objA0.value32 > 0)
+			objA0.value32 -= objA0.value32 == 1 ? 1 : 2
+	}
 
 	if (D0 != 0)
 	{
@@ -300,7 +300,6 @@ function void fn06f010()
 		}
 		else
 		{
-			System.writeDisplayLine(stringformat("%d", u8[A1 + 0x38] & 0x04))
 			if (objA0.value39 < 7)
 			{
 				if ((u8[A1 + 0x38] & 0x04) == 0)
