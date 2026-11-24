@@ -44,6 +44,16 @@ function void ExtraChar.DataSelect.drawCharacterSprite(s16 px, s16 py, u16 rende
 		Renderer.drawCustomSprite(key, px + 0x09, py, atex, SPRITE_FLAG_PRIO | SPRITE_FLAG_FLIP_X, renderQueue)
 		return
 	}
+	else if (objA0.animation.timer == 0x01)
+	{
+		u8 atex = getatex(0x01)
+		string key = Mods.isModActive("Mania Style Data Select") ? "dataSel_character_mighty" : getMightySprite()
+	
+		// Mighty
+		if (Renderer.hasCustomSprite(key))
+			Renderer.drawCustomSprite(key, px, py, atex, SPRITE_FLAG_PRIO, renderQueue)
+		return
+	}
 	
 	// Call the base function
 	base.ExtraChar.DataSelect.drawCharacterSprite(px, py, renderQueue)
